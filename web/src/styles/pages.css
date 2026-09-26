@@ -69,6 +69,30 @@
   color: var(--white);
 }
 
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.button-secondary {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 18px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: var(--radius-control);
+  background: var(--white);
+  color: var(--cobalt-deep);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.button-secondary:hover {
+  background: var(--cobalt-tint);
+}
+
 .report {
   max-width: 720px;
   margin: 0 auto 16px;
