@@ -161,6 +161,61 @@ class Versions(Contract):
     data_as_of: date | None  # oldest source date among the inputs
 
 
+class CheckResult(Contract):
+    """One zoning rule applied to one building. Rules pass or fail; probability enters only
+    through the approval (`relief_type`) that can fix a failure."""
+
+    check_id: str  # use_allowed | min_lot_size | fits_envelope | row_fits_width | subdivision
+    label: str
+    section: str | None  # zoning code section
+    status: Literal["pass", "needs_approval", "rejected", "not_applicable"]
+    required: float | None  # what the rule requires (sf or ft)
+    provided: float | None  # what this lot/building provides
+    unit: str | None
+    relief_type: str | None  # approval that fixes it, or implausible / use_variance
+    note: str | None
+
+
+class SiteCheck(Contract):
+    """Overlay rules that apply to the site whatever is built."""
+
+    check_id: str
+    label: str
+    section: str
+    status: Literal["applies", "clear", "unknown"]
+    note: str | None
+
+
+class NotChecked(Contract):
+    label: str
+    section: str
+    reason: str
+
+
+class ProgramEvaluation(Contract):
+    product_type: ProductType
+    units: int
+    gfa_sqft: float
+    outcome: Literal["by_right", "needs_approval", "rejected"]
+    checks: list[CheckResult]
+    approval_prob: Range | None  # product of the needed approvals' odds; None if rejected
+    approval_months: Range | None
+    representative: bool  # one column per building type for display
+    chosen_as: OptionLabel | None  # this program is options[] by_right / with_relief
+
+
+class RuleChecks(Contract):
+    """Every building type tested on this lot, rule by rule ("why this score")."""
+
+    district: str
+    scenario: Literal["strict", "contextual"]
+    uncovered_districts: list[str]
+    site_checks: list[SiteCheck]
+    not_checked: list[NotChecked]
+    programs: list[ProgramEvaluation]
+    odds_note: str
+
+
 class SiteAnalysis(Contract):
     verdict: Verdict
     narrative: Narrative
@@ -170,6 +225,7 @@ class SiteAnalysis(Contract):
     options: list[ProgramOption]  # best by-right and best with relief (0-2)
     next_steps: list[Step]  # free first, then cheapest deal-killer
     score_breakdown: list[ScoreItem]
+    rule_checks: RuleChecks | None = None  # None when zoning is not covered
     assumptions: list[Assumption]
     rules: RulesSummary
     versions: Versions

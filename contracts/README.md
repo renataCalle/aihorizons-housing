@@ -1,5 +1,8 @@
 # Contracts v0.1.0
 
+Latest additive change: `SiteAnalysis.rule_checks` (rule-by-rule explanation). No version
+bump; existing clients keep working.
+
 Two Pydantic models are the whole interface between data, engine and UI:
 
 ```
@@ -81,6 +84,7 @@ Answers to the checklist in `docs/04-contracts.md` (feat/web-api):
 | Assumptions | `assumptions[]`: key, label, value, min/max, unit, source, editable | ✓ |
 | Versions | `versions.{engine, ruleset, schema, data_as_of}` | ✓ (`data_as_of` = oldest input) |
 | Evidence drawer: precedents | — | blocked: needs zoning board decisions |
+| Rule by rule (why this score) | `rule_checks`: every building type tested, each rule `pass` / `needs_approval` / `rejected` / `not_applicable` with § section and required vs. provided; approval odds per building; site-wide overlay rules; rules not checked yet | ✓ (additive, optional) |
 
 **Names in your draft → names here**: Finding → `Flag` (detail ≈ title + resolution);
 NextStep.title → `Step.action`; `cost` → `cost_usd`; headline_numbers → `metrics`;
@@ -90,6 +94,31 @@ relief types. Tenure is in `revenue_basis` (for-sale or rental exit).
 
 **Placeholders**: every assumption whose `source` starts with `PLACEHOLDER` is a default,
 not a local benchmark. Hard cost drives most results; show the label.
+
+## Rule by rule: `rule_checks`
+
+Explains *why* a lot gets its options and odds: every building type the engine tested, with
+every zoning rule it applied. `null` when zoning isn't covered (outside the city).
+
+- **Rows** (`programs[].checks[].check_id`): `use_allowed` (§ 911.02), `min_lot_size`
+  (§ 903.03 / 905.02 / 925.01.C), `fits_envelope` (§ 903.03: setbacks × stories),
+  `row_fits_width` and `subdivision` (townhomes only). Each has `section`, `required`,
+  `provided`, `unit` and a `note`.
+- **Status**: `pass` · `needs_approval` (fixable; `relief_type` names the approval) ·
+  `rejected` (not feasible: deviation over 25%, or the use isn't allowed) · `not_applicable`.
+- **Odds**: rules are pass/fail; probability comes only from approvals.
+  `approval_prob` = product of the odds of each approval a building needs; `1.0` when every rule
+  passes; `null` when rejected. Measured odds for conditional uses and rezonings, placeholders
+  for the rest (see `entitlement_basis` on options).
+- **Columns**: `programs[]` holds every variant tested (~20). Show the ones with
+  `representative: true` (one per building type) plus any with `chosen_as` set: those are the
+  two headline options in `options[]`, and the tests guarantee they match.
+- **Also**: `site_checks[]` (overlays for the whole site: `applies` / `clear` / `unknown`),
+  `not_checked[]` (rules not evaluated yet, e.g. parking; show them so users know),
+  `scenario` (strict or contextual setbacks), `uncovered_districts`, and `odds_note` (a
+  plain-language sentence to show under the table).
+
+Reference rendering: `sandbox/report.py` (`rules_block`).
 
 ## Changing the contract
 

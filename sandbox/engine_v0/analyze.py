@@ -13,7 +13,7 @@ import numpy as np
 
 from sandbox.engine_v0 import constraints, entitlement
 from sandbox.engine_v0.assumptions import resolve
-from sandbox.engine_v0.rules_engine import TEMPLATES
+from sandbox.engine_v0.rules_engine import NOT_CHECKED, TEMPLATES, site_checks
 from sandbox.engine_v0.rules_engine import analyze as rules_analyze
 
 N = 2_000
@@ -307,6 +307,78 @@ def lot_dims(rules: dict) -> dict | None:
     return {"width": env["width_ft"], "depth": env["depth_ft"]}
 
 
+ODDS_NOTE = (
+    "Each rule either passes or fails. A failure that an approval can fix adds that approval; "
+    "the building's approval odds are the product of the odds of every approval it needs "
+    "(measured from City Council votes for conditional uses and rezonings, expert "
+    "placeholders for the others). A building that passes every rule is allowed outright."
+)
+
+
+def rule_checks(ctx: dict, rules: dict, scenario: str | None, options: list[dict]) -> dict | None:
+    """Every building type tested on this lot, rule by rule, with its approval odds."""
+    covered = [r for r in rules.get("readings", []) if r["covered"]]
+    if not covered or scenario is None:
+        return None
+    reading = covered[0]
+    programs = reading["scenarios"][scenario]["programs"]
+    chosen = {(o["product"], o["units"]): o["label"] for o in options}
+    out = []
+    for prog in programs:
+        statuses = {c["status"] for c in prog["checks"]}
+        outcome = (
+            "rejected"
+            if "rejected" in statuses
+            else "needs_approval"
+            if "needs_approval" in statuses
+            else "by_right"
+        )
+        odds = months = None
+        if outcome != "rejected":
+            ent = entitlement.sample(prog["relief"], N, np.random.default_rng(11))
+            odds, months = _range(ent["p"]), _range(ent["months"])
+        out.append(
+            {
+                "product_type": prog["product"],
+                "units": prog["units"],
+                "gfa_sqft": prog["gfa_sqft"],
+                "outcome": outcome,
+                "checks": prog["checks"],
+                "approval_prob": odds,
+                "approval_months": months,
+                "representative": False,
+                "chosen_as": chosen.get((prog["product"], prog["units"])),
+            }
+        )
+    # one readable column per building type: largest allowed outright, else largest needing
+    # approval, else the smallest tested (to show why that type fails)
+    for product in TEMPLATES:
+        mine = [p for p in out if p["product_type"] == product]
+        pick = (
+            max(
+                (p for p in mine if p["outcome"] == "by_right"),
+                key=lambda p: p["units"],
+                default=None,
+            )
+            or max(
+                (p for p in mine if p["outcome"] == "needs_approval"),
+                key=lambda p: p["units"],
+                default=None,
+            )
+            or min(mine, key=lambda p: p["units"])
+        )
+        pick["representative"] = True
+    return {
+        "district": reading["district"],
+        "scenario": scenario,
+        "uncovered_districts": [r["district"] for r in rules["readings"] if not r["covered"]],
+        "site_checks": site_checks(ctx),
+        "not_checked": NOT_CHECKED,
+        "programs": out,
+        "odds_note": ODDS_NOTE,
+    }
+
+
 # ---------------------------------------------------------------- orchestration
 
 
@@ -572,6 +644,7 @@ def analyze(ctx: dict, overrides: dict | None = None) -> dict:
         "options": [opt_out(r) for r in results],
         "next_steps": next_steps,
         "score_breakdown": breakdown,
+        "rule_checks": rule_checks(ctx, rules, scenario, options),
         "assumptions": assumptions,
         "rules": {
             "scenario": scenario,

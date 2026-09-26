@@ -172,6 +172,7 @@
     }
   ],
   "score_breakdown": [],
+  "rule_checks": null,
   "assumptions": [
     {
       "key": "hard_cost_psf",

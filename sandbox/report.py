@@ -10,6 +10,7 @@ so the web app can reproduce this page from the same JSON.
 
 import html
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -74,6 +75,141 @@ def product_title(o: dict) -> str:
 
 def relief_names(o: dict) -> list[str]:
     return [RELIEF.get(r.split(" (")[0], r) for r in o["relief"]]
+
+
+# ---------------------------------------------------------------- rule-by-rule table
+
+CHECK_ORDER = ["use_allowed", "min_lot_size", "fits_envelope", "row_fits_width", "subdivision"]
+APPROVAL = {
+    "administrator_exception": "Admin. exception",
+    "special_exception": "Special exception",
+    "variance": "Variance",
+    "conditional_use": "Conditional use",
+    "subdivision": "Subdivision",
+    "rezoning": "Rezoning",
+}
+OUTCOME = {
+    "by_right": ("Allowed outright", "ok"),
+    "needs_approval": ("Needs approval", "caution"),
+    "rejected": ("Not feasible", "risk"),
+}
+SITE = {
+    "applies": ("Applies", "caution"),
+    "clear": ("Clear", "ok"),
+    "unknown": ("Unknown", "minor"),
+}
+
+
+def _short(note: str | None) -> str:
+    m = re.search(r"\((\d+)% short\)", note or "")
+    return f"{m.group(1)}% short" if m else ""
+
+
+def _measure(c: dict) -> str:
+    req, got, unit = c["required"], c["provided"], c["unit"] or ""
+    if req is None or got is None:
+        return ""
+    if c["check_id"] == "fits_envelope":
+        return f"needs {req:,.0f} sf · room for {got:,.0f}"
+    if c["check_id"] == "min_lot_size":
+        return f"{got:,.0f} {unit} lot · min {req:,.0f}"
+    return f"{req:,.0f} {unit} row · {got:,.0f} {unit} lot"
+
+
+def _cell(c: dict) -> str:
+    st = c["status"]
+    if st == "not_applicable":
+        return '<td class="na">—</td>'
+    if st == "pass":
+        return f'<td><span class="okmark">✓</span><span class="sub">{e(_measure(c))}</span></td>'
+    if st == "needs_approval":
+        label = APPROVAL.get(c["relief_type"], c["relief_type"])
+        detail = _short(c["note"]) or _measure(c)
+        return (
+            f'<td><span class="chip caution">{e(label)}</span>'
+            f'<span class="sub">{e(detail)}</span></td>'
+        )
+    why = "use not allowed" if c["relief_type"] == "use_variance" else _short(c["note"])
+    return (
+        f'<td><span class="chip risk">✗ Not feasible</span><span class="sub">{e(why)}</span></td>'
+    )
+
+
+def rules_block(rc: dict | None) -> str:
+    if not rc:
+        return ""
+    cols = [p for p in rc["programs"] if p["representative"] or p["chosen_as"]]
+    rows = []
+    for cid in CHECK_ORDER:
+        cells = [next(c for c in p["checks"] if c["check_id"] == cid) for p in cols]
+        if all(c["status"] == "not_applicable" for c in cells):
+            continue
+        sec = sorted({c["section"] for c in cells if c["section"]})
+        rows.append(
+            f'<tr><th scope="row">{e(cells[0]["label"])}'
+            f'<span class="sub">§ {e(" / ".join(sec))}</span></th>'
+            + "".join(_cell(c) for c in cells)
+            + "</tr>"
+        )
+    odds = "".join(
+        "<td>—</td>"
+        if p["approval_prob"] is None
+        else f'<td class="num"><b>{p["approval_prob"]["p50"]:.0%}</b>'
+        + (
+            ""
+            if p["outcome"] == "by_right"
+            else f'<span class="sub">{p["approval_prob"]["p10"]:.0%}–{p["approval_prob"]["p90"]:.0%}</span>'
+        )
+        + "</td>"
+        for p in cols
+    )
+    result = "".join(
+        f'<td><span class="chip {OUTCOME[p["outcome"]][1]}">{OUTCOME[p["outcome"]][0]}</span></td>'
+        for p in cols
+    )
+    heads = "".join(
+        f'<th scope="col"{' class="picked"' if p["chosen_as"] else ""}>'
+        f"{e(product_title(p))}"
+        + (
+            f'<span class="badge">{"By-right option" if p["chosen_as"] == "by_right" else "With-approvals option"}</span>'
+            if p["chosen_as"]
+            else ""
+        )
+        + "</th>"
+        for p in cols
+    )
+    site = "".join(
+        f'<li><span class="chip {SITE[c["status"]][1]}">{SITE[c["status"]][0]}</span> '
+        f'<b>{e(c["label"])}</b> <span class="muted small">§ {e(c["section"])}</span>'
+        + (f'<br><span class="muted small">{e(c["note"])}</span>' if c["note"] else "")
+        + "</li>"
+        for c in rc["site_checks"]
+    )
+    todo = "".join(
+        f'<li><b>{e(n["label"])}</b> <span class="muted small">§ {e(n["section"])} · '
+        f"{e(n['reason'])}</span></li>"
+        for n in rc["not_checked"]
+    )
+    unc = (
+        f'<p class="muted small">Not covered yet: {e(", ".join(rc["uncovered_districts"]))} '
+        "(this part of the lot is not evaluated).</p>"
+        if rc["uncovered_districts"]
+        else ""
+    )
+    return f"""
+    <section class="block">
+      <div class="block-head"><h2>Rule by rule: what passes and what doesn't</h2>
+        <span class="muted small">{e(rc["district"])} · {e(rc["scenario"])} setbacks · {len(rc["programs"])} buildings tested</span></div>
+      <div class="card tbl"><table class="rules"><thead><tr><th scope="col">Zoning rule</th>{heads}</tr></thead>
+        <tbody>{"".join(rows)}
+          <tr class="foot-row"><th scope="row">Approval odds</th>{odds}</tr>
+          <tr class="foot-row"><th scope="row">Result</th>{result}</tr></tbody></table></div>
+      <p class="muted small">{e(rc["odds_note"])}</p>{unc}
+      <div class="cards2">
+        <section class="card"><h3>Rules for the whole site</h3><ul class="plain">{site}</ul></section>
+        <section class="card"><h3>Not checked yet</h3><ul class="plain">{todo}</ul></section>
+      </div>
+    </section>"""
 
 
 # ---------------------------------------------------------------- page
@@ -325,7 +461,7 @@ def render(payload: dict) -> str:
     <span class="mono">{e(p["parcel_id"])} · {p["lot_area_sqft"]:,.0f} sq ft · {e(zoning)}</span></div>
   <span class="tag">Engine {e(ver["engine"])}</span></header>
 <main class="grid">
-  <div class="main">{verdict}{cards}{kill}{build}{nxt}
+  <div class="main">{verdict}{cards}{kill}{build}{rules_block(a.get("rule_checks"))}{nxt}
     <p class="muted small foot">Screening only. This report is not a zoning determination, legal advice or an engineering assessment; confirm with the Zoning Administrator before relying on it.</p>
   </div>
   {side}
@@ -394,6 +530,11 @@ th{font-size:12px;color:var(--muted);font-weight:500;background:var(--soft)}tr:l
 .kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
 .kv:last-child{border-bottom:0}.kv span{color:var(--muted)}.kv em{font-style:normal;font-size:11px}.kv b{text-align:right;font-weight:500}
 .about{background:var(--soft)}.about p{margin-bottom:8px}.foot{max-width:70ch}
+.rules th[scope=row]{font-weight:600;min-width:170px}.rules td,.rules th{vertical-align:top}
+.rules .sub{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:3px}
+.rules th.picked{background:var(--lead)}.rules th .badge{display:block;margin-top:4px;width:max-content}
+.rules .na{color:var(--muted)}.okmark{color:var(--ok);font-weight:700}.foot-row th,.foot-row td{background:var(--soft)}
+ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:13px}
 """
 
 
