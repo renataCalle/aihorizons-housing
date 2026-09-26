@@ -39,6 +39,9 @@ extend-exclude = ["research/notebooks"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]
 
+[tool.ruff.lint.per-file-ignores]
+"sandbox/report.py" = ["E501"]  # HTML/CSS templates
+
 [tool.ruff.lint.isort]
 known-first-party = [
     "navigator_contracts",

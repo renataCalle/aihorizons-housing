@@ -10,7 +10,10 @@ probability, months to permit-ready, and constraint cost premium, plus flags, pr
 a pro forma, and next steps. The full product spec is "Development Feasibility & Pro Forma
 Navigator — Specification.md" (kept outside the repo); consult it before designing any module.
 
-The repo is currently a scaffold: package folders, tooling, and CI, with no domain code yet.
+Contracts v0.1 (SiteContext, SiteAnalysis) are in `contracts/`; read `contracts/README.md`
+first. The v0 engine is prototyped in `sandbox/engine_v0/` and moves to `engine/` next;
+`engine/`, `pipeline/` and `api/` are still scaffolds. Golden fixtures (8 real parcels, context
+and analysis) are in `fixtures/golden/`.
 
 ## Commands
 
@@ -82,5 +85,13 @@ schema version and need approval from both owners.
 `fixtures/golden/` holds paired `site_context/` and `site_analysis/` JSON for the eight golden
 Pittsburgh parcels. They become snapshot tests, so an engine change that moves a golden score
 is visible to both owners.
+
+`sandbox/` is the research scientist's data workspace, outside the production import graph:
+`fetch.py` (raw downloads + provenance manifests, sources in `catalog.py`) → `build.py`
+(clean GeoParquet, EPSG:2272) → `features.py` (per-parcel facts) → `site_context.py`
+(SiteContext-shaped JSON for a parcel). Run as `uv run python -m sandbox.<step>`. Its README
+lists data gaps (notably: pittsburghpa.gov returns 403, so ZBA decisions are unavailable).
+Every outbound request sends exactly `User-Agent: market-data-client/1.0`; never add contact
+details or spoof a browser to get past a block.
 
 Raw data never goes in git; `data/`, `*.duckdb`, `*.parquet`, and shapefiles are gitignored.

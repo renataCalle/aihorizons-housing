@@ -15,6 +15,7 @@ layers countywide.
 | `api/` | FastAPI service that imports the engine as a library | Engineer |
 | `web/` | React + MapLibre app | Engineer |
 | `fixtures/golden/` | Golden-parcel `site_context/` and `site_analysis/` fixtures | Both |
+| `sandbox/` | Real data pulled, cleaned, and rolled up into per-parcel facts for research | Research scientist |
 
 Python packages are members of one [uv](https://docs.astral.sh/uv/) workspace with a single
 lockfile. The web app is a separate npm project.

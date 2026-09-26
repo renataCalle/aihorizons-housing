@@ -1,0 +1,404 @@
+<title>Site Risk Mechanics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+  :root {
+    --ground: #F3F5F4;
+    --paper: #FFFFFF;
+    --ink: #1B2530;
+    --muted: #5A6772;
+    --rule: #C7D0D3;
+    --band: #E8EDEE;
+    --accent: #1F5FA6;
+    --accent-soft: #DCE8F5;
+    --warn: #9A5B00;
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --cond: "IBM Plex Sans Condensed", "Arial Narrow", "IBM Plex Sans", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #11161B; --paper: #182029; --ink: #E2E8ED; --muted: #97A4AE;
+      --rule: #34414C; --band: #19222B; --accent: #78AEEA; --accent-soft: #1C3149;
+      --warn: #E0A95A;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #11161B; --paper: #182029; --ink: #E2E8ED; --muted: #97A4AE;
+    --rule: #34414C; --band: #19222B; --accent: #78AEEA; --accent-soft: #1C3149;
+    --warn: #E0A95A;
+  }
+
+  body { background: var(--ground); color: var(--ink); font: 15px/1.6 var(--sans); }
+  .wrap { max-width: 1060px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; }
+  h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+  h1 { font: 600 30px/1.15 var(--cond); letter-spacing: -0.01em; }
+  h2 { font: 600 20px/1.25 var(--cond); margin-bottom: 8px; }
+  h3 { font: 600 15px/1.3 var(--cond); letter-spacing: 0.04em; text-transform: uppercase; }
+  p { margin: 0; max-width: 68ch; }
+  .eyebrow { font: 500 12px/1 var(--mono); color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  header { display: grid; gap: 12px; margin-bottom: 28px; }
+  .thesis { font-size: 18px; line-height: 1.5; max-width: 60ch; }
+  .thesis b { color: var(--accent); font-weight: 600; }
+  section { margin-top: 48px; display: grid; gap: 14px; }
+  code, .mono { font-family: var(--mono); font-size: 0.9em; }
+
+  figure { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; }
+  .scroll { overflow-x: auto; }
+  figure svg { display: block; width: 100%; min-width: 760px; height: auto; }
+  figcaption { padding: 12px 18px 16px; color: var(--muted); font-size: 13.5px; border-top: 1px solid var(--rule); }
+
+  /* diagram tokens */
+  .d-band { fill: var(--band); }
+  .d-box { fill: var(--paper); stroke: var(--rule); stroke-width: 1; }
+  .d-term { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+  .d-score { fill: var(--accent); }
+  .d-line { stroke: var(--ink); stroke-width: 1.3; fill: none; }
+  .d-acc { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+  .d-dash { stroke: var(--muted); stroke-width: 1.3; fill: none; stroke-dasharray: 5 4; }
+  .d-halo { stroke: var(--paper); stroke-width: 6; fill: none; }
+  .d-head { fill: var(--ink); }
+  .d-headacc { fill: var(--accent); }
+  .d-headmut { fill: var(--muted); }
+  .t-lens { font: 600 15px var(--cond); fill: var(--ink); letter-spacing: 0.06em; }
+  .t-role { font: 500 11px var(--mono); fill: var(--accent); letter-spacing: 0.04em; }
+  .t-note { font: 400 11px var(--sans); fill: var(--muted); }
+  .t-title { font: 600 13px var(--cond); fill: var(--ink); }
+  .t-body { font: 400 11.5px var(--sans); fill: var(--ink); }
+  .t-mut { font: 400 11px var(--sans); fill: var(--muted); }
+  .t-mono { font: 500 11.5px var(--mono); fill: var(--ink); }
+  .t-monomut { font: 400 10.5px var(--mono); fill: var(--muted); }
+  .t-lbl { font: 500 11px var(--sans); fill: var(--muted); }
+  .t-acc { font: 600 13px var(--cond); fill: var(--accent); }
+  .t-inv { font: 600 14px var(--cond); fill: var(--paper); }
+  .t-invbody { font: 400 11.5px var(--sans); fill: var(--paper); }
+  .t-invmono { font: 500 12px var(--mono); fill: var(--paper); }
+  .rung-0 { fill: var(--ink); fill-opacity: 0.04; stroke: var(--rule); }
+  .rung-1 { fill: var(--ink); fill-opacity: 0.08; stroke: var(--rule); }
+  .rung-2 { fill: var(--ink); fill-opacity: 0.12; stroke: var(--rule); }
+  .rung-3 { fill: var(--ink); fill-opacity: 0.16; stroke: var(--rule); }
+  .rung-4 { fill: var(--ink); fill-opacity: 0.21; stroke: var(--rule); }
+  .rung-5 { fill: var(--ink); fill-opacity: 0.27; stroke: var(--rule); }
+
+  /* lenses */
+  .lenses { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .lens { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+  .lens .role { font: 500 11px var(--mono); color: var(--accent); letter-spacing: 0.06em; text-transform: uppercase; }
+  .lens ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; }
+  @media (max-width: 760px) { .lenses { grid-template-columns: 1fr; } }
+
+  /* tables */
+  .tbl { overflow-x: auto; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--rule); }
+  th { font: 600 12px var(--cond); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .chip { display: inline-block; font: 500 11px var(--mono); padding: 2px 7px; border-radius: 3px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap; }
+  .chip.done { color: var(--accent); border-color: var(--accent); }
+  .chip.gap { color: var(--warn); border-color: var(--warn); }
+  .note { color: var(--muted); font-size: 13.5px; }
+
+  .status { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .status div { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: 14px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Development Feasibility &amp; Pro Forma Navigator · Pittsburgh</span>
+    <h1>How a parcel becomes a risk score</h1>
+    <p class="thesis">A site's risk is the <b>odds</b>, <b>delay</b>, and <b>extra cost</b> of the approval path its best building has to take. Data says what is on the lot, the zoning code says which path applies, and economics prices that path.</p>
+  </header>
+
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 1000 985" role="img" aria-label="Four stages. Facts: public sources pass through fetch, build and features into SiteContext. Rules: rules tables from the zoning code and the rules engine turn the lot into a buildable envelope and a relief list, which sets the rung on the approval ladder from by-right to rezoning. Economics: the rung gives approval odds and months; hazards give a constraint cost premium; the pro forma combines them with comps and rents. Result: the score multiplies odds, a time factor and a cost factor, alongside the report and next steps ordered by cost-to-kill. Ground-truth data calibrates the rules and the odds.">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker>
+        <marker id="ahA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-headacc"/></marker>
+        <marker id="ahM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-headmut"/></marker>
+      </defs>
+
+      <!-- bands -->
+      <rect class="d-band" x="8" y="18" width="984" height="232" rx="4"/>
+      <rect class="d-band" x="8" y="266" width="984" height="268" rx="4"/>
+      <rect class="d-band" x="8" y="550" width="984" height="252" rx="4"/>
+      <rect class="d-band" x="8" y="818" width="984" height="152" rx="4"/>
+
+      <!-- lens labels -->
+      <text class="t-lens" x="22" y="48">FACTS</text>
+      <text class="t-role" x="22" y="66">engineer</text>
+      <text class="t-note" x="22" y="88">measured,</text>
+      <text class="t-note" x="22" y="102">sourced, dated</text>
+
+      <text class="t-lens" x="22" y="296">RULES</text>
+      <text class="t-role" x="22" y="314">regulator</text>
+      <text class="t-note" x="22" y="336">the code as data,</text>
+      <text class="t-note" x="22" y="350">every row cited</text>
+
+      <text class="t-lens" x="22" y="580">ECONOMICS</text>
+      <text class="t-role" x="22" y="598">economist</text>
+      <text class="t-note" x="22" y="620">prices the path,</text>
+      <text class="t-note" x="22" y="634">as ranges</text>
+
+      <text class="t-lens" x="22" y="848">RESULT</text>
+      <text class="t-role" x="22" y="866">developer</text>
+      <text class="t-note" x="22" y="888">go / no-go and</text>
+      <text class="t-note" x="22" y="902">what to check next</text>
+
+      <!-- ===== FACTS ===== -->
+      <g>
+        <rect class="d-box" x="170" y="34" width="150" height="46" rx="3"/>
+        <text class="t-title" x="245" y="53" text-anchor="middle">Ground truth</text>
+        <text class="t-mut" x="245" y="70" text-anchor="middle">permits · sales · votes</text>
+
+        <rect class="d-box" x="327.5" y="34" width="150" height="46" rx="3"/>
+        <text class="t-title" x="402.5" y="53" text-anchor="middle">Parcels</text>
+        <text class="t-mut" x="402.5" y="70" text-anchor="middle">geometry · assessments</text>
+
+        <rect class="d-box" x="485" y="34" width="150" height="46" rx="3"/>
+        <text class="t-title" x="560" y="53" text-anchor="middle">Zoning map</text>
+        <text class="t-mut" x="560" y="70" text-anchor="middle">districts · overlays</text>
+
+        <rect class="d-box" x="642.5" y="34" width="150" height="46" rx="3"/>
+        <text class="t-title" x="717.5" y="53" text-anchor="middle">Market</text>
+        <text class="t-mut" x="717.5" y="70" text-anchor="middle">comps · HUD rents · transit</text>
+
+        <rect class="d-box" x="800" y="34" width="150" height="46" rx="3"/>
+        <text class="t-title" x="875" y="53" text-anchor="middle">Hazards</text>
+        <text class="t-mut" x="875" y="70" text-anchor="middle">slope · mines · flood · DEP</text>
+
+        <path class="d-line" d="M245,80 V92 M402.5,80 V92 M560,80 V92 M717.5,80 V92 M875,80 V92 M245,92 H875"/>
+        <path class="d-line" d="M560,92 V110" marker-end="url(#ah)"/>
+
+        <rect class="d-box" x="170" y="112" width="240" height="38" rx="3"/>
+        <text class="t-mono" x="184" y="135">fetch</text>
+        <text class="t-mut" x="228" y="135">raw + url, date, hash</text>
+        <rect class="d-box" x="440" y="112" width="240" height="38" rx="3"/>
+        <text class="t-mono" x="454" y="135">build</text>
+        <text class="t-mut" x="498" y="135">State Plane ft · parcel_id</text>
+        <rect class="d-box" x="710" y="112" width="240" height="38" rx="3"/>
+        <text class="t-mono" x="724" y="135">features</text>
+        <text class="t-mut" x="792" y="135">shares · distances</text>
+        <path class="d-line" d="M410,131 H438" marker-end="url(#ah)"/>
+        <path class="d-line" d="M680,131 H708" marker-end="url(#ah)"/>
+        <path class="d-line" d="M830,150 V172" marker-end="url(#ah)"/>
+
+        <rect class="d-box" x="170" y="174" width="780" height="56" rx="3" style="stroke:var(--ink)"/>
+        <text class="t-title" x="186" y="196">SiteContext</text>
+        <text class="t-body" x="270" y="196">facts only: shares of lot, distances, comps, neighbours built</text>
+        <text class="t-mut" x="186" y="216">missing = unknown, never zero · 142,329 city parcels, suburbs on demand</text>
+      </g>
+
+      <!-- ===== RULES ===== -->
+      <path class="d-line" d="M725,230 V298" marker-end="url(#ah)"/>
+      <text class="t-lbl" x="735" y="262">lot geometry · zoning shares</text>
+      <text class="t-lbl" x="735" y="277">· neighbours built</text>
+
+      <rect class="d-box" x="170" y="300" width="270" height="132" rx="3"/>
+      <text class="t-title" x="186" y="322">Rules tables</text>
+      <text class="t-mut" x="268" y="322">by effective date</text>
+      <text class="t-monomut" x="186" y="346">903 · 905</text>
+      <text class="t-body" x="262" y="346">lot size, setbacks, height</text>
+      <text class="t-monomut" x="186" y="366">911.02</text>
+      <text class="t-body" x="262" y="366">uses by district</text>
+      <text class="t-monomut" x="186" y="386">914 · 915</text>
+      <text class="t-body" x="262" y="386">parking, grading</text>
+      <text class="t-monomut" x="186" y="406">906 · 925.06</text>
+      <text class="t-body" x="262" y="406">overlays, context</text>
+      <text class="t-mut" x="186" y="424">from Title Nine; 335 rows, each cited</text>
+
+      <path class="d-line" d="M440,366 H498" marker-end="url(#ah)"/>
+      <text class="t-lbl" x="469" y="358" text-anchor="middle">standards</text>
+
+      <rect class="d-box" x="500" y="300" width="450" height="132" rx="3" style="stroke:var(--ink)"/>
+      <text class="t-title" x="516" y="322">Rules engine</text>
+      <text class="t-mono" x="516" y="348">envelope = (W − sides) × (D − front − rear) × stories</text>
+      <text class="t-body" x="516" y="370">tests 5 product types (house → 12-unit walk-up) against it</text>
+      <text class="t-body" x="516" y="390">→ best by right · best with relief · relief items</text>
+      <text class="t-mut" x="516" y="416">no density cap in Pittsburgh: the envelope is the limit</text>
+
+      <path class="d-line" d="M725,432 V464" marker-end="url(#ah)"/>
+      <text class="t-lbl" x="735" y="452">each relief item sets a rung</text>
+
+      <!-- approval ladder -->
+      <rect class="rung-0" x="170" y="466" width="123" height="46" rx="3"/>
+      <text class="t-title" x="231.5" y="485" text-anchor="middle">By right</text>
+      <text class="t-mut" x="231.5" y="502" text-anchor="middle">permit desk</text>
+      <rect class="rung-1" x="301.4" y="466" width="123" height="46" rx="3"/>
+      <text class="t-title" x="362.9" y="485" text-anchor="middle">Admin. exception</text>
+      <text class="t-mut" x="362.9" y="502" text-anchor="middle">Zoning Administrator</text>
+      <rect class="rung-2" x="432.8" y="466" width="123" height="46" rx="3"/>
+      <text class="t-title" x="494.3" y="485" text-anchor="middle">Special exception</text>
+      <text class="t-mut" x="494.3" y="502" text-anchor="middle">ZBA hearing</text>
+      <rect class="rung-3" x="564.2" y="466" width="123" height="46" rx="3"/>
+      <text class="t-title" x="625.7" y="485" text-anchor="middle">Variance</text>
+      <text class="t-mut" x="625.7" y="502" text-anchor="middle">ZBA, hardship test</text>
+      <rect class="rung-4" x="695.6" y="466" width="123" height="46" rx="3"/>
+      <text class="t-title" x="757.1" y="485" text-anchor="middle">Conditional use</text>
+      <text class="t-mut" x="757.1" y="502" text-anchor="middle">Planning + Council</text>
+      <rect class="rung-5" x="827" y="466" width="123" height="46" rx="3"/>
+      <text class="t-title" x="888.5" y="485" text-anchor="middle">Rezoning</text>
+      <text class="t-mut" x="888.5" y="502" text-anchor="middle">City Council</text>
+      <text class="t-note" x="950" y="527" text-anchor="end" font-style="italic">each rung up: more months, lower odds · overlays add steps on any rung</text>
+
+      <!-- ===== ECONOMICS ===== -->
+      <path class="d-acc" d="M494,512 V572 M295,572 H560"/>
+      <path class="d-acc" d="M295,572 V594" marker-end="url(#ahA)"/>
+      <path class="d-acc" d="M560,572 V594" marker-end="url(#ahA)"/>
+      <text class="t-lbl" x="303" y="566">rung → odds and time</text>
+
+      <rect class="d-term" x="170" y="596" width="250" height="76" rx="3"/>
+      <text class="t-acc" x="186" y="618">P(approval)</text>
+      <text class="t-body" x="186" y="640">priors per rung, then fitted</text>
+      <text class="t-body" x="186" y="658">on ZBA and council outcomes</text>
+
+      <rect class="d-term" x="435" y="596" width="250" height="76" rx="3"/>
+      <text class="t-acc" x="451" y="618">Months to permit-ready</text>
+      <text class="t-body" x="451" y="640">hearing path + permit review;</text>
+      <text class="t-body" x="451" y="658">every month adds carrying cost</text>
+
+      <rect class="d-term" x="700" y="596" width="250" height="76" rx="3"/>
+      <text class="t-acc" x="716" y="618">Constraint cost premium</text>
+      <text class="t-body" x="716" y="640">slope, mines, flood, DEP →</text>
+      <text class="t-body" x="716" y="658">cost ranges ÷ total dev. cost</text>
+
+      <!-- bypass: hazards and market facts skip the rules -->
+      <path class="d-acc" d="M950,202 H972 V634 H952" marker-end="url(#ahA)"/>
+      <path class="d-acc" d="M972,634 V736 H952" marker-end="url(#ahA)"/>
+      <text class="t-lbl" transform="translate(981 420) rotate(90)" text-anchor="middle">hazards · comps · rents skip the rules</text>
+
+      <path class="d-acc" d="M560,672 V696" marker-end="url(#ahA)"/>
+      <text class="t-lbl" x="568" y="688">carry</text>
+      <path class="d-acc" d="M825,672 V696" marker-end="url(#ahA)"/>
+      <text class="t-lbl" x="833" y="688">premium</text>
+
+      <rect class="d-box" x="170" y="698" width="780" height="84" rx="3" style="stroke:var(--ink)"/>
+      <text class="t-title" x="186" y="720">Pro forma · Monte Carlo</text>
+      <text class="t-body" x="186" y="742">revenue: arm's-length comps, HUD small-area rents  ·  costs: hard + soft + premium + carry(months)</text>
+      <text class="t-body" x="186" y="762">→ margin and maximum land price, each as p10 / p50 / p90</text>
+
+      <!-- ===== RESULT ===== -->
+      <path class="d-line" d="M560,782 V826 M365,826 H862"/>
+      <path class="d-line" d="M365,826 V848" marker-end="url(#ah)"/>
+      <path class="d-line" d="M667,826 V848" marker-end="url(#ah)"/>
+      <path class="d-line" d="M862,826 V848" marker-end="url(#ah)"/>
+      <text class="t-lbl" x="570" y="812">SiteAnalysis (judgments)</text>
+
+      <rect class="d-score" x="170" y="850" width="390" height="104" rx="3"/>
+      <text class="t-inv" x="186" y="874">Development Ease Score</text>
+      <text class="t-invmono" x="186" y="900">100 × P(approval) × f(months) × g(premium)</text>
+      <text class="t-invbody" x="186" y="924">≥75 fast track · 50–74 with conditions · &lt;50 high risk</text>
+      <text class="t-invbody" x="186" y="942">every lost point traced to one flag</text>
+
+      <rect class="d-box" x="575" y="850" width="185" height="104" rx="3"/>
+      <text class="t-title" x="590" y="874">Report</text>
+      <text class="t-body" x="590" y="896">deal-killers first</text>
+      <text class="t-body" x="590" y="914">by right vs. with relief</text>
+      <text class="t-body" x="590" y="932">cited, dated ranges</text>
+
+      <rect class="d-box" x="775" y="850" width="175" height="104" rx="3"/>
+      <text class="t-title" x="790" y="874">Next steps</text>
+      <text class="t-body" x="790" y="896">cheapest kill first:</text>
+      <text class="t-mono" x="790" y="916">P(kill) ÷ cost</text>
+      <text class="t-body" x="790" y="936">of each check</text>
+
+      <!-- calibration loop -->
+      <path class="d-dash" d="M170,57 H150 V366 H168" marker-end="url(#ahM)"/>
+      <path class="d-dash" d="M150,366 V634 H168" marker-end="url(#ahM)"/>
+      <text class="t-lbl" transform="translate(142 470) rotate(-90)" text-anchor="middle">calibrate</text>
+    </svg>
+    </div>
+    <figcaption>One parcel flows top to bottom. The zoning code decides <em>which</em> approval rung the best building needs; economics prices that rung in odds and months and adds the cost of what is physically on the lot. Blue marks the three quantities the score is built from. Hazard and market facts bypass the rules, and ground-truth outcomes (dashed) recalibrate the rules and the odds.</figcaption>
+  </figure>
+
+  <section>
+    <h2>Three disciplines, one contract each</h2>
+    <div class="lenses">
+      <div class="lens">
+        <span class="role">Engineer · facts</span>
+        <h3>Reproducible inputs</h3>
+        <ul>
+          <li>Every fact traces to a raw file with its URL, source date and hash.</li>
+          <li>Hazards are stored as a <b>share of the lot</b>, never yes/no.</li>
+          <li>Missing data is <b>unknown</b>, never clean, and adds a check to next steps.</li>
+          <li>The engine is pure code: same SiteContext in, same answer out.</li>
+        </ul>
+      </div>
+      <div class="lens">
+        <span class="role">Regulator · rules</span>
+        <h3>The code as data</h3>
+        <ul>
+          <li>Each rule is a row with its section and effective date, so a code change is a new version, not a rewrite.</li>
+          <li>The relief type in the code sets <b>who decides</b>: desk, administrator, ZBA or Council.</li>
+          <li>Overlays add procedures on top of any rung (mines, floodplain).</li>
+          <li>Screening language only: “by right under the code as of a date”.</li>
+        </ul>
+      </div>
+      <div class="lens">
+        <span class="role">Economist · prices</span>
+        <h3>Risk is odds × delay × cost</h3>
+        <ul>
+          <li>A site is an option: worth pursuing only if expected margin after carry beats the diligence it costs.</li>
+          <li>Outputs are p10 / p50 / p90 ranges, because cost data is soft.</li>
+          <li>Next steps are ranked by value of information: the cheapest check most likely to kill the deal goes first.</li>
+          <li>Measured approval rates are optimistic: withdrawn cases never reach a vote.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The approval ladder, measured so far</h2>
+    <p class="note">From the zoning code (who decides) and 161 City Council zoning items (148 decided), 2000–2026, pulled from the Council's legislative records. The rungs heard by the ZBA are still priors: its decisions sit on a site that blocks our data client.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Rung</th><th>Who decides</th><th>Procedure</th><th>What the data says today</th></tr></thead>
+        <tbody>
+          <tr><td>By right</td><td>Permit desk</td><td class="mono">903 · 911.02</td><td>Validated against 65k PLI permits since 2019 <span class="chip done">in hand</span></td></tr>
+          <tr><td>Administrator exception</td><td>Zoning Administrator</td><td class="mono">922.08</td><td>Prior only <span class="chip">prior</span></td></tr>
+          <tr><td>Special exception</td><td>Zoning Board of Adjustment</td><td class="mono">922.07</td><td>Needs ZBA decisions <span class="chip gap">blocked</span></td></tr>
+          <tr><td>Variance</td><td>Zoning Board of Adjustment</td><td class="mono">922.09</td><td>Needs ZBA decisions <span class="chip gap">blocked</span></td></tr>
+          <tr><td>Conditional use</td><td>Planning Commission + Council</td><td class="mono">922.06</td><td class="num">27 of 29 decided passed (93%) · median 60 days (p10 44, p90 162)</td></tr>
+          <tr><td>Rezoning</td><td>City Council</td><td class="mono">922.05</td><td class="num">91 of 101 decided passed (90%) · median 79 days (p10 41, p90 225)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Overlays apply on every rung. In the undermined overlay, anything bigger than a single house needs a geotechnical site investigation before approval (906.05.B.3). In the floodplain overlay, the lowest floor must sit 1.5 ft above base flood elevation (906.02); a floodway is effectively closed.</p>
+  </section>
+
+  <section>
+    <h2>One parcel through the machine</h2>
+    <p class="note">Golden parcel 4-A-303, Bigham St, Mount Washington: the undermined case. The rows marked next are what the constraint model and pro forma will add.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Stage</th><th>What happens</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Facts</td><td>2,767 sq ft vacant lot, 27 × 105 ft, zoned RM-M; 100% in the undermined overlay; both neighbours built; 121 arm's-length comps within half a mile</td><td><span class="chip done">computed</span></td></tr>
+          <tr><td>Rules</td><td>District setbacks leave a 7 ft-wide building: only a single house. With contextual 3 ft side yards (925.06.C): a triplex by right, or a 4-unit walk-up with a 20% dimensional variance</td><td><span class="chip done">computed</span></td></tr>
+          <tr><td>Overlay</td><td>Walk-up or triplex → mandatory geotechnical site investigation (906.05.B.3)</td><td><span class="chip done">computed</span></td></tr>
+          <tr><td>Economics</td><td>Variance → ZBA rung odds and months; investigation → cost and schedule range; comps and HUD rents → revenue; carry scales with months</td><td><span class="chip">next</span></td></tr>
+          <tr><td>Result</td><td>Score, band, the triplex vs. walk-up comparison, and a first step: the geotechnical study, since it can kill the deal before any design money is spent</td><td><span class="chip">next</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where each module stands</h2>
+    <div class="status">
+      <div>Data pipeline (46 sources) <span class="chip done">built</span></div>
+      <div>Per-parcel facts <span class="chip done">built</span></div>
+      <div>Rules tables (335 rows) <span class="chip done">built</span></div>
+      <div>Rules engine v0 <span class="chip done">built</span></div>
+      <div>8 golden parcels <span class="chip done">built</span></div>
+      <div>Constraint model <span class="chip">next</span></div>
+      <div>Entitlement priors <span class="chip">next</span></div>
+      <div>Pro forma + score <span class="chip">next</span></div>
+      <div>ZBA decisions <span class="chip gap">blocked</span></div>
+    </div>
+  </section>
+</div>
