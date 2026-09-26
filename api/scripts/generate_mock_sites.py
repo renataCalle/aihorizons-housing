@@ -68,6 +68,8 @@ AREAS = [
 DISTRICTS = (["R1D-M", "R2-M", "R3-M", "RM-M", "LNC"], [0.20, 0.35, 0.25, 0.15, 0.05])
 OWNERS = (["private", "land_bank", "ura", "city"], [0.70, 0.15, 0.08, 0.07])
 CANDIDATE_SHARE = 0.15
+# Street names that can't be mistaken for real Pittsburgh streets.
+FAKE_STREETS = ["Sample St", "Example Ave", "Draft Way", "Sketch St", "Model Ave", "Proto Ln"]
 
 
 @dataclass
@@ -78,6 +80,7 @@ class Lot:
     polygon: Polygon  # EPSG:2272
     row: int  # lots in the same row and block share side lot lines
     block: int
+    address: str = ""
     candidate: bool = False
     display_name: str = ""
     assembly_id: str | None = None
@@ -115,7 +118,10 @@ def layout(area: Area, rng: np.random.Generator, first_index: int) -> list[Lot]:
         for row in range(2):
             x = bx
             y = by + row * depth
-            for width in widths:
+            # Each side of a block faces its own street; even numbers on one side, odd on the
+            # other, starting at 200 so the mockup's "123 Sample St" stays unique.
+            street = FAKE_STREETS[(2 * (b // cols) + row) % len(FAKE_STREETS)]
+            for i, width in enumerate(widths):
                 if len(lots) == area.lots:
                     return lots
                 corners = [(x, y), (x + width, y), (x + width, y + depth), (x, y + depth)]
@@ -128,6 +134,7 @@ def layout(area: Area, rng: np.random.Generator, first_index: int) -> list[Lot]:
                         polygon=Polygon([place(px, py) for px, py in corners]),
                         row=row,
                         block=first_index + b,
+                        address=f"{200 + (b % cols) * 20 + 2 * i + row} {street}",
                     )
                 )
                 x += width
@@ -202,7 +209,7 @@ def build_context(
             "parcel_id": lot.parcel_id,
             "block_lot": lot.block_lot,
             "municipality": "PITTSBURGH" if in_city else lot.area.name.upper(),
-            "address": "",
+            "address": lot.address,
             "geometry": mapping(poly),
             "lot_area_sqft": round(poly.area, 1),
             "frontage_ft": None,
@@ -351,6 +358,7 @@ def choose_candidates(lots: list[Lot], rng: np.random.Generator) -> None:
 
     # Required special cases (docs/06-mock-data.md).
     sample_a = hazelwood[0]
+    sample_a.address = "123 Sample St"  # the example chip on the landing page
     sample_a.candidate = True
     sample_a.overrides = {
         "zoning": [{"code": "R3-M", "kind": "district", "share": 1.0}],
@@ -423,7 +431,7 @@ def main() -> None:
         if lot.candidate:
             analysis = SiteAnalysis.model_validate(analyze(raw, {}))
             path = OUT / "site_analysis" / f"{lot.parcel_id}.json"
-            path.write_text(analysis.model_dump_json(by_alias=True, indent=1) + "\n")
+            path.write_text(analysis.model_dump_json(by_alias=True) + "\n")
         centroid_4326 = to_4326(lot.polygon.centroid)
         summaries.append(
             summarize(
