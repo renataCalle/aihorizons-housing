@@ -36,6 +36,9 @@ line-length = 100
 target-version = "py312"
 extend-exclude = ["research/notebooks"]
 
+[tool.ruff.format]
+exclude = ["*.md"]  # don't reformat code samples in docs and READMEs
+
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]
 
