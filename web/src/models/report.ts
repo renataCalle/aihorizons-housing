@@ -1,58 +1,77 @@
-import type { Estimate } from './estimate'
+import type { Estimate, Interval } from './estimate'
 
+/** UI bands. The adapter maps the engine's names onto these. */
 export type Band = 'fast_track' | 'conditions' | 'high_risk' | 'unknown'
-/** Anything the adapter doesn't recognize becomes 'unknown', never clear. */
-export type Severity = 'deal_risk' | 'caution' | 'unknown'
+/** UI severities. Anything the adapter doesn't recognize becomes 'unknown', never clear. */
+export type Severity = 'deal_risk' | 'caution' | 'minor' | 'unknown'
 export type Confidence = 'high' | 'medium' | 'low'
-export type ApprovalPath = 'by_right' | 'special_exception' | 'variance' | 'rezoning' | 'not_allowed'
+export type OptionLabel = 'by_right' | 'with_relief'
 
 export interface Versions {
   engine: string
   ruleset: string
   schema: string
-  /** ISO date */
-  dataAsOf: string
+  /** ISO date of the oldest input, when known */
+  dataAsOf: string | null
 }
 
-export interface Source {
-  label: string
-  dataset: string
-  asOf: string | null
-  url: string | null
+export interface LeadOption {
+  label: OptionLabel
+  productType: string
+  units: number
+  /** Empty = by right */
+  relief: string[]
 }
 
+/** One parcel as lists, the map and the report header show it. */
 export interface Parcel {
-  /** Canonical county parcel ID, dashed. */
+  /** Canonical 16-character county ID */
   id: string
-  /** City block-lot (e.g. 16-E-25), when the API provides it. */
+  /** City block-lot, e.g. 55-A-137 */
   blockLot: string | null
   name: string
   address: string | null
-  neighborhood: string
-  zoningDistrict: string
+  municipality: string
+  neighborhood: string | null
+  zoning: string[]
   lotAreaSqft: number
   currentUse: string
   ownerType: string
-  assessedValue: number | null
-  listedPrice: number | null
+  assessedLand: number | null
   /** [lon, lat], EPSG:4326 */
   centroid: [number, number]
+  /** False = not a development candidate: outline only, no analysis */
+  candidate: boolean
+  illustrative: boolean
+  assemblyId: string | null
   score: number | null
-  band: Band
+  /** Null when the parcel has no analysis */
+  band: Band | null
+  topFlag: { title: string; severity: Severity } | null
+  maxLandPrice: Estimate | null
+  leadOption: LeadOption | null
 }
 
-export interface ProgramOption {
-  product: string
-  units: number
-  sqftEach: number | null
-  tenure: string
-  margin: Estimate
-  monthsToPermitReady: Estimate
-  approvalPath: ApprovalPath
-  relief: string[]
-  codeBasis: string | null
-  precedent: { granted: number; total: number } | null
-  evidenceId: string | null
+export interface EvidenceRef {
+  source: string
+  asOf: string | null
+  layer: string | null
+  codeSection: string | null
+  url: string | null
+}
+
+export interface Flag {
+  id: string
+  category: string
+  severity: Severity
+  title: string
+  cost: Interval | null
+  months: Interval | null
+  evidence: EvidenceRef[]
+  confidence: Confidence
+  /** How to resolve it */
+  resolution: string
+  resolvedByStep: number | null
 }
 
 export interface ScoreComponent {
@@ -63,68 +82,77 @@ export interface ScoreComponent {
   note: string
 }
 
-export interface Finding {
-  id: string
-  severity: Severity
-  title: string
-  detail: string
-  impactCost: Estimate | null
-  impactMonths: Estimate | null
-  impactLabel: string
-  sources: Source[]
-  confidence: Confidence
-  confidenceNote: string | null
-  resolvedByStep: number | null
-  evidenceId: string | null
+export interface ProgramOption {
+  label: OptionLabel
+  productType: string
+  units: number
+  unitSqft: number
+  gfaSqft: number
+  /** "type (code section)"; empty = by right */
+  relief: string[]
+  margin: Estimate
+  monthsToPermitReady: Estimate
+  approvalProbability: Estimate
+  maxLandPrice: Estimate
+  revenueBasis: string
+  entitlementBasis: string[]
 }
 
 export interface NextStep {
   order: number
-  title: string
-  why: string
+  action: string
   who: string
-  cost: Estimate
-  durationLabel: string
+  cost: Interval
+  why: string
+  flagIds: string[]
 }
 
 export interface Assumption {
   key: string
   label: string
-  value: Estimate | number | string
-  sourceLabel: string
+  value: number
+  unit: string
+  source: string
+  /** A default, not a local benchmark: the UI labels it */
+  placeholder: boolean
   editable: boolean
+  min: number | null
+  max: number | null
 }
 
-/** Everything the report panel renders. Arrays are rendered generically. */
-export interface SiteReport {
-  parcel: Parcel
+/** Everything the report panel renders from the engine. Arrays are rendered generically. */
+export interface Analysis {
   verdict: {
     band: Band
     score: number | null
     scoreRange: Estimate | null
-    /** Written by the API. The UI never composes sentences with numbers. */
+    /** Written by the engine. The UI never composes sentences with numbers. */
     headline: string
+    landRisk: string | null
   }
   scoreComponents: ScoreComponent[]
-  headline: {
-    approvalPath: ApprovalPath
-    approvalProbability: Estimate | null
-    approvalSummary: string
+  metrics: {
+    option: OptionLabel
     monthsToPermitReady: Estimate
-    siteCostPremium: Estimate
-    siteCostSummary: string
+    approvalProbability: Estimate
     maxLandPrice: Estimate
-    targetMarginPct: number
-    listedPrice: number | null
+    landBasis: { value: number; source: string }
+    siteCostPremium: Interval & { drivers: string[] }
+    landOverMax: Interval | null
     comps: { count: number; radiusMi: number; windowMonths: number }
-  }
-  /** Worst first, as ordered by the engine. */
-  findings: Finding[]
-  cleared: { label: string; source: Source | null }[]
-  bestByRight: ProgramOption | null
-  bestWithApprovals: ProgramOption | null
+  } | null
+  /** Worst first, as ordered by the engine */
+  flags: Flag[]
+  cleared: string[]
+  options: ProgramOption[]
+  /** Free first, then the cheapest deal-killer */
   nextSteps: NextStep[]
   assumptions: Assumption[]
   versions: Versions
-  illustrative: boolean
+}
+
+export interface SiteReport {
+  parcel: Parcel
+  /** Null when the parcel is not a candidate */
+  analysis: Analysis | null
 }

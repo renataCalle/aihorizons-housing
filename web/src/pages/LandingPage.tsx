@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import { BrandMark } from '../components/BrandMark'
 
-const SAMPLE_LOT_A = '0000-X-00000-0000-00'
+const SAMPLE_LOT_A = '0000X00000000000'
 
 /** Placeholder until M2: brand, headline and a link that proves the API round trip. */
 export function LandingPage() {
