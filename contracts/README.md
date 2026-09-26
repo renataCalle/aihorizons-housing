@@ -81,6 +81,7 @@ Answers to the checklist in `docs/04-contracts.md` (feat/web-api):
 | Assumptions | `assumptions[]`: key, label, value, min/max, unit, source, editable | ✓ |
 | Versions | `versions.{engine, ruleset, schema, data_as_of}` | ✓ (`data_as_of` = oldest input) |
 | Evidence drawer: precedents | — | blocked: needs zoning board decisions |
+| Rule by rule (why this score) | `rule_checks`: every building type tested, each rule `pass` / `needs_approval` / `rejected` / `not_applicable` with § section and required vs. provided; approval odds per building; site-wide overlay rules; rules not checked yet | ✓ (additive, optional) |
 
 **Names in your draft → names here**: Finding → `Flag` (detail ≈ title + resolution);
 NextStep.title → `Step.action`; `cost` → `cost_usd`; headline_numbers → `metrics`;

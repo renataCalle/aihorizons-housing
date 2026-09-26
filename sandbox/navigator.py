@@ -128,6 +128,32 @@ def report(ctx: dict, a: dict) -> None:
             f"{o['score']['p50']:.0f} · {rel}"
         )
         print(f"  {'':12s} revenue: {o['revenue_basis']}")
+    rc = a.get("rule_checks")
+    if rc:
+        cols = [p for p in rc["programs"] if p["representative"] or p["chosen_as"]]
+        mark = {"pass": "ok", "not_applicable": "-", "rejected": "NO"}
+        print(f"\nRule by rule ({rc['district']}, {rc['scenario']} setbacks)")
+        print(
+            f"  {'':34s}"
+            + "".join(f"{p['units']} {p['product_type']:<10s}"[:15].ljust(16) for p in cols)
+        )
+        for cid in [
+            "use_allowed",
+            "min_lot_size",
+            "fits_envelope",
+            "row_fits_width",
+            "subdivision",
+        ]:
+            cells = [next(c for c in p["checks"] if c["check_id"] == cid) for p in cols]
+            if all(c["status"] == "not_applicable" for c in cells):
+                continue
+            row = "".join((mark.get(c["status"]) or c["relief_type"])[:15].ljust(16) for c in cells)
+            print(f"  {cells[0]['label'][:33]:34s}{row}")
+        odds = "".join(
+            ("-" if p["approval_prob"] is None else f"{p['approval_prob']['p50']:.0%}").ljust(16)
+            for p in cols
+        )
+        print(f"  {'approval odds':34s}{odds}")
     print("\nNext steps")
     for s in a["next_steps"]:
         c = (

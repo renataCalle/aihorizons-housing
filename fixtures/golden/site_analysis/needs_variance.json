@@ -189,6 +189,1345 @@
       "driver_flag_id": "combined_sewer"
     }
   ],
+  "rule_checks": {
+    "district": "R2-L",
+    "scenario": "strict",
+    "uncovered_districts": [],
+    "site_checks": [
+      {
+        "check_id": "undermined_overlay",
+        "label": "Undermined area overlay (UM-O)",
+        "section": "906.05",
+        "status": "clear",
+        "note": null
+      },
+      {
+        "check_id": "floodplain_overlay",
+        "label": "Floodplain overlay (FP-O)",
+        "section": "906.02.F.2",
+        "status": "clear",
+        "note": null
+      },
+      {
+        "check_id": "floodway",
+        "label": "Regulatory floodway",
+        "section": "906.02.E.2.a",
+        "status": "clear",
+        "note": null
+      }
+    ],
+    "not_checked": [
+      {
+        "label": "Off-street parking minimum",
+        "section": "914.02",
+        "reason": "Parking layout is not modelled; reductions (914.04) and the infill exception (914.11.B.4) apply in some cases"
+      },
+      {
+        "label": "Maximum height in feet",
+        "section": "903.03",
+        "reason": "Only the number of stories is checked"
+      },
+      {
+        "label": "Corner-lot street-side setback",
+        "section": "903.03",
+        "reason": "Corner lots are treated like interior lots"
+      },
+      {
+        "label": "Residential compatibility near other districts",
+        "section": "916.02",
+        "reason": "Extra height and setback limits near residential and H districts"
+      },
+      {
+        "label": "Grading and retaining walls",
+        "section": "915.02",
+        "reason": "Priced as a site cost (slope flag), not checked as a rule"
+      }
+    ],
+    "programs": [
+      {
+        "product_type": "single_family",
+        "units": 1,
+        "gfa_sqft": 1500,
+        "outcome": "needs_approval",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "single_unit_detached is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "925.01.C.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "administrator_exception",
+            "note": "lot 2,650 sf < 3,000 sf minimum (exempt if recorded before the code)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "pass",
+            "required": 1500,
+            "provided": 1670,
+            "unit": "sf",
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": {
+          "p10": 0.840407464183214,
+          "p50": 0.8901477251032712,
+          "p90": 0.9344857656816538
+        },
+        "approval_months": {
+          "p10": 1.0107698817618602,
+          "p50": 1.6237748727499364,
+          "p90": 2.37150073059071
+        },
+        "representative": true,
+        "chosen_as": "with_relief"
+      },
+      {
+        "product_type": "duplex",
+        "units": 2,
+        "gfa_sqft": 2200,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "two_unit is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 2200,
+            "provided": 1364,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 2,200 sf; envelope gives 1,364 sf (38% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": true,
+        "chosen_as": null
+      },
+      {
+        "product_type": "triplex",
+        "units": 3,
+        "gfa_sqft": 2850,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "three_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 2850,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 2,850 sf; envelope gives 2,045 sf (28% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": true,
+        "chosen_as": null
+      },
+      {
+        "product_type": "townhome",
+        "units": 2,
+        "gfa_sqft": 2800,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "single_unit_attached is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "rejected",
+            "required": 3000.0,
+            "provided": 1325,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "2 lots of 1,325 sf < 3,000 sf minimum (56% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 2800,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 2,800 sf; envelope gives 2,045 sf (27% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 36,
+            "provided": 27.8,
+            "unit": "ft",
+            "relief_type": "implausible",
+            "note": "2 x 18 ft row exceeds 28 ft lot width"
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": "911.02 (own lot per unit)",
+            "status": "needs_approval",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "subdivision",
+            "note": "townhomes need a subdivision into one lot per unit"
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": true,
+        "chosen_as": null
+      },
+      {
+        "product_type": "townhome",
+        "units": 3,
+        "gfa_sqft": 4200,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "single_unit_attached is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "rejected",
+            "required": 3000.0,
+            "provided": 883,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "3 lots of 883 sf < 3,000 sf minimum (71% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 4200,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 4,200 sf; envelope gives 2,045 sf (51% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 54,
+            "provided": 27.8,
+            "unit": "ft",
+            "relief_type": "implausible",
+            "note": "3 x 18 ft row exceeds 28 ft lot width"
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": "911.02 (own lot per unit)",
+            "status": "needs_approval",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "subdivision",
+            "note": "townhomes need a subdivision into one lot per unit"
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "townhome",
+        "units": 4,
+        "gfa_sqft": 5600,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "single_unit_attached is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "rejected",
+            "required": 3000.0,
+            "provided": 662,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "4 lots of 662 sf < 3,000 sf minimum (78% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 5600,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 5,600 sf; envelope gives 2,045 sf (63% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 72,
+            "provided": 27.8,
+            "unit": "ft",
+            "relief_type": "implausible",
+            "note": "4 x 18 ft row exceeds 28 ft lot width"
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": "911.02 (own lot per unit)",
+            "status": "needs_approval",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "subdivision",
+            "note": "townhomes need a subdivision into one lot per unit"
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "townhome",
+        "units": 5,
+        "gfa_sqft": 7000,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "single_unit_attached is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "rejected",
+            "required": 3000.0,
+            "provided": 530,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "5 lots of 530 sf < 3,000 sf minimum (82% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 7000,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 7,000 sf; envelope gives 2,045 sf (71% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 90,
+            "provided": 27.8,
+            "unit": "ft",
+            "relief_type": "implausible",
+            "note": "5 x 18 ft row exceeds 28 ft lot width"
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": "911.02 (own lot per unit)",
+            "status": "needs_approval",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "subdivision",
+            "note": "townhomes need a subdivision into one lot per unit"
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "townhome",
+        "units": 6,
+        "gfa_sqft": 8400,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "single_unit_attached is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "rejected",
+            "required": 3000.0,
+            "provided": 442,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "6 lots of 442 sf < 3,000 sf minimum (85% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 8400,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 8,400 sf; envelope gives 2,045 sf (76% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 108,
+            "provided": 27.8,
+            "unit": "ft",
+            "relief_type": "implausible",
+            "note": "6 x 18 ft row exceeds 28 ft lot width"
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": "911.02 (own lot per unit)",
+            "status": "needs_approval",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "subdivision",
+            "note": "townhomes need a subdivision into one lot per unit"
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "townhome",
+        "units": 7,
+        "gfa_sqft": 9800,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "single_unit_attached is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "rejected",
+            "required": 3000.0,
+            "provided": 379,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "7 lots of 379 sf < 3,000 sf minimum (87% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 9800,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 9,800 sf; envelope gives 2,045 sf (79% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 126,
+            "provided": 27.8,
+            "unit": "ft",
+            "relief_type": "implausible",
+            "note": "7 x 18 ft row exceeds 28 ft lot width"
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": "911.02 (own lot per unit)",
+            "status": "needs_approval",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "subdivision",
+            "note": "townhomes need a subdivision into one lot per unit"
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "townhome",
+        "units": 8,
+        "gfa_sqft": 11200,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "pass",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": "single_unit_attached is 'P' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "rejected",
+            "required": 3000.0,
+            "provided": 331,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "8 lots of 331 sf < 3,000 sf minimum (89% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 11200,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 11,200 sf; envelope gives 2,045 sf (82% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 144,
+            "provided": 27.8,
+            "unit": "ft",
+            "relief_type": "implausible",
+            "note": "8 x 18 ft row exceeds 28 ft lot width"
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": "911.02 (own lot per unit)",
+            "status": "needs_approval",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "subdivision",
+            "note": "townhomes need a subdivision into one lot per unit"
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 4,
+        "gfa_sqft": 4250,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 4250,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 4,250 sf; envelope gives 2,045 sf (52% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": true,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 5,
+        "gfa_sqft": 5312,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 5312,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 5,312 sf; envelope gives 2,045 sf (62% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 6,
+        "gfa_sqft": 6375,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 6375,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 6,375 sf; envelope gives 2,045 sf (68% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 7,
+        "gfa_sqft": 7438,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 7438,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 7,438 sf; envelope gives 2,045 sf (73% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 8,
+        "gfa_sqft": 8500,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 8500,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 8,500 sf; envelope gives 2,045 sf (76% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 9,
+        "gfa_sqft": 9562,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 9562,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 9,562 sf; envelope gives 2,045 sf (79% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 10,
+        "gfa_sqft": 10625,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 10625,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 10,625 sf; envelope gives 2,045 sf (81% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 11,
+        "gfa_sqft": 11688,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 11688,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 11,688 sf; envelope gives 2,045 sf (83% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      },
+      {
+        "product_type": "walkup",
+        "units": 12,
+        "gfa_sqft": 12750,
+        "outcome": "rejected",
+        "checks": [
+          {
+            "check_id": "use_allowed",
+            "label": "Housing type allowed in the district",
+            "section": "911.02",
+            "status": "rejected",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": "use_variance",
+            "note": "multi_unit is 'not listed' in R2-L"
+          },
+          {
+            "check_id": "min_lot_size",
+            "label": "Lot meets the minimum lot size",
+            "section": "903.03.B.2",
+            "status": "needs_approval",
+            "required": 3000.0,
+            "provided": 2650,
+            "unit": "sf",
+            "relief_type": "variance",
+            "note": "lot 2,650 sf < 3,000 sf minimum (12% short)"
+          },
+          {
+            "check_id": "fits_envelope",
+            "label": "Fits within setbacks and stories",
+            "section": "903.03",
+            "status": "rejected",
+            "required": 12750,
+            "provided": 2045,
+            "unit": "sf",
+            "relief_type": "implausible",
+            "note": "needs 12,750 sf; envelope gives 2,045 sf (84% short)"
+          },
+          {
+            "check_id": "row_fits_width",
+            "label": "Townhome row fits the lot width",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          },
+          {
+            "check_id": "subdivision",
+            "label": "Each townhome on its own lot",
+            "section": null,
+            "status": "not_applicable",
+            "required": null,
+            "provided": null,
+            "unit": null,
+            "relief_type": null,
+            "note": null
+          }
+        ],
+        "approval_prob": null,
+        "approval_months": null,
+        "representative": false,
+        "chosen_as": null
+      }
+    ],
+    "odds_note": "Each rule either passes or fails. A failure that an approval can fix adds that approval; the building's approval odds are the product of the odds of every approval it needs (measured from City Council votes for conditional uses and rezonings, expert placeholders for the others). A building that passes every rule is allowed outright."
+  },
   "assumptions": [
     {
       "key": "hard_cost_psf",

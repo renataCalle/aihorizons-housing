@@ -1,291 +1,374 @@
-# Parcel-Level Development Feasibility Screening: System Design and v0 Results
+# Screening Pittsburgh Lots for Small Housing Projects: How the System Works (v0)
 
-Research workstream · 26 Sep 2026 · engine v0.1, contracts 0.1.0 · City of Pittsburgh / Allegheny County
+Research workstream · 26 September 2026 · engine v0.1, contracts 0.1.0
 
-## Abstract
+## Summary
 
-We screen a single parcel for small infill housing (3–20 units) and return a go/no-go signal
-before a developer spends on diligence. The system models **risk as the odds, delay and extra
-cost of the approval path the best feasible building must take, plus whether the project can
-pay for its land**. It combines 46 public data sources, a machine-readable encoding of the
-Pittsburgh zoning code (335 cited rules), a regulatory envelope model, an entitlement model,
-and a Monte Carlo pro forma, and emits a 0–100 score whose every point is attributed to a
-named component and flag. v0 runs end to end in ~0.01 s per parcel. Entitlement odds for two
-approval paths are measured; construction costs and zoning-board odds are placeholders, and
-at current placeholder costs no golden parcel clears its land price. Calibration is the main
-open problem.
+A small developer looking at a vacant lot in Pittsburgh has one question: is this site worth
+paying lawyers, architects and engineers to study? Today they find out by spending that money.
+This system tries to answer the question in under a minute, from public data, before any money
+is spent.
+
+The core idea is simple. **A site is risky when the building that fits on it needs a slow,
+uncertain approval, costs extra to build because of the ground it sits on, or can't earn enough
+to pay for the land.** The system measures each of those three things, turns them into a
+score from 0 to 100, and explains every point it takes away.
+
+The first version works end to end on any parcel in Allegheny County in about a hundredth of a
+second. It draws on 46 public data sources and 335 rules taken from the city's zoning code.
+Some inputs are real measurements, such as past City Council votes, recent home sales and
+mapped hazards. Others are still placeholder guesses, most importantly the cost of
+construction. Those placeholders currently decide most of the outcomes, so calibrating them is
+the main job ahead.
 
 ---
 
-## 1. Decision and objective
+## 1. What decision this supports
 
-**Decision supported.** For a given parcel: *is it worth spending diligence money on, and on
-what first?*
+The user is a small developer building 3 to 20 homes. For a given lot, the system should tell
+them:
 
-**Output contract.** A screening verdict, never a zoning determination; every estimate is a
-p10/p50/p90 range; every finding carries its source, date and confidence; a missing fact is
-reported as *unknown*, never as clear.
+- whether the lot is worth pursuing,
+- what could kill the deal,
+- what they could build, and how much they could afford to pay for the land,
+- what to check first, cheapest first.
 
-**Unit of analysis.** One parcel (or an assemblage of adjacent parcels), evaluated against the
-zoning code in force on a stated date.
+Three rules shape every answer:
 
-## 2. System overview
+- **It is a screen, not a ruling.** It never says a project is "approved" or "compliant", only
+  what the zoning code allows as of a given date.
+- **Every estimate is a range.** Numbers are shown as a low, middle and high value (the 10th,
+  50th and 90th percentile of many simulated outcomes), because the inputs are uncertain.
+- **Missing data is never good news.** If the system doesn't know something, it says
+  "unknown" and adds a step to find out. It never treats a gap as a clean result.
 
-The system separates **facts** (measurable from data without assumptions) from **judgments**
-(anything requiring a model, threshold or assumption). The two meet at a single typed
-interface. Judgments are a pure function of the facts plus versioned configuration.
+## 2. How the pieces fit together
+
+The system keeps two kinds of information strictly apart:
+
+- **Facts** are things you can measure directly from data: how big the lot is, how much of it
+  is on a steep slope, how far it is from a contaminated site.
+- **Judgments** need a model or an assumption: how much the slope adds to the cost, how likely
+  an approval is, what the score should be.
+
+Facts are gathered first and handed over in one fixed format. Judgments are then computed from
+those facts plus a set of versioned rules and assumptions, and nothing else. That makes every
+result reproducible: the same lot with the same data always gets the same answer.
 
 ```mermaid
 flowchart LR
-  A[Public sources<br/>46 layers] --> B[Site facts<br/>shares, distances, comps]
-  C[Zoning code<br/>335 cited rules] --> D
-  B --> D[Regulatory model<br/>envelope + relief]
-  D --> E[Entitlement model<br/>P approval, months]
-  B --> F[Constraint model<br/>flags: cost, delay]
-  E --> G[Pro forma<br/>Monte Carlo]
+  A[Public data<br/>46 sources] --> B[Facts about<br/>the lot]
+  C[Zoning code<br/>335 rules] --> D
+  B --> D[What can be built,<br/>which approvals]
+  D --> E[Approval odds<br/>and timing]
+  B --> F[Site problems<br/>cost and delay]
+  E --> G[Financial model<br/>many simulations]
   F --> G
   B --> G
-  G --> H[Score + verdict<br/>attribution]
-  F --> I[Next steps<br/>cost-to-kill]
+  G --> H[Score and<br/>explanation]
+  F --> I[What to check<br/>next]
   H --> J[Report]
   I --> J
-  K[Outcomes: permits,<br/>sales, council votes] -. calibrate .-> D
-  K -. calibrate .-> E
+  K[Real outcomes: permits,<br/>sales, council votes] -. used to calibrate .-> D
+  K -. used to calibrate .-> E
 ```
 
-Properties: deterministic (fixed seed), no I/O inside the judgment layer, ~0.01 s per parcel.
+## 3. What the system knows about a lot
 
-## 3. Inputs: site facts
+Every fact is one of three simple kinds:
 
-Each fact is one of three kinds, with fixed semantics:
+- **A share of the lot**, from 0 to 1. For example, "84% of the lot is on a slope of 25% or
+  more". These are computed by overlaying the lot's outline on each map layer.
+- **A distance**, in feet. For example, "92 ft to an inactive registered storage tank".
+- **A list of nearby records**. For example, "97 home sales within half a mile in the last
+  three years".
 
-| Kind | Definition | Example |
-|---|---|---|
-| Share | Fraction of lot area (0–1) covered by a polygon layer, computed by exact intersection over non-overlapping pieces | 0.84 of the lot on ≥25% slope |
-| Distance | Feet from the lot boundary to the nearest feature | 92 ft to an inactive storage tank |
-| Record set | Items within a radius, with attributes | 97 arm's-length sales within 0.5 mi, last 3 years |
+The facts cover the lot itself (size, current use, whether there is a building, assessed value,
+who owns it), its zoning, physical hazards (steep slopes, landslide-prone ground, old coal mines,
+flood zones), nearby contamination records, street access and sewer type, distance to frequent
+transit, whether the neighbouring lots are built on, any tax liens or condemnation, and the local
+market (recent sales and government rent benchmarks).
 
-`null` means **unknown** (e.g. a city-only layer for a suburban parcel), with the reason
-recorded per layer; it is never coerced to zero. Geometry is in PA State Plane South (US
-feet), so areas and setbacks are native units. Parcels are keyed by county ID with the city
-block-lot alongside.
+**Why shares and not yes/no.** Pittsburgh is hilly and sits on old coal mines. Across the city's
+142,000 parcels, 52% touch some steep slope, 32% sit in the mapped undermined area and 87% are
+in a combined sewer area. A yes/no flag would mark most of the city as risky. What matters is
+*how much* of the lot is affected, so the rules work on shares.
 
-**Fact groups.** Parcel (area, use, structure, assessed values, owner type) · zoning (district
-and overlay shares) · physical (slope, landslide-prone, undermined, deep-mined, abandoned-mine
-shares; FEMA flood zone shares) · environmental (state cleanup and tank records within
-1,000 ft) · infrastructure and access (frontage class within 60 ft, combined sewershed,
-distance to frequent transit ≥64 weekday trips) · adjacency (neighbours sharing a lot line,
-built or not) · title (liens, condemnation, public inventory) · market (arm's-length sales
-with building size and year built; HUD small-area rents by bedroom).
+**Known gaps.** Some hazard maps only cover the City of Pittsburgh, so suburban lots get
+"unknown" for those. Past zoning board decisions aren't available yet (the city's site blocks
+automated access), which limits the approval model (Section 6).
 
-**Base rates** (142,329 city parcels) motivate threshold design: 52% touch ≥25% slope, 32%
-lie in the undermined overlay, 87% in a combined sewershed, 1.5% in the 1% flood zone, 7% are
-split-zoned. Presence flags would fire on most of the city; severity must key on shares.
+## 4. What can be built, and what approval it needs
 
-**Coverage limits.** Slope, landslide and undermining layers exist for the city only (a
-countywide slope surface from 1 m LiDAR is planned). Zoning-board decisions are not yet
-obtainable. Water provider covers 34% of county parcels.
+**The zoning code, turned into data.** We encoded the parts of the city's zoning code that
+matter for small housing as 335 rows. Each row states one rule for one district, with the exact
+section of the code it comes from and the date it took effect:
 
-## 4. Regulatory model
+- 182 rows of dimensions: minimum lot size, how far the building must stay from each property
+  line (setbacks), maximum height and number of stories.
+- 120 rows saying which housing types each district allows, and how: allowed outright, or only
+  after one of several kinds of approval.
+- 33 rows of other standards: parking, grading on slopes, flood and mine rules, backyard units.
 
-**Rules as data.** The code is encoded as rows `(district, standard, value, code section,
-effective date, source page)`: 182 dimensional rows (lot size, setbacks, height, stories),
-120 use permissions (5 residential product types × 24 districts, each permitted by right,
-by administrator exception, special exception, conditional use, or not at all), and 33
-cross-cutting standards (parking, grading, overlays, accessory units). A code amendment is a
-new versioned row set, not a code change.
+When the city changes its code, the rules change as data, with a new effective date. No
+software has to change.
 
-**Envelope.** Pittsburgh's residential districts impose no density or coverage cap; capacity
-is set by geometry. With lot width *W*, depth *D* (minimum rotated rectangle), side, front and
-rear setbacks *s, f, r*, and permitted stories *n*:
+**How much fits on the lot.** Pittsburgh's residential districts don't cap the number of homes
+per acre. The limit comes from geometry: take the lot's width and depth, subtract the required
+setbacks, and multiply by the allowed number of stories.
 
-> buildable floor area = (W − 2s) · (D − f − r) · n
+> buildable floor area = (width − both side setbacks) × (depth − front and rear setbacks) × stories
 
-Two regulatory refinements change results materially on typical 25–35 ft lots:
+On the narrow 25 to 35 ft lots common in Pittsburgh, two rules in the code make a big
+difference, and the system applies both:
 
-- **Contextual side setbacks.** Where both neighbours are built, side yards may match theirs
-  down to 3 ft. Evaluated as a second scenario; neighbour setbacks are not observed, so it is
-  a best case that generates a verification step.
-- **Narrow-lot rule.** Single houses on lots under 60 ft wide get reduced side yards (3–5 ft)
-  regardless of neighbours.
+- **Matching the neighbours.** If the houses on both sides are built close to the property line,
+  a new building may match them, down to 3 ft. We can see whether the neighbouring lots are built
+  on, but not exactly where their walls are, so this is treated as a best case that the
+  developer should confirm with a survey.
+- **Narrow lots.** A single house on a lot under 60 ft wide gets smaller side yards automatically.
 
-**Programs.** Five product templates (single house, duplex, triplex, 2–8 townhomes, 4–12 unit
-walk-up), each with unit size, stories and efficiency (all editable assumptions). Each
-program is tested against the envelope and the use table, yielding a **relief list**.
+**Testing building types.** The system tries five kinds of project: a single house, a duplex,
+a triplex, a row of 2 to 8 townhomes, and a walk-up apartment building of 4 to 12 units. For
+each, it checks whether the building fits and whether the district allows it. Anything that
+doesn't comply becomes an item on a list of approvals needed.
 
-**Relief ladder.** Each relief item maps to an approval rung with a known decision-maker:
+**The approval ladder.** Each kind of approval is decided by a different body, and each step up
+takes longer and is less certain:
 
-| Rung | Decided by |
+| Approval | Who decides |
 |---|---|
-| By right | Permit desk |
-| Administrator exception | Zoning Administrator |
-| Special exception | Zoning Board of Adjustment |
-| Variance | Zoning Board of Adjustment (hardship test) |
-| Conditional use | Planning Commission + City Council |
+| None needed ("by right") | The permit desk |
+| Administrator exception | The Zoning Administrator |
+| Special exception | The Zoning Board, at a public hearing |
+| Variance | The Zoning Board, which must find a hardship |
+| Conditional use | The Planning Commission, then City Council |
 | Rezoning | City Council |
 
-A dimensional deviation above 25% of the requirement is treated as implausible rather than
-as a variance (a judgment to be calibrated on board outcomes). Programs needing a use variance
-are not offered.
+Two judgment calls keep the options realistic. If a building misses a dimensional rule by more
+than 25%, we assume a variance is unlikely and don't offer that option. And we don't offer
+projects that would need the district's allowed uses changed.
 
-**Overlays** add procedures on any rung: in the undermined overlay, anything larger than a
-single house requires a professional site investigation before approval; in the floodplain
-overlay, the lowest floor must sit 1.5 ft above base flood elevation; floodway development
-requires a no-rise engineering analysis and is treated as near-prohibitive.
+**Extra rules for mines and floods.** Some areas have overlay rules on top of the district:
 
-**Outputs.** Best by-right program and best with-relief program, each with its relief list.
+- Over old mines, anything bigger than a single house needs a professional site investigation
+  before it can be approved.
+- In a flood zone, the lowest floor must sit 1.5 ft above the expected flood level, which in
+  practice means no basement.
+- In the floodway itself (the river channel and its banks), new building needs an engineering
+  study showing it won't raise flood levels. We treat this as close to a deal-breaker.
 
-## 5. Constraint model
+The result of this step is two candidate projects: the best one allowed outright, and the best
+one that needs approvals, each with its list of approvals.
 
-Facts map to **flags** `{severity, cost interval, schedule interval, confidence, resolution}`
-through a threshold table. Severity keys on share, not presence; for slope, for example:
-≥50% of lot → high ($40–150k, +1–4 months), 15–50% → medium ($15–60k), >0 → low
-($5–20k). Other flags: landslide-prone, undermining (tightened for multi-unit programs),
-flood zone and floodway, nearby cleanup/tank records, non-street frontage, combined
-sewershed, demolition, condemnation, tax liens (cost = lien amount). Every unknown fact
-produces a severity-`unknown` flag with the check that would resolve it. All thresholds and
-cost ranges in v0 are expert placeholders (Appendix B).
+**Every check is kept, pass or fail.** For each building type the system records every rule it
+applied: whether it passed, and if not, how far short it fell and which approval would fix it.
+This is what lets the report show, rule by rule, why a duplex is allowed and a walk-up is not.
+It also makes clear where probability comes in. Rules themselves are simply pass or fail. Odds
+only appear when a failed rule can be fixed by an approval, and a building's approval odds are
+the odds of all the approvals it needs, multiplied together. A building that passes every rule
+is allowed outright.
 
-## 6. Entitlement model
+## 5. What could go wrong on the site
 
-Each relief item contributes a probability of approval and a decision duration.
+Each physical or legal problem becomes a **flag**. A flag says how serious the problem is, a
+range for how much it might add to the cost, a range for how much time it might add, how
+confident we are, and how to resolve it.
 
-- **Measured rungs.** City Council zoning legislation 2000–2026 gives conditional uses
-  (27 of 29 decided passed; decision days p10/p50/p90 = 44/60/162) and rezonings (91 of
-  101; 41/79/225). Approval is modelled as Beta(1 + passed, 1 + failed). These rates are
-  optimistic: applications withdrawn before a vote are unobserved.
-- **Prior rungs.** Administrator exception, special exception, variance, use variance and
-  subdivision use triangular priors (e.g. variance P ∈ [0.50, 0.70, 0.85], 2–7 months) until
-  zoning-board decisions are extracted.
-- **Combination.** Items are independent (P multiplies). Items before the same body are heard
-  together (months = max within a body); different bodies are sequential (months add).
-  Procedural steps (site investigation, floodway study) add time without a discretionary
-  approval.
+Seriousness depends on how much of the lot is affected. Steep slope, for example:
 
-Months to permit-ready = permit review + max(entitlement months, study months).
+- more than half the lot: serious, adding roughly $40k to $150k and 1 to 4 months,
+- 15% to 50%: moderate, roughly $15k to $60k,
+- less than 15%: minor, roughly $5k to $20k.
 
-## 7. Economic model
+The other flags cover landslide-prone ground, old mines (stricter for multi-home projects),
+flood zones, nearby contamination records, lots with no street frontage, combined sewers,
+existing buildings to demolish, condemned properties and unpaid tax liens (costed at the lien
+amount). When a fact is missing, the system raises an "unknown" flag instead.
 
-**Revenue.** For-sale price per sq ft from arm's-length residential comps with known building
-size: if ≥5 were built since 2010, use their interquartile range directly; otherwise use
-resale comps × (1 + new-construction premium). Walk-ups also get a rental exit:
-units × HUD small-area rent × 12 × (1 − opex ratio) / cap rate. The better median exit wins.
+All cost and time ranges in this version are expert placeholders, listed in Appendix B.
 
-**Cost.** Hard (gross floor area × $/sf) + soft (share of hard) + contingency + constraint
-premium (sum of flag cost draws) + carry: on land over permit and construction months, and
-on half of hard+soft over construction.
+## 6. How likely the approvals are, and how long they take
 
-**Outputs.** Margin on cost *R / C − 1*, and **residual land value** at target margin *m*:
+For each approval a project needs, the system estimates the chance it will be granted and how
+many months it will take.
 
-> L\* = [ R / (1 + m) − C_nonland ] / [ 1 + r · (M_permit + M_build) / 12 ]
+- **Measured from real decisions.** City Council records from 2000 to 2026 give us two kinds of
+  approval. Of 29 conditional uses that reached a decision, 27 passed, typically in about 60
+  days (with 10% taking under 44 days and 10% over 162). Of 101 rezonings, 91 passed, typically
+  in 79 days. We turn these counts into a probability range with a standard Beta distribution,
+  which is wider when there are fewer cases.
+- **A caution.** These rates are flattering. Applications that were withdrawn before a vote,
+  often the weak ones, never show up in the records.
+- **Educated guesses for the rest.** Past Zoning Board decisions aren't available yet, so for
+  exceptions and variances we use expert ranges for now. For a variance, for example, the
+  chance of approval is assumed to be somewhere between 50% and 85%, most likely 70%, taking
+  2 to 7 months.
+- **Several approvals at once.** Approvals are treated as independent, so their chances
+  multiply. Requests to the same body are heard together (the time is that of the longest one);
+  requests to different bodies happen one after another (the times add up).
 
-L\* is the most a developer can pay for the land. L\* < 0 means costs plus target profit
-exceed value even with free land.
+The time until the project can get a building permit is then the city's permit review time
+plus whichever takes longer: the approvals or the site studies.
 
-**Uncertainty.** Monte Carlo with 2,000 draws: triangular draws for costs, durations, premium
-and cap rate; uniform for flag costs; triangular over the comps' interquartile range for
-price; per-rung distributions for approval. Inputs are independent in v0. All outputs are
-reported as p10/p50/p90.
+## 7. Whether the project makes money
 
-## 8. Score and verdict
+The financial model asks: what could the finished homes sell (or rent) for, what would it cost
+to build them, and so how much is left over to pay for the land?
 
-The score is additive so that every point belongs to a named, explainable component:
+**What the homes are worth.** The system looks at recent home sales within half a mile.
 
-> S = 35 · P · e^(−M/τ)  +  35 · clip(1 − π/κ, 0, 1)  +  30 · clip(L\* / (1.5 · L_price), 0, 1)
+- If at least five newly built homes (built since 2010) sold nearby, it uses their price per
+  square foot directly.
+- If not, it uses older homes and adds an assumed premium for new construction.
+- For apartment buildings it also estimates a rental value: yearly rent from government
+  benchmarks, minus operating costs, divided by an investor's expected return (the cap rate).
+  Whichever value is higher is used, since a developer would pick the better exit.
 
-| Component | Meaning | Parameters (v0, uncalibrated) |
-|---|---|---|
-| Approval path (35) | Probability of approval, discounted by months to permit-ready *M* | τ = 18 months |
-| Site cost (35) | Constraint premium as a share π of total development cost | κ = 0.30 (score 0 at 30%) |
-| Land headroom (30) | Residual land value relative to the land price (asking, else assessed) | full points at L\* ≥ 1.5 × price |
+**What it costs.** The model adds up construction cost per square foot, design and permit fees,
+a contingency, the cost of the site problems from Section 5, and interest: on the land for the
+whole time it takes to get permits and build, and on the construction spending while building.
 
-S is computed per Monte Carlo draw; the reported score is the median with a p10–p90 range.
-Bands: ≥75 fast track, 50–74 feasible with conditions, <50 high risk. A fast-track band is
-downgraded if any non-trivial finding has low confidence.
+**The key output is the maximum land price**, also called the residual land value: the most a
+developer could pay for the land and still earn their target profit (15% on cost by default).
 
-**Why additive, and why land headroom.** A multiplicative score of approval, time and cost
-factors (the original specification) is blind to profitability: in testing, a parcel scored
-78 ("fast track") while losing 20% on cost. Adding land headroom closes that gap and lets the
-report state *why* each point was lost.
+> maximum land price = (sale value ÷ 1.15 − all other costs) ÷ (1 + interest on the land while waiting)
 
-**Leading option.** The program the verdict describes: a profitable by-right program if one
-exists; otherwise the profitable option with the highest P × margin; otherwise the lowest-risk
-option. (Ranking losses by P × margin would reward the riskier loss.)
+If this number is negative, the project loses money even if the land is free.
 
-**Attribution.** Each flag's contribution is its counterfactual: remove the flag, recompute
-the median score, report the points regained. Relief is attributed the same way.
+**Handling uncertainty.** Instead of one estimate, the model runs 2,000 simulations. Each draws
+the uncertain inputs (costs, prices, delays, approval odds) at random from their ranges. The
+report shows the 10th, 50th and 90th percentile of the results. In this version the inputs are
+drawn independently of each other.
 
-## 9. Recommendations
+## 8. The score
 
-Each flag maps to a verification action with an owner and a cost range. Steps are ordered
-free-first, then by **cost-to-kill** = P(check kills the deal) / cost of the check, with
-P(kill) set by severity (high 0.30, medium 0.10, unknown 0.15, low 0.03; placeholders). The
-intent is value of information: the cheapest check most likely to end the deal goes first.
+The score adds up three parts, so every point can be traced to one of them:
 
-## 10. Output structure
+- **Approval path (up to 35 points).** Full points for a project that needs no approval and can
+  start quickly. Points fall with lower odds of approval and with longer waits: a 6-month wait
+  alone cuts the approval points by about 28%.
+- **Site cost (up to 35 points).** Full points when there are no costly site problems. Points
+  fall as those costs grow, reaching zero when they make up 30% of the total project cost.
+- **Land headroom (up to 30 points).** Full points when the maximum land price is at least 1.5
+  times the asking price (or the assessed value, if no asking price is given). Zero when the
+  project can't pay for its land.
 
-One typed object per parcel drives the report; the renderer only formats it.
+In formula form, with P the approval probability, M the months to a permit, π the share of cost
+from site problems and L\* the maximum land price:
 
-| Report block | Content |
-|---|---|
-| Verdict | Band, score and range, land-price risk, one-sentence summary |
-| Where the score comes from | Three components: points, maximum, one-line reason |
-| Headline numbers | Months to permit-ready, approval probability, max land price vs. land price, site cost premium, comps used |
-| What could kill this deal | Flags worst-first with cost, delay, source, date, code section, confidence, resolving step |
-| What you can build | Best by-right and best with-relief programs: units, margin, months, relief with code sections |
-| What to check next | Ordered steps with owner and cost |
-| Assumptions and versions | Every assumption with value, range, source status; engine, ruleset, schema, data dates |
+> score = 35 × P × e^(−M/18) + 35 × (1 − π/0.30) + 30 × L\* / (1.5 × land price), each part capped between 0 and its maximum
 
-## 11. Validation
+The score is computed in every simulation, and the report shows the middle value with its range.
+Scores of 75 and up are **fast track**, 50 to 74 **feasible with conditions**, and below 50
+**high risk**. A site can't be called fast track if any important finding is low-confidence.
 
-**Golden parcels.** Eight real parcels, each chosen to isolate one condition (others off):
+The weights (35/35/30) and the two scale constants (18 months, 30%) are starting values, not yet
+fitted to real outcomes.
 
-| Case | Parcel | Zoning | Score (band) | Leading option | Main driver |
+**Why we changed the score.** The original design multiplied approval, time and cost together,
+and ignored profit. In testing, one lot scored 78 ("fast track") while the project would lose
+20% on cost. Adding land headroom fixed that, and adding the parts (rather than multiplying
+them) lets the report say exactly where the points went.
+
+**Which project the verdict is about.** The verdict describes one project. The rule: if a
+project allowed outright makes money, use it. If not, use whichever profitable project has the
+best combination of approval odds and profit. If nothing makes money, use the least risky one.
+(Without that last rule, the model would prefer a riskier losing project, because multiplying
+a loss by a lower chance of approval makes the loss look smaller.)
+
+**Explaining the score.** For each flag, the system asks what the score would be without that
+problem. The difference is the number of points that flag cost, and the report lists them from
+largest to smallest.
+
+## 9. What to check next
+
+Each flag comes with a concrete check: who does it, and roughly what it costs. The checks are
+ordered so that free ones come first (such as a pre-application meeting with City Planning),
+followed by the check that is most likely to kill the deal for the least money. The idea is to
+spend a little to learn a lot, and to stop early on bad sites.
+
+In this version, how likely a check is to kill a deal is set by the flag's seriousness: 30% for
+serious, 10% for moderate, 15% for unknown and 3% for minor. These are placeholders.
+
+## 10. What the report shows
+
+The system produces one structured record per lot, and the report is only a display of that
+record:
+
+- **Verdict**: the score and its range, the band, and one plain sentence explaining it.
+- **Where the score comes from**: the three parts, each with its points and a one-line reason.
+- **Key numbers**: months to a permit, approval odds, the maximum land price compared with the
+  asking price, and the extra cost from site problems.
+- **What could kill this deal**: the flags, worst first, each with its cost, delay, source, date,
+  the section of the code involved and our confidence.
+- **What you can build**: the best project allowed outright and the best one needing approvals,
+  with profit margin, timing and the approvals needed.
+- **Rule by rule**: a table with the zoning rules as rows and the building types as columns.
+  Each cell shows a pass, the approval needed (and how far short the building is), or "not
+  feasible", with the approval odds and the result at the bottom. Rules that apply to the whole
+  site (mines, flooding) and rules not yet checked (such as parking) are listed underneath.
+- **What to check next**: the ordered list of checks, with who does each and its cost.
+- **Assumptions**: every assumption with its value, range and whether it is measured or a
+  placeholder, plus the versions of the rules and data used.
+
+## 11. Testing it on real lots
+
+We picked eight real Pittsburgh lots, each chosen to test one situation while everything else
+about the lot is clean:
+
+| Situation tested | Lot | Zoning | Score | Project the verdict describes | Main reason for the score |
 |---|---|---|---|---|---|
-| Clean by-right | 52-H-93 | RM-M | 62 (conditions) | 4-unit walk-up, by right | land headroom |
-| Steep slope | 55-A-137 | R1D-M | 41 (high risk) | single house, by right | slope (84% of lot) |
-| Undermined | 4-A-303 | RM-M | 55 (conditions) | triplex, by right | undermining → site investigation |
-| Needs variance | 129-J-37 | R2-L | 56 (conditions) | single house, admin. exception | undersized lot |
-| Flood zone | 80-N-159 | R1A-VH | 49 (high risk) | single house, by right | 51% in 1% flood zone |
-| Split-zoned | 24-J-60 | LNC / R1A-VH | 49 (high risk) | single house, by right | uncovered district, low confidence |
-| Public vacant | 173-E-82 | RM-M | 61 (conditions) | triplex, by right | land headroom |
-| Outside city | 176-C-275 | — | not scored | — | zoning not covered; partial report |
+| Clean lot | 52-H-93 | RM-M | 62, with conditions | 4-unit walk-up, allowed outright | can't pay for land |
+| Steep slope | 55-A-137 | R1D-M | 41, high risk | single house, allowed outright | 84% of the lot is steep |
+| Old mines | 4-A-303 | RM-M | 55, with conditions | triplex, allowed outright | mine site investigation required |
+| Needs an approval | 129-J-37 | R2-L | 56, with conditions | single house, administrator exception | lot smaller than the minimum |
+| Flood zone | 80-N-159 | R1A-VH | 49, high risk | single house, allowed outright | half the lot in the flood zone |
+| Two zoning districts | 24-J-60 | LNC and R1A-VH | 49, high risk | single house, allowed outright | one district not yet encoded; low confidence |
+| City-owned lot | 173-E-82 | RM-M | 61, with conditions | triplex, allowed outright | can't pay for land |
+| Outside the city | 176-C-275 | none | not scored | none | suburban zoning not covered; partial report |
 
-Each exercises its intended path (e.g. the undermined parcel triggers the site-investigation
-procedure; the split-zoned parcel reports both districts and low confidence; the suburban
-parcel returns unknowns, not clears).
+Each lot followed the path it was chosen to test. The mine lot triggered the required site
+investigation. The two-district lot showed both readings and was marked low confidence. The
+suburban lot came back with "unknown" results rather than false clears.
 
-**Headline finding.** At the placeholder hard cost ($250/sf), land headroom is 0/30 for every
-golden parcel: median residual land value ranges from −$74k to −$724k. Results are dominated
-by one unmeasured input. On 52-H-93 the by-right break-even hard cost (median L\* = 0 at a
-15% margin) is ≈ $197/sf; at $170/sf the same lot supports ≈ $139k of land (median) and scores
-77 (fast track).
+**The main finding.** At the placeholder construction cost of $250 per square foot, *none* of
+the eight projects can pay for its land: the maximum land price ranges from −$74k to −$724k.
+One unmeasured number is driving every verdict. On the clean lot (52-H-93), the project breaks
+even at about $197 per square foot. At $170 it could pay about $139k for the land and would
+score 77 (fast track).
 
-**Planned checks** (not yet run): by-right agreement against 65k building permits since 2019
-(target ≥90%); entitlement backtest on held-out cases (beat base-rate Brier score; interval
-coverage); agreement with a land-use professional on 10 sites (target 8/10).
+**Checks still to run:**
 
-## 12. Limitations and open problems
+- Do lots that actually got a building permit without any approval since 2019 (65,000 permits)
+  score as "allowed outright"? Target: 90% agreement.
+- Does the approval model predict held-out decisions better than simply using the average
+  approval rate?
+- Do a land-use lawyer or architect agree with the flags and approval path on 10 lots? Target:
+  8 of 10.
 
-1. **Cost calibration.** Hard cost is a placeholder and drives most verdicts; local builder
-   benchmarks are the highest-value missing input.
-2. **Zoning-board data.** Decisions are not yet obtainable; four rungs rely on priors and the
-   report cannot show precedents.
-3. **Score shape.** Weights, τ, κ and the 1.5× land ratio are uncalibrated; they should be fit
-   so bands predict realised outcomes (permits issued, projects completed).
-4. **Independence.** Approval items, cost inputs and price are sampled independently;
-   correlated shocks (e.g. cost and price cycles) are ignored.
-5. **Comparable quality.** Resale comps plus a premium stand in for new-construction prices
-   where fewer than five new builds sold nearby.
-6. **Unobserved geometry.** Neighbour setbacks (for contextual setbacks), lot frontage length
-   and mine depth (the 100 ft overburden test) are not in the data.
-7. **Coverage.** Hazard layers stop at the city line; suburban zoning is out of scope for v1.
-8. **Data dates.** Sources range from 2018 to 2026; the reported data date is the oldest input.
-9. **Discontinuous option rule.** Near break-even, a small input change can switch the leading
-   option and move the score by more than 10 points. On 52-H-93 the score is 62 at $250/sf,
-   53 at $195/sf (only the with-relief option is profitable, so it leads) and 66 at $190/sf. A
-   smooth alternative, e.g. the expectation over options weighted by P × margin, is a
-   candidate for v1.
+## 12. Limitations and open questions
+
+1. **Construction cost is a guess.** It drives most verdicts. Getting real local cost figures
+   from builders is the most valuable next step.
+2. **No Zoning Board history yet.** Exceptions and variances (and subdivisions) still rely on
+   expert guesses, and the report can't yet show similar past cases.
+3. **The score isn't calibrated.** Its weights and constants should be fitted so that the bands
+   match real outcomes, such as permits issued and projects completed.
+4. **Inputs move independently.** In reality, costs and prices tend to rise and fall together.
+   The model ignores that for now.
+5. **Old homes stand in for new ones.** Where fewer than five new homes sold nearby, prices come
+   from older homes plus an assumed premium.
+6. **Some things can't be seen in the data.** Where exactly the neighbours' walls are, how long
+   the lot's street frontage is, and how deep the old mine is below the lot (the code's test for
+   single homes is 100 ft).
+7. **City-only maps.** Slope and mine maps stop at the city line, and suburban zoning is not
+   covered yet.
+8. **Mixed data dates.** Sources range from 2018 to 2026, and the report shows the oldest one.
+9. **The choice of project can flip.** Close to break-even, a small change in cost can switch
+   which project the verdict describes, and the score can jump by more than 10 points. On the
+   clean lot the score is 62 at $250 per square foot, 53 at $195 and 66 at $190. A smoother
+   rule, such as averaging over the candidate projects, is planned for the next version.
 
 ---
 
@@ -305,6 +388,7 @@ will move to `engine/` unchanged in logic.
 | Use permissions, standards (4) | read by `sandbox/engine_v0/rules_engine.py` | `sandbox/rules/use_permissions_draft.csv`, `standards_draft.csv` |
 | Envelope, contextual and narrow-lot setbacks (4) | `rules_engine.py` · `envelope`, `lot_dimensions`, `neighbors_built`, `single_unit_side_setback` | `CONTEXTUAL_MIN_SIDE_FT` |
 | Programs, relief list, plausibility cap (4) | `rules_engine.py` · `relief_for`, `best_programs`, `TEMPLATES` | `MAX_DIMENSIONAL_SHORTFALL` |
+| Rule-by-rule table: every check, pass or fail; odds per building (4, 10) | `rules_engine.py` · `check_program`, `evaluate_programs`, `site_checks`; `analyze.py` · `rule_checks`; `sandbox/report.py` · `rules_block` | `NOT_CHECKED`, `CHECK_LABELS` |
 | Overlay procedures (4) | `rules_engine.py` · `overlay_items` | — |
 | Flags, thresholds, unknowns (5) | `sandbox/engine_v0/constraints.py` · `flags` | inline threshold table |
 | Entitlement odds and months (6) | `sandbox/engine_v0/entitlement.py` · `sample` | `RUNGS`, `PROCEDURAL` |

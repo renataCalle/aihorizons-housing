@@ -63,6 +63,109 @@
       "title": "Assumption",
       "type": "object"
     },
+    "CheckResult": {
+      "additionalProperties": false,
+      "description": "One zoning rule applied to one building. Rules pass or fail; probability enters only\nthrough the approval (`relief_type`) that can fix a failure.",
+      "properties": {
+        "check_id": {
+          "title": "Check Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Section"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "needs_approval",
+            "rejected",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "required": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Required"
+        },
+        "provided": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Provided"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unit"
+        },
+        "relief_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Relief Type"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Note"
+        }
+      },
+      "required": [
+        "check_id",
+        "label",
+        "section",
+        "status",
+        "required",
+        "provided",
+        "unit",
+        "relief_type",
+        "note"
+      ],
+      "title": "CheckResult",
+      "type": "object"
+    },
     "Comps": {
       "additionalProperties": false,
       "properties": {
@@ -430,6 +533,122 @@
       "title": "Narrative",
       "type": "object"
     },
+    "NotChecked": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "section": {
+          "title": "Section",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "section",
+        "reason"
+      ],
+      "title": "NotChecked",
+      "type": "object"
+    },
+    "ProgramEvaluation": {
+      "additionalProperties": false,
+      "properties": {
+        "product_type": {
+          "enum": [
+            "single_family",
+            "duplex",
+            "triplex",
+            "townhome",
+            "walkup"
+          ],
+          "title": "Product Type",
+          "type": "string"
+        },
+        "units": {
+          "title": "Units",
+          "type": "integer"
+        },
+        "gfa_sqft": {
+          "title": "Gfa Sqft",
+          "type": "number"
+        },
+        "outcome": {
+          "enum": [
+            "by_right",
+            "needs_approval",
+            "rejected"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/CheckResult"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "approval_prob": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Range"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approval_months": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Range"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "representative": {
+          "title": "Representative",
+          "type": "boolean"
+        },
+        "chosen_as": {
+          "anyOf": [
+            {
+              "enum": [
+                "by_right",
+                "with_relief"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Chosen As"
+        }
+      },
+      "required": [
+        "product_type",
+        "units",
+        "gfa_sqft",
+        "outcome",
+        "checks",
+        "approval_prob",
+        "approval_months",
+        "representative",
+        "chosen_as"
+      ],
+      "title": "ProgramEvaluation",
+      "type": "object"
+    },
     "ProgramOption": {
       "additionalProperties": false,
       "properties": {
@@ -539,6 +758,67 @@
         "p90"
       ],
       "title": "Range",
+      "type": "object"
+    },
+    "RuleChecks": {
+      "additionalProperties": false,
+      "description": "Every building type tested on this lot, rule by rule (\"why this score\").",
+      "properties": {
+        "district": {
+          "title": "District",
+          "type": "string"
+        },
+        "scenario": {
+          "enum": [
+            "strict",
+            "contextual"
+          ],
+          "title": "Scenario",
+          "type": "string"
+        },
+        "uncovered_districts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Uncovered Districts",
+          "type": "array"
+        },
+        "site_checks": {
+          "items": {
+            "$ref": "#/$defs/SiteCheck"
+          },
+          "title": "Site Checks",
+          "type": "array"
+        },
+        "not_checked": {
+          "items": {
+            "$ref": "#/$defs/NotChecked"
+          },
+          "title": "Not Checked",
+          "type": "array"
+        },
+        "programs": {
+          "items": {
+            "$ref": "#/$defs/ProgramEvaluation"
+          },
+          "title": "Programs",
+          "type": "array"
+        },
+        "odds_note": {
+          "title": "Odds Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "district",
+        "scenario",
+        "uncovered_districts",
+        "site_checks",
+        "not_checked",
+        "programs",
+        "odds_note"
+      ],
+      "title": "RuleChecks",
       "type": "object"
     },
     "RulesSummary": {
@@ -674,6 +954,53 @@
         "driver_flag_id"
       ],
       "title": "ScoreItem",
+      "type": "object"
+    },
+    "SiteCheck": {
+      "additionalProperties": false,
+      "description": "Overlay rules that apply to the site whatever is built.",
+      "properties": {
+        "check_id": {
+          "title": "Check Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "section": {
+          "title": "Section",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "applies",
+            "clear",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Note"
+        }
+      },
+      "required": [
+        "check_id",
+        "label",
+        "section",
+        "status",
+        "note"
+      ],
+      "title": "SiteCheck",
       "type": "object"
     },
     "Step": {
@@ -888,6 +1215,17 @@
       },
       "title": "Score Breakdown",
       "type": "array"
+    },
+    "rule_checks": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RuleChecks"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "assumptions": {
       "items": {
