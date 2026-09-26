@@ -1,0 +1,10 @@
+[project]
+name = "navigator-api"
+version = "0.1.0"
+description = "FastAPI service that serves the engine"
+requires-python = ">=3.12"
+dependencies = ["navigator-contracts", "navigator-engine", "fastapi>=0.115", "uvicorn[standard]>=0.32"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

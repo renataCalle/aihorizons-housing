@@ -1,0 +1,96 @@
+[project]
+name = "aihorizons-housing"
+version = "0.0.0"
+description = "Development Feasibility & Pro Forma Navigator (workspace root)"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["contracts", "engine", "pipeline", "api", "research"]
+
+[tool.uv.sources]
+navigator-contracts = { workspace = true }
+navigator-engine = { workspace = true }
+navigator-pipeline = { workspace = true }
+navigator-api = { workspace = true }
+navigator-research = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "navigator-contracts",
+    "navigator-engine",
+    "navigator-pipeline",
+    "navigator-api",
+    "navigator-research",
+    "httpx>=0.27",
+    "import-linter>=2.1",
+    "pytest>=8.3",
+    "ruff>=0.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["research/notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "navigator_contracts",
+    "navigator_engine",
+    "navigator_pipeline",
+    "navigator_api",
+    "navigator_research",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["contracts/tests", "engine/tests", "pipeline/tests", "api/tests"]
+addopts = "--import-mode=importlib"
+
+# The engine is a pure library: no network, no database, no production code from research.
+[tool.importlinter]
+root_packages = [
+    "navigator_contracts",
+    "navigator_engine",
+    "navigator_pipeline",
+    "navigator_api",
+    "navigator_research",
+]
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Engine is pure: no I/O, no pipeline, api, or research imports"
+type = "forbidden"
+source_modules = ["navigator_engine"]
+forbidden_modules = [
+    "navigator_pipeline",
+    "navigator_api",
+    "navigator_research",
+    "duckdb",
+    "geopandas",
+    "httpx",
+    "requests",
+    "fastapi",
+]
+
+[[tool.importlinter.contracts]]
+name = "Contracts depend on nothing in the workspace"
+type = "forbidden"
+source_modules = ["navigator_contracts"]
+forbidden_modules = [
+    "navigator_engine",
+    "navigator_pipeline",
+    "navigator_api",
+    "navigator_research",
+]
+
+[[tool.importlinter.contracts]]
+name = "Research code is never a production dependency"
+type = "forbidden"
+source_modules = ["navigator_engine", "navigator_pipeline", "navigator_api"]
+forbidden_modules = ["navigator_research"]
