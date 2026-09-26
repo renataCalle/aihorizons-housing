@@ -1602,6 +1602,8 @@ dependencies = [
     { name = "geopandas" },
     { name = "httpx" },
     { name = "navigator-contracts" },
+    { name = "pyarrow" },
+    { name = "pyogrio" },
     { name = "pyproj" },
 ]
 
@@ -1611,6 +1613,8 @@ requires-dist = [
     { name = "geopandas", specifier = ">=1.0" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "navigator-contracts", editable = "contracts" },
+    { name = "pyarrow", specifier = ">=18" },
+    { name = "pyogrio", specifier = ">=0.10" },
     { name = "pyproj", specifier = ">=3.7" },
 ]
 

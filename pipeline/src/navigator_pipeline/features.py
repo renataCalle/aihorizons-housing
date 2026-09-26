@@ -1,9 +1,9 @@
 """Per-parcel facts (SiteContext-shaped) computed from the clean tables.
 
-    uv run python -m sandbox.features            # City of Pittsburgh parcels
-    uv run python -m sandbox.features --county   # every parcel in Allegheny County
+    uv run python -m navigator_pipeline.features            # City of Pittsburgh parcels
+    uv run python -m navigator_pipeline.features --county   # every parcel in Allegheny County
 
-Outputs in sandbox/data/features/:
+Outputs in data/features/:
 - parcel_facts.parquet     one row per parcel: shares, distances, frontage, flags
 - parcel_zoning.parquet    long table: parcel_id, code, kind (district|overlay), share
 - parcel_flood.parquet     long table: parcel_id, flood_zone, sfha, share
@@ -17,14 +17,14 @@ municipality yields null (not zero); see COVERAGE.
 
 import argparse
 import time
-from pathlib import Path
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 import shapely
 
-DATA = Path(__file__).parent / "data"
+from navigator_pipeline.settings import DATA_DIR as DATA
+
 CLEAN = DATA / "clean"
 OUT = DATA / "features"
 

@@ -18,12 +18,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from sandbox import site_context
+from navigator_pipeline import site_context
+from navigator_pipeline.settings import CLEAN, FEATURES
 from sandbox.engine_v0.analyze import analyze
 
 ROOT = Path(__file__).resolve().parents[1]
-FEAT = Path(__file__).parent / "data" / "features"
-CLEAN = Path(__file__).parent / "data" / "clean"
+FEAT = FEATURES
 FIXTURES = ROOT / "fixtures" / "golden" / "site_context"
 ANALYSES = ROOT / "fixtures" / "golden" / "site_analysis"
 SUBURB = "WILKINSBURG"  # adjacent borough with infill demand; zoning not covered in v1
@@ -177,12 +177,13 @@ def main() -> None:
     if args.export:
         # Suburban parcels are not in the city facts table: compute their facts first.
         subprocess.run(
-            [sys.executable, "-m", "sandbox.features", "--ids", sub, "--tag", "golden"], check=True
+            [sys.executable, "-m", "navigator_pipeline.features", "--ids", sub, "--tag", "golden"],
+            check=True,
         )
         FIXTURES.mkdir(parents=True, exist_ok=True)
         ANALYSES.mkdir(parents=True, exist_ok=True)
         for name, pid in picks.items():
-            ctx = site_context.build([pid])
+            ctx = site_context.build([pid], live=False)  # reproducible fixtures
             path = FIXTURES / f"{name}.json"
             path.write_text(json.dumps(ctx, indent=2, default=str) + "\n")
             result = analyze(json.loads(path.read_text()))

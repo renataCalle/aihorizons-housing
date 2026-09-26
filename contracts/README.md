@@ -1,7 +1,8 @@
 # Contracts v0.1.0
 
-Latest additive change: `SiteAnalysis.rule_checks` (rule-by-rule explanation). No version
-bump; existing clients keep working.
+Latest additive changes: `SiteAnalysis.rule_checks` (rule-by-rule explanation);
+`Source.retrieved` / `retrieved_at` and `Title.recent_permits` (live data). No version bump;
+existing clients keep working.
 
 Two Pydantic models are the whole interface between data, engine and UI:
 
@@ -54,19 +55,19 @@ result = SiteAnalysis.model_validate(analyze(ctx.model_dump(mode="json"), {"land
 
 | Section | Contents | Reference implementation |
 |---|---|---|
-| `parcels[]` | ID, block-lot, address, municipality, geometry, lot area, use, structure, assessed values, owner type | `sandbox/build.py` (parcels) |
-| `zoning[]` | District and overlay codes with share of lot; empty = not covered | `sandbox/features.py` `zoning()` |
+| `parcels[]` | ID, block-lot, address, municipality, geometry, lot area, use, structure, assessed values, owner type | `navigator_pipeline.build` (parcels) |
+| `zoning[]` | District and overlay codes with share of lot; empty = not covered | `navigator_pipeline.features` `zoning()` |
 | `physical` | Slope, landslide, undermined, deep-mined, mine-land shares; FEMA zones; nearby landslides | `features.py` `physical()`, `flood()` |
 | `environmental[]` | PA DEP sites within 1,000 ft with distance | `features.py` `environmental()` |
 | `infrastructure`, `access` | Combined sewershed, frontage type, water provider; distance to frequent transit | `features.py` |
-| `adjacent[]` | Neighbours sharing a lot line and whether they're built | `sandbox/site_context.py` |
-| `title`, `area` | Liens, condemned, city inventory; neighbourhood, market type, QCT, Opportunity Zone | `features.py` `ownership()`, `context()` |
+| `adjacent[]` | Neighbours sharing a lot line and whether they're built | `navigator_pipeline.site_context` |
+| `title`, `area` | Liens, condemned, city inventory, recent permits; neighbourhood, market type, QCT, Opportunity Zone | `features.py` `ownership()`, `context()` |
 | `market` | Arm's-length sales within 0.5 mi / 3 yrs with building size; HUD rents by bedroom | `site_context.py` |
 | `zba_cases_nearby` | `null` for now: zoning board decisions are not yet available | — |
-| `provenance` | Source, URL, as-of date and note per layer | `site_context.py` |
+| `provenance` | Source, URL, as-of date and note per layer; `retrieved` = `live` (fetched for this report, with `retrieved_at`) or `snapshot` (from the refreshed store) | `navigator_pipeline.site_context` |
 
-`uv run python -m sandbox.site_context <parcel>` builds any Allegheny County parcel from
-the research data, and serves as the reference for what a correct SiteContext looks like.
+`uv run python -m navigator_pipeline.site_context <parcel> --live` builds any Allegheny County
+parcel, and serves as the reference for what a correct SiteContext looks like.
 
 ## SiteAnalysis: what the UI renders
 

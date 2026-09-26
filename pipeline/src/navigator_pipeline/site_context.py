@@ -1,7 +1,7 @@
-"""Assemble a SiteContext-shaped dict for one parcel or an assemblage, from sandbox data.
+"""Assemble a SiteContext-shaped dict for one parcel or an assemblage, from the pipeline's data.
 
-    uv run python -m sandbox.site_context 0001B00024000000
-    uv run python -m sandbox.site_context 12-A-34 --out fixtures/golden/site_context/x.json
+    uv run python -m navigator_pipeline.site_context 0001B00024000000
+    uv run python -m navigator_pipeline.site_context 12-A-34 --out x.json
 
 Mirrors the spec's SiteContext fields so the output can seed golden-parcel fixtures. It is a
 research convenience, not the production feature builder (that lives in pipeline/).
@@ -18,9 +18,11 @@ import numpy as np
 import pandas as pd
 import shapely
 
-from sandbox.features import COVERAGE_NOTE
+from navigator_pipeline import live as live_lookups
+from navigator_pipeline.build import VALID_SALE_CODES, owner_type
+from navigator_pipeline.features import COVERAGE_NOTE
+from navigator_pipeline.settings import DATA_DIR as DATA
 
-DATA = Path(__file__).parent / "data"
 CLEAN = DATA / "clean"
 FEAT = DATA / "features"
 RAW = DATA / "raw"
@@ -75,12 +77,27 @@ def _clean(v):
 def _source(keys: list[str]) -> dict:
     ms = [json.loads((RAW / k / "_manifest.json").read_text()) for k in keys]
     as_of = [m["source_as_of"] for m in ms if m.get("source_as_of")]
+    fetched = [m.get("fetched_at") for m in ms if m.get("fetched_at")]
     return {
         "name": "; ".join(m.get("dataset_title") or m["key"] for m in ms),
         "url": ms[0]["url"] if len(ms) == 1 else None,
         "as_of": min(as_of)[:10] if as_of else None,  # oldest input governs
         "note": None,
+        "retrieved": "snapshot",
+        "retrieved_at": min(fetched) if fetched else None,
     }
+
+
+# Records that can be looked up live per parcel -> the stored source behind them.
+LIVE_RECORDS = {
+    "assessment": "assessments",
+    "tax_liens": "tax_liens",
+    "condemned": "condemned",
+    "city_inventory": "city_owned",
+    "permits": "pli_permits",
+    "recent_sales": "sales",
+}
+PENDING = {"PLB Transfer": "land_bank", "URA Transfer": "ura"}
 
 
 def resolve_ids(ids: list[str], parcels: pd.DataFrame) -> list[str]:
@@ -105,7 +122,13 @@ def _load(stem: str) -> pd.DataFrame:
     return df.drop_duplicates("parcel_id", keep="last") if stem == "parcel_facts" else df
 
 
-def build(ids: list[str]) -> dict:
+def build(ids: list[str], live: bool = False) -> dict:
+    """SiteContext for one parcel or an assemblage.
+
+    live=False: everything from the refreshed store (reproducible; used for fixtures).
+    live=True: fast-changing records are fetched from the source APIs for these parcels,
+    falling back to the stored copy per record if a lookup fails (see navigator_pipeline.live).
+    """
     facts = _load("parcel_facts").set_index("parcel_id")
     ids = resolve_ids(ids, facts)
     f = facts.loc[ids]
@@ -256,8 +279,27 @@ def build(ids: list[str]) -> dict:
         for k in ("zoning", "steep_slope", "landslide_prone", "sewer"):
             provenance[k]["note"] = COVERAGE_NOTE
 
+    for record, key in LIVE_RECORDS.items():
+        provenance[record] = _source([key])
+
+    permits = pd.read_parquet(
+        CLEAN / "pli_permits.parquet",
+        columns=["parcel_id", "permit_id", "permit_type", "work_type", "issue_date", "status"],
+    )
+    permits = permits[permits["parcel_id"].isin(ids)].sort_values("issue_date", ascending=False)
+    recent_permits = [
+        {
+            "permit_id": str(r.permit_id),
+            "permit_type": _clean(r.permit_type),
+            "work_type": _clean(r.work_type),
+            "issue_date": _clean(r.issue_date),
+            "status": _clean(r.status),
+        }
+        for r in permits.head(20).itertuples()
+    ]
+
     zba_note = provenance["zba_cases"]
-    return {
+    ctx = {
         "schema_version": SCHEMA_VERSION,
         "parcels": parcels,
         "zoning": zoning,
@@ -285,6 +327,7 @@ def build(ids: list[str]) -> dict:
             "condemned": bool(f["condemned"].any()),
             "city_inventory_status": _clean(first["city_inventory_status"]),
             "pending_transfer_to": _clean(first["pending_transfer_to"]),
+            "recent_permits": recent_permits,
         },
         "area": {
             "neighborhood": _clean(first["neighborhood"]),
@@ -302,14 +345,109 @@ def build(ids: list[str]) -> dict:
         "zba_cases_nearby": None if zba_note.get("note") else [],
         "provenance": provenance,
     }
+    if live:
+        _apply_live(ctx, ids, near)
+    return ctx
+
+
+def _apply_live(ctx: dict, ids: list[str], near: pd.DataFrame) -> None:
+    """Overlay live records on a snapshot SiteContext; mark provenance per record."""
+    res = live_lookups.fetch_all(ids)
+    prov = ctx["provenance"]
+    title = ctx["title"]
+
+    for record, r in res.items():
+        if r["ok"]:
+            prov[record].update(
+                retrieved="live", retrieved_at=r["at"], as_of=r["at"][:10], note=None
+            )
+        else:
+            prov[record]["note"] = (
+                f"Live lookup failed ({r['error']}); using the stored copy "
+                f"from {prov[record]['as_of']}."
+            )
+
+    if res["assessment"]["ok"]:
+        for p in ctx["parcels"]:
+            rows = res["assessment"]["data"].get(p["parcel_id"]) or []
+            if rows:
+                fields = live_lookups.assessment_fields(rows[0])
+                municode = fields.pop("municode")
+                p.update({k: v for k, v in fields.items() if v is not None})
+                p["owner_type"] = owner_type(
+                    p["current_use"], municode in range(101, 133) if municode else False
+                )
+
+    if res["city_inventory"]["ok"]:
+        rows = [r for pid in ids for r in res["city_inventory"]["data"].get(pid, [])]
+        title["city_inventory_status"] = rows[0].get("current_status") if rows else None
+        title["pending_transfer_to"] = PENDING.get(rows[0].get("inventory_type")) if rows else None
+        if rows:
+            for p in ctx["parcels"]:
+                p["owner_type"] = "city"
+
+    if res["tax_liens"]["ok"]:
+        title["tax_lien_total_usd"] = float(
+            sum(
+                live_lookups._num(r.get("total_amount"))
+                for pid in ids
+                for r in res["tax_liens"]["data"].get(pid, [])
+            )
+        )
+    if res["condemned"]["ok"]:
+        title["condemned"] = any(res["condemned"]["data"].get(pid) for pid in ids)
+    if res["permits"]["ok"]:
+        title["recent_permits"] = live_lookups.permit_rows(
+            [r for pid in ids for r in res["permits"]["data"].get(pid, [])]
+        )
+
+    if res["recent_sales"]["ok"]:
+        sales = ctx["market"]["sales"]
+        seen = {(s["parcel_id"], str(s["sale_date"]), float(s["price"])) for s in sales}
+        cutoff = (pd.Timestamp.today() - pd.DateOffset(years=COMPS_YEARS)).date().isoformat()
+        info = near.set_index("parcel_id")
+        added = 0
+        for r in res["recent_sales"]["data"]:
+            pid, day = r.get("PARID"), str(r.get("SALEDATE"))[:10]
+            price = live_lookups._num(r.get("PRICE"))
+            code = str(r.get("SALECODE") or "").strip()
+            if (
+                pid not in info.index
+                or pid in ids
+                or code not in VALID_SALE_CODES
+                or price <= 1000
+                or day < cutoff
+                or (pid, day, price) in seen
+            ):
+                continue
+            n = info.loc[pid]
+            sales.append(
+                {
+                    "parcel_id": pid,
+                    "sale_date": day,
+                    "price": price,
+                    "lot_area_sqft": _clean(n["lot_area_sqft_gis"]),
+                    "building_sqft": _clean(n["living_area_sqft"]),
+                    "property_class": _clean(n["property_class"]),
+                    "year_built": _clean(n["year_built"]),
+                    "sale_code": code,
+                    "distance_ft": round(float(n["distance_ft"]), 1),
+                }
+            )
+            seen.add((pid, day, price))
+            added += 1
+        sales.sort(key=lambda s: str(s["sale_date"]), reverse=True)
+        del sales[200:]
+        prov["recent_sales"]["note"] = f"{added} sale(s) newer than the stored copy added."
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("parcel_ids", nargs="+", help="county ids or dashed block-lots")
     ap.add_argument("--out", type=Path)
+    ap.add_argument("--live", action="store_true", help="look up fast-changing records live")
     args = ap.parse_args()
-    ctx = build(args.parcel_ids)
+    ctx = build(args.parcel_ids, live=args.live)
     text = json.dumps(ctx, indent=2, default=str)
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

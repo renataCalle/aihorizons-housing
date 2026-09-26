@@ -13,15 +13,15 @@ import argparse
 import json
 import subprocess
 import sys
-from pathlib import Path
 
 import pandas as pd
 
-from sandbox import site_context
+from navigator_pipeline import site_context
+from navigator_pipeline.settings import DATA_DIR
 from sandbox.engine_v0.analyze import analyze
 from sandbox.report import render
 
-DATA = Path(__file__).parent / "data"
+DATA = DATA_DIR
 FEAT = DATA / "features"
 OUT = DATA / "output"
 
@@ -61,7 +61,7 @@ def ensure_facts(pid: str) -> None:
             "-W",
             "ignore",
             "-m",
-            "sandbox.features",
+            "navigator_pipeline.features",
             "--ids",
             pid,
             "--tag",
@@ -168,6 +168,16 @@ def report(ctx: dict, a: dict) -> None:
             print(f"  -{b['points_lost']:>5} {b['component']:8s} {b['driver_flag_id']}")
     ph = [x["key"] for x in a["assumptions"] if "PLACEHOLDER" in x["source"]]
     print(f"\nPlaceholder assumptions ({len(ph)}): {', '.join(ph)}")
+    live = [k for k, v in ctx["provenance"].items() if v.get("retrieved") == "live"]
+    fell = [
+        k
+        for k, v in ctx["provenance"].items()
+        if (v.get("note") or "").startswith("Live lookup failed")
+    ]
+    if live:
+        print(f"Live now: {', '.join(live)}")
+    if fell:
+        print(f"Live lookup failed, stored copy used: {', '.join(fell)}")
     print("Screening estimate only; not a zoning determination, legal or engineering advice.")
     print("=" * 78)
 
@@ -183,11 +193,14 @@ def main() -> None:
         help="override an assumption, e.g. hard_cost_psf=275",
     )
     ap.add_argument("--land-price", type=float, help="asking price (default: assessed land)")
+    ap.add_argument(
+        "--no-live", action="store_true", help="use only the stored copy (no live lookups)"
+    )
     args = ap.parse_args()
     overrides = {k: float(v) for k, v in (s.split("=", 1) for s in args.set)}
     pid = resolve(args.query)
     ensure_facts(pid)
-    ctx = site_context.build([pid])
+    ctx = site_context.build([pid], live=not args.no_live)
     if args.land_price is not None:
         overrides["land_price"] = args.land_price
     result = analyze(ctx, overrides)

@@ -94,6 +94,14 @@ market (recent sales and government rent benchmarks).
 in a combined sewer area. A yes/no flag would mark most of the city as risky. What matters is
 *how much* of the lot is affected, so the rules work on shares.
 
+**How fresh the data is.** The data comes from the sources' own public APIs, in two ways. A
+nightly job checks each source on its own schedule (daily for sales and permits, weekly for
+assessments and liens, monthly for maps) and re-downloads it only if it has changed. And when a
+report is requested, the records that change most often for that lot (its assessment, liens,
+condemned status, city ownership, permits, and any new nearby sales) are fetched live. If a
+live lookup fails, the stored copy is used and the report says so. Every fact records whether it
+was live or stored, and when.
+
 **Known gaps.** Some hazard maps only cover the City of Pittsburgh, so suburban lots get
 "unknown" for those. Past zoning board decisions aren't available yet (the city's site blocks
 automated access), which limits the approval model (Section 6).
@@ -379,10 +387,12 @@ will move to `engine/` unchanged in logic.
 
 | Concept (section) | Module · function | Configuration / data |
 |---|---|---|
-| Source acquisition, provenance (3) | `sandbox/fetch.py` · `fetch`, `fetch_wprdc`, `fetch_arcgis`, `fetch_legistar` | `sandbox/catalog.py` (`SOURCES`) |
-| Cleaning, reprojection, parcel keys (3) | `sandbox/build.py` · `build_parcels`, `BUILDERS` | — |
-| Share / distance facts (3) | `sandbox/features.py` · `area_shares`, `nearest_distance`, `physical`, `flood`, `zoning`, `environmental`, `infrastructure`, `access`, `ownership` | `ENV_RADIUS_FT`, `FRONTAGE_RADIUS_FT`, `TRANSIT_TIERS` |
-| Site fact assembly, adjacency, comps (3) | `sandbox/site_context.py` · `build` | `COMPS_RADIUS_FT`, `COMPS_YEARS` |
+| Source acquisition, provenance (3) | `pipeline/src/navigator_pipeline/fetch.py` · `fetch`, `fetch_wprdc`, `fetch_arcgis`, `fetch_legistar` | `navigator_pipeline/catalog.py` (`SOURCES`) |
+| Scheduled refresh (3) | `navigator_pipeline/refresh.py` · `run`, `is_due`, `has_changed`, `tables_for` | `catalog.py` (`REFRESH_DAYS`) |
+| Live per-parcel lookups (3) | `navigator_pipeline/live.py` · `fetch_all`; `site_context.py` · `_apply_live` | `TIMEOUT_S`, `CACHE_TTL_S` |
+| Cleaning, reprojection, parcel keys (3) | `navigator_pipeline/build.py` · `build_parcels`, `BUILDERS` | — |
+| Share / distance facts (3) | `navigator_pipeline/features.py` · `area_shares`, `nearest_distance`, `physical`, `flood`, `zoning`, `environmental`, `infrastructure`, `access`, `ownership` | `ENV_RADIUS_FT`, `FRONTAGE_RADIUS_FT`, `TRANSIT_TIERS` |
+| Site fact assembly, adjacency, comps (3) | `navigator_pipeline/site_context.py` · `build` | `COMPS_RADIUS_FT`, `COMPS_YEARS` |
 | Fact interface (3, 10) | `contracts/src/navigator_contracts/site_context.py` · `SiteContext` | `contracts/schema/SiteContext.schema.json` |
 | Rules extraction (4) | `sandbox/rules/extract.py` · `residential_rows`, `hillside_rows` | `sandbox/rules/residential_draft.csv` |
 | Use permissions, standards (4) | read by `sandbox/engine_v0/rules_engine.py` | `sandbox/rules/use_permissions_draft.csv`, `standards_draft.csv` |
@@ -392,7 +402,7 @@ will move to `engine/` unchanged in logic.
 | Overlay procedures (4) | `rules_engine.py` · `overlay_items` | — |
 | Flags, thresholds, unknowns (5) | `sandbox/engine_v0/constraints.py` · `flags` | inline threshold table |
 | Entitlement odds and months (6) | `sandbox/engine_v0/entitlement.py` · `sample` | `RUNGS`, `PROCEDURAL` |
-| Council outcomes (6) | `sandbox/build.py` · `build_council_zoning_matters` | `sandbox/data/clean/council_zoning_matters.parquet` |
+| Council outcomes (6) | `navigator_pipeline/build.py` · `build_council_zoning_matters` | `data/clean/council_zoning_matters.parquet` |
 | Comps, rents, exits (7) | `sandbox/engine_v0/analyze.py` · `sale_psf`, `rent_for`, `proforma` | `NEW_BUILD_YEAR`, `MIN_COMPS` |
 | Costs, margin, residual land value, Monte Carlo (7) | `analyze.py` · `proforma` | `sandbox/engine_v0/assumptions.py`; `N` |
 | Score, bands (8) | `analyze.py` · `score_samples`, `band` | `WEIGHTS`; `score_*` assumptions |
@@ -400,7 +410,7 @@ will move to `engine/` unchanged in logic.
 | Recommendations (9) | `analyze.py` · `analyze` (next steps); `constraints.py` actions | `P_KILL` |
 | Output interface (10) | `contracts/src/navigator_contracts/site_analysis.py` · `SiteAnalysis` | `contracts/schema/SiteAnalysis.schema.json` |
 | Report rendering (10) | `sandbox/report.py` · `render` | — |
-| End-to-end run (all) | `sandbox/navigator.py` · `main` | output: `sandbox/data/output/` |
+| End-to-end run (all) | `sandbox/navigator.py` · `main` | output: `data/output/` |
 | Golden parcels (11) | `sandbox/golden.py` · `cases`, `rank` | `fixtures/golden/`, `sandbox/golden_parcels.json` |
 | Contract conformance (11) | `contracts/tests/test_golden_fixtures.py` | — |
 

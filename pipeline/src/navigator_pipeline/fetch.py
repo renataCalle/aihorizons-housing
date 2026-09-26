@@ -1,11 +1,12 @@
-"""Download raw data into sandbox/data/raw/<key>/ with a provenance manifest.
+"""Download raw data into <DATA_DIR>/raw/<key>/ with a provenance manifest.
 
-    uv run python -m sandbox.fetch                 # everything not yet downloaded
-    uv run python -m sandbox.fetch zoning parcels  # specific sources
-    uv run python -m sandbox.fetch --wave 2        # one wave
-    uv run python -m sandbox.fetch --force zoning  # re-download
+    uv run python -m navigator_pipeline.fetch                 # everything not yet downloaded
+    uv run python -m navigator_pipeline.fetch zoning parcels  # specific sources
+    uv run python -m navigator_pipeline.fetch --wave 2        # one wave
+    uv run python -m navigator_pipeline.fetch --force zoning  # re-download
 
-Raw files are immutable once written; rebuild clean tables from them with sandbox.build.
+Raw files are replaced only by a newer download; build clean tables with
+navigator_pipeline.build. Routine updates go through navigator_pipeline.refresh.
 """
 
 import argparse
@@ -18,57 +19,15 @@ from pathlib import Path
 
 import httpx
 
-from sandbox.catalog import ALLEGHENY_BBOX, SOURCES, WPRDC, Source
+from navigator_pipeline.catalog import ALLEGHENY_BBOX, SOURCES, WPRDC, Source
+from navigator_pipeline.http import USER_AGENT, client
+from navigator_pipeline.http import get_json as _get_json
+from navigator_pipeline.http import post_json as _post_json
+from navigator_pipeline.http import stream as _stream
+from navigator_pipeline.settings import RAW
 
-# The only identity this client ever sends. Never add contact details here.
-USER_AGENT = "market-data-client/1.0"
-
-RAW = Path(__file__).parent / "data" / "raw"
 LEGISTAR = "https://webapi.legistar.com/v1/pittsburgh"
-
-
-def client() -> httpx.Client:
-    return httpx.Client(
-        headers={"User-Agent": USER_AGENT},
-        timeout=httpx.Timeout(60.0, read=180.0),
-        follow_redirects=True,
-    )
-
-
-def _get_json(http: httpx.Client, url: str, params: dict | None = None, tries: int = 4) -> object:
-    for attempt in range(tries):
-        try:
-            r = http.get(url, params=params)
-            r.raise_for_status()
-            return r.json()
-        except (httpx.HTTPError, json.JSONDecodeError):
-            if attempt == tries - 1:
-                raise
-            time.sleep(2 ** (attempt + 1))
-    raise AssertionError("unreachable")
-
-
-def _post_json(http: httpx.Client, url: str, data: dict, tries: int = 4) -> dict:
-    for attempt in range(tries):
-        try:
-            r = http.post(url, data=data)
-            r.raise_for_status()
-            return r.json()
-        except (httpx.HTTPError, json.JSONDecodeError):
-            if attempt == tries - 1:
-                raise
-            time.sleep(2 ** (attempt + 1))
-    raise AssertionError("unreachable")
-
-
-def _stream(http: httpx.Client, url: str, dest: Path) -> None:
-    tmp = dest.with_suffix(dest.suffix + ".part")
-    with http.stream("GET", url) as r:
-        r.raise_for_status()
-        with tmp.open("wb") as f:
-            for chunk in r.iter_bytes(1 << 20):
-                f.write(chunk)
-    tmp.rename(dest)
+__all__ = ["USER_AGENT", "client", "fetch", "RAW", "SOURCES"]
 
 
 def _sha256(path: Path) -> str:

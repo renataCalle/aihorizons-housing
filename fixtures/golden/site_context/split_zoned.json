@@ -115,7 +115,37 @@
     "tax_lien_total_usd": 0.0,
     "condemned": false,
     "city_inventory_status": null,
-    "pending_transfer_to": null
+    "pending_transfer_to": null,
+    "recent_permits": [
+      {
+        "permit_id": "MP-2026-00340",
+        "permit_type": "MECHANICAL",
+        "work_type": "ADDITION / ALTERATION",
+        "issue_date": "2026-04-20",
+        "status": "Completed"
+      },
+      {
+        "permit_id": "MP-2022-13420",
+        "permit_type": "MECHANICAL",
+        "work_type": "ADDITION / ALTERATION",
+        "issue_date": "2022-08-25",
+        "status": "Completed"
+      },
+      {
+        "permit_id": "EP-2022-13277",
+        "permit_type": "ELECTRICAL",
+        "work_type": "ADDITION / ALTERATION",
+        "issue_date": "2022-08-24",
+        "status": "Completed"
+      },
+      {
+        "permit_id": "BP-2022-04526",
+        "permit_type": "BUILDING",
+        "work_type": "ADDITION / ALTERATION",
+        "issue_date": "2022-05-11",
+        "status": "Completed"
+      }
+    ]
   },
   "area": {
     "neighborhood": "East Allegheny",
@@ -799,79 +829,151 @@
       "name": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
       "url": null,
       "as_of": "2026-09-07",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:03:00+00:00"
     },
     "zoning": {
       "name": "Zoning; City Designated Historic Districts; PGHZoningHeightOverlay; Parking Reduction Zoning Overlay; Riverfront Zoning Overlay; Uptown IPOD Zoning; Greenways",
       "url": null,
       "as_of": "2024-02-07",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-08-01T00:00:00+00:00"
     },
     "steep_slope": {
       "name": "25% or Greater Slope",
       "url": "https://data.wprdc.org/dataset/0f643c56-1c53-4c88-824d-3a3876c0d3a0/resource/5ce91a56-0799-46ea-9585-13fa8db5979e/download/slopes.geojson",
       "as_of": "2026-09-23",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:03:21+00:00"
     },
     "landslide_prone": {
       "name": "Landslide Prone Areas",
       "url": "https://data.wprdc.org/dataset/6eb1be84-7abe-45c3-8a37-90db80ea6149/resource/b5b45ac6-f8ef-4805-b4e4-fc7c63fb4075/download/landslides.geojson",
       "as_of": "2026-09-23",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:03:22+00:00"
     },
     "undermined": {
       "name": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
       "url": null,
       "as_of": "2026-09-23",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T17:57:19+00:00"
     },
     "flood": {
       "name": "Flood Hazard Zones",
       "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28",
       "as_of": null,
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:02:53+00:00"
     },
     "environmental": {
       "name": "Air Media; Storage Tanks Active; Storage Tanks Inactive",
       "url": null,
       "as_of": null,
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T17:58:56+00:00"
     },
     "sewer": {
       "name": "Combined Sewershed",
       "url": "https://data.wprdc.org/dataset/fe7e5332-4c87-410d-b0be-43c5d2c44ae0/resource/138d6b65-1630-4905-9421-de90cd9d59e5/download/___",
       "as_of": "2018-07-27",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:06:05+00:00"
     },
     "frontage": {
       "name": "Allegheny County Addressing Street Centerlines; City of Pittsburgh Steps",
       "url": null,
       "as_of": "2022-12-19",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:06:07+00:00"
     },
     "transit": {
       "name": "Pittsburgh Regional Transit Stops",
       "url": "https://data.wprdc.org/dataset/33d5f44b-5315-4374-b3e3-e4246e8ad5c9/resource/d6e6ed6e-9220-4a0e-9796-e72d83ce8e7a/download/stops.geojson",
       "as_of": "2026-09-22",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:07:53+00:00"
     },
     "market_sales": {
       "name": "Allegheny County Property Sale Transactions",
       "url": "https://data.wprdc.org/datastore/dump/5bbe6c55-bce6-4edb-9d04-68edeb6bf7b1",
       "as_of": "2026-09-26",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T23:21:40+00:00"
     },
     "market_rents": {
       "name": "SAFMRyear; FAIR_MARKET_RENTS",
       "url": null,
       "as_of": "2024-11-05",
-      "note": null
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:06:15+00:00"
     },
     "zba_cases": {
       "name": "Zoning Board of Adjustment decisions",
       "url": null,
       "as_of": null,
       "note": "Not available: pittsburghpa.gov blocks this client (HTTP 403)."
+    },
+    "assessment": {
+      "name": "Allegheny County Property Assessments",
+      "url": "https://data.wprdc.org/dataset/2b3df818-601e-4f06-b150-643557229491/resource/9a1c60bd-f9f7-4aba-aeb7-af8c3aaa44e5/download/assessments.csv",
+      "as_of": "2026-09-07",
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:03:08+00:00"
+    },
+    "tax_liens": {
+      "name": "Allegheny County Tax Liens (Filings, Satisfactions, and Current Status)",
+      "url": "https://data.wprdc.org/datastore/dump/d1e80180-5b2e-4dab-8ec3-be621628649e",
+      "as_of": "2026-09-07",
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:07:56+00:00"
+    },
+    "condemned": {
+      "name": "Condemned and Dead-End Properties",
+      "url": "https://data.wprdc.org/datastore/dump/0a963f26-eb4b-4325-bbbc-3ddf6a871410",
+      "as_of": "2026-09-26",
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:06:20+00:00"
+    },
+    "city_inventory": {
+      "name": "City-Owned Properties",
+      "url": "https://data.wprdc.org/datastore/dump/e1dcee82-9179-4306-8167-5891915b62a7",
+      "as_of": "2026-09-26",
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:07:55+00:00"
+    },
+    "permits": {
+      "name": "PLI Permits",
+      "url": "https://data.wprdc.org/datastore/dump/f4d1177a-f597-4c32-8cbf-7885f56253f6",
+      "as_of": "2026-09-26",
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T18:06:19+00:00"
+    },
+    "recent_sales": {
+      "name": "Allegheny County Property Sale Transactions",
+      "url": "https://data.wprdc.org/datastore/dump/5bbe6c55-bce6-4edb-9d04-68edeb6bf7b1",
+      "as_of": "2026-09-26",
+      "note": null,
+      "retrieved": "snapshot",
+      "retrieved_at": "2026-09-26T23:21:40+00:00"
     }
   }
 }

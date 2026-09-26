@@ -349,6 +349,69 @@
       "title": "Parcel",
       "type": "object"
     },
+    "Permit": {
+      "additionalProperties": false,
+      "properties": {
+        "permit_id": {
+          "title": "Permit Id",
+          "type": "string"
+        },
+        "permit_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Permit Type"
+        },
+        "work_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Work Type"
+        },
+        "issue_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Issue Date"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Status"
+        }
+      },
+      "required": [
+        "permit_id",
+        "permit_type",
+        "work_type",
+        "issue_date",
+        "status"
+      ],
+      "title": "Permit",
+      "type": "object"
+    },
     "Physical": {
       "additionalProperties": false,
       "properties": {
@@ -614,6 +677,35 @@
           ],
           "default": null,
           "title": "Note"
+        },
+        "retrieved": {
+          "anyOf": [
+            {
+              "enum": [
+                "live",
+                "snapshot"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
         }
       },
       "required": [
@@ -658,6 +750,13 @@
             }
           ],
           "title": "Pending Transfer To"
+        },
+        "recent_permits": {
+          "items": {
+            "$ref": "#/$defs/Permit"
+          },
+          "title": "Recent Permits",
+          "type": "array"
         }
       },
       "required": [

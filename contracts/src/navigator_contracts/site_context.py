@@ -80,11 +80,20 @@ class AdjacentParcel(Contract):
     shared_edge_ft: float
 
 
+class Permit(Contract):
+    permit_id: str
+    permit_type: str | None
+    work_type: str | None
+    issue_date: date | None
+    status: str | None
+
+
 class Title(Contract):
     tax_lien_total_usd: float
     condemned: bool
     city_inventory_status: str | None  # city-owned inventory, e.g. "Available for Sale"
     pending_transfer_to: Literal["land_bank", "ura"] | None
+    recent_permits: list[Permit] = Field(default_factory=list)  # newest first, up to 20
 
 
 class Area(Contract):

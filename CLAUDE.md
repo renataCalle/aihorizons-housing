@@ -86,11 +86,16 @@ schema version and need approval from both owners.
 Pittsburgh parcels. They become snapshot tests, so an engine change that moves a golden score
 is visible to both owners.
 
-`sandbox/` is the research scientist's data workspace, outside the production import graph:
-`fetch.py` (raw downloads + provenance manifests, sources in `catalog.py`) → `build.py`
-(clean GeoParquet, EPSG:2272) → `features.py` (per-parcel facts) → `site_context.py`
-(SiteContext-shaped JSON for a parcel). Run as `uv run python -m sandbox.<step>`. Its README
-lists data gaps (notably: pittsburghpa.gov returns 403, so ZBA decisions are unavailable).
+`pipeline/` (`navigator_pipeline`) builds SiteContext from public data and keeps it fresh:
+`fetch` (downloads + provenance manifests, sources and cadences in `catalog.py`) → `build`
+(clean GeoParquet, EPSG:2272) → `features` (per-parcel facts) → `site_context.build(ids,
+live=True)`; `refresh` re-pulls changed sources on a schedule and `live` fetches fast-changing
+per-parcel records at report time, falling back to the stored copy. Data lives in `data/`
+(gitignored) or `NAVIGATOR_DATA_DIR`. See `pipeline/README.md`.
+
+`sandbox/` holds research prototypes outside the production import graph: the v0 engine
+(`engine_v0/`), rules drafts, golden parcels, `navigator` and `report`. Its README lists data
+gaps (notably: pittsburghpa.gov returns 403, so ZBA decisions are unavailable).
 Every outbound request sends exactly `User-Agent: market-data-client/1.0`; never add contact
 details or spoof a browser to get past a block.
 

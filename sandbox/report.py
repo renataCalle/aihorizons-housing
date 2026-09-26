@@ -12,11 +12,12 @@ import html
 import json
 import re
 import sys
-from pathlib import Path
 
 import numpy as np
 
-DATA = Path(__file__).parent / "data"
+from navigator_pipeline.settings import DATA_DIR
+
+DATA = DATA_DIR
 OUT = DATA / "output"
 
 SEVERITY = {  # flag severity -> (chip label, css class)
@@ -441,6 +442,24 @@ def render(payload: dict) -> str:
         for k, val, note in pf_rows
     )
     as_of = (ctx["provenance"].get("parcels") or {}).get("as_of") or "—"
+    prov = ctx["provenance"]
+    live_now = [k for k, v in prov.items() if v.get("retrieved") == "live"]
+    fell_back = [
+        k for k, v in prov.items() if (v.get("note") or "").startswith("Live lookup failed")
+    ]
+    live_at = max((prov[k]["retrieved_at"] for k in live_now), default=None)
+    fresh = (
+        f'<p class="small"><b>Live at {e(str(live_at)[:16].replace("T", " "))} UTC:</b> '
+        f"{e(', '.join(k.replace('_', ' ') for k in live_now))}. Map layers and "
+        "everything else come from the stored copy, refreshed on a schedule.</p>"
+        if live_now
+        else '<p class="small"><b>Stored copy only</b> (no live lookups for this report).</p>'
+    )
+    if fell_back:
+        fresh += (
+            f'<p class="small down">Live lookup failed, stored copy used: '
+            f"{e(', '.join(k.replace('_', ' ') for k in fell_back))}.</p>"
+        )
     side = f"""
     <aside>
       <section class="card"><h3>Parcel</h3><div class="facts">{fact_rows}</div></section>
@@ -448,6 +467,7 @@ def render(payload: dict) -> str:
         <p class="muted small">Change any of them: <code>--set hard_cost_psf=200</code>, <code>--land-price 35000</code></p></section>
       <section class="card about"><h3>About this report</h3>
         <p class="small">A screening, not a zoning determination. Every finding shows its source and confidence; unknowns are never scored as clear. Costs marked placeholder are defaults, not local benchmarks.</p>
+        {fresh}
         <span class="mono">Engine {e(ver["engine"])} · {e(ver["ruleset"])} · parcels as of {e(as_of)}</span></section>
     </aside>"""
 

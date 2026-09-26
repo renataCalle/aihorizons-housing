@@ -1,4 +1,4 @@
-"""Draft rules-table rows from the zoning code PDFs saved in sandbox/data/manual/zoning_code/.
+"""Draft rules-table rows from the zoning code PDFs saved in data/manual/zoning_code/.
 
     uv run python -m sandbox.rules.extract
 
@@ -17,8 +17,9 @@ import re
 import subprocess
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-CODE = ROOT / "data" / "manual" / "zoning_code"
+from navigator_pipeline.settings import MANUAL
+
+CODE = MANUAL / "zoning_code"
 OUT = Path(__file__).parent / "residential_draft.csv"
 
 USE_SUBDISTRICTS = ["R1D", "R1A", "R2", "R3", "RM"]

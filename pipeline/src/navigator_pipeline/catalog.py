@@ -1,12 +1,14 @@
-"""Every data source the sandbox pulls, keyed by a short name.
+"""Every data source the pipeline pulls, keyed by a short name.
 
 Wave numbers follow the spec's ingestion order. `feeds` says which engine module or
 SiteContext field the source serves.
 """
 
+import os
 from dataclasses import dataclass, field
 
-WPRDC = "https://data.wprdc.org"
+# Overridable so tests (and outage drills) can point at another host.
+WPRDC = os.environ.get("NAVIGATOR_WPRDC_URL", "https://data.wprdc.org")
 DEP_EXTERNAL = "https://gis.dep.pa.gov/depgisprd/rest/services/emappa/eMapPA_External/MapServer"
 DEP_EXTRACT = (
     "https://gis.dep.pa.gov/depgisprd/rest/services/emappa/eMapPA_External_Extraction/MapServer"
@@ -342,3 +344,27 @@ SOURCES: list[Source] = [
 ]
 
 BY_KEY = {s.key: s for s in SOURCES}
+
+# How often the scheduled refresh checks each source for new data (days). Records that change
+# daily at the source are also looked up live per parcel (navigator_pipeline.live).
+REFRESH_DAYS_DEFAULT = 30
+REFRESH_DAYS = {
+    "sales": 1,
+    "pli_permits": 1,
+    "condemned": 1,
+    "city_owned": 1,
+    "assessments": 7,
+    "tax_liens": 7,
+    "council_zoning_matters": 7,
+    "assessments_dictionary": 365,
+    "hud_safmr": 365,
+    "hud_fmr_metro": 365,
+    "hud_qct": 365,
+    "hud_dda": 365,
+    "opportunity_zones": 365,
+    "market_value_analysis": 365,
+}
+
+
+def refresh_days(key: str) -> int:
+    return REFRESH_DAYS.get(key, REFRESH_DAYS_DEFAULT)

@@ -15,26 +15,35 @@ uv run python -m sandbox.navigator 4-A-303                       # block-lot
 uv run python -m sandbox.navigator 0052H00093000000              # county id
 uv run python -m sandbox.navigator "5607 ELMER ST"               # address
 uv run python -m sandbox.navigator 52-H-93 --set hard_cost_psf=200 --land-price 150000
+uv run python -m sandbox.navigator 52-H-93 --no-live     # stored copy only
 ```
+
+Reports use live lookups for fast-changing records by default and say which ones were live.
 
 Runs the v0 engine (`engine_v0/`: rules engine -> constraint flags -> entitlement odds ->
 pro forma Monte Carlo -> score -> next steps) and writes the full JSON to
-`sandbox/data/output/<parcel_id>.json`. Every non-data number lives in
+`data/output/<parcel_id>.json`. Every non-data number lives in
 `engine_v0/assumptions.py` (and the flag table in `engine_v0/constraints.py`), marked
 PLACEHOLDER until replaced by local benchmarks or calibration; the report lists them.
 
 ## Run it
 
+The data code (fetch, build, features, SiteContext, refresh, live lookups) now lives in
+`pipeline/` as `navigator_pipeline`; see `pipeline/README.md`. The sandbox keeps the research
+prototypes: the v0 engine, rules drafts, golden parcels, navigator and report.
+
+
 ```bash
 uv sync
-uv run python -m sandbox.fetch                 # ~1.3 GB raw, about 10 minutes
-uv run python -m sandbox.build                 # clean tables, about 10 minutes
-uv run python -m sandbox.features              # per-parcel facts, City of Pittsburgh
-uv run python -m sandbox.features --county     # same, all 585k county parcels
-uv run python -m sandbox.site_context 12-A-34  # SiteContext JSON for a parcel or assemblage
+uv run python -m navigator_pipeline.fetch                 # ~1.2 GB raw, about 10 minutes
+uv run python -m navigator_pipeline.build                 # clean tables, about 10 minutes
+uv run python -m navigator_pipeline.features              # per-parcel facts, City of Pittsburgh
+uv run python -m navigator_pipeline.features --county     # same, all 585k county parcels
+uv run python -m navigator_pipeline.site_context 12-A-34 --live   # SiteContext JSON
+uv run python -m navigator_pipeline.refresh               # scheduled refresh (see pipeline/README.md)
 ```
 
-Manual downloads (sites that block this client) go in `sandbox/data/manual/`. From the
+Manual downloads (sites that block this client) go in `data/manual/`. From the
 zoning code PDFs saved there, a draft rules table is generated for review:
 
 ```bash
@@ -47,7 +56,7 @@ the PDF, per the spec. Rows with district `*` record standards that are resolved
 absent from Pittsburgh's code, or still missing.
 
 Two companion drafts were read by hand from the 254-page Title Nine download
-(`sandbox/data/zoning_code/`), because their tables do not survive text extraction:
+(`data/manual/zoning_code/`), because their tables do not survive text extraction:
 
 - `rules/use_permissions_draft.csv`: which residential product types each district allows
   (P / A / S / C) from the 911.02 use table, read from the page image.
@@ -72,10 +81,10 @@ cap are labeled assumptions.
 a county run.
 
 Each step skips work already done. `fetch --force <key>` re-downloads a source, and
-`build <name>` rebuilds one table. Data lives in `sandbox/data/`, which git ignores.
+`build <name>` rebuilds one table. Data lives in `data/` at the repository root, which git ignores.
 
 ```
-sandbox/data/
+data/
   raw/<key>/          immutable downloads + _manifest.json (url, source as-of, sha256)
   clean/<name>.parquet  one table per layer, EPSG:2272 (State Plane South, US ft)
   features/           parcel_facts, parcel_zoning, parcel_flood, parcel_env_nearby

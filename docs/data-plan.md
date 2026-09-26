@@ -259,18 +259,18 @@ These are facts, not thresholds. Choosing the cutoffs is the constraint model's 
 | Order | Work | Owner | Unblocks |
 | --- | --- | --- | --- |
 | 1 | **Decide the ZBA and zoning-code routes** (below) | Both + research scientist | Entitlement model, rules table |
-| 2 | Pick 8 golden parcels from `parcel_facts` (one per spec case) and export with `sandbox.site_context` | Research | Fixtures, demo |
+| 2 | Pick 8 golden parcels from `parcel_facts` (one per spec case) and export with `navigator_pipeline.site_context` | Research | Fixtures, demo |
 | 3 | Draft rules-table rows for residential districts (R1D, R1A, R2, R3, RM, H) | Research | Rules engine v0 |
 | 4 | Add Tier 2 sources: violations, delinquency, foreclosures, abatements, PPI, Zillow | Research (sandbox) → Engineer (pipeline) | Richer flags, cost escalation |
 | 5 | USGS 3DEP slope for golden parcels, then countywide | Research | Suburban partial reports; grading intensity |
 | 6 | Historical permits 2012–2019 | Research | Longer by-right validation |
-| 7 | Hand the fact definitions in `sandbox/features.py` to the engineer as SiteContext field specs | Research → Engineer | Production feature builder |
+| 7 | Hand the fact definitions in `navigator_pipeline/features.py` to the engineer as SiteContext field specs | Research → Engineer | Production feature builder |
 
 ## Decisions needed
 
 1. **Zoning Board of Adjustment decisions.** pittsburghpa.gov returns 403 to our client.
    Options: request a bulk export or an allowlist from City Planning; or have a person
-   download agendas and decisions in a browser and drop them in `sandbox/data/manual/`.
+   download agendas and decisions in a browser and drop them in `data/manual/`.
    Disguising the client as a browser is off the table.
 2. **Zoning code text.** ecode360 returns 403 as well. The same two options apply; Municode's
    library page loads but is a JavaScript app. The rules table is human-reviewed anyway, so

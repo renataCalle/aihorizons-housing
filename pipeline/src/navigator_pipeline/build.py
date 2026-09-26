@@ -1,7 +1,7 @@
-"""Clean raw downloads into analysis-ready tables in sandbox/data/clean/.
+"""Clean raw downloads into analysis-ready tables in data/clean/.
 
-    uv run python -m sandbox.build              # every layer whose raw data is present
-    uv run python -m sandbox.build zoning sales  # specific layers
+    uv run python -m navigator_pipeline.build              # every layer whose raw data is present
+    uv run python -m navigator_pipeline.build zoning sales  # specific layers
 
 Conventions (from the spec):
 - Geometry is PA State Plane South, US survey feet (EPSG:2272), so areas are square feet.
@@ -18,12 +18,13 @@ from collections.abc import Callable
 from pathlib import Path
 
 import geopandas as gpd
-import numpy as np
 import pandas as pd
 import shapely
 
+from navigator_pipeline.settings import DATA_DIR as DATA
+
 CRS = "EPSG:2272"
-DATA = Path(__file__).parent / "data"
+
 RAW = DATA / "raw"
 CLEAN = DATA / "clean"
 PITTSBURGH_MUNICODES = range(101, 133)  # assessment MUNICODE 101-132 = city wards 1-32
@@ -37,7 +38,7 @@ def raw_file(key: str, suffix: str | None = None) -> Path:
     if suffix:
         files = [p for p in files if p.suffix == suffix]
     if not files:
-        raise FileNotFoundError(f"no raw data for {key}; run sandbox.fetch {key}")
+        raise FileNotFoundError(f"no raw data for {key}; run navigator_pipeline.fetch {key}")
     return files[0]
 
 
@@ -126,6 +127,21 @@ def build_neighborhoods() -> gpd.GeoDataFrame:
     return g.dissolve(by="hood", as_index=False)[["hood", "geometry"]].rename(
         columns={"hood": "neighborhood"}
     )
+
+
+def owner_type(current_use: str | None, in_pittsburgh: bool) -> str:
+    """Owner type per the contract, from the assessor's land use (OWNERDESC is the ownership
+    form, not public/private). Refined later with the city-owned inventory."""
+    use = current_use.upper() if isinstance(current_use, str) else ""
+    if use == "MUNICIPAL URBAN RENEWAL":
+        return "ura"
+    if use == "MUNICIPAL GOVERNMENT" and in_pittsburgh:
+        return "city"
+    if any(
+        k in use for k in ("GOVERNMENT", "METRO HOUSING", "PUBLIC PARK", "MUNICIPAL IMPROVEMENT")
+    ):
+        return "other_public"
+    return "private"
 
 
 def build_parcels() -> gpd.GeoDataFrame:
@@ -223,20 +239,9 @@ def build_parcels() -> gpd.GeoDataFrame:
     p["municode"] = p["municode"].fillna(pd.to_numeric(p["municode_gis"], errors="coerce"))
     p["in_pittsburgh"] = p["municode"].isin(PITTSBURGH_MUNICODES)
     p["has_assessment"] = p["address"].notna()
-    # Owner type per the contract, from the assessor's land use (OWNERDESC is the ownership
-    # form, not public/private). Refined in features with the city-owned inventory.
-    use = p["current_use"].fillna("").str.upper()
-    p["owner_type"] = np.select(
-        [
-            use.eq("MUNICIPAL URBAN RENEWAL"),
-            use.eq("MUNICIPAL GOVERNMENT") & p["in_pittsburgh"],
-            use.str.contains(
-                "GOVERNMENT|METRO HOUSING|PUBLIC PARK|MUNICIPAL IMPROVEMENT", regex=True
-            ),
-        ],
-        ["ura", "city", "other_public"],
-        default="private",
-    )
+    p["owner_type"] = [
+        owner_type(u, c) for u, c in zip(p["current_use"], p["in_pittsburgh"], strict=True)
+    ]
     p["as_of_parcels"] = manifest("parcels")["source_as_of"]
     p["as_of_assessments"] = manifest("assessments")["source_as_of"]
     return p.drop(columns=["municode_gis"])

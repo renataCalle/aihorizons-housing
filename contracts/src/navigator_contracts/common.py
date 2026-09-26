@@ -1,6 +1,6 @@
 """Types shared by SiteContext and SiteAnalysis."""
 
-from datetime import date
+from datetime import date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
@@ -32,3 +32,7 @@ class Source(Contract):
     url: str | None = None
     as_of: date | None = None
     note: str | None = None
+    # "live": fetched from the source's API for this report; "snapshot": from the refreshed
+    # store (as_of is the store's source date). A failed live lookup falls back to snapshot.
+    retrieved: Literal["live", "snapshot"] | None = None
+    retrieved_at: datetime | None = None
