@@ -124,7 +124,10 @@ class LookupResponse(Model):
     matches: list[LookupMatch]
 
 
-ApprovalPath = Literal["by_right", "special_exception", "variance", "rezoning", "not_allowed"]
+# "administrative": approvals without a zoning board hearing, such as a lot subdivision.
+ApprovalPath = Literal[
+    "by_right", "administrative", "special_exception", "variance", "rezoning", "not_allowed"
+]
 NearFeature = Literal["transit_stop", "park", "school", "grocery"]
 Constraint = Literal["undermined", "flood_zone", "landslide", "combined_sewer", "steep_slope"]
 SortKey = Literal["score_desc", "headroom_desc", "fastest", "cheapest"]
@@ -168,6 +171,51 @@ class SearchFilters(Model):
     show_assemblies: bool = False
     show_near_misses: bool = False
     sort: SortKey = "score_desc"
+
+
+class FilterChip(Model):
+    """One active filter as the UI shows it. `key` says what removing the chip resets."""
+
+    key: str = Field(description="SearchFilters field, or near:<feature> / constraint:<name>")
+    label: str
+
+
+class SearchResult(Model):
+    rank: int
+    parcel: ParcelSummary
+    fit: ProgramFit | None = Field(description="The program that matched the product filter")
+
+
+class NearMiss(Model):
+    """A candidate that fails exactly one active filter."""
+
+    parcel: ParcelSummary
+    failed: FilterChip
+
+
+class Assembly(Model):
+    assembly_id: str
+    parcel_ids: list[str]
+
+
+class Suggestion(Model):
+    """When nothing matches: the filter whose removal brings back the most sites."""
+
+    remove: FilterChip
+    would_return: int
+
+
+class SearchResponse(Model):
+    total: int
+    filters: SearchFilters
+    chips: list[FilterChip]
+    results: list[SearchResult]
+    near_misses: list[NearMiss] = Field(default_factory=list)
+    assemblies: list[Assembly] = Field(default_factory=list)
+    not_applied: list[FilterChip] = Field(
+        default_factory=list, description="Filters the data can't answer yet; ignored"
+    )
+    suggestion: Suggestion | None = None
 
 
 # ---------------------------------------------------------------------------
