@@ -16,7 +16,9 @@ class Settings(BaseSettings):
     ai_search_model: str = "claude-haiku-4-5-20251001"
     # Comma-separated, e.g. "http://localhost:5173,http://127.0.0.1:5173".
     cors_origins: str = "http://localhost:5173"
-    mock_fixtures_dir: Path = REPO_ROOT / "fixtures" / "mock" / "ui-draft"
+    golden_dir: Path = REPO_ROOT / "fixtures" / "golden"
+    mock_generated_dir: Path = REPO_ROOT / "fixtures" / "mock" / "generated"
+    mock_evidence_dir: Path = REPO_ROOT / "fixtures" / "mock" / "ui-draft"
 
     @property
     def cors_origin_list(self) -> list[str]:

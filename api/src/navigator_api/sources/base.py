@@ -2,21 +2,36 @@
 
 from typing import Literal, Protocol
 
-from navigator_api.models import Evidence, SiteAnalysis, Versions
+from navigator_api.models import (
+    EvidenceDetail,
+    MapFeatureCollection,
+    ParcelFeatureCollection,
+    ParcelSummary,
+)
+from navigator_contracts import SiteAnalysis
+from navigator_contracts.site_analysis import Versions
 
 
 class SiteSource(Protocol):
-    """Stage 1 of docs/06-mock-data.md: analyses are prebuilt.
+    """Analyses are precomputed by the engine for now (docs/06-mock-data.md, stage 2).
 
-    When the engine lands, `analysis` moves to `navigator_engine.analyze(site_context(id))`
-    and sources provide SiteContext facts instead.
+    When the engine moves to navigator_engine, `analysis` can call it live on SiteContext.
     """
 
     name: Literal["mock", "pipeline"]
-    illustrative: bool
 
     def versions(self) -> Versions: ...
 
+    def illustrative(self) -> bool: ...
+
+    def summaries(self) -> list[ParcelSummary]: ...
+
+    def summary(self, parcel_id: str) -> ParcelSummary | None: ...
+
     def analysis(self, parcel_id: str) -> SiteAnalysis | None: ...
 
-    def evidence(self, evidence_id: str) -> Evidence | None: ...
+    def parcels_geojson(self) -> ParcelFeatureCollection: ...
+
+    def map_features(self) -> MapFeatureCollection: ...
+
+    def evidence(self, evidence_id: str) -> EvidenceDetail | None: ...

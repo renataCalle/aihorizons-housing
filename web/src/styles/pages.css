@@ -4,12 +4,6 @@
   padding: 88px 24px 24px;
 }
 
-.page-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .topbar {
   position: fixed;
   top: 16px;
@@ -32,26 +26,6 @@
   text-decoration: none;
 }
 
-.hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-}
-
-.hero-title {
-  font-size: 46px;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-}
-
-.hero-sub {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 15px;
-}
-
 .button-primary {
   display: inline-flex;
   align-items: center;
@@ -67,6 +41,23 @@
 .button-primary:hover {
   background: var(--cobalt-deep);
   color: var(--white);
+}
+
+.button-secondary {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 18px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: var(--radius-control);
+  background: var(--white);
+  color: var(--cobalt-deep);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.button-secondary:hover {
+  background: var(--cobalt-tint);
 }
 
 .report {
@@ -120,4 +111,170 @@
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 400;
+}
+
+/* Landing (Landing.dc.html): the map, faded, behind one search box. */
+.landing {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.landing-map {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+}
+
+/* Keeps the headline readable; clicks pass through to the map. */
+.landing-fade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 60% 45% at 50% 42%,
+    rgba(238, 244, 251, 0.92) 0%,
+    rgba(238, 244, 251, 0.6) 55%,
+    rgba(238, 244, 251, 0) 100%
+  );
+}
+
+.landing-header {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+  right: 32px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.landing-header > * {
+  pointer-events: auto;
+}
+
+.landing-header .brand span {
+  font-size: 20px;
+}
+
+.landing-hero {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: min(1000px, calc(100vw - 48px));
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.landing-hero > * {
+  pointer-events: auto;
+}
+
+.landing-kicker {
+  margin: 0;
+  color: var(--cobalt);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.landing-title {
+  margin: 0;
+  font-size: clamp(34px, 4.6vw, 64px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.landing-sub {
+  margin: 0 0 16px;
+  color: var(--ink-2);
+  font-size: 17px;
+}
+
+.landing-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+.example-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 12px 0 6px;
+  border: 1px solid rgba(29, 63, 214, 0.16);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.example-chip:hover {
+  border-color: var(--cobalt-line);
+  background: var(--white);
+}
+
+.example-chip .mono {
+  font-size: 12px;
+}
+
+.example-tag {
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--cobalt-tint);
+  color: var(--cobalt-deep);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.example-tag.is-ai {
+  background: var(--cobalt);
+  color: var(--white);
+}
+
+.landing-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 0;
+  color: var(--ink-4);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.landing-hint svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.landing-header-end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }

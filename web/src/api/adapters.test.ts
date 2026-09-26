@@ -1,69 +1,116 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { toEvidence, toSiteReport } from './adapters'
+import { toBand, toEvidence, toParcelLayer, toSeverity, toSiteReport } from './adapters'
 
-function fixture(name: string): unknown {
-  const url = new URL(`../../../fixtures/mock/ui-draft/${name}`, import.meta.url)
-  return JSON.parse(readFileSync(url, 'utf8'))
+const FIXTURES = new URL('../../../fixtures/', import.meta.url)
+
+function json(path: string): any {
+  return JSON.parse(readFileSync(new URL(path, FIXTURES), 'utf8'))
 }
 
-describe('toSiteReport', () => {
-  const raw = fixture('sample_lot_a.analysis.json') as Record<string, any>
-  const report = toSiteReport(raw)
+const summaries: any[] = json('mock/generated/summaries.json')
+const sampleSummary = summaries.find((s) => s.display_name === 'Sample lot A')
+const sampleAnalysis = json(`mock/generated/site_analysis/${sampleSummary.parcel_id}.json`)
 
-  it('maps the parcel and verdict', () => {
-    expect(report.parcel.id).toBe('0000-X-00000-0000-00')
-    expect(report.parcel.name).toBe('Sample lot A')
-    expect(report.verdict.headline).toBe(raw.verdict.headline)
-    expect(report.illustrative).toBe(true)
+describe('toBand and toSeverity', () => {
+  it("maps the engine's names to the UI's", () => {
+    expect(toBand('feasible_with_conditions')).toBe('conditions')
+    expect(toBand('not_scored')).toBe('unknown')
+    expect(toSeverity('high')).toBe('deal_risk')
+    expect(toSeverity('medium')).toBe('caution')
+    expect(toSeverity('low')).toBe('minor')
   })
 
-  it('maps low/high ranges to p10/p90 with no p50', () => {
-    expect(report.verdict.scoreRange).toEqual({
-      p10: raw.verdict.score_range.low,
-      p50: null,
-      p90: raw.verdict.score_range.high,
-      unit: raw.verdict.score_range.unit,
-    })
+  it('shows anything unrecognized as unknown, never clear', () => {
+    expect(toBand('something_new')).toBe('unknown')
+    expect(toSeverity('something_new')).toBe('unknown')
+  })
+})
+
+describe('toSiteReport', () => {
+  const report = toSiteReport({ parcel: sampleSummary, analysis: sampleAnalysis })
+
+  it('maps the parcel header', () => {
+    expect(report.parcel.id).toBe('0000X00000000000')
+    expect(report.parcel.name).toBe('Sample lot A')
+    expect(report.parcel.illustrative).toBe(true)
+    expect(report.parcel.centroid).toHaveLength(2)
+  })
+
+  it('keeps p10/p50/p90 estimates', () => {
+    expect(report.analysis?.verdict.scoreRange).toEqual(sampleAnalysis.verdict.score_range)
   })
 
   it('keeps every array item, in order', () => {
-    expect(report.findings.map((f) => f.id)).toEqual(raw.findings.map((f: any) => f.id))
-    expect(report.scoreComponents).toHaveLength(raw.score_breakdown.length)
-    expect(report.nextSteps.map((s) => s.order)).toEqual(raw.next_steps.map((s: any) => s.order))
-    expect(report.assumptions).toHaveLength(raw.assumptions.length)
+    const a = report.analysis!
+    expect(a.flags.map((f) => f.id)).toEqual(sampleAnalysis.flags.map((f: any) => f.id))
+    expect(a.scoreComponents).toHaveLength(sampleAnalysis.verdict.components.length)
+    expect(a.nextSteps.map((s) => s.order)).toEqual(
+      sampleAnalysis.next_steps.map((s: any) => s.order),
+    )
+    expect(a.options).toHaveLength(sampleAnalysis.options.length)
+    expect(a.assumptions).toHaveLength(sampleAnalysis.assumptions.length)
+  })
+
+  it('turns [low, high] pairs into intervals', () => {
+    const step = sampleAnalysis.next_steps[0]
+    expect(report.analysis!.nextSteps[0].cost).toEqual({
+      low: step.cost_usd[0],
+      high: step.cost_usd[1],
+    })
   })
 
   it('stamps versions', () => {
-    expect(report.versions).toEqual({
-      engine: raw.meta.engine_version,
-      ruleset: raw.meta.rules_version,
-      schema: raw.meta.contract_version,
-      dataAsOf: raw.meta.data_refreshed,
-    })
+    expect(report.analysis!.versions.schema).toBe(sampleAnalysis.versions.schema)
   })
 
-  it('shows an unrecognized severity or band as unknown, never clear', () => {
-    const odd = structuredClone(raw)
-    odd.findings[0].severity = 'something_new'
-    odd.verdict.band = 'something_new'
-    const mapped = toSiteReport(odd)
-    expect(mapped.findings[0].severity).toBe('unknown')
-    expect(mapped.verdict.band).toBe('unknown')
+  it('handles a parcel with no analysis', () => {
+    const other = summaries.find((s) => !s.candidate)
+    const empty = toSiteReport({ parcel: other, analysis: null })
+    expect(empty.analysis).toBeNull()
+    expect(empty.parcel.band).toBeNull()
   })
 
-  it('links the approvals option to its evidence', () => {
-    expect(report.bestWithApprovals?.evidenceId).toBe(raw.best_with_approvals.evidence_id)
-    expect(report.bestWithApprovals?.precedent).toEqual({
-      granted: raw.best_with_approvals.precedent_granted,
-      total: raw.best_with_approvals.precedent_total,
+  it('reads a real golden analysis', () => {
+    const golden = summaries.find((s) => s.parcel_id === '0055A00137000000')
+    const analysis = json('golden/site_analysis/steep_slope.json')
+    const r = toSiteReport({ parcel: golden, analysis })
+    expect(r.parcel.illustrative).toBe(false)
+    expect(r.analysis!.flags[0].severity).toBe('deal_risk')
+  })
+})
+
+describe('toParcelLayer', () => {
+  it('marks non-candidates as outline-only and keeps feature ids', () => {
+    const layer = toParcelLayer({
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [0, 0] },
+          properties: { parcel_id: 'a', display_name: 'A', candidate: false, band: null, score: null },
+        },
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [0, 0] },
+          properties: {
+            parcel_id: 'b',
+            display_name: 'B',
+            candidate: true,
+            band: 'not_scored',
+            score: null,
+          },
+        },
+      ],
     })
+    expect(layer.features.map((f) => f.properties.band)).toEqual(['none', 'unknown'])
+    expect(layer.features[0].id).toBe('a')
   })
 })
 
 describe('toEvidence', () => {
   it('maps cases and the code reference', () => {
-    const raw = fixture('ev-variance-4-townhomes.evidence.json') as Record<string, any>
+    const raw = json('mock/ui-draft/ev-variance-4-townhomes.evidence.json')
     const evidence = toEvidence(raw)
     expect(evidence.id).toBe(raw.id)
     expect(evidence.cases).toHaveLength(raw.cases.length)
