@@ -1,23 +1,91 @@
-import { Link } from 'react-router'
+import { MapProvider } from '@vis.gl/react-maplibre'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router'
+import { fetchHealth, fetchMapFeatures, fetchParcelLayer } from '../api'
 import { BrandMark } from '../components/BrandMark'
+import { useAsync } from '../lib/useAsync'
+import { BlueprintMap, type MapView } from '../map/BlueprintMap'
+import { MapControls } from '../map/MapControls'
+import { Omnibox } from '../search/Omnibox'
 
-const SAMPLE_LOT_A = '0000-X-00000-0000-00'
+/** Hazelwood, Greenfield and Glen Hazel, where the mock lots are. */
+const LANDING_VIEW: MapView = { longitude: -79.936, latitude: 40.4115, zoom: 14.9 }
 
-/** Placeholder until M2: brand, headline and a link that proves the API round trip. */
+const EXAMPLES = [
+  { tag: 'ID', text: '0000-X-00000', mono: true, ai: false },
+  { tag: 'Address', text: '123 Sample St', mono: false, ai: false },
+  { tag: '✦ AI', text: '3 townhomes in Hazelwood under $25k', mono: false, ai: true },
+]
+
+/** Landing (docs/01, §1): the city map, faded, and one search box. */
 export function LandingPage() {
+  const navigate = useNavigate()
+  // Remounting the search box with an example fills it and opens its suggestions.
+  const [example, setExample] = useState({ text: '', n: 0 })
+  const parcels = useAsync('parcels', fetchParcelLayer)
+  const features = useAsync('features', fetchMapFeatures)
+  const health = useAsync('health', fetchHealth)
+
   return (
-    <main className="page page-center">
-      <header className="topbar glass">
-        <BrandMark />
-      </header>
-      <section className="hero">
-        <p className="label">Pittsburgh site screening</p>
-        <h1 className="hero-title">What can you build here?</h1>
-        <p className="hero-sub">Search is coming in M2. For now, open the sample report.</p>
-        <Link className="button-primary" to={`/parcel/${SAMPLE_LOT_A}`}>
-          Open Sample lot A
-        </Link>
-      </section>
-    </main>
+    <MapProvider>
+      <main className="landing">
+        <div className="landing-map">
+          <BlueprintMap
+            parcels={parcels.status === 'ready' ? parcels.data : null}
+            features={features.status === 'ready' ? features.data : null}
+            selectedId={null}
+            onSelect={(id) => id && navigate(`/parcel/${id}`)}
+            initialView={LANDING_VIEW}
+          />
+        </div>
+        <div className="landing-fade" aria-hidden="true" />
+
+        <header className="landing-header">
+          <BrandMark />
+          <div className="landing-header-end">
+            {health.status === 'ready' && health.data.illustrative && (
+              <span className="badge-illustrative">Illustrative data</span>
+            )}
+            <Link className="button-secondary" to="/search">
+              Open the map
+            </Link>
+          </div>
+        </header>
+
+        <section className="landing-hero">
+          <p className="landing-kicker">Pittsburgh · Site screening</p>
+          <h1 className="landing-title">What can you build here?</h1>
+          <p className="landing-sub">Screen any lot in the city in under a minute.</p>
+          <Omnibox
+            key={example.n}
+            variant="hero"
+            initialText={example.text}
+            autoOpen={example.n > 0}
+          />
+          <div className="landing-examples">
+            <span>Try</span>
+            {EXAMPLES.map((ex) => (
+              <button
+                key={ex.text}
+                type="button"
+                className="example-chip"
+                onClick={() => setExample((prev) => ({ text: ex.text, n: prev.n + 1 }))}
+              >
+                <span className={ex.ai ? 'example-tag is-ai' : 'example-tag'}>{ex.tag}</span>
+                <span className={ex.mono ? 'mono' : undefined}>{ex.text}</span>
+              </button>
+            ))}
+          </div>
+          <p className="landing-hint">
+            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 3l14 8-6 2-2 6z" />
+            </svg>
+            Or click any lot on the map
+          </p>
+        </section>
+
+        <MapControls show3d={false} />
+      </main>
+    </MapProvider>
   )
 }

@@ -9,5 +9,8 @@ router = APIRouter(tags=["health"])
 @router.get("/health")
 def health(source: Source) -> Health:
     return Health(
-        site_source=source.name, illustrative=source.illustrative, versions=source.versions()
+        site_source=source.name,
+        illustrative=source.illustrative(),
+        parcels=len(source.summaries()),
+        versions=source.versions(),
     )

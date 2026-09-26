@@ -1,12 +1,9 @@
-"""Provisional API models: search, analysis, evidence and health responses.
+"""API models: everything the API serves besides the contracts themselves.
 
-navigator_contracts does not define SiteContext or SiteAnalysis yet, so the API serves these
-models, taken from docs/proposals/ui-contracts-draft.py.txt. When the real contracts land, this
-is the only module that changes: search models move to navigator_contracts/search.py (additive),
-and the analysis models are replaced by imports of the real SiteAnalysis.
-
-Known gaps against the root CLAUDE.md, to close when the contracts exist: Range is low/high
-(p10/p90) with no p50, and ParcelSummary has no city block-lot.
+SiteContext and SiteAnalysis come from navigator_contracts. The models here are API-local and
+additive: parcel summaries for lists, the map and the report header; search filters; evidence
+for the drawer; health. The search models are proposed for navigator_contracts/search.py once
+both owners agree (docs/proposals/). This is the module to change when that happens.
 """
 
 from __future__ import annotations
@@ -16,7 +13,9 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-CONTRACT_VERSION = "0.1.0"
+from navigator_contracts import Range, SiteAnalysis
+from navigator_contracts.site_analysis import Band, OptionLabel, ProductType, Severity, Versions
+from navigator_contracts.site_context import OwnerType
 
 
 class Model(BaseModel):
@@ -24,41 +23,80 @@ class Model(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Shared vocabulary
+# Parcels
 # ---------------------------------------------------------------------------
 
-ProductType = Literal["adu", "duplex", "townhomes", "walkup"]
+
+class LeadOption(Model):
+    """The engine's headline program (`metrics.option`), for lists and the inspector card."""
+
+    label: OptionLabel
+    product_type: ProductType
+    units: int
+    relief: list[str] = Field(description="Empty = by right")
+
+
+class ParcelSummary(Model):
+    """One row in the results list, one feature on the map, the report header.
+
+    Facts come from SiteContext, judgments are copied from the engine's SiteAnalysis; the API
+    computes nothing here.
+    """
+
+    parcel_id: str = Field(description="Canonical 16-character county ID")
+    block_lot: str | None = Field(description="Dashed city block-lot, e.g. 55-A-137")
+    display_name: str
+    address: str | None
+    municipality: str
+    neighborhood: str | None
+    zoning: list[str] = Field(description="Zoning district codes on the lot")
+    lot_area_sqft: float
+    current_use: str
+    owner_type: OwnerType
+    assessed_land: float | None
+    centroid: tuple[float, float] = Field(description="[lon, lat], EPSG:4326")
+    candidate: bool = Field(description="False = not a development candidate (outline only)")
+    illustrative: bool = Field(description="True for generated mock parcels")
+    assembly_id: str | None = Field(default=None, description="Lots that work together")
+    score: int | None = None
+    band: Band | None = Field(default=None, description="None when there is no analysis")
+    top_flag: str | None = None
+    top_flag_severity: Severity | None = None
+    max_land_price: Range | None = None
+    lead_option: LeadOption | None = None
+
+
+class ParcelReport(Model):
+    """Everything the report panel needs: the header and the engine's analysis."""
+
+    parcel: ParcelSummary
+    analysis: SiteAnalysis | None = Field(description="None when the lot is not a candidate")
+
+
+# ---------------------------------------------------------------------------
+# Search (proposed for navigator_contracts/search.py)
+# ---------------------------------------------------------------------------
+
+
+class LookupMatch(Model):
+    matched_on: Literal["county_id", "block_lot", "address"]
+    parcel: ParcelSummary
+
+
+class LookupResponse(Model):
+    """What the search box detected, and the parcels it matches (IDs and addresses only)."""
+
+    kind: Literal["parcel_id", "address", "description", "empty"]
+    format: Literal["county", "block_lot"] | None = Field(
+        default=None, description="For parcel IDs: county ID or city block-lot"
+    )
+    matches: list[LookupMatch]
+
+
 ApprovalPath = Literal["by_right", "special_exception", "variance", "rezoning", "not_allowed"]
-Band = Literal["fast_track", "conditions", "high_risk", "unknown"]
-Severity = Literal["deal_risk", "caution", "unknown"]
-Confidence = Literal["high", "medium", "low"]
-OwnerType = Literal["land_bank", "ura", "city", "private", "other_public"]
 NearFeature = Literal["transit_stop", "park", "school", "grocery"]
 Constraint = Literal["undermined", "flood_zone", "landslide", "combined_sewer", "steep_slope"]
 SortKey = Literal["score_desc", "headroom_desc", "fastest", "cheapest"]
-Outcome = Literal["granted", "denied", "withdrawn", "pending"]
-
-
-class Range(Model):
-    """Every estimate is a range, never a point."""
-
-    low: float
-    high: float
-    unit: Literal["usd", "usd_per_sqft", "pct", "months", "sqft", "points"]
-
-
-class SourceRef(Model):
-    """Where a fact came from. Shown on every finding."""
-
-    label: str = Field(description="Short display label, e.g. 'City steep slopes 25%+'")
-    dataset: str = Field(description="Dataset or publisher, e.g. 'WPRDC'")
-    as_of: date | None = None
-    url: str | None = None
-
-
-# ---------------------------------------------------------------------------
-# Search
-# ---------------------------------------------------------------------------
 
 
 class ProductFilter(Model):
@@ -79,7 +117,7 @@ class SearchFilters(Model):
         default_factory=list, description="Pittsburgh neighborhood names, canonical spelling"
     )
     near: list[NearFilter] = Field(default_factory=list)
-    approval_paths: list[ApprovalPath] = Field(default_factory=list, description="Empty = any path")
+    approval_paths: list[ApprovalPath] = Field(default_factory=list, description="Empty = any")
     bands: list[Band] = Field(default_factory=list, description="Empty = all bands")
     min_score: int | None = Field(default=None, ge=0, le=100)
     max_land_price: float | None = Field(default=None, ge=0, description="USD, land only")
@@ -91,7 +129,7 @@ class SearchFilters(Model):
     owner_types: list[OwnerType] = Field(default_factory=list)
     tax_delinquent_only: bool = False
     max_steep_slope_pct: float | None = Field(
-        default=None, ge=0, le=100, description="Max share of lot at 25%+ slope"
+        default=None, ge=0, le=100, description="Max percent of lot at 25%+ slope"
     )
     exclude_constraints: list[Constraint] = Field(default_factory=list)
     include_unknowns: bool = True
@@ -101,178 +139,54 @@ class SearchFilters(Model):
     sort: SortKey = "score_desc"
 
 
-class Reading(Model):
-    """How one phrase of the user's text was interpreted. Shown in the AI search preview."""
-
-    phrase: str
-    interpreted_as: str
+# ---------------------------------------------------------------------------
+# Map
+# ---------------------------------------------------------------------------
 
 
-class ParseRequest(Model):
-    text: str
-    current_filters: SearchFilters | None = None
-
-
-class ParseResult(Model):
-    filters: SearchFilters
-    readings: list[Reading] = Field(default_factory=list)
-    not_understood: list[str] = Field(default_factory=list)
-    detected: Literal["parcel_id", "address", "description"] = "description"
-
-
-class ProgramOption(Model):
-    product: ProductType
-    units: int
-    sqft_each: int | None = None
-    tenure: Literal["for_sale", "rental"] = "for_sale"
-    margin_pct: Range
-    months_to_permit_ready: Range
-    approval_path: ApprovalPath
-    relief: list[str] = Field(
-        default_factory=list, description="Code sections needing relief, e.g. '§ 911.02'"
-    )
-    code_basis: str | None = Field(
-        default=None, description="e.g. 'By-right under Title Nine as of Sep 2026 · § 903.03'"
-    )
-    precedent_granted: int | None = None
-    precedent_total: int | None = None
-    evidence_id: str | None = None
-
-
-class ParcelSummary(Model):
-    """One row in the results list, one feature on the map, one inspector card."""
-
+class ParcelProperties(Model):
     parcel_id: str
     display_name: str
-    address: str | None = None
-    neighborhood: str
-    zoning_district: str
-    lot_area_sqft: float
-    current_use: str
-    owner_type: OwnerType
-    assessed_value: float | None = None
-    listed_price: float | None = None
-    centroid: tuple[float, float] = Field(description="[lon, lat]")
-    score: int | None = Field(default=None, ge=0, le=100)
-    band: Band
-    best_program: ProgramOption | None = None
-    top_risk: str | None = None
-    top_risk_severity: Severity | None = None
-    max_land_price: Range | None = None
+    candidate: bool
+    band: Band | None
+    score: int | None
     rank: int | None = None
+    assembly_id: str | None = None
 
 
-class SearchResponse(Model):
-    total: int
-    filters: SearchFilters
-    results: list[ParcelSummary]
+class ParcelFeature(Model):
+    type: Literal["Feature"] = "Feature"
+    geometry: dict = Field(description="GeoJSON geometry, EPSG:4326")
+    properties: ParcelProperties
 
 
-class LookupMatch(Model):
-    kind: Literal["parcel_id", "address"]
-    parcel: ParcelSummary
-    matched_text: str
+class ParcelFeatureCollection(Model):
+    type: Literal["FeatureCollection"] = "FeatureCollection"
+    features: list[ParcelFeature]
 
 
-# ---------------------------------------------------------------------------
-# Site analysis (the report)
-# ---------------------------------------------------------------------------
+class MapFeatureProperties(Model):
+    kind: Literal["transit_stop", "park", "school", "neighborhood"]
+    name: str | None = None
 
 
-class ScoreComponent(Model):
-    key: str = Field(description="e.g. approval_path, site_cost, land_headroom")
-    label: str
-    points: int
-    max_points: int
-    note: str
+class MapFeature(Model):
+    type: Literal["Feature"] = "Feature"
+    geometry: dict = Field(description="GeoJSON geometry, EPSG:4326")
+    properties: MapFeatureProperties
 
 
-class Verdict(Model):
-    band: Band
-    score: int | None = None
-    score_range: Range | None = None
-    headline: str = Field(
-        description="One or two sentences. Screening language only, never 'approved' or "
-        "'compliant'."
-    )
-
-
-class HeadlineNumbers(Model):
-    approval_path: ApprovalPath
-    approval_summary: str
-    months_to_permit_ready: Range
-    site_cost_premium: Range
-    site_cost_summary: str
-    max_land_price: Range
-    target_margin_pct: float
-    listed_price: float | None = None
-    comps_count: int
-    comps_radius_mi: float
-    comps_window_months: int
-
-
-class Finding(Model):
-    id: str
-    severity: Severity
-    title: str
-    detail: str
-    impact_cost: Range | None = None
-    impact_months: Range | None = None
-    impact_label: str
-    sources: list[SourceRef]
-    confidence: Confidence
-    confidence_note: str | None = None
-    resolved_by_step: int | None = None
-    evidence_id: str | None = None
-
-
-class ClearedCheck(Model):
-    label: str
-    source: SourceRef | None = None
-
-
-class NextStep(Model):
-    order: int
-    title: str
-    why: str
-    who: str
-    cost: Range = Field(description="low=high=0 means free")
-    duration_label: str
-
-
-class Assumption(Model):
-    key: str
-    label: str
-    value: Range | float | str
-    source_label: str
-    editable: bool = True
-
-
-class AnalysisMeta(Model):
-    contract_version: str = CONTRACT_VERSION
-    rules_version: str
-    data_refreshed: date
-    engine_version: str
-    illustrative: bool = False
-
-
-class SiteAnalysis(Model):
-    parcel: ParcelSummary
-    verdict: Verdict
-    score_breakdown: list[ScoreComponent]
-    headline_numbers: HeadlineNumbers
-    findings: list[Finding] = Field(description="Ordered worst first")
-    cleared: list[ClearedCheck]
-    best_by_right: ProgramOption | None = None
-    best_with_approvals: ProgramOption | None = None
-    next_steps: list[NextStep] = Field(description="Ordered cheapest deal-killers first")
-    assumptions: list[Assumption]
-    meta: AnalysisMeta
+class MapFeatureCollection(Model):
+    type: Literal["FeatureCollection"] = "FeatureCollection"
+    features: list[MapFeature]
 
 
 # ---------------------------------------------------------------------------
-# Evidence drawer
+# Evidence drawer (illustrative until zoning board decisions are available)
 # ---------------------------------------------------------------------------
+
+Confidence = Literal["high", "medium", "low"]
+Outcome = Literal["granted", "denied", "withdrawn", "pending"]
 
 
 class Case(Model):
@@ -291,7 +205,7 @@ class CodeReference(Model):
     url: str | None = None
 
 
-class Evidence(Model):
+class EvidenceDetail(Model):
     id: str
     kind: Literal["zoning_relief", "physical", "infrastructure", "market"]
     title: str
@@ -308,40 +222,13 @@ class Evidence(Model):
 
 
 # ---------------------------------------------------------------------------
-# Neighborhood summary (3D score view side panel)
-# ---------------------------------------------------------------------------
-
-
-class Blocker(Model):
-    label: str
-    lots: int
-
-
-class NeighborhoodSummary(Model):
-    name: str
-    product: ProductFilter
-    counts: dict[Band, int]
-    blockers: list[Blocker]
-    near_misses: int
-    assemblies: int
-
-
-# ---------------------------------------------------------------------------
 # Health
 # ---------------------------------------------------------------------------
-
-
-class Versions(Model):
-    """What produced the data being served. Every SiteAnalysis stamps the same versions."""
-
-    engine: str
-    ruleset: str
-    schema_version: str
-    data_as_of: date
 
 
 class Health(Model):
     status: Literal["ok"] = "ok"
     site_source: Literal["mock", "pipeline"]
-    illustrative: bool
+    illustrative: bool = Field(description="True when any served parcel is mock data")
+    parcels: int
     versions: Versions

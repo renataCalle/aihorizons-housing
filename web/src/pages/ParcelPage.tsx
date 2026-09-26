@@ -1,10 +1,11 @@
 import { Link, Outlet, useParams } from 'react-router'
 import { fetchSiteReport } from '../api'
 import { BrandMark } from '../components/BrandMark'
-import { formatRange } from '../lib/format'
+import { formatNumberRange } from '../lib/format'
 import { useAsync } from '../lib/useAsync'
+import { spanOf } from '../models/estimate'
 
-/** Placeholder until M4: proves the API → adapter → view model path with Sample lot A. */
+/** Placeholder until M4: proves the API → adapter → view model path. */
 export function ParcelPage() {
   const { id = '' } = useParams()
   const report = useAsync(id, (signal) => fetchSiteReport(id, signal))
@@ -24,25 +25,35 @@ export function ParcelPage() {
             <p className="label">Site report</p>
             <h1 className="report-title">{report.data.parcel.name}</h1>
             <p className="mono report-id">
-              {report.data.parcel.id} · {report.data.parcel.neighborhood} ·{' '}
-              {report.data.parcel.zoningDistrict}
+              {report.data.parcel.id}
+              {report.data.parcel.neighborhood && ` · ${report.data.parcel.neighborhood}`}
+              {report.data.parcel.zoning.length > 0 && ` · ${report.data.parcel.zoning.join(', ')}`}
             </p>
-            {report.data.illustrative && <span className="badge-illustrative">Illustrative data</span>}
-            <div className="verdict">
-              <p className="verdict-headline">{report.data.verdict.headline}</p>
-              <p className="verdict-score">
-                {report.data.verdict.score ?? '—'}
-                {report.data.verdict.scoreRange && (
-                  <span className="verdict-range">{formatRange(report.data.verdict.scoreRange)}</span>
-                )}
-              </p>
-            </div>
-            <p className="label">
-              Rules {report.data.versions.ruleset} · Data as of {report.data.versions.dataAsOf}
-            </p>
-            {report.data.bestWithApprovals?.evidenceId && (
-              <Link to={`evidence/${report.data.bestWithApprovals.evidenceId}`}>Evidence →</Link>
+            {report.data.parcel.illustrative && (
+              <span className="badge-illustrative">Illustrative data</span>
             )}
+            {report.data.analysis ? (
+              <>
+                <div className="verdict">
+                  <p className="verdict-headline">{report.data.analysis.verdict.headline}</p>
+                  <p className="verdict-score">
+                    {report.data.analysis.verdict.score ?? '—'}
+                    {report.data.analysis.verdict.scoreRange && (
+                      <span className="verdict-range">
+                        {formatNumberRange(spanOf(report.data.analysis.verdict.scoreRange))}
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <p className="label">
+                  Rules {report.data.analysis.versions.ruleset} · Data as of{' '}
+                  {report.data.analysis.versions.dataAsOf ?? 'unknown'}
+                </p>
+              </>
+            ) : (
+              <p>Not a development candidate.</p>
+            )}
+            <Link to="evidence/ev-variance-4-townhomes">Evidence →</Link>
           </>
         )}
       </article>

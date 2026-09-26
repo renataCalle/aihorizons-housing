@@ -34,4 +34,3 @@ data/
 !.vscode/extensions.json
 .idea/
 .DS_Store
-fixtures/mock/generated/

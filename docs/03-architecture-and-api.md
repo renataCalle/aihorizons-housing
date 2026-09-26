@@ -61,9 +61,10 @@ Prefix `/api`. Request and response models come from `navigator_contracts` (exis
 | GET | `/lookup?q=` | lookup matches (county ID, city block-lot, address), max 8 |
 | POST | `/search/parse` | `ParseResult` (filters, readings, not_understood, detected) |
 | POST | `/search` | `SearchResponse` (total, filters, ranked summaries) |
-| GET | `/parcels/{id}/analysis?product=&units=` | `SiteAnalysis` |
+| GET | `/parcels/{id}` | `ParcelReport`: the report header (`ParcelSummary`) and the engine's `SiteAnalysis` (null when the lot is not a candidate). `?product=&units=` once the engine supports them |
 | GET | `/evidence/{evidenceId}` | evidence for a flag (zoning board cases etc.) |
-| POST | `/map/parcels` | GeoJSON FeatureCollection in EPSG:4326; properties: `parcel_id, band, score, rank, display_name` |
+| GET | `/map/parcels` | GeoJSON FeatureCollection in EPSG:4326; properties: `parcel_id, display_name, candidate, band, score, assembly_id`. Ranks come from `/search` and are joined in the client |
+| GET | `/map/features` | Transit stops, parks, schools and neighborhood outlines, EPSG:4326 |
 | GET | `/neighborhoods` | canonical neighborhood names |
 | GET | `/neighborhoods/{name}/summary?product=&units=` | counts per band, top bottlenecks (the engine's `attribute_bottlenecks`; mocked until it exists), near misses, assemblies |
 

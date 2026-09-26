@@ -1,6 +1,7 @@
-import type { ApprovalPath, Band } from './report'
+import type { Band } from './report'
 
-export type ProductType = 'adu' | 'duplex' | 'townhomes' | 'walkup'
+export type ProductType = 'single_family' | 'duplex' | 'triplex' | 'townhome' | 'walkup'
+export type ApprovalPath = 'by_right' | 'special_exception' | 'variance' | 'rezoning' | 'not_allowed'
 export type NearFeature = 'transit_stop' | 'park' | 'school' | 'grocery'
 export type OwnerType = 'land_bank' | 'ura' | 'city' | 'private' | 'other_public'
 export type Constraint = 'undermined' | 'flood_zone' | 'landslide' | 'combined_sewer' | 'steep_slope'
