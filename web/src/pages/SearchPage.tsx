@@ -48,7 +48,10 @@ export function SearchPage() {
           initialView={INITIAL_VIEW}
           onViewChange={setView}
         />
-        <TopBar illustrative={health.status === 'ready' && health.data.illustrative} />
+        <TopBar
+          illustrative={health.status === 'ready' && health.data.illustrative}
+          query={params.get('q') ?? ''}
+        />
         {parcels.status === 'error' && (
           <p className="map-error glass" role="alert">
             Couldn't load parcels: {parcels.error.message}.{' '}
