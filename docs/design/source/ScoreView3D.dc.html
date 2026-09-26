@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>3D score view</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D3FD6}a:hover{color:#1530A8}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: #EEF4FB; font-family: 'Sora', system-ui, sans-serif; color: #0B1B3F">
+<svg width="1440" height="900" viewBox="0 0 1440 900" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Isometric view of Hazelwood with candidate parcels extruded by score">
+<defs>
+<pattern id="sv-grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#DBE6F5" stroke-width="0.6"></path></pattern>
+<pattern id="sv-lots" width="224" height="150" patternUnits="userSpaceOnUse">
+<rect x="0" y="0" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="28" y="0" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="56" y="0" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="84" y="0" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="112" y="0" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="140" y="0" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="168" y="0" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="0" y="60" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="28" y="60" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="56" y="60" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="84" y="60" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="112" y="60" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="140" y="60" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+<rect x="168" y="60" width="28" height="60" fill="#EAF1FA" stroke="#C5D7EF" stroke-width="1"></rect>
+</pattern>
+<pattern id="sv-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect x="0" y="0" width="6" height="6" fill="#F1F4F9"></rect><line x1="0" y1="0" x2="0" y2="6" stroke="#8C9BB5" stroke-width="1.6"></line></pattern>
+<radialGradient id="sv-glow"><stop offset="0" stop-color="#1D3FD6" stop-opacity="0.34"></stop><stop offset="1" stop-color="#1D3FD6" stop-opacity="0"></stop></radialGradient>
+</defs>
+<rect x="0" y="0" width="1440" height="900" fill="#EEF4FB"></rect>
+<rect x="0" y="0" width="1440" height="900" fill="url(#sv-grid)"></rect>
+<g transform="matrix(0.6928 0.4 -0.6928 0.4 828 250)">
+<rect x="0" y="0" width="812" height="570" fill="#FFFFFF"></rect>
+<rect x="0" y="0" width="812" height="570" fill="url(#sv-lots)"></rect>
+<rect x="168" y="450" width="28" height="60" fill="url(#sv-hatch)" stroke="#8C9BB5" stroke-width="1"></rect>
+<rect x="544" y="450" width="28" height="60" fill="#DCE6FF" stroke="#FFFFFF" stroke-width="1"></rect>
+<rect x="572" y="450" width="28" height="60" fill="#DCE6FF" stroke="#FFFFFF" stroke-width="1"></rect>
+<rect x="544" y="450" width="56" height="60" fill="none" stroke="#1D3FD6" stroke-width="2" stroke-dasharray="6 4"></rect>
+<rect x="0" y="0" width="812" height="570" fill="none" stroke="#1D3FD6" stroke-width="2" stroke-dasharray="10 8"></rect>
+</g>
+<ellipse cx="923.6" cy="497.2" rx="70" ry="40" fill="url(#sv-glow)"></ellipse>
+<ellipse cx="699.1" cy="559.6" rx="70" ry="40" fill="url(#sv-glow)"></ellipse>
+<ellipse cx="958.2" cy="589.2" rx="70" ry="40" fill="url(#sv-glow)"></ellipse>
+<ellipse cx="994.3" cy="658.0" rx="70" ry="40" fill="url(#sv-glow)"></ellipse>
+<polygon points="753.2,494.8 772.6,506.0 772.6,399.4 753.2,388.2" fill="#A4C2F7" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="814.1,482.0 772.6,506.0 772.6,399.4 814.1,375.4" fill="#7FA6EC" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="794.7,364.2 814.1,375.4 772.6,399.4 753.2,388.2" fill="#D6E4FE" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="893.1,503.6 912.5,514.8 912.5,379.6 893.1,368.4" fill="#2C4FE6" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="954.1,490.8 912.5,514.8 912.5,379.6 954.1,355.6" fill="#1630A8" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="934.7,344.4 954.1,355.6 912.5,379.6 893.1,368.4" fill="#6E8BF5" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="1152.2,533.2 1171.6,544.4 1171.6,443.0 1152.2,431.8" fill="#A4C2F7" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="1213.2,520.4 1171.6,544.4 1171.6,443.0 1213.2,419.0" fill="#7FA6EC" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="1193.8,407.8 1213.2,419.0 1171.6,443.0 1152.2,431.8" fill="#D6E4FE" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="668.7,566.0 688.1,577.2 688.1,455.0 668.7,443.8" fill="#2C4FE6" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="729.6,553.2 688.1,577.2 688.1,455.0 729.6,431.0" fill="#1630A8" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="710.2,419.8 729.6,431.0 688.1,455.0 668.7,443.8" fill="#6E8BF5" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="808.6,574.8 828.0,586.0 828.0,487.2 808.6,476.0" fill="#A4C2F7" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="869.6,562.0 828.0,586.0 828.0,487.2 869.6,463.2" fill="#7FA6EC" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="850.2,452.0 869.6,463.2 828.0,487.2 808.6,476.0" fill="#D6E4FE" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="927.8,595.6 947.2,606.8 947.2,479.4 927.8,468.2" fill="#2C4FE6" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="988.7,582.8 947.2,606.8 947.2,479.4 988.7,455.4" fill="#1630A8" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="969.3,444.2 988.7,455.4 947.2,479.4 927.8,468.2" fill="#6E8BF5" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="1148.1,602.8 1167.5,614.0 1167.5,577.6 1148.1,566.4" fill="#F58A33" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="1209.0,590.0 1167.5,614.0 1167.5,577.6 1209.0,553.6" fill="#C9600F" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="1189.6,542.4 1209.0,553.6 1167.5,577.6 1148.1,566.4" fill="#FFC896" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="785.0,633.2 804.4,644.4 804.4,615.8 785.0,604.6" fill="#F58A33" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="846.0,620.4 804.4,644.4 804.4,615.8 846.0,591.8" fill="#C9600F" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="826.6,580.6 846.0,591.8 804.4,615.8 785.0,604.6" fill="#FFC896" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="963.8,664.4 983.2,675.6 983.2,558.6 963.8,547.4" fill="#2C4FE6" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="1024.8,651.6 983.2,675.6 983.2,558.6 1024.8,534.6" fill="#1630A8" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="1005.4,523.4 1024.8,534.6 983.2,558.6 963.8,547.4" fill="#6E8BF5" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<polygon points="1102.3,696.4 1121.7,707.6 1121.7,619.2 1102.3,608.0" fill="#A4C2F7" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="1163.3,683.6 1121.7,707.6 1121.7,619.2 1163.3,595.2" fill="#7FA6EC" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.6"></polygon>
+<polygon points="1143.9,584.0 1163.3,595.2 1121.7,619.2 1102.3,608.0" fill="#D6E4FE" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="0.6"></polygon>
+<rect x="836" y="712" width="126" height="22" rx="11" fill="#FFFFFF" stroke="#1D3FD6" stroke-width="0.8" stroke-dasharray="3 2"></rect>
+<text x="899" y="727" text-anchor="middle" style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 0.12em" fill="#1D3FD6">ASSEMBLY · 2 LOTS</text>
+<line x1="926" y1="350" x2="958" y2="290" stroke="#1D3FD6" stroke-width="1" stroke-dasharray="3 3"></line>
+<circle cx="926" cy="350" r="3" fill="#FFFFFF" stroke="#1D3FD6" stroke-width="1.5"></circle>
+<circle cx="958" cy="290" r="3" fill="#1D3FD6"></circle>
+<text x="1040" y="818" transform="rotate(-30 1040 818)" style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.3em" fill="#6A84B8">HAZELWOOD</text>
+</svg>
+<div style="position: absolute; left: 24px; top: 20px; width: 1392px; height: 60px; box-sizing: border-box; padding: 0 12px 0 16px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.74); backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); border: 1px solid rgba(255,255,255,0.95); border-radius: 18px; box-shadow: 0 0 0 1px rgba(29,63,214,0.08), 0 10px 30px rgba(11,27,63,0.08)">
+<a href="Landing.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #0B1B3F">
+<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14.5" fill="none" stroke="#1D3FD6" stroke-width="1.2" stroke-dasharray="2.5 2.5"></circle><path d="M16 5 L18.2 13.8 L27 16 L18.2 18.2 L16 27 L13.8 18.2 L5 16 L13.8 13.8 Z" fill="#1D3FD6"></path></svg>
+<span style="font-size: 18px; font-weight: 600; letter-spacing: -0.01em">Buildable PGH</span>
+</a>
+<div style="width: 560px; height: 44px; box-sizing: border-box; padding: 0 6px 0 14px; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.95); border: 1px solid rgba(29,63,214,0.24); border-radius: 12px">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D3FD6" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+<span style="flex-grow: 1; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">3 townhomes in Hazelwood under $25k, no hearing</span>
+<span style="display: flex; align-items: center; gap: 4px; padding: 3px 8px; background: #1D3FD6; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 0.12em; color: #FFFFFF"><svg width="9" height="9" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>AI</span>
+<a href="Landing.dc.html" aria-label="Clear search" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #4A5B7A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<div style="padding: 5px 10px; border: 1px dashed #9AB0D8; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4A5B7A">ILLUSTRATIVE DATA</div>
+<button style="height: 40px; padding: 0 14px; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.9); border: 1px solid rgba(29,63,214,0.18); border-radius: 12px; font-family: 'Sora', system-ui, sans-serif; font-size: 13px; font-weight: 500; color: #0B1B3F; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1D3FD6" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4z"></path></svg>Saved sites<span style="padding: 1px 7px; background: #1D3FD6; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #FFFFFF">3</span></button>
+</div>
+</div>
+<div style="position: absolute; left: 24px; top: 96px; width: 380px; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; gap: 18px; background: rgba(255,255,255,0.76); backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); border: 1px solid rgba(255,255,255,0.95); border-radius: 20px; box-shadow: 0 0 0 1px rgba(29,63,214,0.08), 0 12px 36px rgba(11,27,63,0.10)">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #1D3FD6">NEIGHBORHOOD VIEW · 3 TOWNHOMES</div>
+<h1 style="margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">Hazelwood at a glance</h1>
+<div style="font-size: 13px; color: #4A5B7A">Height shows the score. Taller means easier to build.</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<div style="padding: 12px 14px; background: rgba(255,255,255,0.85); border: 1px solid rgba(29,63,214,0.12); border-radius: 14px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #1D3FD6"></span><span style="font-size: 26px; font-weight: 600; line-height: 1">4</span></div><div style="font-size: 12px; color: #3E4F6E">Fast track</div></div>
+<div style="padding: 12px 14px; background: rgba(255,255,255,0.85); border: 1px solid rgba(29,63,214,0.12); border-radius: 14px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #8DB4F5"></span><span style="font-size: 26px; font-weight: 600; line-height: 1">6</span></div><div style="font-size: 12px; color: #3E4F6E">With conditions</div></div>
+<div style="padding: 12px 14px; background: rgba(255,255,255,0.85); border: 1px solid rgba(29,63,214,0.12); border-radius: 14px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F07A1A"></span><span style="font-size: 26px; font-weight: 600; line-height: 1">2</span></div><div style="font-size: 12px; color: #3E4F6E">High risk</div></div>
+<div style="padding: 12px 14px; background: rgba(255,255,255,0.85); border: 1px solid rgba(29,63,214,0.12); border-radius: 14px; display: flex; flex-direction: column; gap: 4px"><div style="display: flex; align-items: center; gap: 8px"><span style="width: 10px; height: 10px; border-radius: 3px; border: 1px solid #8C9BB5; box-sizing: border-box; background: repeating-linear-gradient(45deg, #8C9BB5 0 1.5px, #F1F4F9 1.5px 4px)"></span><span style="font-size: 26px; font-weight: 600; line-height: 1">2</span></div><div style="font-size: 12px; color: #3E4F6E">Unknown</div></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #0B1B3F">WHAT HOLDS SITES BACK</div>
+<div style="display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; font-size: 12px"><span>Combined sewer area</span><span style="font-family: 'IBM Plex Mono', monospace">6 LOTS</span></div><div style="height: 6px; background: #DCE6F8; border-radius: 3px"><div style="width: 100%; height: 6px; background: #1D3FD6; border-radius: 3px"></div></div></div>
+<div style="display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; font-size: 12px"><span>Street not verified</span><span style="font-family: 'IBM Plex Mono', monospace">3 LOTS</span></div><div style="height: 6px; background: #DCE6F8; border-radius: 3px"><div style="width: 50%; height: 6px; background: #1D3FD6; border-radius: 3px"></div></div></div>
+<div style="display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; font-size: 12px"><span>Steep slope</span><span style="font-family: 'IBM Plex Mono', monospace">3 LOTS</span></div><div style="height: 6px; background: #DCE6F8; border-radius: 3px"><div style="width: 50%; height: 6px; background: #1D3FD6; border-radius: 3px"></div></div></div>
+<div style="display: flex; flex-direction: column; gap: 4px"><div style="display: flex; justify-content: space-between; font-size: 12px"><span>Lot too small</span><span style="font-family: 'IBM Plex Mono', monospace">2 LOTS</span></div><div style="height: 6px; background: #DCE6F8; border-radius: 3px"><div style="width: 33%; height: 6px; background: #1D3FD6; border-radius: 3px"></div></div></div>
+</div>
+<div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: linear-gradient(90deg, rgba(231,238,255,0.95), rgba(255,255,255,0.85)); border: 1px solid #B9CBFA; border-radius: 14px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #1D3FD6">NEAR MISSES</div>
+<div style="font-size: 14px; font-weight: 500">3 sites fail by just one rule, and 2 small lots work as one assembly.</div>
+<button style="align-self: flex-start; height: 32px; padding: 0; background: none; border: none; font-family: 'Sora', system-ui, sans-serif; font-size: 13px; font-weight: 500; color: #1D3FD6; cursor: pointer">Show near misses →</button>
+</div>
+</div>
+<div style="position: absolute; right: 24px; top: 96px; display: flex; align-items: center; gap: 4px; padding: 4px; background: rgba(255,255,255,0.8); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.95); border-radius: 999px; box-shadow: 0 0 0 1px rgba(29,63,214,0.1), 0 8px 24px rgba(11,27,63,0.08)">
+<a href="SearchMap.dc.html" style="height: 36px; padding: 0 16px; display: flex; align-items: center; border-radius: 999px; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #4A5B7A">2D MAP</a>
+<span style="height: 36px; padding: 0 16px; display: flex; align-items: center; background: #1D3FD6; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #FFFFFF">3D SCORE</span>
+</div>
+<div style="position: absolute; left: 958px; top: 206px; width: 230px; box-sizing: border-box; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.84); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.95); border-radius: 16px; box-shadow: 0 0 0 1px rgba(29,63,214,0.12), 0 12px 32px rgba(11,27,63,0.12)">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #1D3FD6">01 · SAMPLE LOT A</div>
+<div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 28px; font-weight: 600; line-height: 1; color: #1D3FD6">82</span><span style="font-size: 13px; font-weight: 500">Fast track</span></div>
+<a href="ReportOpen.dc.html" style="font-size: 12px; font-weight: 500">By-right · 3 townhomes · Open report →</a>
+</div>
+<div style="position: absolute; right: 24px; bottom: 24px; box-sizing: border-box; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.8); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.95); border-radius: 16px; box-shadow: 0 0 0 1px rgba(29,63,214,0.08)">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #0B1B3F">HEIGHT = SCORE · COLOR = BAND</div>
+<div style="display: flex; gap: 14px; font-size: 12px; color: #3E4F6E">
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #1D3FD6"></span>Fast track</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #8DB4F5"></span>Conditions</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F07A1A"></span>High risk</span>
+</div>
+</div>
+<div style="position: absolute; left: 428px; bottom: 24px; height: 36px; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; background: rgba(255,255,255,0.74); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.95); border-radius: 999px; box-shadow: 0 0 0 1px rgba(29,63,214,0.08); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4A5B7A">DRAG TO ROTATE · SCROLL TO ZOOM</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

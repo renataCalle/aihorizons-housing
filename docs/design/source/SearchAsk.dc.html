@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Describing a site</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D3FD6}a:hover{color:#1530A8}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: #EEF4FB; font-family: 'Sora', system-ui, sans-serif; color: #0B1B3F">
+<div style="position: absolute; left: 0; top: 0; width: 1440px; height: 900px">
+<dc-import name="Landing" hint-size="1440px,900px"></dc-import>
+</div>
+<div style="position: absolute; left: 344px; top: 297px; width: 752px; box-sizing: border-box; display: flex; flex-direction: column; background: rgba(255,255,255,0.97); border: 1.5px solid #1D3FD6; border-radius: 24px; box-shadow: 0 0 0 6px rgba(29,63,214,0.08), 0 24px 60px rgba(11,27,63,0.18); overflow: hidden">
+<div style="height: 70px; box-sizing: border-box; padding: 0 12px 0 24px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #E3EAF7">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D3FD6" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+<div style="flex-grow: 1; min-width: 0; display: flex; align-items: center; font-size: 17px; white-space: nowrap">3 townhomes in Hazelwood under $25k, no hearing<span style="width: 2px; height: 24px; margin-left: 2px; background: #1D3FD6"></span></div>
+<span style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: #1D3FD6; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; color: #FFFFFF"><svg width="10" height="10" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>AI SEARCH</span>
+<button aria-label="Clear search" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: none; border: none; border-radius: 10px; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5B7A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div style="padding: 18px 24px 16px; display: flex; flex-direction: column; gap: 14px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #4A5B7A">HOW WE READ IT · EDIT ANY CHIP</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button style="height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 8px; background: #E7EEFF; border: 1px solid #B9CBFA; border-radius: 10px; font-family: 'Sora', system-ui, sans-serif; font-size: 13px; font-weight: 500; color: #1530A8; cursor: pointer"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: #4A6BD8">BUILD</span>Townhomes · 3</button>
+<button style="height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 8px; background: #E7EEFF; border: 1px solid #B9CBFA; border-radius: 10px; font-family: 'Sora', system-ui, sans-serif; font-size: 13px; font-weight: 500; color: #1530A8; cursor: pointer"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: #4A6BD8">WHERE</span>Hazelwood</button>
+<button style="height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 8px; background: #E7EEFF; border: 1px solid #B9CBFA; border-radius: 10px; font-family: 'Sora', system-ui, sans-serif; font-size: 13px; font-weight: 500; color: #1530A8; cursor: pointer"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: #4A6BD8">APPROVAL</span>By-right only</button>
+<button style="height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 8px; background: #E7EEFF; border: 1px solid #B9CBFA; border-radius: 10px; font-family: 'Sora', system-ui, sans-serif; font-size: 13px; font-weight: 500; color: #1530A8; cursor: pointer"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: #4A6BD8">LAND</span>≤ $25k</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5B7A">
+<span>“no hearing” → by-right only</span>
+<span>“under $25k” → max land price, not total cost</span>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 4px">
+<a href="SearchMap.dc.html" style="flex-grow: 1; height: 50px; box-sizing: border-box; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; background: #1D3FD6; border-radius: 14px; text-decoration: none; color: #FFFFFF"><span style="font-size: 15px; font-weight: 500">Show 14 matching sites</span><span style="padding: 3px 8px; background: rgba(255,255,255,0.18); border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px">↵</span></a>
+<button style="height: 50px; padding: 0 18px; background: #FFFFFF; border: 1px solid #C9D6FB; border-radius: 14px; font-family: 'Sora', system-ui, sans-serif; font-size: 14px; font-weight: 500; color: #1D3FD6; cursor: pointer">Adjust first</button>
+</div>
+</div>
+<div style="height: 40px; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 20px; background: #F6F9FF; border-top: 1px solid #E3EAF7; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #5E6E8A">
+<span>↵ SHOW SITES</span><span>TAB EDIT CHIPS</span><span>ESC CLOSE</span>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

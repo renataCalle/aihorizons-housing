@@ -1,0 +1,33 @@
+{
+  "name": "Hazelwood",
+  "product": {
+    "type": "townhomes",
+    "units": 3
+  },
+  "counts": {
+    "fast_track": 4,
+    "conditions": 6,
+    "high_risk": 2,
+    "unknown": 2
+  },
+  "blockers": [
+    {
+      "label": "Combined sewer area",
+      "lots": 6
+    },
+    {
+      "label": "Street not verified",
+      "lots": 3
+    },
+    {
+      "label": "Steep slope",
+      "lots": 3
+    },
+    {
+      "label": "Lot too small",
+      "lots": 2
+    }
+  ],
+  "near_misses": 3,
+  "assemblies": 1
+}

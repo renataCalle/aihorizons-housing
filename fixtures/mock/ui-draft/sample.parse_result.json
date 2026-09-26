@@ -1,0 +1,44 @@
+{
+  "filters": {
+    "product": {
+      "type": "townhomes",
+      "units": 3
+    },
+    "areas": [
+      "Hazelwood"
+    ],
+    "near": [],
+    "approval_paths": [
+      "by_right"
+    ],
+    "bands": [],
+    "min_score": null,
+    "max_land_price": 25000.0,
+    "min_margin_pct": null,
+    "max_site_cost_premium": null,
+    "lot_min_sqft": null,
+    "lot_max_sqft": null,
+    "vacant_only": false,
+    "owner_types": [],
+    "tax_delinquent_only": false,
+    "max_steep_slope_pct": null,
+    "exclude_constraints": [],
+    "include_unknowns": true,
+    "max_months_to_permit": null,
+    "show_assemblies": false,
+    "show_near_misses": false,
+    "sort": "score_desc"
+  },
+  "readings": [
+    {
+      "phrase": "no hearing",
+      "interpreted_as": "By-right only"
+    },
+    {
+      "phrase": "under $25k",
+      "interpreted_as": "Max land price $25,000 (land only, not total cost)"
+    }
+  ],
+  "not_understood": [],
+  "detected": "description"
+}

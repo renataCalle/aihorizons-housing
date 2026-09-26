@@ -1,0 +1,343 @@
+{
+  "parcel": {
+    "parcel_id": "0000-X-00000-0000-00",
+    "display_name": "Sample lot A",
+    "address": null,
+    "neighborhood": "Hazelwood",
+    "zoning_district": "R3-M",
+    "lot_area_sqft": 3960.0,
+    "current_use": "Vacant land",
+    "owner_type": "private",
+    "assessed_value": 9800.0,
+    "listed_price": 22000.0,
+    "centroid": [
+      -79.9433,
+      40.4052
+    ],
+    "score": 82,
+    "band": "fast_track",
+    "best_program": {
+      "product": "townhomes",
+      "units": 3,
+      "sqft_each": 1250,
+      "tenure": "for_sale",
+      "margin_pct": {
+        "low": 16.0,
+        "high": 23.0,
+        "unit": "pct"
+      },
+      "months_to_permit_ready": {
+        "low": 5.0,
+        "high": 7.0,
+        "unit": "months"
+      },
+      "approval_path": "by_right",
+      "relief": [],
+      "code_basis": "By-right under Title Nine as of Sep 2026 · § 903.03",
+      "precedent_granted": null,
+      "precedent_total": null,
+      "evidence_id": null
+    },
+    "top_risk": "Combined sewer area",
+    "top_risk_severity": "caution",
+    "max_land_price": {
+      "low": 24000.0,
+      "high": 41000.0,
+      "unit": "usd"
+    },
+    "rank": 1
+  },
+  "verdict": {
+    "band": "fast_track",
+    "score": 82,
+    "score_range": {
+      "low": 76.0,
+      "high": 87.0,
+      "unit": "points"
+    },
+    "headline": "Three by-right townhomes fit this lot, and the numbers leave room to pay $24k–$41k for the land. Check the street and sewer before you pay for design."
+  },
+  "score_breakdown": [
+    {
+      "key": "approval_path",
+      "label": "Approval path",
+      "points": 34,
+      "max_points": 35,
+      "note": "By-right, no hearing"
+    },
+    {
+      "key": "site_cost",
+      "label": "Site cost",
+      "points": 27,
+      "max_points": 35,
+      "note": "Sewer and minor slope"
+    },
+    {
+      "key": "land_headroom",
+      "label": "Land headroom",
+      "points": 21,
+      "max_points": 30,
+      "note": "Listed below max price"
+    }
+  ],
+  "headline_numbers": {
+    "approval_path": "by_right",
+    "approval_summary": "3 townhomes · 5–7 months to permit-ready",
+    "months_to_permit_ready": {
+      "low": 5.0,
+      "high": 7.0,
+      "unit": "months"
+    },
+    "site_cost_premium": {
+      "low": 8000.0,
+      "high": 15000.0,
+      "unit": "usd"
+    },
+    "site_cost_summary": "Stormwater plan, short retaining wall",
+    "max_land_price": {
+      "low": 24000.0,
+      "high": 41000.0,
+      "unit": "usd"
+    },
+    "target_margin_pct": 15.0,
+    "listed_price": 22000.0,
+    "comps_count": 12,
+    "comps_radius_mi": 0.5,
+    "comps_window_months": 24
+  },
+  "findings": [
+    {
+      "id": "f-sewer",
+      "severity": "caution",
+      "title": "Combined sewer area",
+      "detail": "A stormwater management plan will likely be required.",
+      "impact_cost": {
+        "low": 5000.0,
+        "high": 10000.0,
+        "unit": "usd"
+      },
+      "impact_months": null,
+      "impact_label": "Stormwater plan",
+      "sources": [
+        {
+          "label": "PWSA combined sewersheds",
+          "dataset": "PWSA",
+          "as_of": null,
+          "url": null
+        }
+      ],
+      "confidence": "medium",
+      "confidence_note": "Proxy: pipe capacity is not public",
+      "resolved_by_step": 2,
+      "evidence_id": null
+    },
+    {
+      "id": "f-slope",
+      "severity": "caution",
+      "title": "Steep slope on 8% of the lot",
+      "detail": "A short retaining wall may be needed at the rear lot line.",
+      "impact_cost": {
+        "low": 3000.0,
+        "high": 5000.0,
+        "unit": "usd"
+      },
+      "impact_months": null,
+      "impact_label": "Retaining wall",
+      "sources": [
+        {
+          "label": "City steep slopes 25%+",
+          "dataset": "WPRDC",
+          "as_of": null,
+          "url": null
+        }
+      ],
+      "confidence": "medium",
+      "confidence_note": "City layer, not a survey",
+      "resolved_by_step": 3,
+      "evidence_id": null
+    },
+    {
+      "id": "f-street",
+      "severity": "unknown",
+      "title": "Street acceptance not verified",
+      "detail": "If the frontage is a paper street, access and utilities may not be possible. Not scored as clear.",
+      "impact_cost": null,
+      "impact_months": null,
+      "impact_label": "Could end the deal",
+      "sources": [
+        {
+          "label": "No public data",
+          "dataset": "—",
+          "as_of": null,
+          "url": null
+        }
+      ],
+      "confidence": "low",
+      "confidence_note": null,
+      "resolved_by_step": 1,
+      "evidence_id": null
+    }
+  ],
+  "cleared": [
+    {
+      "label": "Flood zones",
+      "source": null
+    },
+    {
+      "label": "Landslide inventory",
+      "source": null
+    },
+    {
+      "label": "Undermined areas",
+      "source": null
+    },
+    {
+      "label": "DEP records within 500 ft",
+      "source": null
+    },
+    {
+      "label": "Historic overlays",
+      "source": null
+    }
+  ],
+  "best_by_right": {
+    "product": "townhomes",
+    "units": 3,
+    "sqft_each": 1250,
+    "tenure": "for_sale",
+    "margin_pct": {
+      "low": 16.0,
+      "high": 23.0,
+      "unit": "pct"
+    },
+    "months_to_permit_ready": {
+      "low": 5.0,
+      "high": 7.0,
+      "unit": "months"
+    },
+    "approval_path": "by_right",
+    "relief": [],
+    "code_basis": "By-right under Title Nine as of Sep 2026 · § 903.03",
+    "precedent_granted": null,
+    "precedent_total": null,
+    "evidence_id": null
+  },
+  "best_with_approvals": {
+    "product": "townhomes",
+    "units": 4,
+    "sqft_each": 1050,
+    "tenure": "for_sale",
+    "margin_pct": {
+      "low": 19.0,
+      "high": 26.0,
+      "unit": "pct"
+    },
+    "months_to_permit_ready": {
+      "low": 10.0,
+      "high": 15.0,
+      "unit": "months"
+    },
+    "approval_path": "variance",
+    "relief": [
+      "§ 911.02"
+    ],
+    "code_basis": null,
+    "precedent_granted": 3,
+    "precedent_total": 9,
+    "evidence_id": "ev-variance-4-townhomes"
+  },
+  "next_steps": [
+    {
+      "order": 1,
+      "title": "Confirm the street is accepted",
+      "why": "A paper street can block access and utilities.",
+      "who": "You · city street records",
+      "cost": {
+        "low": 0.0,
+        "high": 0.0,
+        "unit": "usd"
+      },
+      "duration_label": "1–2 wk"
+    },
+    {
+      "order": 2,
+      "title": "Ask PWSA about sewer capacity",
+      "why": "Firms up the stormwater cost range.",
+      "who": "You · PWSA",
+      "cost": {
+        "low": 0.0,
+        "high": 0.0,
+        "unit": "usd"
+      },
+      "duration_label": "2–4 wk"
+    },
+    {
+      "order": 3,
+      "title": "Boundary survey and test fit",
+      "why": "Confirms three homes fit with setbacks.",
+      "who": "Surveyor, architect",
+      "cost": {
+        "low": 4000.0,
+        "high": 8000.0,
+        "unit": "usd"
+      },
+      "duration_label": "3–4 wk"
+    }
+  ],
+  "assumptions": [
+    {
+      "key": "target_margin",
+      "label": "Target margin",
+      "value": 15.0,
+      "source_label": "Your default",
+      "editable": true
+    },
+    {
+      "key": "sale_price",
+      "label": "Sale price per home",
+      "value": {
+        "low": 265000.0,
+        "high": 305000.0,
+        "unit": "usd"
+      },
+      "source_label": "12 sales within 0.5 mi, last 24 months",
+      "editable": true
+    },
+    {
+      "key": "hard_cost",
+      "label": "Hard cost",
+      "value": {
+        "low": 215.0,
+        "high": 255.0,
+        "unit": "usd_per_sqft"
+      },
+      "source_label": "Default, editable",
+      "editable": true
+    },
+    {
+      "key": "soft_cost",
+      "label": "Soft costs (% of hard)",
+      "value": {
+        "low": 18.0,
+        "high": 22.0,
+        "unit": "pct"
+      },
+      "source_label": "Default, editable",
+      "editable": true
+    },
+    {
+      "key": "land",
+      "label": "Land",
+      "value": 22000.0,
+      "source_label": "Listed price",
+      "editable": true
+    }
+  ],
+  "meta": {
+    "contract_version": "0.1.0",
+    "rules_version": "v2026.09",
+    "data_refreshed": "2026-09-01",
+    "engine_version": "mock-0.1",
+    "illustrative": true
+  }
+}

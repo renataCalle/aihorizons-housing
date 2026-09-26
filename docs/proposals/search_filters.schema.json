@@ -1,0 +1,302 @@
+{
+  "$defs": {
+    "NearFilter": {
+      "additionalProperties": false,
+      "properties": {
+        "feature": {
+          "enum": [
+            "transit_stop",
+            "park",
+            "school",
+            "grocery"
+          ],
+          "title": "Feature",
+          "type": "string"
+        },
+        "within_ft": {
+          "default": 1320,
+          "description": "Default: a quarter mile",
+          "maximum": 5280,
+          "minimum": 100,
+          "title": "Within Ft",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "feature"
+      ],
+      "title": "NearFilter",
+      "type": "object"
+    },
+    "ProductFilter": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "adu",
+            "duplex",
+            "townhomes",
+            "walkup"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "units": {
+          "anyOf": [
+            {
+              "maximum": 24,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Units"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "ProductFilter",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The single filter state shared by the manual controls, the chips and AI search.",
+  "properties": {
+    "product": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ProductFilter"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "areas": {
+      "description": "Pittsburgh neighborhood names, canonical spelling",
+      "items": {
+        "type": "string"
+      },
+      "title": "Areas",
+      "type": "array"
+    },
+    "near": {
+      "items": {
+        "$ref": "#/$defs/NearFilter"
+      },
+      "title": "Near",
+      "type": "array"
+    },
+    "approval_paths": {
+      "description": "Empty = any path",
+      "items": {
+        "enum": [
+          "by_right",
+          "special_exception",
+          "variance",
+          "rezoning",
+          "not_allowed"
+        ],
+        "type": "string"
+      },
+      "title": "Approval Paths",
+      "type": "array"
+    },
+    "bands": {
+      "description": "Empty = all bands",
+      "items": {
+        "enum": [
+          "fast_track",
+          "conditions",
+          "high_risk",
+          "unknown"
+        ],
+        "type": "string"
+      },
+      "title": "Bands",
+      "type": "array"
+    },
+    "min_score": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Min Score"
+    },
+    "max_land_price": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "USD, land only",
+      "title": "Max Land Price"
+    },
+    "min_margin_pct": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Min Margin Pct"
+    },
+    "max_site_cost_premium": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "USD",
+      "title": "Max Site Cost Premium"
+    },
+    "lot_min_sqft": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lot Min Sqft"
+    },
+    "lot_max_sqft": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lot Max Sqft"
+    },
+    "vacant_only": {
+      "default": false,
+      "title": "Vacant Only",
+      "type": "boolean"
+    },
+    "owner_types": {
+      "items": {
+        "enum": [
+          "land_bank",
+          "ura",
+          "city",
+          "private",
+          "other_public"
+        ],
+        "type": "string"
+      },
+      "title": "Owner Types",
+      "type": "array"
+    },
+    "tax_delinquent_only": {
+      "default": false,
+      "title": "Tax Delinquent Only",
+      "type": "boolean"
+    },
+    "max_steep_slope_pct": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Max share of lot at 25%+ slope",
+      "title": "Max Steep Slope Pct"
+    },
+    "exclude_constraints": {
+      "items": {
+        "enum": [
+          "undermined",
+          "flood_zone",
+          "landslide",
+          "combined_sewer",
+          "steep_slope"
+        ],
+        "type": "string"
+      },
+      "title": "Exclude Constraints",
+      "type": "array"
+    },
+    "include_unknowns": {
+      "default": true,
+      "title": "Include Unknowns",
+      "type": "boolean"
+    },
+    "max_months_to_permit": {
+      "anyOf": [
+        {
+          "maximum": 60,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Max Months To Permit"
+    },
+    "show_assemblies": {
+      "default": false,
+      "title": "Show Assemblies",
+      "type": "boolean"
+    },
+    "show_near_misses": {
+      "default": false,
+      "title": "Show Near Misses",
+      "type": "boolean"
+    },
+    "sort": {
+      "default": "score_desc",
+      "enum": [
+        "score_desc",
+        "headroom_desc",
+        "fastest",
+        "cheapest"
+      ],
+      "title": "Sort",
+      "type": "string"
+    }
+  },
+  "title": "SearchFilters",
+  "type": "object"
+}

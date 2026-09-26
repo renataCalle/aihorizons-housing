@@ -84,3 +84,9 @@ Pittsburgh parcels. They become snapshot tests, so an engine change that moves a
 is visible to both owners.
 
 Raw data never goes in git; `data/`, `*.duckdb`, `*.parquet`, and shapefiles are gitignored.
+
+## Web and API workstream
+
+Product, design and API specs for the web app and the API are in `docs/`
+(start with `docs/07-build-plan.md`). `web/CLAUDE.md` and `api/CLAUDE.md` add
+rules for those folders. Mockups: `docs/design/screens/`.
