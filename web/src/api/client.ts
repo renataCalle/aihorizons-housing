@@ -21,3 +21,20 @@ export async function getJson(path: string, signal?: AbortSignal): Promise<unkno
   }
   return response.json()
 }
+
+export async function postJson(path: string, body: unknown, signal?: AbortSignal): Promise<unknown> {
+  const response = await fetch(`${BASE}${path}`, {
+    method: 'POST',
+    signal,
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!response.ok) {
+    const detail = (await response.json().catch(() => null)) as { detail?: unknown } | null
+    throw new ApiError(
+      response.status,
+      typeof detail?.detail === 'string' ? detail.detail : response.statusText,
+    )
+  }
+  return response.json()
+}

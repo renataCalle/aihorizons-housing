@@ -1,7 +1,13 @@
 import type { Band } from './report'
 
 export type ProductType = 'single_family' | 'duplex' | 'triplex' | 'townhome' | 'walkup'
-export type ApprovalPath = 'by_right' | 'special_exception' | 'variance' | 'rezoning' | 'not_allowed'
+export type ApprovalPath =
+  | 'by_right'
+  | 'administrative'
+  | 'special_exception'
+  | 'variance'
+  | 'rezoning'
+  | 'not_allowed'
 export type NearFeature = 'transit_stop' | 'park' | 'school' | 'grocery'
 export type OwnerType = 'land_bank' | 'ura' | 'city' | 'private' | 'other_public'
 export type Constraint = 'undermined' | 'flood_zone' | 'landslide' | 'combined_sewer' | 'steep_slope'
@@ -9,7 +15,8 @@ export type SortKey = 'score_desc' | 'headroom_desc' | 'fastest' | 'cheapest'
 
 /** The one filter state that the chips, the filter editor and AI search all read and write. */
 export interface Filters {
-  product: { type: ProductType; units: number | null } | null
+  /** type null = any building type; units = at least this many */
+  product: { type: ProductType | null; units: number | null } | null
   areas: string[]
   near: { feature: NearFeature; withinFt: number }[]
   /** Empty means any path. */
