@@ -38,7 +38,12 @@ export function readPalette(root: Element = document.documentElement): MapPalett
 type Layer = LayerSpecification & { source: string; beforeId?: string }
 
 /** Parcel layers, bottom to top: fills by band, unknown hatch, outlines, selection. */
-export function parcelLayers(p: MapPalette, selectedId: string | null, hatch: boolean): Layer[] {
+export function parcelLayers(
+  p: MapPalette,
+  selectedId: string | null,
+  hatch: boolean,
+  hoveredId: string | null = null,
+): Layer[] {
   const layers: Layer[] = [
     {
       id: 'parcels-fill',
@@ -88,6 +93,13 @@ export function parcelLayers(p: MapPalette, selectedId: string | null, hatch: bo
       source: PARCELS,
       filter: ['!=', ['get', 'assemblyId'], null],
       paint: { 'line-color': p.cobalt, 'line-width': 1.5, 'line-dasharray': [2, 1.5] },
+    },
+    {
+      id: 'parcels-hover',
+      type: 'line',
+      source: PARCELS,
+      filter: ['==', ['get', 'id'], hoveredId ?? ''],
+      paint: { 'line-color': p.cobalt, 'line-width': 2 },
     },
     {
       id: 'parcels-selected',
