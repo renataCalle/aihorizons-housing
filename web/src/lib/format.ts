@@ -32,3 +32,13 @@ export function formatNumberRange({ low, high }: Interval): string {
 export function formatSqft(value: number): string {
   return `${Math.round(value).toLocaleString('en-US')} sq ft`
 }
+
+/**
+ * Max land price at the target margin. The engine returns negative values when building costs
+ * exceed the finished value: then no land price works.
+ */
+export function formatMaxLand({ low, high }: Interval): string {
+  if (high <= 0) return 'None at target margin'
+  if (low < 0) return `Up to ${formatMoneyRange({ low: high, high })}`
+  return formatMoneyRange({ low, high })
+}
