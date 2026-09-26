@@ -4,7 +4,8 @@ from fastapi.testclient import TestClient
 from navigator_api.main import create_app
 from navigator_api.settings import Settings
 
-SAMPLE_LOT_A = "0000-X-00000-0000-00"
+SAMPLE_LOT_A = "0000X00000000000"
+GOLDEN_STEEP_SLOPE = "0055A00137000000"
 
 
 @pytest.fixture(scope="module")
@@ -17,31 +18,61 @@ def test_health_reports_source_and_versions(client: TestClient) -> None:
     assert body["status"] == "ok"
     assert body["site_source"] == "mock"
     assert body["illustrative"] is True
-    assert set(body["versions"]) == {"engine", "ruleset", "schema_version", "data_as_of"}
+    assert body["parcels"] > 200
+    assert set(body["versions"]) == {"engine", "ruleset", "schema", "data_as_of"}
 
 
-@pytest.mark.parametrize("parcel_id", [SAMPLE_LOT_A, "0000X00000000000", "0000-x-00000-0000-00"])
-def test_analysis_accepts_dashed_and_compact_ids(client: TestClient, parcel_id: str) -> None:
-    response = client.get(f"/api/parcels/{parcel_id}/analysis")
+@pytest.mark.parametrize("parcel_id", [SAMPLE_LOT_A, "0000-X-00000-0000-00", "0000x00000000000"])
+def test_report_accepts_compact_and_dashed_ids(client: TestClient, parcel_id: str) -> None:
+    response = client.get(f"/api/parcels/{parcel_id}")
     assert response.status_code == 200
     body = response.json()
     assert body["parcel"]["parcel_id"] == SAMPLE_LOT_A
-    assert body["meta"]["illustrative"] is True
+    assert body["parcel"]["display_name"] == "Sample lot A"
+    assert body["parcel"]["illustrative"] is True
+    assert body["analysis"]["verdict"]["score"] == body["parcel"]["score"]
 
 
-def test_analysis_unknown_parcel_is_404(client: TestClient) -> None:
-    assert client.get("/api/parcels/9999-Z-99999-9999-99/analysis").status_code == 404
+def test_golden_parcel_is_real_engine_output(client: TestClient) -> None:
+    body = client.get(f"/api/parcels/{GOLDEN_STEEP_SLOPE}").json()
+    assert body["parcel"]["illustrative"] is False
+    assert body["parcel"]["block_lot"] == "55-A-137"
+    assert body["analysis"]["versions"]["schema"] == "0.1.0"
 
 
-def test_analysis_rejects_non_parcel_id(client: TestClient) -> None:
-    assert client.get("/api/parcels/16-E-25/analysis").status_code == 422
+def test_non_candidate_has_no_analysis(client: TestClient) -> None:
+    features = client.get("/api/map/parcels").json()["features"]
+    other = next(f["properties"] for f in features if not f["properties"]["candidate"])
+    body = client.get(f"/api/parcels/{other['parcel_id']}").json()
+    assert body["analysis"] is None
+    assert body["parcel"]["band"] is None
 
 
-def test_evidence_linked_from_sample_lot_a(client: TestClient) -> None:
-    analysis = client.get(f"/api/parcels/{SAMPLE_LOT_A}/analysis").json()
-    evidence_id = analysis["best_with_approvals"]["evidence_id"]
-    body = client.get(f"/api/evidence/{evidence_id}").json()
-    assert body["id"] == evidence_id
+def test_unknown_parcel_is_404(client: TestClient) -> None:
+    assert client.get("/api/parcels/9999Z99999999999").status_code == 404
+
+
+def test_block_lot_is_not_a_county_id(client: TestClient) -> None:
+    assert client.get("/api/parcels/55-A-137").status_code == 422
+
+
+def test_map_parcels_are_wgs84_with_band_and_score(client: TestClient) -> None:
+    body = client.get("/api/map/parcels").json()
+    assert body["type"] == "FeatureCollection"
+    sample = next(f for f in body["features"] if f["properties"]["parcel_id"] == SAMPLE_LOT_A)
+    lon, lat = sample["geometry"]["coordinates"][0][0]
+    assert -80.1 < lon < -79.8 and 40.3 < lat < 40.6  # Pittsburgh, not State Plane feet
+    assert sample["properties"]["band"] is not None
+    assert sample["properties"]["score"] is not None
+
+
+def test_map_features_include_transit_and_neighborhoods(client: TestClient) -> None:
+    kinds = {f["properties"]["kind"] for f in client.get("/api/map/features").json()["features"]}
+    assert {"transit_stop", "park", "neighborhood"} <= kinds
+
+
+def test_evidence_is_served(client: TestClient) -> None:
+    assert client.get("/api/evidence/ev-variance-4-townhomes").status_code == 200
     assert client.get("/api/evidence/nope").status_code == 404
 
 
