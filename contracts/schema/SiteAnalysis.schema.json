@@ -1,0 +1,921 @@
+{
+  "$defs": {
+    "Assumption": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "editable": {
+          "title": "Editable",
+          "type": "boolean"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Max"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "value",
+        "unit",
+        "source",
+        "editable",
+        "min",
+        "max"
+      ],
+      "title": "Assumption",
+      "type": "object"
+    },
+    "Comps": {
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "title": "Count",
+          "type": "integer"
+        },
+        "radius_mi": {
+          "title": "Radius Mi",
+          "type": "number"
+        },
+        "window_months": {
+          "title": "Window Months",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "count",
+        "radius_mi",
+        "window_months"
+      ],
+      "title": "Comps",
+      "type": "object"
+    },
+    "CostRange": {
+      "additionalProperties": false,
+      "properties": {
+        "low": {
+          "title": "Low",
+          "type": "number"
+        },
+        "high": {
+          "title": "High",
+          "type": "number"
+        },
+        "drivers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Drivers",
+          "type": "array"
+        }
+      },
+      "required": [
+        "low",
+        "high",
+        "drivers"
+      ],
+      "title": "CostRange",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "as_of": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "As Of"
+        },
+        "layer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Layer"
+        },
+        "code_section": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Code Section"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Url"
+        }
+      },
+      "required": [
+        "source",
+        "as_of",
+        "layer",
+        "code_section",
+        "url"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Flag": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "zoning",
+            "physical",
+            "environmental",
+            "infrastructure",
+            "market"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "cost_usd": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cost Usd"
+        },
+        "months": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Months"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        },
+        "resolution": {
+          "title": "Resolution",
+          "type": "string"
+        },
+        "resolved_by_step": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Resolved By Step"
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "severity",
+        "title",
+        "cost_usd",
+        "months",
+        "evidence",
+        "confidence",
+        "resolution",
+        "resolved_by_step"
+      ],
+      "title": "Flag",
+      "type": "object"
+    },
+    "Gap": {
+      "additionalProperties": false,
+      "properties": {
+        "low": {
+          "title": "Low",
+          "type": "number"
+        },
+        "high": {
+          "title": "High",
+          "type": "number"
+        }
+      },
+      "required": [
+        "low",
+        "high"
+      ],
+      "title": "Gap",
+      "type": "object"
+    },
+    "LandBasis": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "number"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "source"
+      ],
+      "title": "LandBasis",
+      "type": "object"
+    },
+    "LotDimensions": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "title": "Width",
+          "type": "number"
+        },
+        "depth": {
+          "title": "Depth",
+          "type": "number"
+        }
+      },
+      "required": [
+        "width",
+        "depth"
+      ],
+      "title": "LotDimensions",
+      "type": "object"
+    },
+    "Metrics": {
+      "additionalProperties": false,
+      "description": "Headline numbers for the leading option (`option`).",
+      "properties": {
+        "option": {
+          "enum": [
+            "by_right",
+            "with_relief"
+          ],
+          "title": "Option",
+          "type": "string"
+        },
+        "months_to_permit": {
+          "$ref": "#/$defs/Range"
+        },
+        "approval_prob": {
+          "$ref": "#/$defs/Range"
+        },
+        "max_land_price": {
+          "$ref": "#/$defs/Range"
+        },
+        "land_basis": {
+          "$ref": "#/$defs/LandBasis"
+        },
+        "site_cost_premium": {
+          "$ref": "#/$defs/CostRange"
+        },
+        "land_over_max": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Gap"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "comps": {
+          "$ref": "#/$defs/Comps"
+        }
+      },
+      "required": [
+        "option",
+        "months_to_permit",
+        "approval_prob",
+        "max_land_price",
+        "land_basis",
+        "site_cost_premium",
+        "land_over_max",
+        "comps"
+      ],
+      "title": "Metrics",
+      "type": "object"
+    },
+    "Narrative": {
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Summary"
+        }
+      },
+      "required": [
+        "summary"
+      ],
+      "title": "Narrative",
+      "type": "object"
+    },
+    "ProgramOption": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "enum": [
+            "by_right",
+            "with_relief"
+          ],
+          "title": "Label",
+          "type": "string"
+        },
+        "product_type": {
+          "enum": [
+            "single_family",
+            "duplex",
+            "triplex",
+            "townhome",
+            "walkup"
+          ],
+          "title": "Product Type",
+          "type": "string"
+        },
+        "units": {
+          "title": "Units",
+          "type": "integer"
+        },
+        "unit_sqft": {
+          "title": "Unit Sqft",
+          "type": "integer"
+        },
+        "gfa_sqft": {
+          "title": "Gfa Sqft",
+          "type": "number"
+        },
+        "relief": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Relief",
+          "type": "array"
+        },
+        "margin": {
+          "$ref": "#/$defs/Range"
+        },
+        "months": {
+          "$ref": "#/$defs/Range"
+        },
+        "approval_prob": {
+          "$ref": "#/$defs/Range"
+        },
+        "max_land_price": {
+          "$ref": "#/$defs/Range"
+        },
+        "score": {
+          "$ref": "#/$defs/Range"
+        },
+        "revenue_basis": {
+          "title": "Revenue Basis",
+          "type": "string"
+        },
+        "entitlement_basis": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Entitlement Basis",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label",
+        "product_type",
+        "units",
+        "unit_sqft",
+        "gfa_sqft",
+        "relief",
+        "margin",
+        "months",
+        "approval_prob",
+        "max_land_price",
+        "score",
+        "revenue_basis",
+        "entitlement_basis"
+      ],
+      "title": "ProgramOption",
+      "type": "object"
+    },
+    "Range": {
+      "additionalProperties": false,
+      "description": "Every estimate ships as a range: 10th, 50th and 90th percentile of the simulation.",
+      "properties": {
+        "p10": {
+          "title": "P10",
+          "type": "number"
+        },
+        "p50": {
+          "title": "P50",
+          "type": "number"
+        },
+        "p90": {
+          "title": "P90",
+          "type": "number"
+        }
+      },
+      "required": [
+        "p10",
+        "p50",
+        "p90"
+      ],
+      "title": "Range",
+      "type": "object"
+    },
+    "RulesSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "scenario": {
+          "anyOf": [
+            {
+              "enum": [
+                "strict",
+                "contextual"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Scenario"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "neighbors_built": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Neighbors Built"
+        },
+        "lot_dimensions_ft": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LotDimensions"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scenario",
+        "confidence",
+        "neighbors_built",
+        "lot_dimensions_ft"
+      ],
+      "title": "RulesSummary",
+      "type": "object"
+    },
+    "ScoreComponent": {
+      "additionalProperties": false,
+      "description": "One bar of \"Where the score comes from\". Points of all components sum to the score.",
+      "properties": {
+        "key": {
+          "enum": [
+            "approval_path",
+            "site_cost",
+            "land_headroom"
+          ],
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "points": {
+          "title": "Points",
+          "type": "integer"
+        },
+        "max_points": {
+          "title": "Max Points",
+          "type": "integer"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "points",
+        "max_points",
+        "note"
+      ],
+      "title": "ScoreComponent",
+      "type": "object"
+    },
+    "ScoreItem": {
+      "additionalProperties": false,
+      "description": "Counterfactual: points the score would regain without this driver.",
+      "properties": {
+        "component": {
+          "enum": [
+            "approval_path",
+            "site_cost",
+            "land_headroom"
+          ],
+          "title": "Component",
+          "type": "string"
+        },
+        "points_lost": {
+          "title": "Points Lost",
+          "type": "number"
+        },
+        "driver_flag_id": {
+          "title": "Driver Flag Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "component",
+        "points_lost",
+        "driver_flag_id"
+      ],
+      "title": "ScoreItem",
+      "type": "object"
+    },
+    "Step": {
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "title": "Order",
+          "type": "integer"
+        },
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "who": {
+          "title": "Who",
+          "type": "string"
+        },
+        "cost_usd": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Cost Usd",
+          "type": "array"
+        },
+        "why": {
+          "title": "Why",
+          "type": "string"
+        },
+        "flag_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Flag Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "order",
+        "action",
+        "who",
+        "cost_usd",
+        "why",
+        "flag_ids"
+      ],
+      "title": "Step",
+      "type": "object"
+    },
+    "Verdict": {
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Score"
+        },
+        "score_range": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Range"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "band": {
+          "enum": [
+            "fast_track",
+            "feasible_with_conditions",
+            "high_risk",
+            "not_scored"
+          ],
+          "title": "Band",
+          "type": "string"
+        },
+        "headline": {
+          "title": "Headline",
+          "type": "string"
+        },
+        "land_risk": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Land Risk"
+        },
+        "components": {
+          "items": {
+            "$ref": "#/$defs/ScoreComponent"
+          },
+          "title": "Components",
+          "type": "array"
+        }
+      },
+      "required": [
+        "score",
+        "score_range",
+        "band",
+        "headline",
+        "land_risk",
+        "components"
+      ],
+      "title": "Verdict",
+      "type": "object"
+    },
+    "Versions": {
+      "additionalProperties": false,
+      "properties": {
+        "engine": {
+          "title": "Engine",
+          "type": "string"
+        },
+        "ruleset": {
+          "title": "Ruleset",
+          "type": "string"
+        },
+        "schema": {
+          "title": "Schema",
+          "type": "string"
+        },
+        "data_as_of": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Data As Of"
+        }
+      },
+      "required": [
+        "engine",
+        "ruleset",
+        "schema",
+        "data_as_of"
+      ],
+      "title": "Versions",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "verdict": {
+      "$ref": "#/$defs/Verdict"
+    },
+    "narrative": {
+      "$ref": "#/$defs/Narrative"
+    },
+    "metrics": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Metrics"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "flags": {
+      "items": {
+        "$ref": "#/$defs/Flag"
+      },
+      "title": "Flags",
+      "type": "array"
+    },
+    "cleared": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Cleared",
+      "type": "array"
+    },
+    "options": {
+      "items": {
+        "$ref": "#/$defs/ProgramOption"
+      },
+      "title": "Options",
+      "type": "array"
+    },
+    "next_steps": {
+      "items": {
+        "$ref": "#/$defs/Step"
+      },
+      "title": "Next Steps",
+      "type": "array"
+    },
+    "score_breakdown": {
+      "items": {
+        "$ref": "#/$defs/ScoreItem"
+      },
+      "title": "Score Breakdown",
+      "type": "array"
+    },
+    "assumptions": {
+      "items": {
+        "$ref": "#/$defs/Assumption"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "rules": {
+      "$ref": "#/$defs/RulesSummary"
+    },
+    "versions": {
+      "$ref": "#/$defs/Versions"
+    }
+  },
+  "required": [
+    "verdict",
+    "narrative",
+    "metrics",
+    "flags",
+    "cleared",
+    "options",
+    "next_steps",
+    "score_breakdown",
+    "assumptions",
+    "rules",
+    "versions"
+  ],
+  "title": "SiteAnalysis",
+  "type": "object"
+}

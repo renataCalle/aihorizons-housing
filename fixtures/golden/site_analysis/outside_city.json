@@ -1,0 +1,329 @@
+{
+  "verdict": {
+    "score": null,
+    "score_range": null,
+    "band": "not_scored",
+    "headline": "Partial report: zoning is not covered here; physical and market checks ran",
+    "land_risk": null,
+    "components": []
+  },
+  "narrative": {
+    "summary": null
+  },
+  "metrics": null,
+  "flags": [
+    {
+      "id": "zoning_not_covered",
+      "category": "zoning",
+      "severity": "unknown",
+      "title": "Zoning not covered for Wilkinsburg  ",
+      "cost_usd": null,
+      "months": null,
+      "evidence": [
+        {
+          "source": "Zoning; City Designated Historic Districts; PGHZoningHeightOverlay; Parking Reduction Zoning Overlay; Riverfront Zoning Overlay; Uptown IPOD Zoning; Greenways",
+          "as_of": "2024-02-07",
+          "layer": "zoning",
+          "code_section": null,
+          "url": null
+        }
+      ],
+      "confidence": "low",
+      "resolution": "Confirm allowed uses and dimensions with the municipality",
+      "resolved_by_step": 1
+    },
+    {
+      "id": "slope_unknown",
+      "category": "physical",
+      "severity": "unknown",
+      "title": "Slope not mapped here",
+      "cost_usd": null,
+      "months": null,
+      "evidence": [
+        {
+          "source": "25% or Greater Slope",
+          "as_of": "2026-09-23",
+          "layer": "steep_slope",
+          "code_section": null,
+          "url": "https://data.wprdc.org/dataset/0f643c56-1c53-4c88-824d-3a3876c0d3a0/resource/5ce91a56-0799-46ea-9585-13fa8db5979e/download/slopes.geojson"
+        }
+      ],
+      "confidence": "low",
+      "resolution": "Order a topographic survey",
+      "resolved_by_step": 4
+    },
+    {
+      "id": "undermining_unknown",
+      "category": "physical",
+      "severity": "unknown",
+      "title": "Undermining not mapped by the city here",
+      "cost_usd": null,
+      "months": null,
+      "evidence": [
+        {
+          "source": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
+          "as_of": "2026-09-23",
+          "layer": "undermined",
+          "code_section": null,
+          "url": null
+        }
+      ],
+      "confidence": "low",
+      "resolution": "Request DEP mine subsidence records",
+      "resolved_by_step": 2
+    },
+    {
+      "id": "env_nearby",
+      "category": "environmental",
+      "severity": "low",
+      "title": "1 DEP record(s) within 1,000 ft",
+      "cost_usd": [
+        0,
+        5000
+      ],
+      "months": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "source": "Air Media; Storage Tanks Active; Storage Tanks Inactive",
+          "as_of": null,
+          "layer": "environmental",
+          "code_section": null,
+          "url": null
+        }
+      ],
+      "confidence": "medium",
+      "resolution": "Phase I ESA recommended",
+      "resolved_by_step": 5
+    }
+  ],
+  "cleared": [
+    "FEMA floodplain",
+    "street frontage"
+  ],
+  "options": [],
+  "next_steps": [
+    {
+      "order": 1,
+      "action": "Zoning pre-application meeting",
+      "who": "City Planning",
+      "cost_usd": [
+        0,
+        0
+      ],
+      "why": "Confirms the approval path before design money is spent",
+      "flag_ids": [
+        "zoning_not_covered"
+      ]
+    },
+    {
+      "order": 2,
+      "action": "DEP mine map and subsidence records request",
+      "who": "applicant",
+      "cost_usd": [
+        0,
+        500
+      ],
+      "why": "Request DEP mine subsidence records",
+      "flag_ids": [
+        "undermining_unknown"
+      ]
+    },
+    {
+      "order": 3,
+      "action": "Municipal zoning review with the borough",
+      "who": "applicant",
+      "cost_usd": [
+        0,
+        2000
+      ],
+      "why": "Confirm allowed uses and dimensions with the municipality",
+      "flag_ids": [
+        "zoning_not_covered"
+      ]
+    },
+    {
+      "order": 4,
+      "action": "Topographic survey",
+      "who": "surveyor",
+      "cost_usd": [
+        1500,
+        4000
+      ],
+      "why": "Order a topographic survey",
+      "flag_ids": [
+        "slope_unknown"
+      ]
+    },
+    {
+      "order": 5,
+      "action": "Phase I Environmental Site Assessment",
+      "who": "environmental consultant",
+      "cost_usd": [
+        2500,
+        5000
+      ],
+      "why": "Phase I ESA recommended",
+      "flag_ids": [
+        "env_nearby"
+      ]
+    }
+  ],
+  "score_breakdown": [],
+  "assumptions": [
+    {
+      "key": "hard_cost_psf",
+      "label": "Hard cost per gross sq ft",
+      "value": 250,
+      "unit": "$/sf",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 200,
+      "max": 320
+    },
+    {
+      "key": "soft_cost_share",
+      "label": "Soft costs as share of hard",
+      "value": 0.2,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.15,
+      "max": 0.25
+    },
+    {
+      "key": "contingency_share",
+      "label": "Contingency on hard + soft",
+      "value": 0.07,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.05,
+      "max": 0.1
+    },
+    {
+      "key": "construction_months",
+      "label": "Construction duration",
+      "value": 12,
+      "unit": "months",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 9,
+      "max": 16
+    },
+    {
+      "key": "carry_rate",
+      "label": "Annual carrying cost of capital",
+      "value": 0.09,
+      "unit": "rate/yr",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.07,
+      "max": 0.11
+    },
+    {
+      "key": "target_margin",
+      "label": "Target margin on cost",
+      "value": 0.15,
+      "unit": "share",
+      "source": "developer input",
+      "editable": true,
+      "min": 0.15,
+      "max": 0.15
+    },
+    {
+      "key": "new_build_premium",
+      "label": "New construction price premium over resale comps",
+      "value": 0.25,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.1,
+      "max": 0.4
+    },
+    {
+      "key": "cap_rate",
+      "label": "Cap rate for rental exit",
+      "value": 0.065,
+      "unit": "rate",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.055,
+      "max": 0.075
+    },
+    {
+      "key": "opex_ratio",
+      "label": "Operating expenses + vacancy, share of gross rent",
+      "value": 0.4,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.35,
+      "max": 0.45
+    },
+    {
+      "key": "permit_review_months",
+      "label": "Building permit review (PLI)",
+      "value": 3,
+      "unit": "months",
+      "source": "PLACEHOLDER - PLI data has issue dates only",
+      "editable": true,
+      "min": 2,
+      "max": 5
+    },
+    {
+      "key": "score_time_scale_months",
+      "label": "Time factor: e-folding months",
+      "value": 18,
+      "unit": "months",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 18,
+      "max": 18
+    },
+    {
+      "key": "score_land_full_ratio",
+      "label": "Land headroom: max land price / land price that earns full points",
+      "value": 1.5,
+      "unit": "ratio",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 1.5,
+      "max": 1.5
+    },
+    {
+      "key": "score_premium_scale",
+      "label": "Cost factor: premium share that zeroes the score",
+      "value": 0.3,
+      "unit": "share",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 0.3,
+      "max": 0.3
+    },
+    {
+      "key": "land_price",
+      "label": "Land price",
+      "value": 1300.0,
+      "unit": "$",
+      "source": "county assessed land value (not a market price)",
+      "editable": true,
+      "min": null,
+      "max": null
+    }
+  ],
+  "rules": {
+    "scenario": null,
+    "confidence": null,
+    "neighbors_built": null,
+    "lot_dimensions_ft": null
+  },
+  "versions": {
+    "engine": "sandbox-v0.1",
+    "ruleset": "sandbox rules drafts 2026-09-26",
+    "schema": "0.1.0",
+    "data_as_of": "2018-07-27"
+  }
+}

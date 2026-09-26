@@ -1,0 +1,425 @@
+{
+  "verdict": {
+    "score": 41,
+    "score_range": {
+      "p10": 34.12690882202034,
+      "p50": 41.2250178541816,
+      "p90": 48.46663487489282
+    },
+    "band": "high_risk",
+    "headline": "High risk: 84% of lot on 25%+ slope.",
+    "land_risk": "High risk at the assessed value",
+    "components": [
+      {
+        "key": "approval_path",
+        "label": "Approval path",
+        "points": 25,
+        "max_points": 35,
+        "note": "By right, no hearing; about 6 months to permit-ready"
+      },
+      {
+        "key": "site_cost",
+        "label": "Site cost",
+        "points": 16,
+        "max_points": 35,
+        "note": "84% of lot on 25%+ slope causes most of it"
+      },
+      {
+        "key": "land_headroom",
+        "label": "Land headroom",
+        "points": 0,
+        "max_points": 30,
+        "note": "Build cost exceeds value: no room to pay for land"
+      }
+    ]
+  },
+  "narrative": {
+    "summary": "A by-right single-family home fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $287k."
+  },
+  "metrics": {
+    "option": "by_right",
+    "months_to_permit": {
+      "p10": 4.365466579278907,
+      "p50": 5.806523071866396,
+      "p90": 7.200165874367402
+    },
+    "approval_prob": {
+      "p10": 1.0,
+      "p50": 1.0,
+      "p90": 1.0
+    },
+    "max_land_price": {
+      "p10": -362501.4983772638,
+      "p50": -287098.59427898505,
+      "p90": -213815.097943414
+    },
+    "land_basis": {
+      "value": 23000.0,
+      "source": "county assessed land value (not a market price)"
+    },
+    "site_cost_premium": {
+      "low": 45000,
+      "high": 170000,
+      "drivers": [
+        "84% of lot on 25%+ slope",
+        "Combined sewershed"
+      ]
+    },
+    "land_over_max": {
+      "low": 236815.097943414,
+      "high": 385501.4983772638
+    },
+    "comps": {
+      "count": 97,
+      "radius_mi": 0.5,
+      "window_months": 36
+    }
+  },
+  "flags": [
+    {
+      "id": "steep_slope",
+      "category": "physical",
+      "severity": "high",
+      "title": "84% of lot on 25%+ slope",
+      "cost_usd": [
+        40000,
+        150000
+      ],
+      "months": [
+        1,
+        4
+      ],
+      "evidence": [
+        {
+          "source": "25% or Greater Slope",
+          "as_of": "2026-09-23",
+          "layer": "steep_slope",
+          "code_section": "915.02",
+          "url": "https://data.wprdc.org/dataset/0f643c56-1c53-4c88-824d-3a3876c0d3a0/resource/5ce91a56-0799-46ea-9585-13fa8db5979e/download/slopes.geojson"
+        }
+      ],
+      "confidence": "medium",
+      "resolution": "Geotechnical report; walls under 10 ft, cut/fill under 25% (915.02)",
+      "resolved_by_step": 3
+    },
+    {
+      "id": "combined_sewer",
+      "category": "infrastructure",
+      "severity": "low",
+      "title": "Combined sewershed (proxy for stormwater requirements)",
+      "cost_usd": [
+        5000,
+        20000
+      ],
+      "months": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "source": "Combined Sewershed",
+          "as_of": "2018-07-27",
+          "layer": "sewer",
+          "code_section": null,
+          "url": "https://data.wprdc.org/dataset/fe7e5332-4c87-410d-b0be-43c5d2c44ae0/resource/138d6b65-1630-4905-9421-de90cd9d59e5/download/___"
+        }
+      ],
+      "confidence": "low",
+      "resolution": "Stormwater management plan; capacity inquiry to PWSA",
+      "resolved_by_step": 2
+    }
+  ],
+  "cleared": [
+    "landslide-prone areas",
+    "undermining",
+    "FEMA floodplain",
+    "DEP environmental records",
+    "street frontage"
+  ],
+  "options": [
+    {
+      "label": "by_right",
+      "product_type": "single_family",
+      "units": 1,
+      "relief": [],
+      "margin": {
+        "p10": -0.5565681611081991,
+        "p50": -0.4729252365103486,
+        "p90": -0.3720225349160569
+      },
+      "months": {
+        "p10": 4.365466579278907,
+        "p50": 5.806523071866396,
+        "p90": 7.200165874367402
+      },
+      "approval_prob": {
+        "p10": 1.0,
+        "p50": 1.0,
+        "p90": 1.0
+      },
+      "max_land_price": {
+        "p10": -362501.4983772638,
+        "p50": -287098.59427898505,
+        "p90": -213815.097943414
+      },
+      "score": {
+        "p10": 34.12690882202034,
+        "p50": 41.2250178541816,
+        "p90": 48.46663487489282
+      },
+      "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+      "entitlement_basis": [],
+      "gfa_sqft": 1500,
+      "unit_sqft": 1500
+    },
+    {
+      "label": "with_relief",
+      "product_type": "townhome",
+      "units": 2,
+      "relief": [
+        "special_exception (911.04.A.69A)",
+        "subdivision (911.02 (own lot per unit))"
+      ],
+      "margin": {
+        "p10": -0.5121144686054404,
+        "p50": -0.41665125794500946,
+        "p90": -0.3114416026689794
+      },
+      "months": {
+        "p10": 8.035493605342486,
+        "p50": 9.511633124216594,
+        "p90": 11.124973299056736
+      },
+      "approval_prob": {
+        "p10": 0.6562775999887783,
+        "p50": 0.7340475009785946,
+        "p90": 0.8076139169649418
+      },
+      "max_land_price": {
+        "p10": -575600.5936973349,
+        "p50": -442347.82115037856,
+        "p90": -321608.94395142014
+      },
+      "score": {
+        "p10": 33.71897312713727,
+        "p50": 38.69686006841296,
+        "p90": 43.41694204537634
+      },
+      "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+      "entitlement_basis": [
+        "special_exception: PLACEHOLDER prior (ZBA)",
+        "subdivision: PLACEHOLDER prior"
+      ],
+      "gfa_sqft": 2800,
+      "unit_sqft": 1400
+    }
+  ],
+  "next_steps": [
+    {
+      "order": 1,
+      "action": "Zoning pre-application meeting",
+      "who": "City Planning",
+      "cost_usd": [
+        0,
+        0
+      ],
+      "why": "Confirms the approval path before design money is spent",
+      "flag_ids": []
+    },
+    {
+      "order": 2,
+      "action": "Sewer capacity inquiry",
+      "who": "PWSA",
+      "cost_usd": [
+        0,
+        500
+      ],
+      "why": "Stormwater management plan; capacity inquiry to PWSA",
+      "flag_ids": [
+        "combined_sewer"
+      ]
+    },
+    {
+      "order": 3,
+      "action": "Geotechnical and grading feasibility study",
+      "who": "geotechnical engineer",
+      "cost_usd": [
+        3000,
+        8000
+      ],
+      "why": "Geotechnical report; walls under 10 ft, cut/fill under 25% (915.02)",
+      "flag_ids": [
+        "steep_slope"
+      ]
+    }
+  ],
+  "score_breakdown": [
+    {
+      "component": "site_cost",
+      "points_lost": 19.4,
+      "driver_flag_id": "steep_slope"
+    },
+    {
+      "component": "site_cost",
+      "points_lost": 1.6,
+      "driver_flag_id": "combined_sewer"
+    }
+  ],
+  "assumptions": [
+    {
+      "key": "hard_cost_psf",
+      "label": "Hard cost per gross sq ft",
+      "value": 250,
+      "unit": "$/sf",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 200,
+      "max": 320
+    },
+    {
+      "key": "soft_cost_share",
+      "label": "Soft costs as share of hard",
+      "value": 0.2,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.15,
+      "max": 0.25
+    },
+    {
+      "key": "contingency_share",
+      "label": "Contingency on hard + soft",
+      "value": 0.07,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.05,
+      "max": 0.1
+    },
+    {
+      "key": "construction_months",
+      "label": "Construction duration",
+      "value": 12,
+      "unit": "months",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 9,
+      "max": 16
+    },
+    {
+      "key": "carry_rate",
+      "label": "Annual carrying cost of capital",
+      "value": 0.09,
+      "unit": "rate/yr",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.07,
+      "max": 0.11
+    },
+    {
+      "key": "target_margin",
+      "label": "Target margin on cost",
+      "value": 0.15,
+      "unit": "share",
+      "source": "developer input",
+      "editable": true,
+      "min": 0.15,
+      "max": 0.15
+    },
+    {
+      "key": "new_build_premium",
+      "label": "New construction price premium over resale comps",
+      "value": 0.25,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.1,
+      "max": 0.4
+    },
+    {
+      "key": "cap_rate",
+      "label": "Cap rate for rental exit",
+      "value": 0.065,
+      "unit": "rate",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.055,
+      "max": 0.075
+    },
+    {
+      "key": "opex_ratio",
+      "label": "Operating expenses + vacancy, share of gross rent",
+      "value": 0.4,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.35,
+      "max": 0.45
+    },
+    {
+      "key": "permit_review_months",
+      "label": "Building permit review (PLI)",
+      "value": 3,
+      "unit": "months",
+      "source": "PLACEHOLDER - PLI data has issue dates only",
+      "editable": true,
+      "min": 2,
+      "max": 5
+    },
+    {
+      "key": "score_time_scale_months",
+      "label": "Time factor: e-folding months",
+      "value": 18,
+      "unit": "months",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 18,
+      "max": 18
+    },
+    {
+      "key": "score_land_full_ratio",
+      "label": "Land headroom: max land price / land price that earns full points",
+      "value": 1.5,
+      "unit": "ratio",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 1.5,
+      "max": 1.5
+    },
+    {
+      "key": "score_premium_scale",
+      "label": "Cost factor: premium share that zeroes the score",
+      "value": 0.3,
+      "unit": "share",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 0.3,
+      "max": 0.3
+    },
+    {
+      "key": "land_price",
+      "label": "Land price",
+      "value": 23000.0,
+      "unit": "$",
+      "source": "county assessed land value (not a market price)",
+      "editable": true,
+      "min": null,
+      "max": null
+    }
+  ],
+  "rules": {
+    "scenario": "strict",
+    "confidence": "high",
+    "neighbors_built": false,
+    "lot_dimensions_ft": {
+      "width": 75.2,
+      "depth": 131.7
+    }
+  },
+  "versions": {
+    "engine": "sandbox-v0.1",
+    "ruleset": "sandbox rules drafts 2026-09-26",
+    "schema": "0.1.0",
+    "data_as_of": "2018-07-27"
+  }
+}
