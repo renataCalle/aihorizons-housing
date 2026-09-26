@@ -39,6 +39,8 @@
   --band-high-risk: var(--orange);
   --band-unknown: var(--unknown);
   --band-none-outline: #c5d7ef;
+  --lot-fill: #eaf1fa; /* parcels that are not candidates */
+  --assembly-tint: #dce6ff;
 
   /* Type */
   --font-sans: 'Sora', system-ui, sans-serif;
