@@ -24,7 +24,7 @@ UI: "How we read it" chips ──▶ user edits ──▶ POST /api/search
 - **County parcel ID** (canonical): dashed or compact. Accept partials of 6+ characters for autocomplete.
   `^\d{4}-?[A-Z]-?\d{0,5}(-?\d{0,4}(-?\d{0,2})?)?$` (case-insensitive)
 - **City block-lot** (stored alongside): `^\d{1,3}-[A-Z]-\d{1,4}[A-Z]?$`, e.g. `16-E-25`.
-- **Address:** a house number followed by words that include a street suffix within the first six words: `^\d+[A-Z]?\s+(\w+\s+){0,4}(st|street|ave|avenue|blvd|boulevard|rd|road|dr|drive|way|ln|lane|pl|place|ct|court|ter|terrace|pkwy|hwy|way)\b` (case-insensitive). "3 townhomes in Hazelwood" starts with a number but has no suffix, so it's a description. If the text is ambiguous, call `/lookup` first and fall back to AI parsing when it returns nothing.
+- **Address:** a house number followed by words that include a street suffix within the first six words: `^\d+[A-Z]?\s+(\w+\s+){0,4}(st|street|ave|avenue|blvd|boulevard|rd|road|dr|drive|way|ln|lane|pl|place|ct|court|ter|terrace|pkwy|hwy)\b` (case-insensitive). "3 townhomes in Hazelwood" starts with a number but has no suffix, so it's a description. If the text is ambiguous, call `/lookup` first and fall back to AI parsing when it returns nothing.
 - **Description:** everything else.
 
 ## The tool
@@ -35,14 +35,22 @@ Force a single tool call so the output is always structured.
 tool = {
     "name": "apply_filters",
     "description": "Translate the user's description of the site they want into search filters. "
-                   "Only use values allowed by the schema. Put anything you cannot express as a filter in not_understood.",
+    "Only use values allowed by the schema. Put anything you cannot express as a filter in not_understood.",
     "input_schema": {
         "type": "object",
         "properties": {
-            "filters": SEARCH_FILTERS_SCHEMA,   # SearchFilters.model_json_schema(), $refs inlined
-            "readings": {"type": "array", "items": {"type": "object",
-                "properties": {"phrase": {"type": "string"}, "interpreted_as": {"type": "string"}},
-                "required": ["phrase", "interpreted_as"]}},
+            "filters": SEARCH_FILTERS_SCHEMA,  # SearchFilters.model_json_schema(), $refs inlined
+            "readings": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "phrase": {"type": "string"},
+                        "interpreted_as": {"type": "string"},
+                    },
+                    "required": ["phrase", "interpreted_as"],
+                },
+            },
             "not_understood": {"type": "array", "items": {"type": "string"}},
         },
         "required": ["filters", "readings", "not_understood"],
@@ -50,7 +58,7 @@ tool = {
 }
 
 response = client.messages.create(
-    model=settings.AI_SEARCH_MODEL,          # claude-haiku-4-5-20251001
+    model=settings.AI_SEARCH_MODEL,  # claude-haiku-4-5-20251001
     max_tokens=800,
     system=SYSTEM_PROMPT,
     tools=[tool],
@@ -127,7 +135,7 @@ It must work with no API key, so the demo never breaks. Keyword and regex rules 
 
 ## Evaluation
 
-`fixtures/eval/nl_search_eval.jsonl` has 40 prompts with expected filters. Each `expected` object is partial: only the listed fields are checked. Some entries also check `expected_not_understood` (substring match) or `expected_detected`.
+`fixtures/eval/nl_search_eval.jsonl` has 41 prompts with expected filters. Each `expected` object is partial: only the listed fields are checked. Some entries also check `expected_not_understood` (substring match) or `expected_detected`.
 
 `api/tests/test_ai_search_eval.py`:
 - Runs every prompt through `/search/parse` (the AI parser if a key is set, else the fallback).

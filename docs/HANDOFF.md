@@ -1,6 +1,6 @@
 # Handoff: web and API workstream
 
-Unzip this at the root of `aihorizons-housing`, on your branch (`git checkout -b feat/web-api` from `scaffold/monorepo`). Nothing here overwrites your teammate's files: the root `CLAUDE.md`, `contracts/`, `engine/`, `pipeline/`, `research/` and `fixtures/golden/` are untouched.
+Unzip this at the root of `aihorizons-housing`, on your branch (`git checkout -b feat/web-api` from `main`). Nothing here overwrites your teammate's files: the root `CLAUDE.md`, `contracts/`, `engine/`, `pipeline/`, `research/` and `fixtures/golden/` are untouched.
 
 ## Where things land
 

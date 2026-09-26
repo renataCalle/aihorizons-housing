@@ -43,9 +43,9 @@ api/tests/
 ```python
 class SiteSource(Protocol):
     def site_context(self, parcel_id: str) -> SiteContext: ...
-    def candidates(self, area_names: list[str] | None) -> list[str]: ...   # parcel IDs in scope
-    def lookup(self, text: str) -> list[LookupMatch]: ...                  # IDs and addresses
-    def geometry(self, parcel_ids: list[str]) -> dict: ...                 # GeoJSON, EPSG:4326
+    def candidates(self, area_names: list[str] | None) -> list[str]: ...  # parcel IDs in scope
+    def lookup(self, text: str) -> list[LookupMatch]: ...  # IDs and addresses
+    def geometry(self, parcel_ids: list[str]) -> dict: ...  # GeoJSON, EPSG:4326
     def neighborhoods(self) -> list[str]: ...
 ```
 
@@ -65,7 +65,7 @@ Prefix `/api`. Request and response models come from `navigator_contracts` (exis
 | GET | `/evidence/{evidenceId}` | evidence for a flag (zoning board cases etc.) |
 | POST | `/map/parcels` | GeoJSON FeatureCollection in EPSG:4326; properties: `parcel_id, band, score, rank, display_name` |
 | GET | `/neighborhoods` | canonical neighborhood names |
-| GET | `/neighborhoods/{name}/summary?product=&units=` | counts per band, top bottlenecks (`attribute_bottlenecks`), near misses, assemblies |
+| GET | `/neighborhoods/{name}/summary?product=&units=` | counts per band, top bottlenecks (the engine's `attribute_bottlenecks`; mocked until it exists), near misses, assemblies |
 
 ## Parcel IDs
 
