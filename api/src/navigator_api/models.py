@@ -14,7 +14,14 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from navigator_contracts import Range, SiteAnalysis
-from navigator_contracts.site_analysis import Band, OptionLabel, ProductType, Severity, Versions
+from navigator_contracts.site_analysis import (
+    Band,
+    CostRange,
+    OptionLabel,
+    ProductType,
+    Severity,
+    Versions,
+)
 from navigator_contracts.site_context import OwnerType
 
 
@@ -34,6 +41,16 @@ class LeadOption(Model):
     product_type: ProductType
     units: int
     relief: list[str] = Field(description="Empty = by right")
+    margin: Range | None = Field(default=None, description="Margin on cost, as a fraction")
+
+
+class ProgramFit(Model):
+    """One building type the engine tested on the lot (`rule_checks.programs`)."""
+
+    product_type: ProductType
+    units: int
+    outcome: Literal["by_right", "needs_approval", "rejected"]
+    relief_types: list[str] = Field(description="Approvals that fix the failing rules")
 
 
 class ParcelSummary(Model):
@@ -64,6 +81,20 @@ class ParcelSummary(Model):
     top_flag_severity: Severity | None = None
     max_land_price: Range | None = None
     lead_option: LeadOption | None = None
+    months_to_permit: Range | None = None
+    site_cost_premium: CostRange | None = None
+    programs: list[ProgramFit] = Field(
+        default_factory=list, description="Every building type the engine tested"
+    )
+    # Facts copied from SiteContext for search filters. None = unknown, never zero.
+    has_structure: bool = False
+    steep_slope_share: float | None = None
+    landslide_share: float | None = None
+    undermined_share: float | None = None
+    flood_share: float | None = Field(default=None, description="FEMA zones, excluding X500")
+    combined_sewershed: bool | None = None
+    transit_distance_ft: float | None = None
+    tax_lien_usd: float = 0.0
 
 
 class ParcelReport(Model):
