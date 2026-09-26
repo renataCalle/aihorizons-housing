@@ -3,7 +3,7 @@
 import re
 
 from navigator_api.models import LookupMatch, LookupResponse, ParcelSummary
-from navigator_api.search.detect import detect
+from navigator_api.search.detect import detect, should_look_up
 
 MAX_MATCHES = 8
 
@@ -49,7 +49,7 @@ def lookup(summaries: list[ParcelSummary], text: str) -> LookupResponse:
         found = [s for s in summaries if s.block_lot and s.block_lot.upper().startswith(query)]
         found.sort(key=lambda s: (s.block_lot.upper() != query, s.block_lot))
         matches = [LookupMatch(matched_on="block_lot", parcel=s) for s in found]
-    elif detection.kind == "address":
+    elif should_look_up(text, detection):  # an address, or text that starts like one
         query = _address_key(text)
         scored = []
         for s in summaries:

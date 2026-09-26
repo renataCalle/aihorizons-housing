@@ -47,3 +47,10 @@ def test_description_is_not_looked_up(client: TestClient) -> None:
 
 def test_unknown_id_returns_no_matches(client: TestClient) -> None:
     assert client.get("/api/lookup", params={"q": "9999-Z-99999"}).json()["matches"] == []
+
+
+def test_text_starting_with_a_house_number_is_looked_up_as_an_address(client: TestClient) -> None:
+    body = client.get("/api/lookup", params={"q": "123 sample"}).json()
+    assert body["kind"] == "description"
+    assert ids(body)[0] == SAMPLE_LOT_A
+    assert body["matches"][0]["matched_on"] == "address"

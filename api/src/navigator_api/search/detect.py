@@ -21,6 +21,8 @@ STREET_SUFFIXES = (
 # A house number, then a street suffix within the next few words.
 ADDRESS = re.compile(rf"^\d+[A-Z]?\s+(\w+\s+){{0,4}}({STREET_SUFFIXES})\b", re.IGNORECASE)
 MIN_ID_CHARS = 6
+# Starts like an address ("123 sam"): look it up before treating it as a description.
+HOUSE_NUMBER = re.compile(r"^\d+[A-Z]?\s+[A-Z]", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -40,3 +42,10 @@ def detect(text: str) -> Detection:
     if ADDRESS.match(value):
         return Detection("address")
     return Detection("description")
+
+
+def should_look_up(text: str, detection: Detection) -> bool:
+    """IDs and addresses are looked up; so is ambiguous text that starts with a house number."""
+    if detection.kind in ("parcel_id", "address"):
+        return True
+    return detection.kind == "description" and bool(HOUSE_NUMBER.match(text.strip()))
