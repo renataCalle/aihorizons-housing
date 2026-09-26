@@ -139,6 +139,34 @@ export interface components {
             /** Source Url */
             source_url?: string | null;
         };
+        /**
+         * CheckResult
+         * @description One zoning rule applied to one building. Rules pass or fail; probability enters only
+         *     through the approval (`relief_type`) that can fix a failure.
+         */
+        CheckResult: {
+            /** Check Id */
+            check_id: string;
+            /** Label */
+            label: string;
+            /** Note */
+            note: string | null;
+            /** Provided */
+            provided: number | null;
+            /** Relief Type */
+            relief_type: string | null;
+            /** Required */
+            required: number | null;
+            /** Section */
+            section: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pass" | "needs_approval" | "rejected" | "not_applicable";
+            /** Unit */
+            unit: string | null;
+        };
         /** CodeReference */
         CodeReference: {
             /**
@@ -391,6 +419,15 @@ export interface components {
             /** Summary */
             summary: string | null;
         };
+        /** NotChecked */
+        NotChecked: {
+            /** Label */
+            label: string;
+            /** Reason */
+            reason: string;
+            /** Section */
+            section: string;
+        };
         /** ParcelFeature */
         ParcelFeature: {
             /**
@@ -524,6 +561,31 @@ export interface components {
              */
             zoning: string[];
         };
+        /** ProgramEvaluation */
+        ProgramEvaluation: {
+            approval_months: components["schemas"]["Range"] | null;
+            approval_prob: components["schemas"]["Range"] | null;
+            /** Checks */
+            checks: components["schemas"]["CheckResult"][];
+            /** Chosen As */
+            chosen_as: ("by_right" | "with_relief") | null;
+            /** Gfa Sqft */
+            gfa_sqft: number;
+            /**
+             * Outcome
+             * @enum {string}
+             */
+            outcome: "by_right" | "needs_approval" | "rejected";
+            /**
+             * Product Type
+             * @enum {string}
+             */
+            product_type: "single_family" | "duplex" | "triplex" | "townhome" | "walkup";
+            /** Representative */
+            representative: boolean;
+            /** Units */
+            units: number;
+        };
         /** ProgramOption */
         ProgramOption: {
             approval_prob: components["schemas"]["Range"];
@@ -565,6 +627,29 @@ export interface components {
             p50: number;
             /** P90 */
             p90: number;
+        };
+        /**
+         * RuleChecks
+         * @description Every building type tested on this lot, rule by rule ("why this score").
+         */
+        RuleChecks: {
+            /** District */
+            district: string;
+            /** Not Checked */
+            not_checked: components["schemas"]["NotChecked"][];
+            /** Odds Note */
+            odds_note: string;
+            /** Programs */
+            programs: components["schemas"]["ProgramEvaluation"][];
+            /**
+             * Scenario
+             * @enum {string}
+             */
+            scenario: "strict" | "contextual";
+            /** Site Checks */
+            site_checks: components["schemas"]["SiteCheck"][];
+            /** Uncovered Districts */
+            uncovered_districts: string[];
         };
         /** RulesSummary */
         RulesSummary: {
@@ -624,11 +709,31 @@ export interface components {
             next_steps: components["schemas"]["Step"][];
             /** Options */
             options: components["schemas"]["ProgramOption"][];
+            rule_checks?: components["schemas"]["RuleChecks"] | null;
             rules: components["schemas"]["RulesSummary"];
             /** Score Breakdown */
             score_breakdown: components["schemas"]["ScoreItem"][];
             verdict: components["schemas"]["Verdict"];
             versions: components["schemas"]["Versions"];
+        };
+        /**
+         * SiteCheck
+         * @description Overlay rules that apply to the site whatever is built.
+         */
+        SiteCheck: {
+            /** Check Id */
+            check_id: string;
+            /** Label */
+            label: string;
+            /** Note */
+            note: string | null;
+            /** Section */
+            section: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "applies" | "clear" | "unknown";
         };
         /** Step */
         Step: {
