@@ -5,6 +5,7 @@ import './styles/tokens.css'
 import './styles/base.css'
 import './styles/pages.css'
 import './styles/map.css'
+import './styles/omnibox.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

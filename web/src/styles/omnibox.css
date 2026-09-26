@@ -1,0 +1,348 @@
+/* The search box (SearchTyping.dc.html). `hero` on the landing page, `bar` in the map top bar. */
+.omnibox-root {
+  position: relative;
+  width: 100%;
+  text-align: left;
+}
+
+.omnibox-field {
+  position: relative;
+  z-index: 2;
+}
+
+.omnibox-icon {
+  flex: none;
+  fill: none;
+  stroke: var(--cobalt);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.omnibox-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+}
+
+.omnibox-input::placeholder {
+  color: var(--ink-4);
+}
+
+.omnibox-input.is-id {
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+.omnibox-detected {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--cobalt-tint);
+  color: var(--cobalt-deep);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.omnibox-clear,
+.omnibox-go {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.omnibox-clear {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: none;
+  color: var(--ink);
+}
+
+.omnibox-clear:hover {
+  background: var(--cobalt-tint);
+}
+
+.omnibox-clear svg,
+.omnibox-go svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.omnibox-go {
+  width: 64px;
+  height: 64px;
+  margin-right: -14px;
+  border-radius: 14px;
+  background: var(--cobalt);
+  color: var(--white);
+}
+
+.omnibox-go:hover {
+  background: var(--cobalt-deep);
+}
+
+/* Variants */
+.omnibox-hero .omnibox-field {
+  height: 90px;
+  padding: 0 26px 0 30px;
+  gap: 14px;
+  border: 2px solid var(--cobalt);
+  border-radius: 24px;
+  background: var(--white);
+  box-shadow: 0 0 0 6px rgba(29, 63, 214, 0.08), 0 18px 48px rgba(11, 27, 63, 0.12);
+  font-size: 18px;
+}
+
+.omnibox-hero .omnibox-input.is-id {
+  font-size: 18px;
+}
+
+.omnibox-bar .omnibox-field {
+  width: 100%;
+}
+
+/* The panel opens below the field, as one card with it. */
+.omnibox-panel {
+  position: absolute;
+  top: calc(100% - 22px);
+  left: 0;
+  right: 0;
+  z-index: 1;
+  overflow: hidden;
+  padding-top: 22px;
+  border: 2px solid var(--cobalt);
+  border-top: none;
+  border-radius: 0 0 24px 24px;
+  background: var(--white);
+  box-shadow: 0 24px 60px rgba(11, 27, 63, 0.16);
+}
+
+.omnibox-bar .omnibox-panel {
+  top: calc(100% - 12px);
+  padding-top: 12px;
+  border-width: 1px;
+  border-color: rgba(29, 63, 214, 0.24);
+  border-radius: 0 0 16px 16px;
+}
+
+.omnibox-hero.is-open .omnibox-field {
+  border-bottom-color: var(--line-soft);
+  border-radius: 24px 24px 0 0;
+  box-shadow: none;
+}
+
+.omnibox-bar.is-open .omnibox-field {
+  border-radius: var(--radius-control) var(--radius-control) 0 0;
+}
+
+.omnibox-list {
+  margin: 0;
+  padding: 14px 14px 10px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+}
+
+.omnibox-heading {
+  padding: 0 10px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.omnibox-list li[role='presentation'] > .omnibox-heading {
+  padding: 6px 10px 8px;
+}
+
+.omnibox-empty {
+  padding: 8px 10px;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
+.omnibox-row,
+.omnibox-ai {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.omnibox-row.is-active,
+.omnibox-ai.is-active {
+  border-color: var(--cobalt-line);
+  background: var(--cobalt-tint-2);
+}
+
+.omnibox-row-icon,
+.omnibox-ai-icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.omnibox-row-icon {
+  background: var(--cobalt);
+}
+
+.omnibox-row-icon svg {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.omnibox-ai {
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
+.omnibox-ai-icon {
+  background: #f1f5fd;
+}
+
+.omnibox-ai-icon svg {
+  fill: none;
+  stroke: var(--cobalt);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.omnibox-row-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.omnibox-row-id {
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.omnibox-row-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.omnibox-row mark {
+  background: none;
+  color: var(--cobalt);
+  font-weight: 500;
+}
+
+.omnibox-row-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.omnibox-row-meta {
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.omnibox-row-score {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.omnibox-row-points {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.omnibox-row-band {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Text colors meet 4.5:1 on white; the band name is always spelled out too. */
+.band-fast_track {
+  color: var(--cobalt);
+}
+
+.band-conditions {
+  color: var(--cobalt-deep);
+}
+
+.band-high_risk {
+  color: var(--orange-text);
+}
+
+.band-unknown,
+.band-none {
+  color: var(--ink-3);
+}
+
+.omnibox-row-enter {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--cobalt);
+  font-size: 12px;
+}
+
+.omnibox-hints {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 40px;
+  padding: 0 24px;
+  border-top: 1px solid #e3eaf7;
+  background: #f6f9ff;
+  color: var(--ink-4);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
