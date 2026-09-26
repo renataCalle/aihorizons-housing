@@ -1,22 +1,22 @@
-{"id": 1, "text": "3 townhomes in Hazelwood under $25k, no hearing", "expected": {"product": {"type": "townhomes", "units": 3}, "areas": ["Hazelwood"], "approval_paths": ["by_right"], "max_land_price": 25000}}
+{"id": 1, "text": "3 townhomes in Hazelwood under $25k, no hearing", "expected": {"product": {"type": "townhome", "units": 3}, "areas": ["Hazelwood"], "approval_paths": ["by_right"], "max_land_price": 25000}}
 {"id": 2, "text": "duplex lots in greenfield", "expected": {"product": {"type": "duplex"}, "areas": ["Greenfield"]}}
 {"id": 3, "text": "flat lots near a bus stop in Hazelwood", "expected": {"areas": ["Hazelwood"], "max_steep_slope_pct": 5, "near": [{"feature": "transit_stop", "within_ft": 1320}]}}
 {"id": 4, "text": "cheapest land in Lawrenceville or Bloomfield for a small walk-up", "expected": {"product": {"type": "walkup"}, "areas": ["Lower Lawrenceville", "Central Lawrenceville", "Upper Lawrenceville", "Bloomfield"], "sort": "cheapest"}, "notes": "Lawrenceville is three official neighborhoods; expand the nickname"}
 {"id": 5, "text": "land bank lots where I can build by right", "expected": {"owner_types": ["land_bank"], "approval_paths": ["by_right"]}}
 {"id": 6, "text": "not in a flood zone, not undermined, Hill District", "expected": {"areas": ["Crawford-Roberts", "Middle Hill", "Upper Hill", "Terrace Village", "Bedford Dwellings"], "exclude_constraints": ["flood_zone", "undermined"]}, "notes": "'the Hill' and 'Hill District' expand to the five official Hill District neighborhoods via the alias table"}
 {"id": 7, "text": "4 unit walkup, margin at least 18%", "expected": {"product": {"type": "walkup", "units": 4}, "min_margin_pct": 18}}
-{"id": 8, "text": "ADU friendly lots in Squirrel Hill South", "expected": {"product": {"type": "adu"}, "areas": ["Squirrel Hill South"]}}
+{"id": 8, "text": "ADU friendly lots in Squirrel Hill South", "expected": {"areas": ["Squirrel Hill South"]}, "expected_not_understood": ["ADU"], "notes": "The engine doesn't evaluate ADUs yet: not a filter"}
 {"id": 9, "text": "sites I can permit in under 6 months", "expected": {"max_months_to_permit": 6}}
 {"id": 10, "text": "vacant lots bigger than 5000 sq ft in Beechview", "expected": {"vacant_only": true, "lot_min_sqft": 5000, "areas": ["Beechview"]}}
 {"id": 11, "text": "tax delinquent vacant parcels in Homewood", "expected": {"tax_delinquent_only": true, "vacant_only": true, "areas": ["Homewood South", "Homewood North", "Homewood West"]}, "notes": "Homewood is three official neighborhoods"}
 {"id": 12, "text": "only fast track sites", "expected": {"bands": ["fast_track"]}}
-{"id": 13, "text": "3 townhomes, allow variances, Greenfield and Hazelwood", "expected": {"product": {"type": "townhomes", "units": 3}, "areas": ["Greenfield", "Hazelwood"], "approval_paths": ["by_right", "special_exception", "variance"]}}
+{"id": 13, "text": "3 townhomes, allow variances, Greenfield and Hazelwood", "expected": {"product": {"type": "townhome", "units": 3}, "areas": ["Greenfield", "Hazelwood"], "approval_paths": ["by_right", "administrative", "special_exception", "variance"]}}
 {"id": 14, "text": "show me near misses in Hazelwood", "expected": {"areas": ["Hazelwood"], "show_near_misses": true}}
-{"id": 15, "text": "small lots that could work together for townhomes", "expected": {"product": {"type": "townhomes"}, "show_assemblies": true}}
+{"id": 15, "text": "small lots that could work together for townhomes", "expected": {"product": {"type": "townhome"}, "show_assemblies": true}}
 {"id": 16, "text": "duplex near a park, land under 15k", "expected": {"product": {"type": "duplex"}, "near": [{"feature": "park", "within_ft": 1320}], "max_land_price": 15000}}
 {"id": 17, "text": "lots with good schools nearby", "expected": {}, "expected_not_understood": ["good schools"], "notes": "School quality is not a filter; 'near a school' would be"}
-{"id": 18, "text": "townhomes in Mt Lebanon", "expected": {"product": {"type": "townhomes"}}, "expected_not_understood": ["Mt Lebanon"], "notes": "Outside city limits; zoning not covered. UI shows the coverage message"}
-{"id": 19, "text": "towhnomes in hazlewood", "expected": {"product": {"type": "townhomes"}, "areas": ["Hazelwood"]}, "notes": "Typos"}
+{"id": 18, "text": "townhomes in Mt Lebanon", "expected": {"product": {"type": "townhome"}}, "expected_not_understood": ["Mt Lebanon"], "notes": "Outside city limits; zoning not covered. UI shows the coverage message"}
+{"id": 19, "text": "towhnomes in hazlewood", "expected": {"product": {"type": "townhome"}, "areas": ["Hazelwood"]}, "notes": "Typos"}
 {"id": 20, "text": "no steep slopes, duplex, Brookline", "expected": {"product": {"type": "duplex"}, "areas": ["Brookline"], "max_steep_slope_pct": 0}}
 {"id": 21, "text": "sites where site work costs less than 20 grand", "expected": {"max_site_cost_premium": 20000}}
 {"id": 22, "text": "score above 70 in Carrick", "expected": {"min_score": 70, "areas": ["Carrick"]}}
@@ -27,15 +27,15 @@
 {"id": 27, "text": "exclude unknowns", "expected": {"include_unknowns": false}}
 {"id": 28, "text": "3 homes without going to the zoning board in Allentown", "expected": {"product": {"units": 3}, "areas": ["Allentown"], "approval_paths": ["by_right"]}, "notes": "Product type not stated: keep the current panel's type"}
 {"id": 29, "text": "cheap flat lots", "expected": {"max_steep_slope_pct": 5, "sort": "cheapest"}, "notes": "'cheap' sorts; it does not invent a price cap"}
-{"id": 30, "text": "lots under 3000 sq ft for an ADU", "expected": {"product": {"type": "adu"}, "lot_max_sqft": 3000}}
+{"id": 30, "text": "lots under 3000 sq ft for an ADU", "expected": {"lot_max_sqft": 3000}, "expected_not_understood": ["ADU"], "notes": "The engine doesn't evaluate ADUs yet: not a filter"}
 {"id": 31, "text": "avoid combined sewer areas", "expected": {"exclude_constraints": ["combined_sewer"]}}
 {"id": 32, "text": "high risk sites only, I want to see what's blocking them", "expected": {"bands": ["high_risk"]}}
 {"id": 33, "text": "rental duplex in Polish Hill", "expected": {"product": {"type": "duplex"}, "areas": ["Polish Hill"]}, "expected_not_understood": ["rental"], "notes": "Tenure is not a search filter in v1"}
 {"id": 34, "text": "0088-B-00044", "expected": {}, "expected_detected": "parcel_id", "notes": "Handled by the ID lookup, never sent to the model"}
 {"id": 35, "text": "0088B00044000000", "expected": {}, "expected_detected": "parcel_id"}
 {"id": 36, "text": "3525 Beechwood Blvd", "expected": {}, "expected_detected": "address", "notes": "Handled by the address lookup, never sent to the model"}
-{"id": 37, "text": "townhomes cerca del busway en Hazelwood", "expected": {"product": {"type": "townhomes"}, "areas": ["Hazelwood"], "near": [{"feature": "transit_stop", "within_ft": 1320}]}, "notes": "Other languages should work"}
-{"id": 38, "text": "3 or 4 townhomes", "expected": {"product": {"type": "townhomes", "units": 3}}, "notes": "Range of units: use the lower bound and add a reading explaining it"}
+{"id": 37, "text": "townhomes cerca del busway en Hazelwood", "expected": {"product": {"type": "townhome"}, "areas": ["Hazelwood"], "near": [{"feature": "transit_stop", "within_ft": 1320}]}, "notes": "Other languages should work"}
+{"id": 38, "text": "3 or 4 townhomes", "expected": {"product": {"type": "townhome", "units": 3}}, "notes": "Range of units: use the lower bound and add a reading explaining it"}
 {"id": 39, "text": "everything in Hazelwood", "expected": {"areas": ["Hazelwood"], "include_unknowns": true}}
 {"id": 40, "text": "lots where the land is worth less than 10k and I can build 2 homes by right", "expected": {"max_land_price": 10000, "product": {"units": 2}, "approval_paths": ["by_right"]}}
 {"id": 41, "text": "16-E-25", "expected": {}, "expected_detected": "parcel_id", "notes": "City block-lot format; handled by the ID lookup"}
