@@ -1,0 +1,25 @@
+{
+  "_about": "Search box detection cases, shared by api/tests/test_detect.py and web/src/search/detect.test.ts so the two implementations can't drift. Rules: docs/05-ai-search.md.",
+  "cases": [
+    { "text": "0088-B-00044-0000-00", "kind": "parcel_id", "format": "county" },
+    { "text": "0088B00044000000", "kind": "parcel_id", "format": "county" },
+    { "text": "0088-b-00044", "kind": "parcel_id", "format": "county" },
+    { "text": "0000-X-00000", "kind": "parcel_id", "format": "county" },
+    { "text": "0000-X", "kind": "parcel_id", "format": "county", "note": "partial IDs count from 6 characters" },
+    { "text": "0000X0", "kind": "parcel_id", "format": "county" },
+    { "text": "0055", "kind": "description", "note": "too short to be an ID yet" },
+    { "text": "16-E-25", "kind": "parcel_id", "format": "block_lot" },
+    { "text": "55-A-137", "kind": "parcel_id", "format": "block_lot" },
+    { "text": "0-X-1", "kind": "parcel_id", "format": "block_lot" },
+    { "text": "3525 Beechwood Blvd", "kind": "address" },
+    { "text": "123 Sample St", "kind": "address" },
+    { "text": "205 example avenue", "kind": "address" },
+    { "text": "5 Penn Circle South Way", "kind": "address" },
+    { "text": "3 townhomes in Hazelwood", "kind": "description", "note": "starts with a number but has no street suffix" },
+    { "text": "3 townhomes in Hazelwood under $25k, no hearing", "kind": "description" },
+    { "text": "flat lots near a bus stop", "kind": "description" },
+    { "text": "Stanton Ave", "kind": "description", "note": "no house number" },
+    { "text": "  ", "kind": "empty" },
+    { "text": "", "kind": "empty" }
+  ]
+}
