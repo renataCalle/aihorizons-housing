@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/datastore/dump/0a963f26-eb4b-4325-bbbc-3ddf6a871410",
+  "files": [
+    "condemned.csv"
+  ],
+  "source_as_of": "2026-09-26T03:48:08.103717",
+  "dataset_title": "Condemned and Dead-End Properties",
+  "resource_name": "Condemned Properties",
+  "key": "condemned",
+  "wave": 4,
+  "feeds": "Condemned / dead-end properties (demolition cost)",
+  "fetched_at": "2026-09-26T18:06:20+00:00",
+  "seconds": 0.9,
+  "bytes": {
+    "condemned.csv": 717711
+  },
+  "sha256": {
+    "condemned.csv": "dd20477ae78c9dafe25269a087ab813c23b8cc5774881b6219d6c541c3c64bd9"
+  },
+  "notes": ""
+}

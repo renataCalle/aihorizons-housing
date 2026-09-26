@@ -57,9 +57,12 @@ only if one of their inputs changed. Every run appends to `data/refresh_log.json
 
 ## Data location
 
-`data/` at the repository root (gitignored), or `NAVIGATOR_DATA_DIR`. First-time setup on a new
-machine: `uv run python -m navigator_pipeline.fetch`, then `build`, then `features` (about
-30 minutes and 1.2 GB). The zoning code PDFs in `data/manual/zoning_code/` are downloaded by
+`data/` at the repository root, or `NAVIGATOR_DATA_DIR`. The runtime store is committed, so a
+fresh clone works immediately: cleaned tables (`data/clean/`), per-parcel facts
+(`data/features/`), the manual zoning PDFs, and each source's `_manifest.json`. Raw downloads
+stay out of git (up to 416 MB per file, and they include owner mailing addresses that cleaning
+removes); the refresh fetches any raw input it needs. To rebuild everything from scratch:
+`fetch`, then `build`, then `features` (about 30 minutes and 1.2 GB). The zoning code PDFs in `data/manual/zoning_code/` are downloaded by
 hand, because the city's sites block automated clients.
 
 ## Rules for outbound requests

@@ -1,0 +1,21 @@
+{
+  "url": "https://webapi.legistar.com/v1/pittsburgh/matters",
+  "files": [
+    "council_zoning_matters.json"
+  ],
+  "source_as_of": "2026-09-25T21:33:49.483",
+  "dataset_title": "Pittsburgh City Council legislation (Legistar)",
+  "feature_count": 735,
+  "key": "council_zoning_matters",
+  "wave": 4,
+  "feeds": "Council conditional uses and rezonings",
+  "fetched_at": "2026-09-26T18:13:00+00:00",
+  "seconds": 80.6,
+  "bytes": {
+    "council_zoning_matters.json": 5701483
+  },
+  "sha256": {
+    "council_zoning_matters.json": "0614b28acd41eba2e0cb7a54401239be765c90c284836f56f7e9e492d7979e7d"
+  },
+  "notes": "ZBA decisions are on pittsburghpa.gov, which blocks this client (403)."
+}

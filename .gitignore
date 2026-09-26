@@ -12,11 +12,23 @@ dist/
 # Notebooks
 .ipynb_checkpoints/
 
-# Data: raw downloads and built databases never go in git
-data/
+# Data. Raw downloads stay local: they are large (up to 416 MB per file), include owner
+# mailing addresses that cleaning removes, and navigator_pipeline re-fetches them. The runtime
+# store is committed so a fresh clone can build a SiteContext at once: clean tables, per-parcel
+# facts, the manual zoning PDFs, and the provenance manifests.
+data/*
+!data/clean/
+!data/features/
+!data/manual/
+!data/raw/
+data/raw/*/*
+!data/raw/*/_manifest.json
 *.duckdb
 *.duckdb.wal
 *.parquet
+!data/clean/*.parquet
+!data/features/*.parquet
+data/features/*_adhoc_*.parquet
 *.gpkg
 *.shp
 *.shx

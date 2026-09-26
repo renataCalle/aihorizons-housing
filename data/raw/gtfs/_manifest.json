@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/d0175115-c16b-48a0-b2cc-ca967b23bd40/resource/bb06b137-6726-4935-9d4f-dcfbe159b6dc/download/gtfs_1000_20260828_clever.zip",
+  "files": [
+    "gtfs.zip"
+  ],
+  "source_as_of": "2026-08-28T07:07:18.417756",
+  "dataset_title": "GTFS Archive",
+  "resource_name": "GTFS_1000_20260828_Clever",
+  "key": "gtfs",
+  "wave": 4,
+  "feeds": "Stop frequency -> frequent transit",
+  "fetched_at": "2026-09-26T18:07:54+00:00",
+  "seconds": 1.4,
+  "bytes": {
+    "gtfs.zip": 22537344
+  },
+  "sha256": {
+    "gtfs.zip": "196b8e0da68d215a4dd87cd482448ab68cb9b97d10509b1e28effc96f757176b"
+  },
+  "notes": ""
+}

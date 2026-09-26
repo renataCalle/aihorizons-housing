@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/e672f13d-71c4-4a66-8f38-710e75ed80a4/resource/4af8e160-57e9-4ebf-a501-76ca1b42fc99/download/neighborhoods.geojson",
+  "files": [
+    "neighborhoods.geojson"
+  ],
+  "source_as_of": "2026-09-23T08:45:53.288993",
+  "dataset_title": "Neighborhoods",
+  "resource_name": "GeoJSON",
+  "key": "neighborhoods",
+  "wave": 1,
+  "feeds": "Neighborhood for partial pooling and planner filters",
+  "fetched_at": "2026-09-26T18:03:11+00:00",
+  "seconds": 0.8,
+  "bytes": {
+    "neighborhoods.geojson": 1092656
+  },
+  "sha256": {
+    "neighborhoods.geojson": "4d0d660f59c0fc2507d7ec99fe4a3bd47a6fd5e3da2036794ea6e1d7cf8c1f0a"
+  },
+  "notes": ""
+}

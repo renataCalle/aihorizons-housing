@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/a917bd77-69b0-4ac7-8304-73b4dcc65d61/resource/e85ee57f-5231-41c3-b955-62404157bd14/download/parcel_level_water_providers.csv",
+  "files": [
+    "water_providers_by_parcel.csv"
+  ],
+  "source_as_of": "2025-09-23T15:26:16.358742",
+  "dataset_title": "Public Water Supplier Service Areas",
+  "resource_name": "Providers by parcel",
+  "key": "water_providers_by_parcel",
+  "wave": 3,
+  "feeds": "Water provider per parcel",
+  "fetched_at": "2026-09-26T18:06:06+00:00",
+  "seconds": 1.1,
+  "bytes": {
+    "water_providers_by_parcel.csv": 5332724
+  },
+  "sha256": {
+    "water_providers_by_parcel.csv": "7e1f83b70869fdfac94b5780aac95413be59f40fc4e5f632898e4228a4b2782f"
+  },
+  "notes": ""
+}

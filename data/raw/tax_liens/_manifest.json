@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/datastore/dump/d1e80180-5b2e-4dab-8ec3-be621628649e",
+  "files": [
+    "tax_liens.csv"
+  ],
+  "source_as_of": "2026-09-07T02:52:32.787778",
+  "dataset_title": "Allegheny County Tax Liens (Filings, Satisfactions, and Current Status)",
+  "resource_name": "Summary of liens (beta)",
+  "key": "tax_liens",
+  "wave": 5,
+  "feeds": "Tax liens: acquisition leads, title risk",
+  "fetched_at": "2026-09-26T18:07:56+00:00",
+  "seconds": 0.9,
+  "bytes": {
+    "tax_liens.csv": 3048013
+  },
+  "sha256": {
+    "tax_liens.csv": "916c41dcc2fcfec9e3ad50fe8a2b7fc6a115c1cd4229362673f0957c37d88033"
+  },
+  "notes": ""
+}

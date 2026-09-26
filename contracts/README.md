@@ -121,6 +121,44 @@ every zoning rule it applied. `null` when zoning isn't covered (outside the city
 
 Reference rendering: `sandbox/report.py` (`rules_block`).
 
+## Handoff: serving real data from the API
+
+The data is in git and the facts are live-capable, so `site_source: pipeline` can be built now.
+
+**1. Data.** `git pull` brings the runtime store in `data/` (about 230 MB): cleaned tables
+(`data/clean/*.parquet`, EPSG:2272), per-parcel facts for all 142,329 city parcels
+(`data/features/parcel_facts.parquet`), the zoning PDFs, and a provenance manifest per source.
+Raw downloads are not in git; the refresh fetches them when needed.
+
+**2. One parcel, end to end** (about 3–4 s, most of it live lookups):
+
+```python
+from navigator_contracts import SiteAnalysis, SiteContext
+from navigator_pipeline import site_context
+from sandbox.engine_v0.analyze import analyze   # dev path, as in api/scripts/generate_mock_sites.py;
+                                                # becomes navigator_engine.analyze when the engine moves
+
+ctx = SiteContext.model_validate(site_context.build([parcel_id], live=True))
+analysis = SiteAnalysis.model_validate(analyze(ctx.model_dump(mode="json"), overrides))
+```
+
+**3. `PipelineSiteSource`, method by method** (`api/src/navigator_api/sources/base.py`):
+
+| Method | Real data |
+|---|---|
+| `analysis(parcel_id)` | the two lines above; cache per parcel for an hour (live lookups are cached for an hour too) |
+| `summary` / `summaries` | `data/features/parcel_facts.parquet`: one row per city parcel with address, block-lot, zoning, lot area, use, owner type, neighbourhood, hazard shares. Scores need the engine per parcel: precompute for the parcels in scope. The engine takes ~0.01 s per parcel, but `site_context.build` reloads the tables on each call (~2 s), so batch-build contexts with `live=False` and refresh live records only for the parcel a user opens |
+| `parcels_geojson` | `data/clean/parcels.parquet` (`parcel_id`, geometry): filter to the parcels in scope, then `.to_crs(4326)` |
+| `map_features` | `data/clean/transit_stops.parquet` (`trips_weekday`), `parks.parquet`, `neighborhoods.parquet`: `.to_crs(4326)` |
+| `versions` | `analysis.versions`, or `data/raw/*/_manifest.json` (`source_as_of`, `fetched_at`) |
+| `evidence` | `None` for now: zoning board decisions are unavailable |
+| lookup (search box) | `data/clean/parcels.parquet` (`parcel_id`, `block_lot`, `address`) or `address_points.parquet` |
+
+**4. Freshness.** Show `provenance[...].retrieved` (`live` / `snapshot`) and `retrieved_at` in
+the report. Install the nightly refresh where the API runs (`pipeline/README.md`). After a
+refresh changes the store, commit `data/` occasionally so fresh clones stay current; don't
+commit every night.
+
 ## Changing the contract
 
 Additive fields are free; renames, removals and type changes bump `SCHEMA_VERSION` and need

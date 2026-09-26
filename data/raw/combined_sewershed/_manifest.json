@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/fe7e5332-4c87-410d-b0be-43c5d2c44ae0/resource/138d6b65-1630-4905-9421-de90cd9d59e5/download/___",
+  "files": [
+    "combined_sewershed.geojson"
+  ],
+  "source_as_of": "2018-07-27T14:26:32.748741",
+  "dataset_title": "Combined Sewershed",
+  "resource_name": "Combined Sewersheds",
+  "key": "combined_sewershed",
+  "wave": 3,
+  "feeds": "Combined sewershed proxy",
+  "fetched_at": "2026-09-26T18:06:05+00:00",
+  "seconds": 0.9,
+  "bytes": {
+    "combined_sewershed.geojson": 1062546
+  },
+  "sha256": {
+    "combined_sewershed.geojson": "daa806fccdf31d58980edf5d8a4ad67c303fd53a374c69c87ed1009765e16380"
+  },
+  "notes": ""
+}

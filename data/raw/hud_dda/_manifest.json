@@ -1,0 +1,21 @@
+{
+  "url": "https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Difficult_Development_Areas_2026/FeatureServer/0",
+  "files": [
+    "hud_dda.geojson"
+  ],
+  "source_as_of": "2025-09-30T14:51:32.906000+00:00",
+  "dataset_title": "Difficult_Development_Areas2026",
+  "feature_count": 8,
+  "key": "hud_dda",
+  "wave": 5,
+  "feeds": "LIHTC Difficult Development Areas 2026",
+  "fetched_at": "2026-09-26T18:07:56+00:00",
+  "seconds": 0.5,
+  "bytes": {
+    "hud_dda.geojson": 37673
+  },
+  "sha256": {
+    "hud_dda.geojson": "0a11294327607b79c3947b345e486285182ea953a509423555256b05ff706705"
+  },
+  "notes": ""
+}

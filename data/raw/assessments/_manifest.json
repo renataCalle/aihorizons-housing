@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/2b3df818-601e-4f06-b150-643557229491/resource/9a1c60bd-f9f7-4aba-aeb7-af8c3aaa44e5/download/assessments.csv",
+  "files": [
+    "assessments.csv"
+  ],
+  "source_as_of": "2026-09-07T01:42:02.893599",
+  "dataset_title": "Allegheny County Property Assessments",
+  "resource_name": "Property Assessments Parcel Data (for downloads)",
+  "key": "assessments",
+  "wave": 1,
+  "feeds": "Lot area, use, values, owner class, municipality",
+  "fetched_at": "2026-09-26T18:03:08+00:00",
+  "seconds": 7.8,
+  "bytes": {
+    "assessments.csv": 435301146
+  },
+  "sha256": {
+    "assessments.csv": "41a59d479e4fe45a8499a10f2747c5d1e70032646fe71ebd27b8159a7b492e28"
+  },
+  "notes": ""
+}

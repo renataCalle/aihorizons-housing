@@ -1,0 +1,21 @@
+{
+  "url": "https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/SAFMR_Year/FeatureServer/2",
+  "files": [
+    "hud_safmr.geojson"
+  ],
+  "source_as_of": "2024-11-05T23:46:40.480000+00:00",
+  "dataset_title": "SAFMRyear",
+  "feature_count": 170,
+  "key": "hud_safmr",
+  "wave": 3,
+  "feeds": "Rent benchmarks: Small Area FMR by ZIP and bedroom",
+  "fetched_at": "2026-09-26T18:06:15+00:00",
+  "seconds": 1.8,
+  "bytes": {
+    "hud_safmr.geojson": 4613949
+  },
+  "sha256": {
+    "hud_safmr.geojson": "d3c27a6482af75c2d5d1e815c6bc60b2411155e379d5bf5c290df35ead954632"
+  },
+  "notes": ""
+}

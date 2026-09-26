@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/datastore/dump/e1dcee82-9179-4306-8167-5891915b62a7",
+  "files": [
+    "city_owned.csv"
+  ],
+  "source_as_of": "2026-09-26T00:31:44.719771",
+  "dataset_title": "City-Owned Properties",
+  "resource_name": "City-Owned Properties",
+  "key": "city_owned",
+  "wave": 5,
+  "feeds": "Publicly owned parcels (planner filter)",
+  "fetched_at": "2026-09-26T18:07:55+00:00",
+  "seconds": 0.6,
+  "bytes": {
+    "city_owned.csv": 2991741
+  },
+  "sha256": {
+    "city_owned.csv": "634b3d2a8b35d5ce3e3859331f9350b10143073c494c2191a7206210a80cbf34"
+  },
+  "notes": ""
+}

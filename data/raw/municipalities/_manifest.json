@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/2fa577d6-1a6b-46a8-8165-27fecac1dee5/resource/b0cb0249-d1ba-45b7-9918-dc86fa8af04c/download/muni_boundaries.geojson",
+  "files": [
+    "municipalities.geojson"
+  ],
+  "source_as_of": "2026-08-30T13:15:12.599232",
+  "dataset_title": "Allegheny County Municipal Boundaries",
+  "resource_name": "GeoJSON",
+  "key": "municipalities",
+  "wave": 1,
+  "feeds": "Municipality of each parcel; city vs. suburb",
+  "fetched_at": "2026-09-26T18:03:10+00:00",
+  "seconds": 0.3,
+  "bytes": {
+    "municipalities.geojson": 2462183
+  },
+  "sha256": {
+    "municipalities.geojson": "e05159c820907434abd9bd2fedee42d95eba5c674b4338dec0a5b503c583472a"
+  },
+  "notes": ""
+}

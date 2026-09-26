@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/e9aa627c-cb22-4ba4-9961-56d9620a46af/resource/ff6dcffa-49ba-4431-954e-044ed519a4d7/download/___",
+  "files": [
+    "city_steps.geojson"
+  ],
+  "source_as_of": "2022-12-19T15:25:40.055990",
+  "dataset_title": "City of Pittsburgh Steps",
+  "resource_name": "City of Pittsburgh Steps",
+  "key": "city_steps",
+  "wave": 3,
+  "feeds": "Public stairways (steps-only frontage)",
+  "fetched_at": "2026-09-26T18:11:28+00:00",
+  "seconds": 1.0,
+  "bytes": {
+    "city_steps.geojson": 1430415
+  },
+  "sha256": {
+    "city_steps.geojson": "e25ab9e22b3a1aaece9e946b38f5a7382c042bfd27415e5f9a1915af7c704643"
+  },
+  "notes": ""
+}

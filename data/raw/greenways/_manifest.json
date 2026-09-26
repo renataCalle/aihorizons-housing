@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/8820c384-1424-45dd-a2bb-366a6a7c6d1b/resource/7c2b901b-6328-4e40-99a3-4b5952cd6f31/download/greenways.geojson",
+  "files": [
+    "greenways.geojson"
+  ],
+  "source_as_of": "2026-09-23T08:20:44.356794",
+  "dataset_title": "Greenways",
+  "resource_name": "GeoJSON",
+  "key": "greenways",
+  "wave": 2,
+  "feeds": "Greenway overlay",
+  "fetched_at": "2026-09-26T18:03:12+00:00",
+  "seconds": 0.7,
+  "bytes": {
+    "greenways.geojson": 145285
+  },
+  "sha256": {
+    "greenways.geojson": "11dddbf5370a387e2d4f7b3ccee39ee497578e04c771abb698af1ff6a886fafa"
+  },
+  "notes": ""
+}

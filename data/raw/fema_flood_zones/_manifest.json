@@ -1,0 +1,21 @@
+{
+  "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28",
+  "files": [
+    "fema_flood_zones.geojson"
+  ],
+  "source_as_of": null,
+  "dataset_title": "Flood Hazard Zones",
+  "feature_count": 7793,
+  "key": "fema_flood_zones",
+  "wave": 3,
+  "feeds": "Flood flag (current NFHL, not the 2014 extract)",
+  "fetched_at": "2026-09-26T18:02:53+00:00",
+  "seconds": 20.4,
+  "bytes": {
+    "fema_flood_zones.geojson": 25431551
+  },
+  "sha256": {
+    "fema_flood_zones.geojson": "2f96470e183d29d37ae9827a22ebe887da1ff15fd3b337b07e10797eea79eac1"
+  },
+  "notes": "Filtered by Allegheny's DFIRM id (bbox queries return 500). Geometry simplified server-side to ~1 m; raw NFHL polygons are too dense to page."
+}

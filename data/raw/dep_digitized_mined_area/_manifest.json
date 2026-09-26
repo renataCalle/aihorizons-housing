@@ -1,0 +1,21 @@
+{
+  "url": "https://gis.dep.pa.gov/depgisprd/rest/services/emappa/eMapPA_External_Extraction/MapServer/47",
+  "files": [
+    "dep_digitized_mined_area.geojson"
+  ],
+  "source_as_of": null,
+  "dataset_title": "Digitized Mined Area",
+  "feature_count": 1004,
+  "key": "dep_digitized_mined_area",
+  "wave": 3,
+  "feeds": "Digitized deep-mined areas",
+  "fetched_at": "2026-09-26T18:10:31+00:00",
+  "seconds": 154.7,
+  "bytes": {
+    "dep_digitized_mined_area.geojson": 21946316
+  },
+  "sha256": {
+    "dep_digitized_mined_area.geojson": "3bc818204749353dc07b585768a1be506614396a4ad056da7c497de229961777"
+  },
+  "notes": "Large polygons: small chunks, simplified server-side to ~1 m."
+}

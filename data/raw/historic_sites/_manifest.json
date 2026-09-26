@@ -1,0 +1,21 @@
+{
+  "url": "https://data.wprdc.org/dataset/2ee7c48c-6fcf-407a-a8ca-477bdcfffda7/resource/dbe47f38-033d-448b-bb3d-ff0e598d4c50/download/historic_sites.geojson",
+  "files": [
+    "historic_sites.geojson"
+  ],
+  "source_as_of": "2026-09-23T08:30:26.655696",
+  "dataset_title": "City Designated Individual Historic Sites",
+  "resource_name": "GeoJSON",
+  "key": "historic_sites",
+  "wave": 2,
+  "feeds": "Individual historic sites",
+  "fetched_at": "2026-09-26T18:03:12+00:00",
+  "seconds": 0.4,
+  "bytes": {
+    "historic_sites.geojson": 199552
+  },
+  "sha256": {
+    "historic_sites.geojson": "02b4ef8c5057d60a318f0ca24c8523f91429efdae30b9f1ba505463cef7c13b2"
+  },
+  "notes": ""
+}
