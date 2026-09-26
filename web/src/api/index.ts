@@ -2,7 +2,15 @@ import type { Evidence } from '../models/evidence'
 import type { Health } from '../models/health'
 import type { MapFeatures, ParcelLayer } from '../models/map'
 import type { SiteReport } from '../models/report'
-import { toEvidence, toHealth, toMapFeatures, toParcelLayer, toSiteReport } from './adapters'
+import type { LookupResult } from '../models/search'
+import {
+  toEvidence,
+  toHealth,
+  toLookup,
+  toMapFeatures,
+  toParcelLayer,
+  toSiteReport,
+} from './adapters'
 import { getJson } from './client'
 
 export { ApiError } from './client'
@@ -25,4 +33,8 @@ export async function fetchParcelLayer(signal?: AbortSignal): Promise<ParcelLaye
 
 export async function fetchMapFeatures(signal?: AbortSignal): Promise<MapFeatures> {
   return toMapFeatures(await getJson('/api/map/features', signal))
+}
+
+export async function fetchLookup(text: string, signal?: AbortSignal): Promise<LookupResult> {
+  return toLookup(await getJson(`/api/lookup?q=${encodeURIComponent(text)}`, signal))
 }

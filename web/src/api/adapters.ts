@@ -8,6 +8,7 @@ import type { Evidence } from '../models/evidence'
 import type { Health } from '../models/health'
 import type { MapBand, MapFeatureKind, MapFeatures, ParcelLayer } from '../models/map'
 import type { Analysis, Band, Parcel, Severity, SiteReport, Versions } from '../models/report'
+import type { LookupResult } from '../models/search'
 import type { components } from './types.gen'
 
 type S = components['schemas']
@@ -249,6 +250,15 @@ export function toEvidence(data: unknown): Evidence {
     confidence: e.confidence,
     confidenceNote: e.confidence_note,
     howToResolve: e.how_to_resolve,
+  }
+}
+
+export function toLookup(data: unknown): LookupResult {
+  const r = data as S['LookupResponse']
+  return {
+    kind: r.kind,
+    format: r.format ?? null,
+    matches: r.matches.map((m) => ({ matchedOn: m.matched_on, parcel: toParcel(m.parcel) })),
   }
 }
 
