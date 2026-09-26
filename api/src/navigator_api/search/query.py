@@ -53,7 +53,8 @@ def matching_programs(s: ParcelSummary, f: SearchFilters) -> list[ProgramFit]:
     """Programs the engine found possible that satisfy the product and approval filters."""
     fits = [p for p in s.programs if p.outcome != "rejected"]
     if f.product:
-        fits = [p for p in fits if p.product_type == f.product.type]
+        if f.product.type:
+            fits = [p for p in fits if p.product_type == f.product.type]
         if f.product.units:
             fits = [p for p in fits if p.units >= f.product.units]
     if f.approval_paths:

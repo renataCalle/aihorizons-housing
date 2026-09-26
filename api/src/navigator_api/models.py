@@ -134,8 +134,8 @@ SortKey = Literal["score_desc", "headroom_desc", "fastest", "cheapest"]
 
 
 class ProductFilter(Model):
-    type: ProductType
-    units: int | None = Field(default=None, ge=1, le=24)
+    type: ProductType | None = Field(default=None, description="None = any building type")
+    units: int | None = Field(default=None, ge=1, le=24, description="At least this many")
 
 
 class NearFilter(Model):
@@ -173,11 +173,32 @@ class SearchFilters(Model):
     sort: SortKey = "score_desc"
 
 
+class Reading(Model):
+    """How one phrase of the user's text was read. Shown in the AI search preview."""
+
+    phrase: str
+    interpreted_as: str
+
+
+class ParseRequest(Model):
+    text: str = Field(max_length=500)
+    current_filters: SearchFilters | None = None
+
+
 class FilterChip(Model):
     """One active filter as the UI shows it. `key` says what removing the chip resets."""
 
     key: str = Field(description="SearchFilters field, or near:<feature> / constraint:<name>")
     label: str
+
+
+class ParseResult(Model):
+    filters: SearchFilters
+    chips: list[FilterChip]
+    readings: list[Reading] = Field(default_factory=list)
+    not_understood: list[str] = Field(default_factory=list)
+    detected: Literal["parcel_id", "address", "description"] = "description"
+    parser: Literal["ai", "rules"] = Field(description="rules = basic search (AI unavailable)")
 
 
 class SearchResult(Model):

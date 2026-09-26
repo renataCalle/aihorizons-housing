@@ -124,8 +124,15 @@ def chip_labels(f: SearchFilters) -> list[tuple[str, str]]:
     """(key, label) for every active filter, in display order. Removing a chip resets `key`."""
     chips: list[tuple[str, str]] = []
     if f.product:
-        name = PRODUCT_LABEL[f.product.type]
-        chips.append(("product", f"{name} · {f.product.units}" if f.product.units else name))
+        name = PRODUCT_LABEL[f.product.type] if f.product.type else None
+        units = f.product.units
+        if name and units:
+            label = f"{name} · {units}"
+        elif name:
+            label = name
+        else:
+            label = f"{units}+ units" if units else "Any building"
+        chips.append(("product", label))
     chips += [(f"area:{area}", area) for area in f.areas]
     if f.approval_paths:
         paths = sorted(f.approval_paths, key=list(APPROVAL_LABEL).index)
