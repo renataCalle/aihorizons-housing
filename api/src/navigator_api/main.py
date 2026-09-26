@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from navigator_api.routes import evidence, health, maps, parcels
+from navigator_api.routes import evidence, health, maps, parcels, search
 from navigator_api.settings import Settings
 from navigator_api.sources.base import SiteSource
 from navigator_api.sources.mock import MockSiteSource
@@ -27,7 +27,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_methods=["GET", "POST"],
         allow_headers=["*"],
     )
-    for module in (health, parcels, maps, evidence):
+    for module in (health, parcels, maps, search, evidence):
         app.include_router(module.router, prefix="/api")
     return app
 

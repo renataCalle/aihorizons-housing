@@ -77,6 +77,22 @@ class ParcelReport(Model):
 # Search (proposed for navigator_contracts/search.py)
 # ---------------------------------------------------------------------------
 
+
+class LookupMatch(Model):
+    matched_on: Literal["county_id", "block_lot", "address"]
+    parcel: ParcelSummary
+
+
+class LookupResponse(Model):
+    """What the search box detected, and the parcels it matches (IDs and addresses only)."""
+
+    kind: Literal["parcel_id", "address", "description", "empty"]
+    format: Literal["county", "block_lot"] | None = Field(
+        default=None, description="For parcel IDs: county ID or city block-lot"
+    )
+    matches: list[LookupMatch]
+
+
 ApprovalPath = Literal["by_right", "special_exception", "variance", "rezoning", "not_allowed"]
 NearFeature = Literal["transit_stop", "park", "school", "grocery"]
 Constraint = Literal["undermined", "flood_zone", "landslide", "combined_sewer", "steep_slope"]
