@@ -173,6 +173,11 @@ class SearchFilters(Model):
     sort: SortKey = "score_desc"
 
 
+class Neighborhood(Model):
+    name: str
+    candidates: int = Field(description="Development candidates with data in this neighborhood")
+
+
 class Reading(Model):
     """How one phrase of the user's text was read. Shown in the AI search preview."""
 

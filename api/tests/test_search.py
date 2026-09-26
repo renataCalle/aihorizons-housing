@@ -113,3 +113,9 @@ def test_removing_each_chip_removes_only_that_chip() -> None:
         remaining = [k for k, _ in chip_labels(without(f, key))]
         assert key not in remaining
         assert len(remaining) == len(chip_labels(f)) - 1
+
+
+def test_neighborhoods_lists_all_90_with_candidate_counts(client: TestClient) -> None:
+    body = client.get("/api/neighborhoods").json()
+    assert len(body) == 90
+    assert next(n for n in body if n["name"] == "Hazelwood")["candidates"] > 0
