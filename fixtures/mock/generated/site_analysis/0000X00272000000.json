@@ -13,6 +13,58 @@
  "metrics": null,
  "flags": [
   {
+   "id": "undermined",
+   "category": "physical",
+   "severity": "medium",
+   "title": "31% of lot over mapped mine workings",
+   "cost_usd": [
+    8000.0,
+    25000.0
+   ],
+   "months": [
+    1.0,
+    3.0
+   ],
+   "evidence": [
+    {
+     "source": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
+     "as_of": "2026-09-23",
+     "layer": "undermined",
+     "code_section": "906.05",
+     "url": null
+    }
+   ],
+   "confidence": "medium",
+   "resolution": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "resolved_by_step": 6
+  },
+  {
+   "id": "tax_liens",
+   "category": "market",
+   "severity": "medium",
+   "title": "$12,600 in tax liens",
+   "cost_usd": [
+    12600.0,
+    12600.0
+   ],
+   "months": [
+    1.0,
+    4.0
+   ],
+   "evidence": [
+    {
+     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
+     "as_of": "2026-09-07",
+     "layer": "parcels",
+     "code_section": null,
+     "url": null
+    }
+   ],
+   "confidence": "high",
+   "resolution": "Clear liens at closing; title insurance",
+   "resolved_by_step": 2
+  },
+  {
    "id": "zoning_not_covered",
    "category": "zoning",
    "severity": "unknown",
@@ -53,26 +105,6 @@
    "resolved_by_step": 5
   },
   {
-   "id": "undermining_unknown",
-   "category": "physical",
-   "severity": "unknown",
-   "title": "Undermining not mapped by the city here",
-   "cost_usd": null,
-   "months": null,
-   "evidence": [
-    {
-     "source": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
-     "as_of": "2026-09-23",
-     "layer": "undermined",
-     "code_section": null,
-     "url": null
-    }
-   ],
-   "confidence": "low",
-   "resolution": "Request DEP mine subsidence records",
-   "resolved_by_step": 2
-  },
-  {
    "id": "combined_sewer",
    "category": "infrastructure",
    "severity": "low",
@@ -97,6 +129,32 @@
    "confidence": "low",
    "resolution": "Stormwater management plan; capacity inquiry to PWSA",
    "resolved_by_step": 4
+  },
+  {
+   "id": "demolition",
+   "category": "physical",
+   "severity": "low",
+   "title": "Existing structure to demolish",
+   "cost_usd": [
+    15000.0,
+    45000.0
+   ],
+   "months": [
+    1.0,
+    2.0
+   ],
+   "evidence": [
+    {
+     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
+     "as_of": "2026-09-07",
+     "layer": "parcels",
+     "code_section": null,
+     "url": null
+    }
+   ],
+   "confidence": "high",
+   "resolution": "Demolition permit; asbestos survey",
+   "resolved_by_step": null
   }
  ],
  "cleared": [
@@ -121,15 +179,15 @@
   },
   {
    "order": 2,
-   "action": "DEP mine map and subsidence records request",
-   "who": "applicant",
+   "action": "Title search",
+   "who": "title company",
    "cost_usd": [
-    0.0,
-    500.0
+    300.0,
+    1000.0
    ],
-   "why": "Request DEP mine subsidence records",
+   "why": "Clear liens at closing; title insurance",
    "flag_ids": [
-    "undermining_unknown"
+    "tax_liens"
    ]
   },
   {
@@ -169,6 +227,19 @@
    "why": "Order a topographic survey",
    "flag_ids": [
     "slope_unknown"
+   ]
+  },
+  {
+   "order": 6,
+   "action": "Geotechnical site investigation incl. DEP mine records",
+   "who": "geotechnical consultant",
+   "cost_usd": [
+    8000.0,
+    25000.0
+   ],
+   "why": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "flag_ids": [
+    "undermined"
    ]
   }
  ],
@@ -307,7 +378,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 38500.0,
+   "value": 25100.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,

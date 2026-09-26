@@ -1,28 +1,250 @@
 {
  "verdict": {
-  "score": null,
-  "score_range": null,
+  "score": 50,
+  "score_range": {
+   "p10": 46.389898392104406,
+   "p50": 49.66176014960346,
+   "p90": 52.64105243083269
+  },
   "band": "high_risk",
-  "headline": "No plausible program fits this lot",
-  "land_risk": null,
-  "components": []
+  "headline": "High risk: Existing structure to demolish.",
+  "land_risk": "High risk at the assessed value",
+  "components": [
+   {
+    "key": "approval_path",
+    "label": "Approval path",
+    "points": 26,
+    "max_points": 35,
+    "note": "By right, no hearing; about 5 months to permit-ready"
+   },
+   {
+    "key": "site_cost",
+    "label": "Site cost",
+    "points": 24,
+    "max_points": 35,
+    "note": "Existing structure to demolish causes most of it"
+   },
+   {
+    "key": "land_headroom",
+    "label": "Land headroom",
+    "points": 0,
+    "max_points": 30,
+    "note": "Build cost exceeds value: no room to pay for land"
+   }
+  ]
  },
  "narrative": {
-  "summary": null
+  "summary": "A by-right single-family home fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $245k."
  },
- "metrics": null,
- "flags": [],
+ "metrics": {
+  "option": "by_right",
+  "months_to_permit": {
+   "p10": 4.397247543571486,
+   "p50": 5.3779552699467335,
+   "p90": 6.465975864958526
+  },
+  "approval_prob": {
+   "p10": 1.0,
+   "p50": 1.0,
+   "p90": 1.0
+  },
+  "max_land_price": {
+   "p10": -312324.42695691646,
+   "p50": -245255.92990982617,
+   "p90": -178233.18742501934
+  },
+  "land_basis": {
+   "value": 28500.0,
+   "source": "county assessed land value (not a market price)"
+  },
+  "site_cost_premium": {
+   "low": 28000.0,
+   "high": 90000.0,
+   "drivers": [
+    "Existing structure to demolish",
+    "41% of lot over mapped mine workings",
+    "Combined sewershed"
+   ]
+  },
+  "land_over_max": {
+   "low": 206733.18742501934,
+   "high": 340824.42695691646
+  },
+  "comps": {
+   "count": 97,
+   "radius_mi": 0.5,
+   "window_months": 36
+  }
+ },
+ "flags": [
+  {
+   "id": "undermined",
+   "category": "physical",
+   "severity": "medium",
+   "title": "41% of lot over mapped mine workings (UM-O overlay)",
+   "cost_usd": [
+    8000.0,
+    25000.0
+   ],
+   "months": [
+    1.0,
+    3.0
+   ],
+   "evidence": [
+    {
+     "source": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
+     "as_of": "2026-09-23",
+     "layer": "undermined",
+     "code_section": "906.05",
+     "url": null
+    }
+   ],
+   "confidence": "medium",
+   "resolution": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "resolved_by_step": 2
+  },
+  {
+   "id": "combined_sewer",
+   "category": "infrastructure",
+   "severity": "low",
+   "title": "Combined sewershed (proxy for stormwater requirements)",
+   "cost_usd": [
+    5000.0,
+    20000.0
+   ],
+   "months": [
+    0.0,
+    1.0
+   ],
+   "evidence": [
+    {
+     "source": "Combined Sewershed",
+     "as_of": "2018-07-27",
+     "layer": "sewer",
+     "code_section": null,
+     "url": "https://data.wprdc.org/dataset/fe7e5332-4c87-410d-b0be-43c5d2c44ae0/resource/138d6b65-1630-4905-9421-de90cd9d59e5/download/___"
+    }
+   ],
+   "confidence": "low",
+   "resolution": "Stormwater management plan; capacity inquiry to PWSA",
+   "resolved_by_step": 1
+  },
+  {
+   "id": "demolition",
+   "category": "physical",
+   "severity": "low",
+   "title": "Existing structure to demolish",
+   "cost_usd": [
+    15000.0,
+    45000.0
+   ],
+   "months": [
+    1.0,
+    2.0
+   ],
+   "evidence": [
+    {
+     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
+     "as_of": "2026-09-07",
+     "layer": "parcels",
+     "code_section": null,
+     "url": null
+    }
+   ],
+   "confidence": "high",
+   "resolution": "Demolition permit; asbestos survey",
+   "resolved_by_step": null
+  }
+ ],
  "cleared": [
   "steep slope",
   "landslide-prone areas",
-  "undermining",
   "FEMA floodplain",
   "DEP environmental records",
   "street frontage"
  ],
- "options": [],
- "next_steps": [],
- "score_breakdown": [],
+ "options": [
+  {
+   "label": "by_right",
+   "product_type": "single_family",
+   "units": 1,
+   "unit_sqft": 1500,
+   "gfa_sqft": 1500.0,
+   "relief": [],
+   "margin": {
+    "p10": -0.520824333660794,
+    "p50": -0.4359679538512754,
+    "p90": -0.33414040998918637
+   },
+   "months": {
+    "p10": 4.397247543571486,
+    "p50": 5.3779552699467335,
+    "p90": 6.465975864958526
+   },
+   "approval_prob": {
+    "p10": 1.0,
+    "p50": 1.0,
+    "p90": 1.0
+   },
+   "max_land_price": {
+    "p10": -312324.42695691646,
+    "p50": -245255.92990982617,
+    "p90": -178233.18742501934
+   },
+   "score": {
+    "p10": 46.389898392104406,
+    "p50": 49.66176014960346,
+    "p90": 52.64105243083269
+   },
+   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+   "entitlement_basis": []
+  }
+ ],
+ "next_steps": [
+  {
+   "order": 1,
+   "action": "Sewer capacity inquiry",
+   "who": "PWSA",
+   "cost_usd": [
+    0.0,
+    500.0
+   ],
+   "why": "Stormwater management plan; capacity inquiry to PWSA",
+   "flag_ids": [
+    "combined_sewer"
+   ]
+  },
+  {
+   "order": 2,
+   "action": "Geotechnical site investigation incl. DEP mine records",
+   "who": "geotechnical consultant",
+   "cost_usd": [
+    8000.0,
+    25000.0
+   ],
+   "why": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "flag_ids": [
+    "undermined"
+   ]
+  }
+ ],
+ "score_breakdown": [
+  {
+   "component": "site_cost",
+   "points_lost": 5.6,
+   "driver_flag_id": "demolition"
+  },
+  {
+   "component": "site_cost",
+   "points_lost": 3.8,
+   "driver_flag_id": "undermined"
+  },
+  {
+   "component": "site_cost",
+   "points_lost": 2.3,
+   "driver_flag_id": "combined_sewer"
+  }
+ ],
  "assumptions": [
   {
    "key": "hard_cost_psf",
@@ -157,7 +379,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 10900.0,
+   "value": 28500.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -170,8 +392,8 @@
   "confidence": "high",
   "neighbors_built": false,
   "lot_dimensions_ft": {
-   "width": 32.7,
-   "depth": 71.9
+   "width": 28.6,
+   "depth": 119.3
   }
  },
  "versions": {

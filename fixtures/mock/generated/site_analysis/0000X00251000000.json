@@ -1,10 +1,10 @@
 {
  "verdict": {
-  "score": 51,
+  "score": 50,
   "score_range": {
-   "p10": 48.020359742505725,
-   "p50": 51.3159601040921,
-   "p90": 54.60142863752305
+   "p10": 44.831412954077905,
+   "p50": 50.0297112039777,
+   "p90": 55.42322027081433
   },
   "band": "feasible_with_conditions",
   "headline": "Feasible with conditions: 5% of lot landslide-prone.",
@@ -13,14 +13,14 @@
    {
     "key": "approval_path",
     "label": "Approval path",
-    "points": 25,
+    "points": 26,
     "max_points": 35,
-    "note": "By right, no hearing; about 6 months to permit-ready"
+    "note": "By right, no hearing; about 5 months to permit-ready"
    },
    {
     "key": "site_cost",
     "label": "Site cost",
-    "points": 26,
+    "points": 24,
     "max_points": 35,
     "note": "5% of lot landslide-prone causes most of it"
    },
@@ -34,14 +34,14 @@
   ]
  },
  "narrative": {
-  "summary": "A by-right triplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $434k."
+  "summary": "A by-right single-family home fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $112k."
  },
  "metrics": {
   "option": "by_right",
   "months_to_permit": {
-   "p10": 4.819984348456242,
-   "p50": 6.062688604131266,
-   "p90": 7.313159940662056
+   "p10": 4.226912844986853,
+   "p50": 5.308892582244648,
+   "p90": 6.495449143442658
   },
   "approval_prob": {
    "p10": 1.0,
@@ -49,30 +49,28 @@
    "p90": 1.0
   },
   "max_land_price": {
-   "p10": -574050.829293932,
-   "p50": -434078.81971054676,
-   "p90": -307910.052329073
+   "p10": -185166.5537292369,
+   "p50": -111858.30738883666,
+   "p90": -46950.129575251565
   },
   "land_basis": {
-   "value": 11200.0,
+   "value": 28900.0,
    "source": "county assessed land value (not a market price)"
   },
   "site_cost_premium": {
-   "low": 30600.0,
-   "high": 130600.0,
+   "low": 15000.0,
+   "high": 100000.0,
    "drivers": [
     "5% of lot landslide-prone",
-    "10% of lot on 25%+ slope",
-    "Combined sewershed",
-    "$10,600 in tax liens"
+    "11% of lot on 25%+ slope"
    ]
   },
   "land_over_max": {
-   "low": 319110.052329073,
-   "high": 585250.829293932
+   "low": 75850.12957525157,
+   "high": 214066.5537292369
   },
   "comps": {
-   "count": 97,
+   "count": 59,
    "radius_mi": 0.5,
    "window_months": 36
   }
@@ -102,39 +100,13 @@
    ],
    "confidence": "medium",
    "resolution": "Geotechnical investigation of slope stability",
-   "resolved_by_step": 4
-  },
-  {
-   "id": "tax_liens",
-   "category": "market",
-   "severity": "medium",
-   "title": "$10,600 in tax liens",
-   "cost_usd": [
-    10600.0,
-    10600.0
-   ],
-   "months": [
-    1.0,
-    4.0
-   ],
-   "evidence": [
-    {
-     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
-     "as_of": "2026-09-07",
-     "layer": "parcels",
-     "code_section": null,
-     "url": null
-    }
-   ],
-   "confidence": "high",
-   "resolution": "Clear liens at closing; title insurance",
-   "resolved_by_step": 2
+   "resolved_by_step": 1
   },
   {
    "id": "steep_slope",
    "category": "physical",
    "severity": "low",
-   "title": "10% of lot on 25%+ slope",
+   "title": "11% of lot on 25%+ slope",
    "cost_usd": [
     5000.0,
     20000.0
@@ -155,32 +127,6 @@
    "confidence": "medium",
    "resolution": "Keep the footprint off the steep portion",
    "resolved_by_step": null
-  },
-  {
-   "id": "combined_sewer",
-   "category": "infrastructure",
-   "severity": "low",
-   "title": "Combined sewershed (proxy for stormwater requirements)",
-   "cost_usd": [
-    5000.0,
-    20000.0
-   ],
-   "months": [
-    0.0,
-    1.0
-   ],
-   "evidence": [
-    {
-     "source": "Combined Sewershed",
-     "as_of": "2018-07-27",
-     "layer": "sewer",
-     "code_section": null,
-     "url": "https://data.wprdc.org/dataset/fe7e5332-4c87-410d-b0be-43c5d2c44ae0/resource/138d6b65-1630-4905-9421-de90cd9d59e5/download/___"
-    }
-   ],
-   "confidence": "low",
-   "resolution": "Stormwater management plan; capacity inquiry to PWSA",
-   "resolved_by_step": 3
   }
  ],
  "cleared": [
@@ -192,20 +138,20 @@
  "options": [
   {
    "label": "by_right",
-   "product_type": "triplex",
-   "units": 3,
-   "unit_sqft": 950,
-   "gfa_sqft": 2850.0,
+   "product_type": "single_family",
+   "units": 1,
+   "unit_sqft": 1500,
+   "gfa_sqft": 1500.0,
    "relief": [],
    "margin": {
-    "p10": -0.49347602897241577,
-    "p50": -0.3929700788270392,
-    "p90": -0.279954388584024
+    "p10": -0.2580433227743512,
+    "p50": -0.15234061009041383,
+    "p90": -0.031159036962812515
    },
    "months": {
-    "p10": 4.819984348456242,
-    "p50": 6.062688604131266,
-    "p90": 7.313159940662056
+    "p10": 4.226912844986853,
+    "p50": 5.308892582244648,
+    "p90": 6.495449143442658
    },
    "approval_prob": {
     "p10": 1.0,
@@ -213,98 +159,22 @@
     "p90": 1.0
    },
    "max_land_price": {
-    "p10": -574050.829293932,
-    "p50": -434078.81971054676,
-    "p90": -307910.052329073
+    "p10": -185166.5537292369,
+    "p50": -111858.30738883666,
+    "p90": -46950.129575251565
    },
    "score": {
-    "p10": 48.020359742505725,
-    "p50": 51.3159601040921,
-    "p90": 54.60142863752305
+    "p10": 44.831412954077905,
+    "p50": 50.0297112039777,
+    "p90": 55.42322027081433
    },
-   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+   "revenue_basis": "for-sale: 5 new-build comps $301-$373/sf",
    "entitlement_basis": []
-  },
-  {
-   "label": "with_relief",
-   "product_type": "walkup",
-   "units": 4,
-   "unit_sqft": 850,
-   "gfa_sqft": 4250.0,
-   "relief": [
-    "variance (903.03)"
-   ],
-   "margin": {
-    "p10": -0.5825224499975351,
-    "p50": -0.4990738511177057,
-    "p90": -0.40586301981394723
-   },
-   "months": {
-    "p10": 6.333275016462753,
-    "p50": 7.665945517425242,
-    "p90": 9.3451935884438
-   },
-   "approval_prob": {
-    "p10": 0.5818557716381032,
-    "p50": 0.6878553492909574,
-    "p90": 0.7813052522599618
-   },
-   "max_land_price": {
-    "p10": -945734.2434246263,
-    "p50": -754443.9099491033,
-    "p90": -585631.7164237007
-   },
-   "score": {
-    "p10": 41.277657564395575,
-    "p50": 44.52995539985776,
-    "p90": 47.72640314311165
-   },
-   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
-   "entitlement_basis": [
-    "variance: PLACEHOLDER prior (ZBA)"
-   ]
   }
  ],
  "next_steps": [
   {
    "order": 1,
-   "action": "Zoning pre-application meeting",
-   "who": "City Planning",
-   "cost_usd": [
-    0.0,
-    0.0
-   ],
-   "why": "Confirms the approval path before design money is spent",
-   "flag_ids": []
-  },
-  {
-   "order": 2,
-   "action": "Title search",
-   "who": "title company",
-   "cost_usd": [
-    300.0,
-    1000.0
-   ],
-   "why": "Clear liens at closing; title insurance",
-   "flag_ids": [
-    "tax_liens"
-   ]
-  },
-  {
-   "order": 3,
-   "action": "Sewer capacity inquiry",
-   "who": "PWSA",
-   "cost_usd": [
-    0.0,
-    500.0
-   ],
-   "why": "Stormwater management plan; capacity inquiry to PWSA",
-   "flag_ids": [
-    "combined_sewer"
-   ]
-  },
-  {
-   "order": 4,
    "action": "Slope stability assessment",
    "who": "geotechnical engineer",
    "cost_usd": [
@@ -320,23 +190,13 @@
  "score_breakdown": [
   {
    "component": "site_cost",
-   "points_lost": 5.0,
+   "points_lost": 10.9,
    "driver_flag_id": "landslide_prone"
   },
   {
    "component": "site_cost",
-   "points_lost": 2.1,
-   "driver_flag_id": "tax_liens"
-  },
-  {
-   "component": "site_cost",
-   "points_lost": 1.2,
+   "points_lost": 2.2,
    "driver_flag_id": "steep_slope"
-  },
-  {
-   "component": "site_cost",
-   "points_lost": 1.2,
-   "driver_flag_id": "combined_sewer"
   }
  ],
  "assumptions": [
@@ -473,7 +333,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 11200.0,
+   "value": 28900.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -486,8 +346,8 @@
   "confidence": "high",
   "neighbors_built": false,
   "lot_dimensions_ft": {
-   "width": 35.6,
-   "depth": 119.3
+   "width": 31.5,
+   "depth": 90.7
   }
  },
  "versions": {

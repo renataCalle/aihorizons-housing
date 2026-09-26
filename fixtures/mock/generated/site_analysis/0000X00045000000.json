@@ -1,55 +1,173 @@
 {
  "verdict": {
-  "score": null,
-  "score_range": null,
-  "band": "high_risk",
-  "headline": "No plausible program fits this lot",
-  "land_risk": null,
-  "components": []
+  "score": 56,
+  "score_range": {
+   "p10": 52.899011016892814,
+   "p50": 55.75966505932321,
+   "p90": 58.74943107050373
+  },
+  "band": "feasible_with_conditions",
+  "headline": "Feasible with conditions: 71% of lot over mapped mine workings (UM-O overlay).",
+  "land_risk": "High risk at the assessed value",
+  "components": [
+   {
+    "key": "approval_path",
+    "label": "Approval path",
+    "points": 26,
+    "max_points": 35,
+    "note": "By right, no hearing; about 5 months to permit-ready"
+   },
+   {
+    "key": "site_cost",
+    "label": "Site cost",
+    "points": 30,
+    "max_points": 35,
+    "note": "71% of lot over mapped mine workings (UM-O overlay) causes most of it"
+   },
+   {
+    "key": "land_headroom",
+    "label": "Land headroom",
+    "points": 0,
+    "max_points": 30,
+    "note": "Build cost exceeds value: no room to pay for land"
+   }
+  ]
  },
  "narrative": {
-  "summary": null
+  "summary": "A by-right duplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $315k."
  },
- "metrics": null,
+ "metrics": {
+  "option": "by_right",
+  "months_to_permit": {
+   "p10": 4.226912844986853,
+   "p50": 5.308892582244648,
+   "p90": 6.495449143442658
+  },
+  "approval_prob": {
+   "p10": 1.0,
+   "p50": 1.0,
+   "p90": 1.0
+  },
+  "max_land_price": {
+   "p10": -422105.7904011165,
+   "p50": -314899.4543433485,
+   "p90": -217723.20332489716
+  },
+  "land_basis": {
+   "value": 34100.0,
+   "source": "county assessed land value (not a market price)"
+  },
+  "site_cost_premium": {
+   "low": 15000.0,
+   "high": 60000.0,
+   "drivers": [
+    "71% of lot over mapped mine workings"
+   ]
+  },
+  "land_over_max": {
+   "low": 251823.20332489716,
+   "high": 456205.7904011165
+  },
+  "comps": {
+   "count": 97,
+   "radius_mi": 0.5,
+   "window_months": 36
+  }
+ },
  "flags": [
   {
-   "id": "demolition",
+   "id": "undermined",
    "category": "physical",
-   "severity": "low",
-   "title": "Existing structure to demolish",
+   "severity": "high",
+   "title": "71% of lot over mapped mine workings (UM-O overlay)",
    "cost_usd": [
     15000.0,
-    45000.0
+    60000.0
    ],
    "months": [
     1.0,
-    2.0
+    3.0
    ],
    "evidence": [
     {
-     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
-     "as_of": "2026-09-07",
-     "layer": "parcels",
-     "code_section": null,
+     "source": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
+     "as_of": "2026-09-23",
+     "layer": "undermined",
+     "code_section": "906.05",
      "url": null
     }
    ],
-   "confidence": "high",
-   "resolution": "Demolition permit; asbestos survey",
-   "resolved_by_step": null
+   "confidence": "medium",
+   "resolution": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "resolved_by_step": 1
   }
  ],
  "cleared": [
   "steep slope",
   "landslide-prone areas",
-  "undermining",
   "FEMA floodplain",
   "DEP environmental records",
   "street frontage"
  ],
- "options": [],
- "next_steps": [],
- "score_breakdown": [],
+ "options": [
+  {
+   "label": "by_right",
+   "product_type": "duplex",
+   "units": 2,
+   "unit_sqft": 1100,
+   "gfa_sqft": 2200.0,
+   "relief": [],
+   "margin": {
+    "p10": -0.4966069873058406,
+    "p50": -0.3964968370891003,
+    "p90": -0.28462587429730163
+   },
+   "months": {
+    "p10": 4.226912844986853,
+    "p50": 5.308892582244648,
+    "p90": 6.495449143442658
+   },
+   "approval_prob": {
+    "p10": 1.0,
+    "p50": 1.0,
+    "p90": 1.0
+   },
+   "max_land_price": {
+    "p10": -422105.7904011165,
+    "p50": -314899.4543433485,
+    "p90": -217723.20332489716
+   },
+   "score": {
+    "p10": 52.899011016892814,
+    "p50": 55.75966505932321,
+    "p90": 58.74943107050373
+   },
+   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+   "entitlement_basis": []
+  }
+ ],
+ "next_steps": [
+  {
+   "order": 1,
+   "action": "Geotechnical site investigation incl. DEP mine records",
+   "who": "geotechnical consultant",
+   "cost_usd": [
+    8000.0,
+    25000.0
+   ],
+   "why": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "flag_ids": [
+    "undermined"
+   ]
+  }
+ ],
+ "score_breakdown": [
+  {
+   "component": "site_cost",
+   "points_lost": 8.5,
+   "driver_flag_id": "undermined"
+  }
+ ],
  "assumptions": [
   {
    "key": "hard_cost_psf",
@@ -184,7 +302,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 18600.0,
+   "value": 34100.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -197,8 +315,8 @@
   "confidence": "high",
   "neighbors_built": false,
   "lot_dimensions_ft": {
-   "width": 32.0,
-   "depth": 71.9
+   "width": 36.1,
+   "depth": 119.3
   }
  },
  "versions": {

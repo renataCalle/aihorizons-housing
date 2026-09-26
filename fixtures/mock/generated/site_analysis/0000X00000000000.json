@@ -2,9 +2,9 @@
  "verdict": {
   "score": 62,
   "score_range": {
-   "p10": 60.23402910192675,
-   "p50": 61.85390181201045,
-   "p90": 63.35386217518906
+   "p10": 60.24870192258395,
+   "p50": 61.868313596127415,
+   "p90": 63.36337549295965
   },
   "band": "feasible_with_conditions",
   "headline": "Feasible with conditions: Combined sewershed (proxy for stormwater requirements).",
@@ -54,7 +54,7 @@
    "p90": -253696.12719952752
   },
   "land_basis": {
-   "value": 7900.0,
+   "value": 15600.0,
    "source": "county assessed land value (not a market price)"
   },
   "site_cost_premium": {
@@ -65,8 +65,8 @@
    ]
   },
   "land_over_max": {
-   "low": 261596.12719952752,
-   "high": 528314.1744427362
+   "low": 269296.1271995275,
+   "high": 536014.1744427362
   },
   "comps": {
    "count": 97,
@@ -119,9 +119,9 @@
    "gfa_sqft": 2850.0,
    "relief": [],
    "margin": {
-    "p10": -0.4618199720249043,
-    "p50": -0.3491880138340427,
-    "p90": -0.22439251088143128
+    "p10": -0.4662634851477235,
+    "p50": -0.35483357475662763,
+    "p90": -0.2318883531611585
    },
    "months": {
     "p10": 2.987899667088324,
@@ -139,9 +139,9 @@
     "p90": -253696.12719952752
    },
    "score": {
-    "p10": 60.23402910192675,
-    "p50": 61.85390181201045,
-    "p90": 63.35386217518906
+    "p10": 60.24870192258395,
+    "p50": 61.868313596127415,
+    "p90": 63.36337549295965
    },
    "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
    "entitlement_basis": []
@@ -303,7 +303,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 7900.0,
+   "value": 15600.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -316,8 +316,8 @@
   "confidence": "high",
   "neighbors_built": false,
   "lot_dimensions_ft": {
-   "width": 37.9,
-   "depth": 114.4
+   "width": 36.8,
+   "depth": 119.3
   }
  },
  "versions": {

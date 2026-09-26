@@ -1,80 +1,66 @@
 {
  "verdict": {
-  "score": 61,
-  "score_range": {
-   "p10": 58.829888141499936,
-   "p50": 60.70339582636112,
-   "p90": 62.55125189137111
-  },
-  "band": "feasible_with_conditions",
-  "headline": "Feasible with conditions: Combined sewershed (proxy for stormwater requirements).",
-  "land_risk": "High risk at the assessed value",
-  "components": [
-   {
-    "key": "approval_path",
-    "label": "Approval path",
-    "points": 28,
-    "max_points": 35,
-    "note": "By right, no hearing; about 4 months to permit-ready"
-   },
-   {
-    "key": "site_cost",
-    "label": "Site cost",
-    "points": 32,
-    "max_points": 35,
-    "note": "Combined sewershed (proxy for stormwater requirements) causes most of it"
-   },
-   {
-    "key": "land_headroom",
-    "label": "Land headroom",
-    "points": 0,
-    "max_points": 30,
-    "note": "Build cost exceeds value: no room to pay for land"
-   }
-  ]
+  "score": null,
+  "score_range": null,
+  "band": "high_risk",
+  "headline": "No plausible program fits this lot",
+  "land_risk": null,
+  "components": []
  },
  "narrative": {
-  "summary": "A by-right single-family home fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $205k."
+  "summary": null
  },
- "metrics": {
-  "option": "by_right",
-  "months_to_permit": {
-   "p10": 2.987899667088324,
-   "p50": 3.800776951459783,
-   "p90": 4.793680602495873
-  },
-  "approval_prob": {
-   "p10": 1.0,
-   "p50": 1.0,
-   "p90": 1.0
-  },
-  "max_land_price": {
-   "p10": -279162.0107523703,
-   "p50": -204992.42402037303,
-   "p90": -138077.52976478724
-  },
-  "land_basis": {
-   "value": 35000.0,
-   "source": "county assessed land value (not a market price)"
-  },
-  "site_cost_premium": {
-   "low": 5000.0,
-   "high": 20000.0,
-   "drivers": [
-    "Combined sewershed"
-   ]
-  },
-  "land_over_max": {
-   "low": 173077.52976478724,
-   "high": 314162.0107523703
-  },
-  "comps": {
-   "count": 97,
-   "radius_mi": 0.5,
-   "window_months": 36
-  }
- },
+ "metrics": null,
  "flags": [
+  {
+   "id": "split_zoned",
+   "category": "zoning",
+   "severity": "medium",
+   "title": "Parcel spans more than one district or has uncovered rules",
+   "cost_usd": null,
+   "months": [
+    0.5,
+    2.0
+   ],
+   "evidence": [
+    {
+     "source": "Zoning; City Designated Historic Districts; PGHZoningHeightOverlay; Parking Reduction Zoning Overlay; Riverfront Zoning Overlay; Uptown IPOD Zoning; Greenways",
+     "as_of": "2024-02-07",
+     "layer": "zoning",
+     "code_section": null,
+     "url": null
+    }
+   ],
+   "confidence": "low",
+   "resolution": "Ask City Planning which district governs the proposed footprint",
+   "resolved_by_step": 1
+  },
+  {
+   "id": "tax_liens",
+   "category": "market",
+   "severity": "medium",
+   "title": "$11,900 in tax liens",
+   "cost_usd": [
+    11900.0,
+    11900.0
+   ],
+   "months": [
+    1.0,
+    4.0
+   ],
+   "evidence": [
+    {
+     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
+     "as_of": "2026-09-07",
+     "layer": "parcels",
+     "code_section": null,
+     "url": null
+    }
+   ],
+   "confidence": "high",
+   "resolution": "Clear liens at closing; title insurance",
+   "resolved_by_step": 2
+  },
   {
    "id": "combined_sewer",
    "category": "infrastructure",
@@ -99,7 +85,7 @@
    ],
    "confidence": "low",
    "resolution": "Stormwater management plan; capacity inquiry to PWSA",
-   "resolved_by_step": 1
+   "resolved_by_step": 3
   }
  ],
  "cleared": [
@@ -110,46 +96,36 @@
   "DEP environmental records",
   "street frontage"
  ],
- "options": [
-  {
-   "label": "by_right",
-   "product_type": "single_family",
-   "units": 1,
-   "unit_sqft": 1500,
-   "gfa_sqft": 1500.0,
-   "relief": [],
-   "margin": {
-    "p10": -0.49661102625017867,
-    "p50": -0.3955690478407689,
-    "p90": -0.28397646819210115
-   },
-   "months": {
-    "p10": 2.987899667088324,
-    "p50": 3.800776951459783,
-    "p90": 4.793680602495873
-   },
-   "approval_prob": {
-    "p10": 1.0,
-    "p50": 1.0,
-    "p90": 1.0
-   },
-   "max_land_price": {
-    "p10": -279162.0107523703,
-    "p50": -204992.42402037303,
-    "p90": -138077.52976478724
-   },
-   "score": {
-    "p10": 58.829888141499936,
-    "p50": 60.70339582636112,
-    "p90": 62.55125189137111
-   },
-   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
-   "entitlement_basis": []
-  }
- ],
+ "options": [],
  "next_steps": [
   {
    "order": 1,
+   "action": "Zoning pre-application meeting",
+   "who": "City Planning",
+   "cost_usd": [
+    0.0,
+    0.0
+   ],
+   "why": "Ask City Planning which district governs the proposed footprint",
+   "flag_ids": [
+    "split_zoned"
+   ]
+  },
+  {
+   "order": 2,
+   "action": "Title search",
+   "who": "title company",
+   "cost_usd": [
+    300.0,
+    1000.0
+   ],
+   "why": "Clear liens at closing; title insurance",
+   "flag_ids": [
+    "tax_liens"
+   ]
+  },
+  {
+   "order": 3,
    "action": "Sewer capacity inquiry",
    "who": "PWSA",
    "cost_usd": [
@@ -162,13 +138,7 @@
    ]
   }
  ],
- "score_breakdown": [
-  {
-   "component": "site_cost",
-   "points_lost": 3.6,
-   "driver_flag_id": "combined_sewer"
-  }
- ],
+ "score_breakdown": [],
  "assumptions": [
   {
    "key": "hard_cost_psf",
@@ -303,7 +273,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 35000.0,
+   "value": 29100.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -312,13 +282,10 @@
   }
  ],
  "rules": {
-  "scenario": "strict",
-  "confidence": "high",
+  "scenario": null,
+  "confidence": "low",
   "neighbors_built": false,
-  "lot_dimensions_ft": {
-   "width": 31.4,
-   "depth": 119.3
-  }
+  "lot_dimensions_ft": null
  },
  "versions": {
   "engine": "sandbox-v0.1",

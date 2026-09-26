@@ -1,28 +1,28 @@
 {
  "verdict": {
-  "score": 51,
+  "score": 56,
   "score_range": {
-   "p10": 48.020359742505725,
-   "p50": 51.3159601040921,
-   "p90": 54.60142863752305
+   "p10": 53.506769725312466,
+   "p50": 55.88182865780729,
+   "p90": 57.98521138718001
   },
   "band": "feasible_with_conditions",
-  "headline": "Feasible with conditions: 5% of lot landslide-prone.",
+  "headline": "Feasible with conditions: Existing structure to demolish.",
   "land_risk": "High risk at the assessed value",
   "components": [
    {
     "key": "approval_path",
     "label": "Approval path",
-    "points": 25,
+    "points": 27,
     "max_points": 35,
-    "note": "By right, no hearing; about 6 months to permit-ready"
+    "note": "By right, no hearing; about 5 months to permit-ready"
    },
    {
     "key": "site_cost",
     "label": "Site cost",
-    "points": 26,
+    "points": 29,
     "max_points": 35,
-    "note": "5% of lot landslide-prone causes most of it"
+    "note": "Existing structure to demolish causes most of it"
    },
    {
     "key": "land_headroom",
@@ -34,14 +34,14 @@
   ]
  },
  "narrative": {
-  "summary": "A by-right triplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $434k."
+  "summary": "A by-right duplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $320k."
  },
  "metrics": {
   "option": "by_right",
   "months_to_permit": {
-   "p10": 4.819984348456242,
-   "p50": 6.062688604131266,
-   "p90": 7.313159940662056
+   "p10": 3.958104780510838,
+   "p50": 4.808698790900695,
+   "p90": 5.818070913507039
   },
   "approval_prob": {
    "p10": 1.0,
@@ -49,27 +49,25 @@
    "p90": 1.0
   },
   "max_land_price": {
-   "p10": -574050.829293932,
-   "p50": -434078.81971054676,
-   "p90": -307910.052329073
+   "p10": -422257.4416361258,
+   "p50": -319607.299545694,
+   "p90": -226520.17093661954
   },
   "land_basis": {
-   "value": 11200.0,
+   "value": 35000.0,
    "source": "county assessed land value (not a market price)"
   },
   "site_cost_premium": {
-   "low": 30600.0,
-   "high": 130600.0,
+   "low": 20000.0,
+   "high": 65000.0,
    "drivers": [
-    "5% of lot landslide-prone",
-    "10% of lot on 25%+ slope",
-    "Combined sewershed",
-    "$10,600 in tax liens"
+    "Existing structure to demolish",
+    "Combined sewershed"
    ]
   },
   "land_over_max": {
-   "low": 319110.052329073,
-   "high": 585250.829293932
+   "low": 261520.17093661954,
+   "high": 457257.4416361258
   },
   "comps": {
    "count": 97,
@@ -78,84 +76,6 @@
   }
  },
  "flags": [
-  {
-   "id": "landslide_prone",
-   "category": "physical",
-   "severity": "medium",
-   "title": "5% of lot landslide-prone",
-   "cost_usd": [
-    10000.0,
-    80000.0
-   ],
-   "months": [
-    1.0,
-    3.0
-   ],
-   "evidence": [
-    {
-     "source": "Landslide Prone Areas",
-     "as_of": "2026-09-23",
-     "layer": "landslide_prone",
-     "code_section": null,
-     "url": "https://data.wprdc.org/dataset/6eb1be84-7abe-45c3-8a37-90db80ea6149/resource/b5b45ac6-f8ef-4805-b4e4-fc7c63fb4075/download/landslides.geojson"
-    }
-   ],
-   "confidence": "medium",
-   "resolution": "Geotechnical investigation of slope stability",
-   "resolved_by_step": 4
-  },
-  {
-   "id": "tax_liens",
-   "category": "market",
-   "severity": "medium",
-   "title": "$10,600 in tax liens",
-   "cost_usd": [
-    10600.0,
-    10600.0
-   ],
-   "months": [
-    1.0,
-    4.0
-   ],
-   "evidence": [
-    {
-     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
-     "as_of": "2026-09-07",
-     "layer": "parcels",
-     "code_section": null,
-     "url": null
-    }
-   ],
-   "confidence": "high",
-   "resolution": "Clear liens at closing; title insurance",
-   "resolved_by_step": 2
-  },
-  {
-   "id": "steep_slope",
-   "category": "physical",
-   "severity": "low",
-   "title": "10% of lot on 25%+ slope",
-   "cost_usd": [
-    5000.0,
-    20000.0
-   ],
-   "months": [
-    0.0,
-    1.0
-   ],
-   "evidence": [
-    {
-     "source": "25% or Greater Slope",
-     "as_of": "2026-09-23",
-     "layer": "steep_slope",
-     "code_section": "915.02",
-     "url": "https://data.wprdc.org/dataset/0f643c56-1c53-4c88-824d-3a3876c0d3a0/resource/5ce91a56-0799-46ea-9585-13fa8db5979e/download/slopes.geojson"
-    }
-   ],
-   "confidence": "medium",
-   "resolution": "Keep the footprint off the steep portion",
-   "resolved_by_step": null
-  },
   {
    "id": "combined_sewer",
    "category": "infrastructure",
@@ -180,10 +100,58 @@
    ],
    "confidence": "low",
    "resolution": "Stormwater management plan; capacity inquiry to PWSA",
-   "resolved_by_step": 3
+   "resolved_by_step": 1
+  },
+  {
+   "id": "demolition",
+   "category": "physical",
+   "severity": "low",
+   "title": "Existing structure to demolish",
+   "cost_usd": [
+    15000.0,
+    45000.0
+   ],
+   "months": [
+    1.0,
+    2.0
+   ],
+   "evidence": [
+    {
+     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
+     "as_of": "2026-09-07",
+     "layer": "parcels",
+     "code_section": null,
+     "url": null
+    }
+   ],
+   "confidence": "high",
+   "resolution": "Demolition permit; asbestos survey",
+   "resolved_by_step": null
+  },
+  {
+   "id": "contextual_setbacks",
+   "category": "zoning",
+   "severity": "low",
+   "title": "Program relies on contextual side setbacks (925.06.C)",
+   "cost_usd": null,
+   "months": null,
+   "evidence": [
+    {
+     "source": "Pittsburgh Zoning Code",
+     "as_of": null,
+     "layer": "rules",
+     "code_section": "925.06.C",
+     "url": null
+    }
+   ],
+   "confidence": "medium",
+   "resolution": "Survey the neighbours' actual side setbacks (must be 3 ft or less)",
+   "resolved_by_step": 2
   }
  ],
  "cleared": [
+  "steep slope",
+  "landslide-prone areas",
   "undermining",
   "FEMA floodplain",
   "DEP environmental records",
@@ -192,20 +160,20 @@
  "options": [
   {
    "label": "by_right",
-   "product_type": "triplex",
-   "units": 3,
-   "unit_sqft": 950,
-   "gfa_sqft": 2850.0,
+   "product_type": "duplex",
+   "units": 2,
+   "unit_sqft": 1100,
+   "gfa_sqft": 2200.0,
    "relief": [],
    "margin": {
-    "p10": -0.49347602897241577,
-    "p50": -0.3929700788270392,
-    "p90": -0.279954388584024
+    "p10": -0.49626386640915965,
+    "p50": -0.39952129421109495,
+    "p90": -0.292655172513605
    },
    "months": {
-    "p10": 4.819984348456242,
-    "p50": 6.062688604131266,
-    "p90": 7.313159940662056
+    "p10": 3.958104780510838,
+    "p50": 4.808698790900695,
+    "p90": 5.818070913507039
    },
    "approval_prob": {
     "p10": 1.0,
@@ -213,85 +181,22 @@
     "p90": 1.0
    },
    "max_land_price": {
-    "p10": -574050.829293932,
-    "p50": -434078.81971054676,
-    "p90": -307910.052329073
+    "p10": -422257.4416361258,
+    "p50": -319607.299545694,
+    "p90": -226520.17093661954
    },
    "score": {
-    "p10": 48.020359742505725,
-    "p50": 51.3159601040921,
-    "p90": 54.60142863752305
+    "p10": 53.506769725312466,
+    "p50": 55.88182865780729,
+    "p90": 57.98521138718001
    },
    "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
    "entitlement_basis": []
-  },
-  {
-   "label": "with_relief",
-   "product_type": "walkup",
-   "units": 4,
-   "unit_sqft": 850,
-   "gfa_sqft": 4250.0,
-   "relief": [
-    "variance (903.03)"
-   ],
-   "margin": {
-    "p10": -0.5825224499975351,
-    "p50": -0.4990738511177057,
-    "p90": -0.40586301981394723
-   },
-   "months": {
-    "p10": 6.333275016462753,
-    "p50": 7.665945517425242,
-    "p90": 9.3451935884438
-   },
-   "approval_prob": {
-    "p10": 0.5818557716381032,
-    "p50": 0.6878553492909574,
-    "p90": 0.7813052522599618
-   },
-   "max_land_price": {
-    "p10": -945734.2434246263,
-    "p50": -754443.9099491033,
-    "p90": -585631.7164237007
-   },
-   "score": {
-    "p10": 41.277657564395575,
-    "p50": 44.52995539985776,
-    "p90": 47.72640314311165
-   },
-   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
-   "entitlement_basis": [
-    "variance: PLACEHOLDER prior (ZBA)"
-   ]
   }
  ],
  "next_steps": [
   {
    "order": 1,
-   "action": "Zoning pre-application meeting",
-   "who": "City Planning",
-   "cost_usd": [
-    0.0,
-    0.0
-   ],
-   "why": "Confirms the approval path before design money is spent",
-   "flag_ids": []
-  },
-  {
-   "order": 2,
-   "action": "Title search",
-   "who": "title company",
-   "cost_usd": [
-    300.0,
-    1000.0
-   ],
-   "why": "Clear liens at closing; title insurance",
-   "flag_ids": [
-    "tax_liens"
-   ]
-  },
-  {
-   "order": 3,
    "action": "Sewer capacity inquiry",
    "who": "PWSA",
    "cost_usd": [
@@ -304,38 +209,28 @@
    ]
   },
   {
-   "order": 4,
-   "action": "Slope stability assessment",
-   "who": "geotechnical engineer",
+   "order": 2,
+   "action": "Boundary survey showing adjacent setbacks",
+   "who": "surveyor",
    "cost_usd": [
-    4000.0,
-    10000.0
+    1500.0,
+    3500.0
    ],
-   "why": "Geotechnical investigation of slope stability",
+   "why": "Survey the neighbours' actual side setbacks (must be 3 ft or less)",
    "flag_ids": [
-    "landslide_prone"
+    "contextual_setbacks"
    ]
   }
  ],
  "score_breakdown": [
   {
    "component": "site_cost",
-   "points_lost": 5.0,
-   "driver_flag_id": "landslide_prone"
+   "points_lost": 5.6,
+   "driver_flag_id": "demolition"
   },
   {
    "component": "site_cost",
-   "points_lost": 2.1,
-   "driver_flag_id": "tax_liens"
-  },
-  {
-   "component": "site_cost",
-   "points_lost": 1.2,
-   "driver_flag_id": "steep_slope"
-  },
-  {
-   "component": "site_cost",
-   "points_lost": 1.2,
+   "points_lost": 1.6,
    "driver_flag_id": "combined_sewer"
   }
  ],
@@ -473,7 +368,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 11200.0,
+   "value": 35000.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -482,12 +377,12 @@
   }
  ],
  "rules": {
-  "scenario": "strict",
+  "scenario": "contextual",
   "confidence": "high",
-  "neighbors_built": false,
+  "neighbors_built": true,
   "lot_dimensions_ft": {
-   "width": 35.6,
-   "depth": 119.3
+   "width": 39.4,
+   "depth": 112.2
   }
  },
  "versions": {

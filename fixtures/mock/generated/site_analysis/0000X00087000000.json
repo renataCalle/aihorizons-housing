@@ -1,10 +1,10 @@
 {
  "verdict": {
-  "score": 62,
+  "score": 61,
   "score_range": {
-   "p10": 60.23274522553603,
-   "p50": 61.85288741133748,
-   "p90": 63.35272527800996
+   "p10": 59.80022012705609,
+   "p50": 61.479605814851396,
+   "p90": 63.07757000161874
   },
   "band": "feasible_with_conditions",
   "headline": "Feasible with conditions: Combined sewershed (proxy for stormwater requirements).",
@@ -20,7 +20,7 @@
    {
     "key": "site_cost",
     "label": "Site cost",
-    "points": 34,
+    "points": 33,
     "max_points": 35,
     "note": "Combined sewershed (proxy for stormwater requirements) causes most of it"
    },
@@ -34,7 +34,7 @@
   ]
  },
  "narrative": {
-  "summary": "A by-right triplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $380k."
+  "summary": "A by-right duplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $296k."
  },
  "metrics": {
   "option": "by_right",
@@ -49,12 +49,12 @@
    "p90": 1.0
   },
   "max_land_price": {
-   "p10": -520414.17444273614,
-   "p50": -379701.8962521541,
-   "p90": -253696.12719952752
+   "p10": -404103.6202073763,
+   "p50": -295557.300932572,
+   "p90": -198070.94610344805
   },
   "land_basis": {
-   "value": 7000.0,
+   "value": 32500.0,
    "source": "county assessed land value (not a market price)"
   },
   "site_cost_premium": {
@@ -65,8 +65,8 @@
    ]
   },
   "land_over_max": {
-   "low": 260696.12719952752,
-   "high": 527414.1744427362
+   "low": 230570.94610344805,
+   "high": 436603.6202073763
   },
   "comps": {
    "count": 97,
@@ -133,15 +133,15 @@
  "options": [
   {
    "label": "by_right",
-   "product_type": "triplex",
-   "units": 3,
-   "unit_sqft": 950,
-   "gfa_sqft": 2850.0,
+   "product_type": "duplex",
+   "units": 2,
+   "unit_sqft": 1100,
+   "gfa_sqft": 2200.0,
    "relief": [],
    "margin": {
-    "p10": -0.4612689447999635,
-    "p50": -0.34849247664881094,
-    "p90": -0.22357071761479577
+    "p10": -0.48169361754699114,
+    "p50": -0.3757370700750779,
+    "p90": -0.2583107502907343
    },
    "months": {
     "p10": 2.987899667088324,
@@ -154,14 +154,14 @@
     "p90": 1.0
    },
    "max_land_price": {
-    "p10": -520414.17444273614,
-    "p50": -379701.8962521541,
-    "p90": -253696.12719952752
+    "p10": -404103.6202073763,
+    "p50": -295557.300932572,
+    "p90": -198070.94610344805
    },
    "score": {
-    "p10": 60.23274522553603,
-    "p50": 61.85288741133748,
-    "p90": 63.35272527800996
+    "p10": 59.80022012705609,
+    "p50": 61.479605814851396,
+    "p90": 63.07757000161874
    },
    "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
    "entitlement_basis": []
@@ -198,7 +198,7 @@
  "score_breakdown": [
   {
    "component": "site_cost",
-   "points_lost": 2.4,
+   "points_lost": 2.8,
    "driver_flag_id": "combined_sewer"
   }
  ],
@@ -336,7 +336,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 7000.0,
+   "value": 32500.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -349,8 +349,8 @@
   "confidence": "high",
   "neighbors_built": true,
   "lot_dimensions_ft": {
-   "width": 33.0,
-   "depth": 120.2
+   "width": 29.9,
+   "depth": 119.3
   }
  },
  "versions": {

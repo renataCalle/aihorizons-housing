@@ -1,28 +1,28 @@
 {
  "verdict": {
-  "score": 51,
+  "score": 49,
   "score_range": {
-   "p10": 48.020359742505725,
-   "p50": 51.3159601040921,
-   "p90": 54.60142863752305
+   "p10": 45.779201172686555,
+   "p50": 49.48251266511696,
+   "p90": 52.89551758925623
   },
-  "band": "feasible_with_conditions",
-  "headline": "Feasible with conditions: 5% of lot landslide-prone.",
+  "band": "high_risk",
+  "headline": "High risk: 7% of lot landslide-prone.",
   "land_risk": "High risk at the assessed value",
   "components": [
    {
     "key": "approval_path",
     "label": "Approval path",
-    "points": 25,
+    "points": 26,
     "max_points": 35,
     "note": "By right, no hearing; about 6 months to permit-ready"
    },
    {
     "key": "site_cost",
     "label": "Site cost",
-    "points": 26,
+    "points": 24,
     "max_points": 35,
-    "note": "5% of lot landslide-prone causes most of it"
+    "note": "7% of lot landslide-prone causes most of it"
    },
    {
     "key": "land_headroom",
@@ -34,14 +34,14 @@
   ]
  },
  "narrative": {
-  "summary": "A by-right triplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $434k."
+  "summary": "A by-right triplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $460k."
  },
  "metrics": {
   "option": "by_right",
   "months_to_permit": {
-   "p10": 4.819984348456242,
-   "p50": 6.062688604131266,
-   "p90": 7.313159940662056
+   "p10": 4.628285304876331,
+   "p50": 5.672638929156534,
+   "p90": 6.720487886398627
   },
   "approval_prob": {
    "p10": 1.0,
@@ -49,27 +49,27 @@
    "p90": 1.0
   },
   "max_land_price": {
-   "p10": -574050.829293932,
-   "p50": -434078.81971054676,
-   "p90": -307910.052329073
+   "p10": -600810.646126386,
+   "p50": -459674.82163069444,
+   "p90": -333131.3795331075
   },
   "land_basis": {
-   "value": 11200.0,
+   "value": 30700.0,
    "source": "county assessed land value (not a market price)"
   },
   "site_cost_premium": {
-   "low": 30600.0,
-   "high": 130600.0,
+   "low": 35000.0,
+   "high": 180000.0,
    "drivers": [
-    "5% of lot landslide-prone",
-    "10% of lot on 25%+ slope",
-    "Combined sewershed",
-    "$10,600 in tax liens"
+    "7% of lot landslide-prone",
+    "71% of lot over mapped mine workings",
+    "13% of lot on 25%+ slope",
+    "Combined sewershed"
    ]
   },
   "land_over_max": {
-   "low": 319110.052329073,
-   "high": 585250.829293932
+   "low": 363831.3795331075,
+   "high": 631510.646126386
   },
   "comps": {
    "count": 97,
@@ -79,10 +79,36 @@
  },
  "flags": [
   {
+   "id": "undermined",
+   "category": "physical",
+   "severity": "high",
+   "title": "71% of lot over mapped mine workings (UM-O overlay)",
+   "cost_usd": [
+    15000.0,
+    60000.0
+   ],
+   "months": [
+    1.0,
+    3.0
+   ],
+   "evidence": [
+    {
+     "source": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
+     "as_of": "2026-09-23",
+     "layer": "undermined",
+     "code_section": "906.05",
+     "url": null
+    }
+   ],
+   "confidence": "medium",
+   "resolution": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "resolved_by_step": 2
+  },
+  {
    "id": "landslide_prone",
    "category": "physical",
    "severity": "medium",
-   "title": "5% of lot landslide-prone",
+   "title": "7% of lot landslide-prone",
    "cost_usd": [
     10000.0,
     80000.0
@@ -102,39 +128,13 @@
    ],
    "confidence": "medium",
    "resolution": "Geotechnical investigation of slope stability",
-   "resolved_by_step": 4
-  },
-  {
-   "id": "tax_liens",
-   "category": "market",
-   "severity": "medium",
-   "title": "$10,600 in tax liens",
-   "cost_usd": [
-    10600.0,
-    10600.0
-   ],
-   "months": [
-    1.0,
-    4.0
-   ],
-   "evidence": [
-    {
-     "source": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
-     "as_of": "2026-09-07",
-     "layer": "parcels",
-     "code_section": null,
-     "url": null
-    }
-   ],
-   "confidence": "high",
-   "resolution": "Clear liens at closing; title insurance",
-   "resolved_by_step": 2
+   "resolved_by_step": 3
   },
   {
    "id": "steep_slope",
    "category": "physical",
    "severity": "low",
-   "title": "10% of lot on 25%+ slope",
+   "title": "13% of lot on 25%+ slope",
    "cost_usd": [
     5000.0,
     20000.0
@@ -180,11 +180,10 @@
    ],
    "confidence": "low",
    "resolution": "Stormwater management plan; capacity inquiry to PWSA",
-   "resolved_by_step": 3
+   "resolved_by_step": 1
   }
  ],
  "cleared": [
-  "undermining",
   "FEMA floodplain",
   "DEP environmental records",
   "street frontage"
@@ -198,14 +197,14 @@
    "gfa_sqft": 2850.0,
    "relief": [],
    "margin": {
-    "p10": -0.49347602897241577,
-    "p50": -0.3929700788270392,
-    "p90": -0.279954388584024
+    "p10": -0.5137490099405694,
+    "p50": -0.41946847969735074,
+    "p90": -0.31151413413936335
    },
    "months": {
-    "p10": 4.819984348456242,
-    "p50": 6.062688604131266,
-    "p90": 7.313159940662056
+    "p10": 4.628285304876331,
+    "p50": 5.672638929156534,
+    "p90": 6.720487886398627
    },
    "approval_prob": {
     "p10": 1.0,
@@ -213,85 +212,22 @@
     "p90": 1.0
    },
    "max_land_price": {
-    "p10": -574050.829293932,
-    "p50": -434078.81971054676,
-    "p90": -307910.052329073
+    "p10": -600810.646126386,
+    "p50": -459674.82163069444,
+    "p90": -333131.3795331075
    },
    "score": {
-    "p10": 48.020359742505725,
-    "p50": 51.3159601040921,
-    "p90": 54.60142863752305
+    "p10": 45.779201172686555,
+    "p50": 49.48251266511696,
+    "p90": 52.89551758925623
    },
    "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
    "entitlement_basis": []
-  },
-  {
-   "label": "with_relief",
-   "product_type": "walkup",
-   "units": 4,
-   "unit_sqft": 850,
-   "gfa_sqft": 4250.0,
-   "relief": [
-    "variance (903.03)"
-   ],
-   "margin": {
-    "p10": -0.5825224499975351,
-    "p50": -0.4990738511177057,
-    "p90": -0.40586301981394723
-   },
-   "months": {
-    "p10": 6.333275016462753,
-    "p50": 7.665945517425242,
-    "p90": 9.3451935884438
-   },
-   "approval_prob": {
-    "p10": 0.5818557716381032,
-    "p50": 0.6878553492909574,
-    "p90": 0.7813052522599618
-   },
-   "max_land_price": {
-    "p10": -945734.2434246263,
-    "p50": -754443.9099491033,
-    "p90": -585631.7164237007
-   },
-   "score": {
-    "p10": 41.277657564395575,
-    "p50": 44.52995539985776,
-    "p90": 47.72640314311165
-   },
-   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
-   "entitlement_basis": [
-    "variance: PLACEHOLDER prior (ZBA)"
-   ]
   }
  ],
  "next_steps": [
   {
    "order": 1,
-   "action": "Zoning pre-application meeting",
-   "who": "City Planning",
-   "cost_usd": [
-    0.0,
-    0.0
-   ],
-   "why": "Confirms the approval path before design money is spent",
-   "flag_ids": []
-  },
-  {
-   "order": 2,
-   "action": "Title search",
-   "who": "title company",
-   "cost_usd": [
-    300.0,
-    1000.0
-   ],
-   "why": "Clear liens at closing; title insurance",
-   "flag_ids": [
-    "tax_liens"
-   ]
-  },
-  {
-   "order": 3,
    "action": "Sewer capacity inquiry",
    "who": "PWSA",
    "cost_usd": [
@@ -304,7 +240,20 @@
    ]
   },
   {
-   "order": 4,
+   "order": 2,
+   "action": "Geotechnical site investigation incl. DEP mine records",
+   "who": "geotechnical consultant",
+   "cost_usd": [
+    8000.0,
+    25000.0
+   ],
+   "why": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "flag_ids": [
+    "undermined"
+   ]
+  },
+  {
+   "order": 3,
    "action": "Slope stability assessment",
    "who": "geotechnical engineer",
    "cost_usd": [
@@ -320,23 +269,23 @@
  "score_breakdown": [
   {
    "component": "site_cost",
-   "points_lost": 5.0,
+   "points_lost": 4.8,
    "driver_flag_id": "landslide_prone"
   },
   {
    "component": "site_cost",
-   "points_lost": 2.1,
-   "driver_flag_id": "tax_liens"
+   "points_lost": 4.1,
+   "driver_flag_id": "undermined"
   },
   {
    "component": "site_cost",
-   "points_lost": 1.2,
-   "driver_flag_id": "steep_slope"
-  },
-  {
-   "component": "site_cost",
-   "points_lost": 1.2,
+   "points_lost": 1.1,
    "driver_flag_id": "combined_sewer"
+  },
+  {
+   "component": "site_cost",
+   "points_lost": 1.0,
+   "driver_flag_id": "steep_slope"
   }
  ],
  "assumptions": [
@@ -473,7 +422,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 11200.0,
+   "value": 30700.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,

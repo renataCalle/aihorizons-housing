@@ -1,28 +1,28 @@
 {
  "verdict": {
-  "score": 48,
+  "score": 61,
   "score_range": {
-   "p10": 42.05026218092335,
-   "p50": 47.509753090211944,
-   "p90": 52.88646715376632
+   "p10": 59.7313306263062,
+   "p50": 61.42464105690718,
+   "p90": 63.03992168431742
   },
-  "band": "high_risk",
-  "headline": "High risk: 3% of lot landslide-prone.",
+  "band": "feasible_with_conditions",
+  "headline": "Feasible with conditions: Combined sewershed (proxy for stormwater requirements).",
   "land_risk": "High risk at the assessed value",
   "components": [
    {
     "key": "approval_path",
     "label": "Approval path",
-    "points": 26,
+    "points": 28,
     "max_points": 35,
-    "note": "By right, no hearing; about 5 months to permit-ready"
+    "note": "By right, no hearing; about 4 months to permit-ready"
    },
    {
     "key": "site_cost",
     "label": "Site cost",
-    "points": 21,
+    "points": 33,
     "max_points": 35,
-    "note": "3% of lot landslide-prone causes most of it"
+    "note": "Combined sewershed (proxy for stormwater requirements) causes most of it"
    },
    {
     "key": "land_headroom",
@@ -34,14 +34,14 @@
   ]
  },
  "narrative": {
-  "summary": "A by-right single-family home fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $255k."
+  "summary": "A by-right duplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $296k."
  },
  "metrics": {
   "option": "by_right",
   "months_to_permit": {
-   "p10": 4.23474431608594,
-   "p50": 5.3366579927801405,
-   "p90": 6.533984194486883
+   "p10": 2.987899667088324,
+   "p50": 3.800776951459783,
+   "p90": 4.793680602495873
   },
   "approval_prob": {
    "p10": 1.0,
@@ -49,26 +49,24 @@
    "p90": 1.0
   },
   "max_land_price": {
-   "p10": -326395.8047909427,
-   "p50": -255107.60448843124,
-   "p90": -185094.47168696314
+   "p10": -404103.6202073763,
+   "p50": -295557.300932572,
+   "p90": -198070.94610344805
   },
   "land_basis": {
-   "value": 14500.0,
+   "value": 11900.0,
    "source": "county assessed land value (not a market price)"
   },
   "site_cost_premium": {
-   "low": 20000.0,
-   "high": 120000.0,
+   "low": 5000.0,
+   "high": 20000.0,
    "drivers": [
-    "3% of lot landslide-prone",
-    "6% of lot on 25%+ slope",
     "Combined sewershed"
    ]
   },
   "land_over_max": {
-   "low": 199594.47168696314,
-   "high": 340895.8047909427
+   "low": 209970.94610344805,
+   "high": 416003.6202073763
   },
   "comps": {
    "count": 97,
@@ -77,58 +75,6 @@
   }
  },
  "flags": [
-  {
-   "id": "landslide_prone",
-   "category": "physical",
-   "severity": "medium",
-   "title": "3% of lot landslide-prone",
-   "cost_usd": [
-    10000.0,
-    80000.0
-   ],
-   "months": [
-    1.0,
-    3.0
-   ],
-   "evidence": [
-    {
-     "source": "Landslide Prone Areas",
-     "as_of": "2026-09-23",
-     "layer": "landslide_prone",
-     "code_section": null,
-     "url": "https://data.wprdc.org/dataset/6eb1be84-7abe-45c3-8a37-90db80ea6149/resource/b5b45ac6-f8ef-4805-b4e4-fc7c63fb4075/download/landslides.geojson"
-    }
-   ],
-   "confidence": "medium",
-   "resolution": "Geotechnical investigation of slope stability",
-   "resolved_by_step": 2
-  },
-  {
-   "id": "steep_slope",
-   "category": "physical",
-   "severity": "low",
-   "title": "6% of lot on 25%+ slope",
-   "cost_usd": [
-    5000.0,
-    20000.0
-   ],
-   "months": [
-    0.0,
-    1.0
-   ],
-   "evidence": [
-    {
-     "source": "25% or Greater Slope",
-     "as_of": "2026-09-23",
-     "layer": "steep_slope",
-     "code_section": "915.02",
-     "url": "https://data.wprdc.org/dataset/0f643c56-1c53-4c88-824d-3a3876c0d3a0/resource/5ce91a56-0799-46ea-9585-13fa8db5979e/download/slopes.geojson"
-    }
-   ],
-   "confidence": "medium",
-   "resolution": "Keep the footprint off the steep portion",
-   "resolved_by_step": null
-  },
   {
    "id": "combined_sewer",
    "category": "infrastructure",
@@ -157,6 +103,8 @@
   }
  ],
  "cleared": [
+  "steep slope",
+  "landslide-prone areas",
   "undermining",
   "FEMA floodplain",
   "DEP environmental records",
@@ -165,20 +113,20 @@
  "options": [
   {
    "label": "by_right",
-   "product_type": "single_family",
-   "units": 1,
-   "unit_sqft": 1500,
-   "gfa_sqft": 1500.0,
+   "product_type": "duplex",
+   "units": 2,
+   "unit_sqft": 1100,
+   "gfa_sqft": 2200.0,
    "relief": [],
    "margin": {
-    "p10": -0.5176695446960847,
-    "p50": -0.43264993813163377,
-    "p90": -0.32282447023895494
+    "p10": -0.46807149283875854,
+    "p50": -0.35688586446400383,
+    "p90": -0.23449531999435222
    },
    "months": {
-    "p10": 4.23474431608594,
-    "p50": 5.3366579927801405,
-    "p90": 6.533984194486883
+    "p10": 2.987899667088324,
+    "p50": 3.800776951459783,
+    "p90": 4.793680602495873
    },
    "approval_prob": {
     "p10": 1.0,
@@ -186,14 +134,14 @@
     "p90": 1.0
    },
    "max_land_price": {
-    "p10": -326395.8047909427,
-    "p50": -255107.60448843124,
-    "p90": -185094.47168696314
+    "p10": -404103.6202073763,
+    "p50": -295557.300932572,
+    "p90": -198070.94610344805
    },
    "score": {
-    "p10": 42.05026218092335,
-    "p50": 47.509753090211944,
-    "p90": 52.88646715376632
+    "p10": 59.7313306263062,
+    "p50": 61.42464105690718,
+    "p90": 63.03992168431742
    },
    "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
    "entitlement_basis": []
@@ -212,35 +160,12 @@
    "flag_ids": [
     "combined_sewer"
    ]
-  },
-  {
-   "order": 2,
-   "action": "Slope stability assessment",
-   "who": "geotechnical engineer",
-   "cost_usd": [
-    4000.0,
-    10000.0
-   ],
-   "why": "Geotechnical investigation of slope stability",
-   "flag_ids": [
-    "landslide_prone"
-   ]
   }
  ],
  "score_breakdown": [
   {
    "component": "site_cost",
-   "points_lost": 10.3,
-   "driver_flag_id": "landslide_prone"
-  },
-  {
-   "component": "site_cost",
-   "points_lost": 2.2,
-   "driver_flag_id": "steep_slope"
-  },
-  {
-   "component": "site_cost",
-   "points_lost": 2.2,
+   "points_lost": 2.8,
    "driver_flag_id": "combined_sewer"
   }
  ],
@@ -378,7 +303,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 14500.0,
+   "value": 11900.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -391,8 +316,8 @@
   "confidence": "high",
   "neighbors_built": false,
   "lot_dimensions_ft": {
-   "width": 31.1,
-   "depth": 93.5
+   "width": 29.7,
+   "depth": 119.3
   }
  },
  "versions": {

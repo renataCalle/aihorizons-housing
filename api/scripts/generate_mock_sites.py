@@ -100,20 +100,24 @@ def layout(area: Area, rng: np.random.Generator, first_index: int) -> list[Lot]:
             cy + x * math.sin(theta) + y * math.cos(theta),
         )
 
-    lots: list[Lot] = []
-    block_w, block_h = LOTS_PER_ROW * 40 + STREET_FT, 2 * 125 + STREET_FT
+    # One lot depth per area and the same widths on both sides of a block, so lot lines line
+    # up across the block and blocks tile into a regular grid (MapBase.dc.html).
+    depth = float(rng.uniform(90, 125))
+    block_len = LOTS_PER_ROW * 34.0
+    block_w, block_h = block_len + STREET_FT, 2 * depth + STREET_FT
     rows_of_blocks = math.ceil(n_blocks / cols)
     x0, y0 = -cols * block_w / 2, -rows_of_blocks * block_h / 2
+    lots: list[Lot] = []
     for b in range(n_blocks):
         bx, by = x0 + (b % cols) * block_w, y0 + (b // cols) * block_h
-        depth = float(rng.uniform(60, 125))
+        raw = rng.uniform(28, 40, LOTS_PER_ROW)
+        widths = [float(w) for w in raw / raw.sum() * block_len]
         for row in range(2):
             x = bx
             y = by + row * depth
-            for _ in range(LOTS_PER_ROW):
+            for width in widths:
                 if len(lots) == area.lots:
                     return lots
-                width = float(rng.uniform(28, 40))
                 corners = [(x, y), (x + width, y), (x + width, y + depth), (x, y + depth)]
                 n = first_index + len(lots)
                 lots.append(

@@ -1,81 +1,92 @@
 {
  "verdict": {
-  "score": null,
-  "score_range": null,
-  "band": "high_risk",
-  "headline": "No plausible program fits this lot",
-  "land_risk": null,
-  "components": []
+  "score": 58,
+  "score_range": {
+   "p10": 56.2663971700298,
+   "p50": 58.26336069106497,
+   "p90": 60.29534712665752
+  },
+  "band": "feasible_with_conditions",
+  "headline": "Feasible with conditions: $9,500 in tax liens.",
+  "land_risk": "High risk at the assessed value",
+  "components": [
+   {
+    "key": "approval_path",
+    "label": "Approval path",
+    "points": 25,
+    "max_points": 35,
+    "note": "By right, no hearing; about 6 months to permit-ready"
+   },
+   {
+    "key": "site_cost",
+    "label": "Site cost",
+    "points": 33,
+    "max_points": 35,
+    "note": "$9,500 in tax liens causes most of it"
+   },
+   {
+    "key": "land_headroom",
+    "label": "Land headroom",
+    "points": 0,
+    "max_points": 30,
+    "note": "Build cost exceeds value: no room to pay for land"
+   }
+  ]
  },
  "narrative": {
-  "summary": null
+  "summary": "A by-right single-family home fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $200k."
  },
- "metrics": null,
+ "metrics": {
+  "option": "by_right",
+  "months_to_permit": {
+   "p10": 4.406180700197795,
+   "p50": 5.811768240672077,
+   "p90": 7.276315450065043
+  },
+  "approval_prob": {
+   "p10": 1.0,
+   "p50": 1.0,
+   "p90": 1.0
+  },
+  "max_land_price": {
+   "p10": -273008.27437764814,
+   "p50": -200123.87619024675,
+   "p90": -133826.100238569
+  },
+  "land_basis": {
+   "value": 6100.0,
+   "source": "county assessed land value (not a market price)"
+  },
+  "site_cost_premium": {
+   "low": 9500.0,
+   "high": 9500.0,
+   "drivers": [
+    "$9,500 in tax liens"
+   ]
+  },
+  "land_over_max": {
+   "low": 139926.100238569,
+   "high": 279108.27437764814
+  },
+  "comps": {
+   "count": 97,
+   "radius_mi": 0.5,
+   "window_months": 36
+  }
+ },
  "flags": [
   {
-   "id": "undermined",
-   "category": "physical",
+   "id": "tax_liens",
+   "category": "market",
    "severity": "medium",
-   "title": "19% of lot over mapped mine workings (UM-O overlay)",
+   "title": "$9,500 in tax liens",
    "cost_usd": [
-    8000.0,
-    25000.0
+    9500.0,
+    9500.0
    ],
    "months": [
     1.0,
-    3.0
-   ],
-   "evidence": [
-    {
-     "source": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
-     "as_of": "2026-09-23",
-     "layer": "undermined",
-     "code_section": "906.05",
-     "url": null
-    }
-   ],
-   "confidence": "medium",
-   "resolution": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
-   "resolved_by_step": 3
-  },
-  {
-   "id": "combined_sewer",
-   "category": "infrastructure",
-   "severity": "low",
-   "title": "Combined sewershed (proxy for stormwater requirements)",
-   "cost_usd": [
-    5000.0,
-    20000.0
-   ],
-   "months": [
-    0.0,
-    1.0
-   ],
-   "evidence": [
-    {
-     "source": "Combined Sewershed",
-     "as_of": "2018-07-27",
-     "layer": "sewer",
-     "code_section": null,
-     "url": "https://data.wprdc.org/dataset/fe7e5332-4c87-410d-b0be-43c5d2c44ae0/resource/138d6b65-1630-4905-9421-de90cd9d59e5/download/___"
-    }
-   ],
-   "confidence": "low",
-   "resolution": "Stormwater management plan; capacity inquiry to PWSA",
-   "resolved_by_step": 1
-  },
-  {
-   "id": "demolition",
-   "category": "physical",
-   "severity": "low",
-   "title": "Existing structure to demolish",
-   "cost_usd": [
-    15000.0,
-    45000.0
-   ],
-   "months": [
-    1.0,
-    2.0
+    4.0
    ],
    "evidence": [
     {
@@ -87,80 +98,131 @@
     }
    ],
    "confidence": "high",
-   "resolution": "Demolition permit; asbestos survey",
-   "resolved_by_step": null
-  },
-  {
-   "id": "contextual_setbacks",
-   "category": "zoning",
-   "severity": "low",
-   "title": "Program relies on contextual side setbacks (925.06.C)",
-   "cost_usd": null,
-   "months": null,
-   "evidence": [
-    {
-     "source": "Pittsburgh Zoning Code",
-     "as_of": null,
-     "layer": "rules",
-     "code_section": "925.06.C",
-     "url": null
-    }
-   ],
-   "confidence": "medium",
-   "resolution": "Survey the neighbours' actual side setbacks (must be 3 ft or less)",
+   "resolution": "Clear liens at closing; title insurance",
    "resolved_by_step": 2
   }
  ],
  "cleared": [
   "steep slope",
   "landslide-prone areas",
+  "undermining",
   "FEMA floodplain",
   "DEP environmental records",
   "street frontage"
  ],
- "options": [],
- "next_steps": [
+ "options": [
   {
-   "order": 1,
-   "action": "Sewer capacity inquiry",
-   "who": "PWSA",
-   "cost_usd": [
-    0.0,
-    500.0
-   ],
-   "why": "Stormwater management plan; capacity inquiry to PWSA",
-   "flag_ids": [
-    "combined_sewer"
-   ]
+   "label": "by_right",
+   "product_type": "single_family",
+   "units": 1,
+   "unit_sqft": 1500,
+   "gfa_sqft": 1500.0,
+   "relief": [],
+   "margin": {
+    "p10": -0.46558007674447854,
+    "p50": -0.3552415333206714,
+    "p90": -0.23184215814540166
+   },
+   "months": {
+    "p10": 4.406180700197795,
+    "p50": 5.811768240672077,
+    "p90": 7.276315450065043
+   },
+   "approval_prob": {
+    "p10": 1.0,
+    "p50": 1.0,
+    "p90": 1.0
+   },
+   "max_land_price": {
+    "p10": -273008.27437764814,
+    "p50": -200123.87619024675,
+    "p90": -133826.100238569
+   },
+   "score": {
+    "p10": 56.2663971700298,
+    "p50": 58.26336069106497,
+    "p90": 60.29534712665752
+   },
+   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+   "entitlement_basis": []
   },
   {
-   "order": 2,
-   "action": "Boundary survey showing adjacent setbacks",
-   "who": "surveyor",
-   "cost_usd": [
-    1500.0,
-    3500.0
+   "label": "with_relief",
+   "product_type": "townhome",
+   "units": 2,
+   "unit_sqft": 1400,
+   "gfa_sqft": 2800.0,
+   "relief": [
+    "special_exception (911.04.A.69A)",
+    "variance (903.03.C.2)",
+    "subdivision (911.02 (own lot per unit))"
    ],
-   "why": "Survey the neighbours' actual side setbacks (must be 3 ft or less)",
-   "flag_ids": [
-    "contextual_setbacks"
-   ]
-  },
-  {
-   "order": 3,
-   "action": "Geotechnical site investigation incl. DEP mine records",
-   "who": "geotechnical consultant",
-   "cost_usd": [
-    8000.0,
-    25000.0
-   ],
-   "why": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
-   "flag_ids": [
-    "undermined"
+   "margin": {
+    "p10": -0.4560258812481018,
+    "p50": -0.3471092551065985,
+    "p90": -0.2192772794929965
+   },
+   "months": {
+    "p10": 8.79787497884215,
+    "p50": 10.324594515671176,
+    "p90": 12.019781888373897
+   },
+   "approval_prob": {
+    "p10": 0.4126736691306937,
+    "p50": 0.5008447528786161,
+    "p90": 0.5880097085936786
+   },
+   "max_land_price": {
+    "p10": -490704.6731188546,
+    "p50": -356131.6753279995,
+    "p90": -237480.79866349263
+   },
+   "score": {
+    "p10": 41.896741534124274,
+    "p50": 43.72811481003869,
+    "p90": 45.59915105252837
+   },
+   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+   "entitlement_basis": [
+    "special_exception: PLACEHOLDER prior (ZBA)",
+    "variance: PLACEHOLDER prior (ZBA)",
+    "subdivision: PLACEHOLDER prior"
    ]
   }
  ],
- "score_breakdown": [],
+ "next_steps": [
+  {
+   "order": 1,
+   "action": "Zoning pre-application meeting",
+   "who": "City Planning",
+   "cost_usd": [
+    0.0,
+    0.0
+   ],
+   "why": "Confirms the approval path before design money is spent",
+   "flag_ids": []
+  },
+  {
+   "order": 2,
+   "action": "Title search",
+   "who": "title company",
+   "cost_usd": [
+    300.0,
+    1000.0
+   ],
+   "why": "Clear liens at closing; title insurance",
+   "flag_ids": [
+    "tax_liens"
+   ]
+  }
+ ],
+ "score_breakdown": [
+  {
+   "component": "site_cost",
+   "points_lost": 6.0,
+   "driver_flag_id": "tax_liens"
+  }
+ ],
  "assumptions": [
   {
    "key": "hard_cost_psf",
@@ -295,7 +357,7 @@
   {
    "key": "land_price",
    "label": "Land price",
-   "value": 17000.0,
+   "value": 6100.0,
    "unit": "$",
    "source": "county assessed land value (not a market price)",
    "editable": true,
@@ -304,12 +366,12 @@
   }
  ],
  "rules": {
-  "scenario": "contextual",
+  "scenario": "strict",
   "confidence": "high",
-  "neighbors_built": true,
+  "neighbors_built": false,
   "lot_dimensions_ft": {
-   "width": 29.9,
-   "depth": 71.9
+   "width": 39.5,
+   "depth": 119.3
   }
  },
  "versions": {
