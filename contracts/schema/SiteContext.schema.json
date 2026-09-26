@@ -1,0 +1,891 @@
+{
+  "$defs": {
+    "Access": {
+      "additionalProperties": false,
+      "properties": {
+        "frequent_transit_distance_ft": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Frequent Transit Distance Ft"
+        }
+      },
+      "required": [
+        "frequent_transit_distance_ft"
+      ],
+      "title": "Access",
+      "type": "object"
+    },
+    "AdjacentParcel": {
+      "additionalProperties": false,
+      "description": "Neighbours sharing a lot line; contextual setbacks (925.06.C) need built neighbours.",
+      "properties": {
+        "parcel_id": {
+          "title": "Parcel Id",
+          "type": "string"
+        },
+        "address": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Address"
+        },
+        "has_structure": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Has Structure"
+        },
+        "shared_edge_ft": {
+          "title": "Shared Edge Ft",
+          "type": "number"
+        }
+      },
+      "required": [
+        "parcel_id",
+        "address",
+        "has_structure",
+        "shared_edge_ft"
+      ],
+      "title": "AdjacentParcel",
+      "type": "object"
+    },
+    "Area": {
+      "additionalProperties": false,
+      "properties": {
+        "neighborhood": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Neighborhood"
+        },
+        "mva_market_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mva Market Type"
+        },
+        "in_qct": {
+          "title": "In Qct",
+          "type": "boolean"
+        },
+        "in_opportunity_zone": {
+          "title": "In Opportunity Zone",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "neighborhood",
+        "mva_market_type",
+        "in_qct",
+        "in_opportunity_zone"
+      ],
+      "title": "Area",
+      "type": "object"
+    },
+    "FloodShare": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Share",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "share"
+      ],
+      "title": "FloodShare",
+      "type": "object"
+    },
+    "Infra": {
+      "additionalProperties": false,
+      "properties": {
+        "combined_sewershed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Combined Sewershed"
+        },
+        "frontage_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "street",
+                "alley",
+                "steps",
+                "none"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Frontage Type"
+        },
+        "water_provider": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Water Provider"
+        }
+      },
+      "required": [
+        "combined_sewershed",
+        "frontage_type",
+        "water_provider"
+      ],
+      "title": "Infra",
+      "type": "object"
+    },
+    "Market": {
+      "additionalProperties": false,
+      "properties": {
+        "sales": {
+          "items": {
+            "$ref": "#/$defs/Sale"
+          },
+          "title": "Sales",
+          "type": "array"
+        },
+        "rent_benchmarks": {
+          "items": {
+            "$ref": "#/$defs/RentBenchmark"
+          },
+          "title": "Rent Benchmarks",
+          "type": "array"
+        },
+        "comps_radius_ft": {
+          "title": "Comps Radius Ft",
+          "type": "number"
+        },
+        "comps_years": {
+          "title": "Comps Years",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sales",
+        "rent_benchmarks",
+        "comps_radius_ft",
+        "comps_years"
+      ],
+      "title": "Market",
+      "type": "object"
+    },
+    "NearbySite": {
+      "additionalProperties": false,
+      "properties": {
+        "site_type": {
+          "title": "Site Type",
+          "type": "string"
+        },
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Name"
+        },
+        "distance_ft": {
+          "title": "Distance Ft",
+          "type": "number"
+        }
+      },
+      "required": [
+        "site_type",
+        "site_id",
+        "name",
+        "distance_ft"
+      ],
+      "title": "NearbySite",
+      "type": "object"
+    },
+    "Parcel": {
+      "additionalProperties": false,
+      "properties": {
+        "parcel_id": {
+          "title": "Parcel Id",
+          "type": "string"
+        },
+        "block_lot": {
+          "title": "Block Lot",
+          "type": "string"
+        },
+        "municipality": {
+          "title": "Municipality",
+          "type": "string"
+        },
+        "address": {
+          "title": "Address",
+          "type": "string"
+        },
+        "geometry": {
+          "additionalProperties": true,
+          "title": "Geometry",
+          "type": "object"
+        },
+        "lot_area_sqft": {
+          "title": "Lot Area Sqft",
+          "type": "number"
+        },
+        "frontage_ft": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Frontage Ft"
+        },
+        "current_use": {
+          "title": "Current Use",
+          "type": "string"
+        },
+        "has_structure": {
+          "title": "Has Structure",
+          "type": "boolean"
+        },
+        "assessed_land": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Assessed Land"
+        },
+        "assessed_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Assessed Total"
+        },
+        "owner_type": {
+          "enum": [
+            "private",
+            "city",
+            "land_bank",
+            "ura",
+            "other_public"
+          ],
+          "title": "Owner Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "parcel_id",
+        "block_lot",
+        "municipality",
+        "address",
+        "geometry",
+        "lot_area_sqft",
+        "frontage_ft",
+        "current_use",
+        "has_structure",
+        "assessed_land",
+        "assessed_total",
+        "owner_type"
+      ],
+      "title": "Parcel",
+      "type": "object"
+    },
+    "Physical": {
+      "additionalProperties": false,
+      "properties": {
+        "steep_slope_share": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Steep Slope Share"
+        },
+        "landslide_prone_share": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Landslide Prone Share"
+        },
+        "undermined_share": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Undermined Share"
+        },
+        "deep_mined_share": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Deep Mined Share"
+        },
+        "aml_share": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Aml Share"
+        },
+        "flood_zones": {
+          "items": {
+            "$ref": "#/$defs/FloodShare"
+          },
+          "title": "Flood Zones",
+          "type": "array"
+        },
+        "observed_landslides_within_500ft": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Observed Landslides Within 500Ft"
+        }
+      },
+      "required": [
+        "steep_slope_share",
+        "landslide_prone_share",
+        "undermined_share",
+        "deep_mined_share",
+        "aml_share",
+        "flood_zones",
+        "observed_landslides_within_500ft"
+      ],
+      "title": "Physical",
+      "type": "object"
+    },
+    "RentBenchmark": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "geography": {
+          "title": "Geography",
+          "type": "string"
+        },
+        "bedrooms": {
+          "title": "Bedrooms",
+          "type": "integer"
+        },
+        "monthly_rent": {
+          "title": "Monthly Rent",
+          "type": "number"
+        },
+        "as_of": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "As Of"
+        }
+      },
+      "required": [
+        "source",
+        "geography",
+        "bedrooms",
+        "monthly_rent",
+        "as_of"
+      ],
+      "title": "RentBenchmark",
+      "type": "object"
+    },
+    "Sale": {
+      "additionalProperties": false,
+      "properties": {
+        "parcel_id": {
+          "title": "Parcel Id",
+          "type": "string"
+        },
+        "sale_date": {
+          "format": "date",
+          "title": "Sale Date",
+          "type": "string"
+        },
+        "price": {
+          "title": "Price",
+          "type": "number"
+        },
+        "lot_area_sqft": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Lot Area Sqft"
+        },
+        "building_sqft": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Building Sqft"
+        },
+        "property_class": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Property Class"
+        },
+        "year_built": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Year Built"
+        },
+        "sale_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sale Code"
+        },
+        "distance_ft": {
+          "title": "Distance Ft",
+          "type": "number"
+        }
+      },
+      "required": [
+        "parcel_id",
+        "sale_date",
+        "price",
+        "lot_area_sqft",
+        "building_sqft",
+        "property_class",
+        "year_built",
+        "sale_code",
+        "distance_ft"
+      ],
+      "title": "Sale",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "description": "Where a layer came from. A null fact carries its reason in `note`.",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "as_of": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "As Of"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "Title": {
+      "additionalProperties": false,
+      "properties": {
+        "tax_lien_total_usd": {
+          "title": "Tax Lien Total Usd",
+          "type": "number"
+        },
+        "condemned": {
+          "title": "Condemned",
+          "type": "boolean"
+        },
+        "city_inventory_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "City Inventory Status"
+        },
+        "pending_transfer_to": {
+          "anyOf": [
+            {
+              "enum": [
+                "land_bank",
+                "ura"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pending Transfer To"
+        }
+      },
+      "required": [
+        "tax_lien_total_usd",
+        "condemned",
+        "city_inventory_status",
+        "pending_transfer_to"
+      ],
+      "title": "Title",
+      "type": "object"
+    },
+    "ZbaCase": {
+      "additionalProperties": false,
+      "properties": {
+        "case_id": {
+          "title": "Case Id",
+          "type": "string"
+        },
+        "decision_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Decision Date"
+        },
+        "relief_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Relief Types",
+          "type": "array"
+        },
+        "district": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "District"
+        },
+        "outcome": {
+          "enum": [
+            "approved",
+            "approved_with_conditions",
+            "denied",
+            "withdrawn",
+            "continued",
+            "unknown"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "days_to_decision": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Days To Decision"
+        },
+        "distance_ft": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Distance Ft"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "case_id",
+        "decision_date",
+        "relief_types",
+        "district",
+        "outcome",
+        "days_to_decision"
+      ],
+      "title": "ZbaCase",
+      "type": "object"
+    },
+    "ZoningShare": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "district",
+            "overlay"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Share",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "kind",
+        "share"
+      ],
+      "title": "ZoningShare",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "parcels": {
+      "items": {
+        "$ref": "#/$defs/Parcel"
+      },
+      "minItems": 1,
+      "title": "Parcels",
+      "type": "array"
+    },
+    "zoning": {
+      "items": {
+        "$ref": "#/$defs/ZoningShare"
+      },
+      "title": "Zoning",
+      "type": "array"
+    },
+    "physical": {
+      "$ref": "#/$defs/Physical"
+    },
+    "environmental": {
+      "items": {
+        "$ref": "#/$defs/NearbySite"
+      },
+      "title": "Environmental",
+      "type": "array"
+    },
+    "infrastructure": {
+      "$ref": "#/$defs/Infra"
+    },
+    "access": {
+      "$ref": "#/$defs/Access"
+    },
+    "adjacent": {
+      "items": {
+        "$ref": "#/$defs/AdjacentParcel"
+      },
+      "title": "Adjacent",
+      "type": "array"
+    },
+    "title": {
+      "$ref": "#/$defs/Title"
+    },
+    "area": {
+      "$ref": "#/$defs/Area"
+    },
+    "market": {
+      "$ref": "#/$defs/Market"
+    },
+    "zba_cases_nearby": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/ZbaCase"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Zba Cases Nearby"
+    },
+    "provenance": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Source"
+      },
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "parcels",
+    "zoning",
+    "physical",
+    "environmental",
+    "infrastructure",
+    "access",
+    "adjacent",
+    "title",
+    "area",
+    "market",
+    "zba_cases_nearby",
+    "provenance"
+  ],
+  "title": "SiteContext",
+  "type": "object"
+}

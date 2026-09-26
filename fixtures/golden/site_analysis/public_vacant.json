@@ -1,0 +1,458 @@
+{
+  "verdict": {
+    "score": 61,
+    "score_range": {
+      "p10": 59.67765829602101,
+      "p50": 61.29619108551067,
+      "p90": 62.77266046057171
+    },
+    "band": "feasible_with_conditions",
+    "headline": "Feasible with conditions: Combined sewershed (proxy for stormwater requirements).",
+    "land_risk": "High risk at the assessed value",
+    "components": [
+      {
+        "key": "approval_path",
+        "label": "Approval path",
+        "points": 28,
+        "max_points": 35,
+        "note": "By right, no hearing; about 4 months to permit-ready"
+      },
+      {
+        "key": "site_cost",
+        "label": "Site cost",
+        "points": 33,
+        "max_points": 35,
+        "note": "Combined sewershed (proxy for stormwater requirements) causes most of it"
+      },
+      {
+        "key": "land_headroom",
+        "label": "Land headroom",
+        "points": 0,
+        "max_points": 30,
+        "note": "Build cost exceeds value: no room to pay for land"
+      }
+    ]
+  },
+  "narrative": {
+    "summary": "A by-right triplex fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $724k."
+  },
+  "metrics": {
+    "option": "by_right",
+    "months_to_permit": {
+      "p10": 3.134311212122345,
+      "p50": 3.960020661251264,
+      "p90": 4.975592302120728
+    },
+    "approval_prob": {
+      "p10": 1.0,
+      "p50": 1.0,
+      "p90": 1.0
+    },
+    "max_land_price": {
+      "p10": -850214.0671080061,
+      "p50": -724290.6007642541,
+      "p90": -612227.4781616465
+    },
+    "land_basis": {
+      "value": 400.0,
+      "source": "county assessed land value (not a market price)"
+    },
+    "site_cost_premium": {
+      "low": 5000,
+      "high": 25000,
+      "drivers": [
+        "Combined sewershed",
+        "2 DEP record(s) within 1,000 ft"
+      ]
+    },
+    "land_over_max": {
+      "low": 612627.4781616465,
+      "high": 850614.0671080061
+    },
+    "comps": {
+      "count": 35,
+      "radius_mi": 0.5,
+      "window_months": 36
+    }
+  },
+  "flags": [
+    {
+      "id": "env_nearby",
+      "category": "environmental",
+      "severity": "low",
+      "title": "2 DEP record(s) within 1,000 ft",
+      "cost_usd": [
+        0,
+        5000
+      ],
+      "months": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "source": "Air Media; Storage Tanks Active; Storage Tanks Inactive",
+          "as_of": null,
+          "layer": "environmental",
+          "code_section": null,
+          "url": null
+        }
+      ],
+      "confidence": "medium",
+      "resolution": "Phase I ESA recommended",
+      "resolved_by_step": 4
+    },
+    {
+      "id": "combined_sewer",
+      "category": "infrastructure",
+      "severity": "low",
+      "title": "Combined sewershed (proxy for stormwater requirements)",
+      "cost_usd": [
+        5000,
+        20000
+      ],
+      "months": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "source": "Combined Sewershed",
+          "as_of": "2018-07-27",
+          "layer": "sewer",
+          "code_section": null,
+          "url": "https://data.wprdc.org/dataset/fe7e5332-4c87-410d-b0be-43c5d2c44ae0/resource/138d6b65-1630-4905-9421-de90cd9d59e5/download/___"
+        }
+      ],
+      "confidence": "low",
+      "resolution": "Stormwater management plan; capacity inquiry to PWSA",
+      "resolved_by_step": 2
+    },
+    {
+      "id": "contextual_setbacks",
+      "category": "zoning",
+      "severity": "low",
+      "title": "Program relies on contextual side setbacks (925.06.C)",
+      "cost_usd": null,
+      "months": null,
+      "evidence": [
+        {
+          "source": "Pittsburgh Zoning Code",
+          "as_of": null,
+          "layer": "rules",
+          "code_section": "925.06.C",
+          "url": null
+        }
+      ],
+      "confidence": "medium",
+      "resolution": "Survey the neighbours' actual side setbacks (must be 3 ft or less)",
+      "resolved_by_step": 1
+    }
+  ],
+  "cleared": [
+    "steep slope",
+    "landslide-prone areas",
+    "undermining",
+    "FEMA floodplain",
+    "street frontage"
+  ],
+  "options": [
+    {
+      "label": "by_right",
+      "product_type": "triplex",
+      "units": 3,
+      "relief": [],
+      "margin": {
+        "p10": -0.8399723592145283,
+        "p50": -0.791643103327206,
+        "p90": -0.7225614119276883
+      },
+      "months": {
+        "p10": 3.134311212122345,
+        "p50": 3.960020661251264,
+        "p90": 4.975592302120728
+      },
+      "approval_prob": {
+        "p10": 1.0,
+        "p50": 1.0,
+        "p90": 1.0
+      },
+      "max_land_price": {
+        "p10": -850214.0671080061,
+        "p50": -724290.6007642541,
+        "p90": -612227.4781616465
+      },
+      "score": {
+        "p10": 59.67765829602101,
+        "p50": 61.29619108551067,
+        "p90": 62.77266046057171
+      },
+      "revenue_basis": "for-sale: 32 resale comps $39-$90/sf + new-build premium",
+      "entitlement_basis": [],
+      "gfa_sqft": 2850,
+      "unit_sqft": 950
+    },
+    {
+      "label": "with_relief",
+      "product_type": "walkup",
+      "units": 4,
+      "relief": [
+        "variance (903.03)"
+      ],
+      "margin": {
+        "p10": -0.6913987466543797,
+        "p50": -0.6386784341847448,
+        "p90": -0.5749048994118214
+      },
+      "months": {
+        "p10": 6.169134165821502,
+        "p50": 7.658302578345471,
+        "p90": 9.222143837542063
+      },
+      "approval_prob": {
+        "p10": 0.5818557716381032,
+        "p50": 0.6878553492909574,
+        "p90": 0.7813052522599618
+      },
+      "max_land_price": {
+        "p10": -1063722.7751567175,
+        "p50": -882561.9758957694,
+        "p90": -721392.3989475851
+      },
+      "score": {
+        "p10": 46.94908896984607,
+        "p50": 49.4956344569251,
+        "p90": 51.96645770833813
+      },
+      "revenue_basis": "rental exit: HUD SAFMR $1,210/mo at cap rate",
+      "entitlement_basis": [
+        "variance: PLACEHOLDER prior (ZBA)"
+      ],
+      "gfa_sqft": 4250,
+      "unit_sqft": 850
+    }
+  ],
+  "next_steps": [
+    {
+      "order": 1,
+      "action": "Zoning pre-application meeting",
+      "who": "City Planning",
+      "cost_usd": [
+        0,
+        0
+      ],
+      "why": "Confirms the approval path before design money is spent",
+      "flag_ids": [
+        "contextual_setbacks"
+      ]
+    },
+    {
+      "order": 2,
+      "action": "Sewer capacity inquiry",
+      "who": "PWSA",
+      "cost_usd": [
+        0,
+        500
+      ],
+      "why": "Stormwater management plan; capacity inquiry to PWSA",
+      "flag_ids": [
+        "combined_sewer"
+      ]
+    },
+    {
+      "order": 3,
+      "action": "Boundary survey showing adjacent setbacks",
+      "who": "surveyor",
+      "cost_usd": [
+        1500,
+        3500
+      ],
+      "why": "Survey the neighbours' actual side setbacks (must be 3 ft or less)",
+      "flag_ids": [
+        "contextual_setbacks"
+      ]
+    },
+    {
+      "order": 4,
+      "action": "Phase I Environmental Site Assessment",
+      "who": "environmental consultant",
+      "cost_usd": [
+        2500,
+        5000
+      ],
+      "why": "Phase I ESA recommended",
+      "flag_ids": [
+        "env_nearby"
+      ]
+    }
+  ],
+  "score_breakdown": [
+    {
+      "component": "site_cost",
+      "points_lost": 1.7,
+      "driver_flag_id": "combined_sewer"
+    },
+    {
+      "component": "site_cost",
+      "points_lost": 0.5,
+      "driver_flag_id": "env_nearby"
+    }
+  ],
+  "assumptions": [
+    {
+      "key": "hard_cost_psf",
+      "label": "Hard cost per gross sq ft",
+      "value": 250,
+      "unit": "$/sf",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 200,
+      "max": 320
+    },
+    {
+      "key": "soft_cost_share",
+      "label": "Soft costs as share of hard",
+      "value": 0.2,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.15,
+      "max": 0.25
+    },
+    {
+      "key": "contingency_share",
+      "label": "Contingency on hard + soft",
+      "value": 0.07,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.05,
+      "max": 0.1
+    },
+    {
+      "key": "construction_months",
+      "label": "Construction duration",
+      "value": 12,
+      "unit": "months",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 9,
+      "max": 16
+    },
+    {
+      "key": "carry_rate",
+      "label": "Annual carrying cost of capital",
+      "value": 0.09,
+      "unit": "rate/yr",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.07,
+      "max": 0.11
+    },
+    {
+      "key": "target_margin",
+      "label": "Target margin on cost",
+      "value": 0.15,
+      "unit": "share",
+      "source": "developer input",
+      "editable": true,
+      "min": 0.15,
+      "max": 0.15
+    },
+    {
+      "key": "new_build_premium",
+      "label": "New construction price premium over resale comps",
+      "value": 0.25,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.1,
+      "max": 0.4
+    },
+    {
+      "key": "cap_rate",
+      "label": "Cap rate for rental exit",
+      "value": 0.065,
+      "unit": "rate",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.055,
+      "max": 0.075
+    },
+    {
+      "key": "opex_ratio",
+      "label": "Operating expenses + vacancy, share of gross rent",
+      "value": 0.4,
+      "unit": "share",
+      "source": "PLACEHOLDER - replace with local benchmark",
+      "editable": true,
+      "min": 0.35,
+      "max": 0.45
+    },
+    {
+      "key": "permit_review_months",
+      "label": "Building permit review (PLI)",
+      "value": 3,
+      "unit": "months",
+      "source": "PLACEHOLDER - PLI data has issue dates only",
+      "editable": true,
+      "min": 2,
+      "max": 5
+    },
+    {
+      "key": "score_time_scale_months",
+      "label": "Time factor: e-folding months",
+      "value": 18,
+      "unit": "months",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 18,
+      "max": 18
+    },
+    {
+      "key": "score_land_full_ratio",
+      "label": "Land headroom: max land price / land price that earns full points",
+      "value": 1.5,
+      "unit": "ratio",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 1.5,
+      "max": 1.5
+    },
+    {
+      "key": "score_premium_scale",
+      "label": "Cost factor: premium share that zeroes the score",
+      "value": 0.3,
+      "unit": "share",
+      "source": "PLACEHOLDER - set in validation",
+      "editable": false,
+      "min": 0.3,
+      "max": 0.3
+    },
+    {
+      "key": "land_price",
+      "label": "Land price",
+      "value": 400.0,
+      "unit": "$",
+      "source": "county assessed land value (not a market price)",
+      "editable": true,
+      "min": null,
+      "max": null
+    }
+  ],
+  "rules": {
+    "scenario": "contextual",
+    "confidence": "high",
+    "neighbors_built": true,
+    "lot_dimensions_ft": {
+      "width": 31.2,
+      "depth": 99.6
+    }
+  },
+  "versions": {
+    "engine": "sandbox-v0.1",
+    "ruleset": "sandbox rules drafts 2026-09-26",
+    "schema": "0.1.0",
+    "data_as_of": "2018-07-27"
+  }
+}

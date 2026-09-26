@@ -1,0 +1,1574 @@
+{
+  "schema_version": "0.1.0",
+  "parcels": [
+    {
+      "parcel_id": "0176C00275000000",
+      "block_lot": "176-C-275",
+      "municipality": "Wilkinsburg  ",
+      "address": "REBECCA AVE",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1373052.0003531575,
+              410866.19111023843
+            ],
+            [
+              1373000.6253904998,
+              410755.40763905644
+            ],
+            [
+              1372971.1254055202,
+              410769.8744287938
+            ],
+            [
+              1373021.5004890263,
+              410880.157712698
+            ],
+            [
+              1373052.0003531575,
+              410866.19111023843
+            ]
+          ]
+        ]
+      },
+      "lot_area_sqft": 4039.2677293054276,
+      "frontage_ft": null,
+      "current_use": "VACANT LAND",
+      "has_structure": false,
+      "assessed_land": 1300.0,
+      "assessed_total": 1300.0,
+      "owner_type": "private"
+    }
+  ],
+  "zoning": [],
+  "physical": {
+    "steep_slope_share": null,
+    "landslide_prone_share": null,
+    "undermined_share": null,
+    "deep_mined_share": 0.0,
+    "aml_share": 0.0,
+    "flood_zones": [],
+    "observed_landslides_within_500ft": 0
+  },
+  "environmental": [
+    {
+      "site_type": "land_recycling_act2",
+      "site_id": "624567",
+      "name": "WILKINSBURG PARKING AUTH MUN LOT",
+      "distance_ft": 717.1
+    }
+  ],
+  "infrastructure": {
+    "combined_sewershed": null,
+    "frontage_type": "street",
+    "water_provider": null
+  },
+  "access": {
+    "frequent_transit_distance_ft": 189.59304318579848
+  },
+  "adjacent": [
+    {
+      "parcel_id": "0176C00273000000",
+      "address": "438 REBECCA AVE",
+      "has_structure": true,
+      "shared_edge_ft": 123.1
+    },
+    {
+      "parcel_id": "0176C00277000000",
+      "address": "434 REBECCA AVE",
+      "has_structure": true,
+      "shared_edge_ft": 122.3
+    }
+  ],
+  "title": {
+    "tax_lien_total_usd": 0.0,
+    "condemned": false,
+    "city_inventory_status": null,
+    "pending_transfer_to": null
+  },
+  "area": {
+    "neighborhood": null,
+    "mva_market_type": "H",
+    "in_qct": true,
+    "in_opportunity_zone": false
+  },
+  "market": {
+    "sales": [
+      {
+        "parcel_id": "0176L00036000A00",
+        "sale_date": "2026-07-28",
+        "price": 295000.0,
+        "lot_area_sqft": 1658.71354195848,
+        "building_sqft": 1436.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1255.6
+      },
+      {
+        "parcel_id": "0176F00261000000",
+        "sale_date": "2026-07-20",
+        "price": 200000.0,
+        "lot_area_sqft": 1702.6105634231885,
+        "building_sqft": 1220.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1940.0,
+        "sale_code": "0",
+        "distance_ft": 848.3
+      },
+      {
+        "parcel_id": "0176L00254000000",
+        "sale_date": "2026-07-13",
+        "price": 525000.0,
+        "lot_area_sqft": 4206.098821105533,
+        "building_sqft": 2197.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1349.5
+      },
+      {
+        "parcel_id": "0175M00301000000",
+        "sale_date": "2026-07-09",
+        "price": 91500.0,
+        "lot_area_sqft": 2606.98616132636,
+        "building_sqft": 2010.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 2256.6
+      },
+      {
+        "parcel_id": "0175P00134000000",
+        "sale_date": "2026-07-02",
+        "price": 260000.0,
+        "lot_area_sqft": 5589.650723061991,
+        "building_sqft": 2793.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1880.0,
+        "sale_code": "0",
+        "distance_ft": 1576.1
+      },
+      {
+        "parcel_id": "0176R00117000000",
+        "sale_date": "2026-06-29",
+        "price": 438000.0,
+        "lot_area_sqft": 6354.548304330276,
+        "building_sqft": 1419.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1934.0,
+        "sale_code": "0",
+        "distance_ft": 2229.5
+      },
+      {
+        "parcel_id": "0176G00188003200",
+        "sale_date": "2026-06-26",
+        "price": 175000.0,
+        "lot_area_sqft": 542.7760959353692,
+        "building_sqft": 1321.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1978.0,
+        "sale_code": "0",
+        "distance_ft": 701.0
+      },
+      {
+        "parcel_id": "0176L00301000000",
+        "sale_date": "2026-06-25",
+        "price": 379000.0,
+        "lot_area_sqft": 3323.76597283082,
+        "building_sqft": 2590.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1468.7
+      },
+      {
+        "parcel_id": "0176R00143000000",
+        "sale_date": "2026-06-22",
+        "price": 620000.0,
+        "lot_area_sqft": 6225.198901357522,
+        "building_sqft": 1302.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1938.0,
+        "sale_code": "0",
+        "distance_ft": 2524.8
+      },
+      {
+        "parcel_id": "0176R00107000000",
+        "sale_date": "2026-06-22",
+        "price": 716500.0,
+        "lot_area_sqft": 9620.765416971059,
+        "building_sqft": 2906.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1921.0,
+        "sale_code": "0",
+        "distance_ft": 2217.1
+      },
+      {
+        "parcel_id": "0176E00130000000",
+        "sale_date": "2026-06-22",
+        "price": 492500.0,
+        "lot_area_sqft": 4706.406342674529,
+        "building_sqft": 3646.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1930.0,
+        "sale_code": "0",
+        "distance_ft": 1931.0
+      },
+      {
+        "parcel_id": "0176K00185000000",
+        "sale_date": "2026-06-22",
+        "price": 600000.0,
+        "lot_area_sqft": 4801.795804792691,
+        "building_sqft": 1785.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1919.6
+      },
+      {
+        "parcel_id": "0176K00027000000",
+        "sale_date": "2026-06-03",
+        "price": 332000.0,
+        "lot_area_sqft": 3128.1456862364157,
+        "building_sqft": 2019.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1374.5
+      },
+      {
+        "parcel_id": "0176E00227000000",
+        "sale_date": "2026-06-02",
+        "price": 414237.0,
+        "lot_area_sqft": 2925.4925549001614,
+        "building_sqft": 1260.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1930.0,
+        "sale_code": "0",
+        "distance_ft": 1703.7
+      },
+      {
+        "parcel_id": "0176A00156000000",
+        "sale_date": "2026-05-27",
+        "price": 415000.0,
+        "lot_area_sqft": 4573.913415652229,
+        "building_sqft": 1883.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1902.7
+      },
+      {
+        "parcel_id": "0176F00101000000",
+        "sale_date": "2026-05-14",
+        "price": 208000.0,
+        "lot_area_sqft": 2979.2821062104604,
+        "building_sqft": 1426.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1323.0
+      },
+      {
+        "parcel_id": "0176F00180000000",
+        "sale_date": "2026-05-07",
+        "price": 375000.0,
+        "lot_area_sqft": 4637.024504367538,
+        "building_sqft": 1585.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1298.5
+      },
+      {
+        "parcel_id": "0176L00218000000",
+        "sale_date": "2026-05-06",
+        "price": 366000.0,
+        "lot_area_sqft": 3333.871558147594,
+        "building_sqft": 2083.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1723.9
+      },
+      {
+        "parcel_id": "0175J00197000000",
+        "sale_date": "2026-05-01",
+        "price": 590000.0,
+        "lot_area_sqft": 10896.114655723728,
+        "building_sqft": 1975.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1930.0,
+        "sale_code": "0",
+        "distance_ft": 2289.0
+      },
+      {
+        "parcel_id": "0176F00039000000",
+        "sale_date": "2026-04-29",
+        "price": 425000.0,
+        "lot_area_sqft": 3729.039117772537,
+        "building_sqft": 1249.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 1579.6
+      },
+      {
+        "parcel_id": "0176L00330000000",
+        "sale_date": "2026-04-23",
+        "price": 440000.0,
+        "lot_area_sqft": 3479.62581439383,
+        "building_sqft": 2314.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1634.3
+      },
+      {
+        "parcel_id": "0176P00202000000",
+        "sale_date": "2026-04-03",
+        "price": 475000.0,
+        "lot_area_sqft": 3652.4866036970566,
+        "building_sqft": 1488.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1924.0,
+        "sale_code": "0",
+        "distance_ft": 2443.5
+      },
+      {
+        "parcel_id": "0233A00167000000",
+        "sale_date": "2026-03-31",
+        "price": 235000.0,
+        "lot_area_sqft": 4320.697106813232,
+        "building_sqft": 2196.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1929.0,
+        "sale_code": "0",
+        "distance_ft": 2339.5
+      },
+      {
+        "parcel_id": "0176S00250000000",
+        "sale_date": "2026-03-25",
+        "price": 371000.0,
+        "lot_area_sqft": 5854.25801057323,
+        "building_sqft": 2333.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1896.0,
+        "sale_code": "0",
+        "distance_ft": 2258.1
+      },
+      {
+        "parcel_id": "0176F00173000000",
+        "sale_date": "2026-03-06",
+        "price": 300000.0,
+        "lot_area_sqft": 3055.8599800735906,
+        "building_sqft": 1144.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1940.0,
+        "sale_code": "0",
+        "distance_ft": 1444.1
+      },
+      {
+        "parcel_id": "0176A00336000000",
+        "sale_date": "2026-02-26",
+        "price": 550000.0,
+        "lot_area_sqft": 4000.6795919373117,
+        "building_sqft": 1961.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1930.0,
+        "sale_code": "0",
+        "distance_ft": 2259.3
+      },
+      {
+        "parcel_id": "0176F00401000000",
+        "sale_date": "2026-01-20",
+        "price": 670000.0,
+        "lot_area_sqft": 3743.223131077026,
+        "building_sqft": null,
+        "property_class": "RESIDENTIAL",
+        "year_built": null,
+        "sale_code": "16",
+        "distance_ft": 1338.2
+      },
+      {
+        "parcel_id": "0175P00008000000",
+        "sale_date": "2026-01-14",
+        "price": 150000.0,
+        "lot_area_sqft": 4527.995944059948,
+        "building_sqft": 3034.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1968.6
+      },
+      {
+        "parcel_id": "0176R00029000000",
+        "sale_date": "2026-01-14",
+        "price": 525000.0,
+        "lot_area_sqft": 9486.19641796272,
+        "building_sqft": 2160.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1966.8
+      },
+      {
+        "parcel_id": "0176B00166000000",
+        "sale_date": "2026-01-07",
+        "price": 230000.0,
+        "lot_area_sqft": 3134.2932889348385,
+        "building_sqft": 1936.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 575.8
+      },
+      {
+        "parcel_id": "0176G00049000000",
+        "sale_date": "2025-12-22",
+        "price": 171500.0,
+        "lot_area_sqft": 1016.2235893017902,
+        "building_sqft": 1158.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1911.0,
+        "sale_code": "0",
+        "distance_ft": 949.3
+      },
+      {
+        "parcel_id": "0176J00004000000",
+        "sale_date": "2025-11-19",
+        "price": 495000.0,
+        "lot_area_sqft": 6198.5318833720385,
+        "building_sqft": 1860.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1926.0,
+        "sale_code": "0",
+        "distance_ft": 1874.5
+      },
+      {
+        "parcel_id": "0176L00317000000",
+        "sale_date": "2025-11-13",
+        "price": 198000.0,
+        "lot_area_sqft": 3770.65477025942,
+        "building_sqft": 2233.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1484.5
+      },
+      {
+        "parcel_id": "0176R00177000000",
+        "sale_date": "2025-10-31",
+        "price": 290000.0,
+        "lot_area_sqft": 5485.303622356561,
+        "building_sqft": 1440.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1930.0,
+        "sale_code": "0",
+        "distance_ft": 2587.4
+      },
+      {
+        "parcel_id": "0176F00202000000",
+        "sale_date": "2025-10-23",
+        "price": 385000.0,
+        "lot_area_sqft": 3796.4340461894844,
+        "building_sqft": 1620.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1928.0,
+        "sale_code": "0",
+        "distance_ft": 1082.3
+      },
+      {
+        "parcel_id": "0176K00315000000",
+        "sale_date": "2025-10-17",
+        "price": 480000.0,
+        "lot_area_sqft": 6089.840542444945,
+        "building_sqft": 2262.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 2356.3
+      },
+      {
+        "parcel_id": "0176S00035000000",
+        "sale_date": "2025-10-14",
+        "price": 289000.0,
+        "lot_area_sqft": 2436.9402355973316,
+        "building_sqft": 1620.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 2526.9
+      },
+      {
+        "parcel_id": "0176G00366000000",
+        "sale_date": "2025-09-19",
+        "price": 364900.0,
+        "lot_area_sqft": 2176.498366355796,
+        "building_sqft": 1566.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1139.5
+      },
+      {
+        "parcel_id": "0176F00187000000",
+        "sale_date": "2025-09-19",
+        "price": 385000.0,
+        "lot_area_sqft": 3750.053345506055,
+        "building_sqft": 1908.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1217.0
+      },
+      {
+        "parcel_id": "0176L00403000000",
+        "sale_date": "2025-09-17",
+        "price": 490000.0,
+        "lot_area_sqft": 2466.0529287507084,
+        "building_sqft": 2128.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1992.0,
+        "sale_code": "0",
+        "distance_ft": 1928.3
+      },
+      {
+        "parcel_id": "0176L00062000000",
+        "sale_date": "2025-09-08",
+        "price": 269000.0,
+        "lot_area_sqft": 1774.419600197638,
+        "building_sqft": 1180.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1116.5
+      },
+      {
+        "parcel_id": "0176A00060000000",
+        "sale_date": "2025-08-29",
+        "price": 599900.0,
+        "lot_area_sqft": 4488.276740894002,
+        "building_sqft": 3138.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1791.7
+      },
+      {
+        "parcel_id": "0175R00154000000",
+        "sale_date": "2025-08-19",
+        "price": 250000.0,
+        "lot_area_sqft": 5994.839171391639,
+        "building_sqft": 2916.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1898.0,
+        "sale_code": "0",
+        "distance_ft": 824.0
+      },
+      {
+        "parcel_id": "0176F00196000000",
+        "sale_date": "2025-08-07",
+        "price": 395000.0,
+        "lot_area_sqft": 2828.1980795334043,
+        "building_sqft": 2246.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1915.0,
+        "sale_code": "0",
+        "distance_ft": 1116.9
+      },
+      {
+        "parcel_id": "0233J00050000000",
+        "sale_date": "2025-07-30",
+        "price": 180000.0,
+        "lot_area_sqft": 2158.39511783599,
+        "building_sqft": 1900.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 2432.2
+      },
+      {
+        "parcel_id": "0176J00126000500",
+        "sale_date": "2025-07-23",
+        "price": 269000.0,
+        "lot_area_sqft": 549.998132485758,
+        "building_sqft": 1254.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1940.0,
+        "sale_code": "0",
+        "distance_ft": 2346.1
+      },
+      {
+        "parcel_id": "0176R00016000000",
+        "sale_date": "2025-07-21",
+        "price": 322400.0,
+        "lot_area_sqft": 6162.357078507032,
+        "building_sqft": 1663.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1950.0,
+        "sale_code": "0",
+        "distance_ft": 2184.0
+      },
+      {
+        "parcel_id": "0176K00258000000",
+        "sale_date": "2025-07-16",
+        "price": 476000.0,
+        "lot_area_sqft": 4130.7187667194485,
+        "building_sqft": 3090.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1887.4
+      },
+      {
+        "parcel_id": "0176B00045000000",
+        "sale_date": "2025-07-16",
+        "price": 150000.0,
+        "lot_area_sqft": 1538.7869406218804,
+        "building_sqft": 1440.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1275.9
+      },
+      {
+        "parcel_id": "0176R00054000000",
+        "sale_date": "2025-07-08",
+        "price": 585000.0,
+        "lot_area_sqft": 3306.17819282935,
+        "building_sqft": 1857.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1904.0,
+        "sale_code": "0",
+        "distance_ft": 2175.0
+      },
+      {
+        "parcel_id": "0176P00193000000",
+        "sale_date": "2025-07-08",
+        "price": 470500.0,
+        "lot_area_sqft": 3856.4313491386483,
+        "building_sqft": 1768.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1935.0,
+        "sale_code": "0",
+        "distance_ft": 2324.2
+      },
+      {
+        "parcel_id": "0176J00170000000",
+        "sale_date": "2025-07-07",
+        "price": 640000.0,
+        "lot_area_sqft": 4134.697262530193,
+        "building_sqft": 2548.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 2495.3
+      },
+      {
+        "parcel_id": "0176F00106000000",
+        "sale_date": "2025-06-26",
+        "price": 265000.0,
+        "lot_area_sqft": 3842.8140665679284,
+        "building_sqft": 1333.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1250.7
+      },
+      {
+        "parcel_id": "0176R00135000000",
+        "sale_date": "2025-06-11",
+        "price": 428500.0,
+        "lot_area_sqft": 9744.277555770512,
+        "building_sqft": 970.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1931.0,
+        "sale_code": "0",
+        "distance_ft": 2436.8
+      },
+      {
+        "parcel_id": "0176A00045000000",
+        "sale_date": "2025-06-09",
+        "price": 430000.0,
+        "lot_area_sqft": 3042.396872645279,
+        "building_sqft": 1664.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1661.3
+      },
+      {
+        "parcel_id": "0176N00010000000",
+        "sale_date": "2025-05-23",
+        "price": 265000.0,
+        "lot_area_sqft": 4047.399392982336,
+        "building_sqft": 1164.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 2621.7
+      },
+      {
+        "parcel_id": "0176B00024000000",
+        "sale_date": "2025-05-02",
+        "price": 189900.0,
+        "lot_area_sqft": 2620.8769834412087,
+        "building_sqft": 1132.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1335.0
+      },
+      {
+        "parcel_id": "0176E00101000000",
+        "sale_date": "2025-05-01",
+        "price": 300000.0,
+        "lot_area_sqft": 2683.9803016755914,
+        "building_sqft": 1620.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1968.1
+      },
+      {
+        "parcel_id": "0175M00216000000",
+        "sale_date": "2025-05-01",
+        "price": 159000.0,
+        "lot_area_sqft": 3313.8160933661493,
+        "building_sqft": 2304.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1921.0,
+        "sale_code": "0",
+        "distance_ft": 2581.3
+      },
+      {
+        "parcel_id": "0176E00232000000",
+        "sale_date": "2025-04-18",
+        "price": 499000.0,
+        "lot_area_sqft": 3104.9841967724824,
+        "building_sqft": 2114.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1924.0,
+        "sale_code": "0",
+        "distance_ft": 1629.8
+      },
+      {
+        "parcel_id": "0175K00214000100",
+        "sale_date": "2025-04-17",
+        "price": 258000.0,
+        "lot_area_sqft": 600.0075642733351,
+        "building_sqft": 1462.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1956.9
+      },
+      {
+        "parcel_id": "0176P00181000000",
+        "sale_date": "2025-04-16",
+        "price": 410000.0,
+        "lot_area_sqft": 3578.8838641577945,
+        "building_sqft": 1492.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1935.0,
+        "sale_code": "0",
+        "distance_ft": 2427.4
+      },
+      {
+        "parcel_id": "0176E00211000000",
+        "sale_date": "2025-04-08",
+        "price": 380000.0,
+        "lot_area_sqft": 3927.788408849208,
+        "building_sqft": 1510.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1905.0,
+        "sale_code": "0",
+        "distance_ft": 1660.0
+      },
+      {
+        "parcel_id": "0176G00188002100",
+        "sale_date": "2025-03-03",
+        "price": 165000.0,
+        "lot_area_sqft": 385.9194799698876,
+        "building_sqft": 1321.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1978.0,
+        "sale_code": "DT",
+        "distance_ft": 736.3
+      },
+      {
+        "parcel_id": "0176P00083000000",
+        "sale_date": "2025-02-28",
+        "price": 535000.0,
+        "lot_area_sqft": 3618.1748647815093,
+        "building_sqft": 2640.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1907.0,
+        "sale_code": "0",
+        "distance_ft": 2403.4
+      },
+      {
+        "parcel_id": "0176P00216000000",
+        "sale_date": "2025-02-11",
+        "price": 438500.0,
+        "lot_area_sqft": 3804.68919491874,
+        "building_sqft": 2184.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1930.0,
+        "sale_code": "0",
+        "distance_ft": 2565.8
+      },
+      {
+        "parcel_id": "0176E00171000000",
+        "sale_date": "2025-02-06",
+        "price": 385000.0,
+        "lot_area_sqft": 6052.520466431938,
+        "building_sqft": 2787.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 1787.4
+      },
+      {
+        "parcel_id": "0176A00024000000",
+        "sale_date": "2025-01-28",
+        "price": 188776.0,
+        "lot_area_sqft": 3018.58893010463,
+        "building_sqft": 2476.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1891.0,
+        "sale_code": "0",
+        "distance_ft": 1552.4
+      },
+      {
+        "parcel_id": "0176G00188A00100",
+        "sale_date": "2025-01-24",
+        "price": 148000.0,
+        "lot_area_sqft": 429.5427910500939,
+        "building_sqft": 1321.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1978.0,
+        "sale_code": "0",
+        "distance_ft": 722.9
+      },
+      {
+        "parcel_id": "0176K00047000000",
+        "sale_date": "2024-12-26",
+        "price": 552500.0,
+        "lot_area_sqft": 6164.839667894355,
+        "building_sqft": 2889.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1918.0,
+        "sale_code": "0",
+        "distance_ft": 1713.7
+      },
+      {
+        "parcel_id": "0176M00093000000",
+        "sale_date": "2024-12-23",
+        "price": 211000.0,
+        "lot_area_sqft": 4206.148250134383,
+        "building_sqft": 1223.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1902.0,
+        "sale_code": "0",
+        "distance_ft": 2227.4
+      },
+      {
+        "parcel_id": "0176A00004000000",
+        "sale_date": "2024-12-19",
+        "price": 360000.0,
+        "lot_area_sqft": 3162.273701496508,
+        "building_sqft": 2192.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1924.0,
+        "sale_code": "0",
+        "distance_ft": 1557.3
+      },
+      {
+        "parcel_id": "0175M00198000000",
+        "sale_date": "2024-12-05",
+        "price": 48500.0,
+        "lot_area_sqft": 3369.9154391121947,
+        "building_sqft": 2435.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1915.0,
+        "sale_code": "0",
+        "distance_ft": 2424.9
+      },
+      {
+        "parcel_id": "0176P00095000000",
+        "sale_date": "2024-11-18",
+        "price": 411000.0,
+        "lot_area_sqft": 3607.2987854400726,
+        "building_sqft": 1671.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 2433.9
+      },
+      {
+        "parcel_id": "0175R00028000000",
+        "sale_date": "2024-11-08",
+        "price": 155000.0,
+        "lot_area_sqft": 3897.704195908719,
+        "building_sqft": 1047.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1953.0,
+        "sale_code": "0",
+        "distance_ft": 582.1
+      },
+      {
+        "parcel_id": "0175N00092000000",
+        "sale_date": "2024-11-07",
+        "price": 670000.0,
+        "lot_area_sqft": 3860.9963115370324,
+        "building_sqft": 2157.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 2427.9
+      },
+      {
+        "parcel_id": "0176M00260000000",
+        "sale_date": "2024-10-29",
+        "price": 49000.0,
+        "lot_area_sqft": 1484.9427985356874,
+        "building_sqft": 1152.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 2279.8
+      },
+      {
+        "parcel_id": "0176G00098000000",
+        "sale_date": "2024-10-18",
+        "price": 485000.0,
+        "lot_area_sqft": 3729.6890444948353,
+        "building_sqft": 2520.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 606.0
+      },
+      {
+        "parcel_id": "0176R00111000000",
+        "sale_date": "2024-10-17",
+        "price": 475000.0,
+        "lot_area_sqft": 5430.567854110888,
+        "building_sqft": 1590.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1932.0,
+        "sale_code": "0",
+        "distance_ft": 2220.2
+      },
+      {
+        "parcel_id": "0176A00177000000",
+        "sale_date": "2024-10-14",
+        "price": 522600.0,
+        "lot_area_sqft": 5634.496631791641,
+        "building_sqft": 3605.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1930.0,
+        "sale_code": "0",
+        "distance_ft": 1953.4
+      },
+      {
+        "parcel_id": "0176S00250000000",
+        "sale_date": "2024-09-19",
+        "price": 251500.0,
+        "lot_area_sqft": 5854.25801057323,
+        "building_sqft": 2333.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1896.0,
+        "sale_code": "0",
+        "distance_ft": 2258.1
+      },
+      {
+        "parcel_id": "0176K00164000000",
+        "sale_date": "2024-09-18",
+        "price": 375000.0,
+        "lot_area_sqft": 3006.9380938029726,
+        "building_sqft": 1875.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 1744.3
+      },
+      {
+        "parcel_id": "0176J00110000000",
+        "sale_date": "2024-09-09",
+        "price": 403500.0,
+        "lot_area_sqft": 5910.125531522931,
+        "building_sqft": 2240.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1960.0,
+        "sale_code": "0",
+        "distance_ft": 2170.9
+      },
+      {
+        "parcel_id": "0176F00202000000",
+        "sale_date": "2024-09-09",
+        "price": 358491.0,
+        "lot_area_sqft": 3796.4340461894844,
+        "building_sqft": 1620.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1928.0,
+        "sale_code": "0",
+        "distance_ft": 1082.3
+      },
+      {
+        "parcel_id": "0176C00188000000",
+        "sale_date": "2024-09-04",
+        "price": 285000.0,
+        "lot_area_sqft": 3547.7879630475227,
+        "building_sqft": 2000.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 256.9
+      },
+      {
+        "parcel_id": "0176F00213000000",
+        "sale_date": "2024-09-03",
+        "price": 250000.0,
+        "lot_area_sqft": 2639.558468842015,
+        "building_sqft": 1620.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 929.4
+      },
+      {
+        "parcel_id": "0176C00303000000",
+        "sale_date": "2024-08-30",
+        "price": 167900.0,
+        "lot_area_sqft": 3198.1401584992,
+        "building_sqft": 2770.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 341.1
+      },
+      {
+        "parcel_id": "0176A00047000000",
+        "sale_date": "2024-08-30",
+        "price": 555000.0,
+        "lot_area_sqft": 3070.4124523460996,
+        "building_sqft": 1716.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1918.0,
+        "sale_code": "0",
+        "distance_ft": 1680.1
+      },
+      {
+        "parcel_id": "0232N00163000000",
+        "sale_date": "2024-08-27",
+        "price": 34000.0,
+        "lot_area_sqft": 2164.9122336612936,
+        "building_sqft": 2810.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1920.0,
+        "sale_code": "0",
+        "distance_ft": 2424.1
+      },
+      {
+        "parcel_id": "0176A00183000000",
+        "sale_date": "2024-08-23",
+        "price": 385000.0,
+        "lot_area_sqft": 4220.18622955031,
+        "building_sqft": 1507.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1935.0,
+        "sale_code": "0",
+        "distance_ft": 1995.4
+      },
+      {
+        "parcel_id": "0176L00315000000",
+        "sale_date": "2024-08-20",
+        "price": 550000.0,
+        "lot_area_sqft": 3802.577550990529,
+        "building_sqft": 2153.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1478.6
+      },
+      {
+        "parcel_id": "0176L00066000000",
+        "sale_date": "2024-08-16",
+        "price": 264000.0,
+        "lot_area_sqft": 2459.4916618797556,
+        "building_sqft": 1218.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1116.0
+      },
+      {
+        "parcel_id": "0176L00290000000",
+        "sale_date": "2024-08-14",
+        "price": 325000.0,
+        "lot_area_sqft": 3590.630903700556,
+        "building_sqft": 2892.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1498.6
+      },
+      {
+        "parcel_id": "0176A00196000000",
+        "sale_date": "2024-08-13",
+        "price": 915000.0,
+        "lot_area_sqft": 14805.078367892784,
+        "building_sqft": 3125.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1911.0,
+        "sale_code": "0",
+        "distance_ft": 2226.7
+      },
+      {
+        "parcel_id": "0176F00047000000",
+        "sale_date": "2024-08-07",
+        "price": 399900.0,
+        "lot_area_sqft": 3846.9196838611015,
+        "building_sqft": 1142.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1923.0,
+        "sale_code": "0",
+        "distance_ft": 1645.7
+      },
+      {
+        "parcel_id": "0176N00009000000",
+        "sale_date": "2024-07-12",
+        "price": 355000.0,
+        "lot_area_sqft": 3650.586850925482,
+        "building_sqft": 1213.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 2604.2
+      },
+      {
+        "parcel_id": "0176J00108000000",
+        "sale_date": "2024-07-11",
+        "price": 490000.0,
+        "lot_area_sqft": 3874.6778506778005,
+        "building_sqft": 1536.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 2162.7
+      },
+      {
+        "parcel_id": "0176S00056000000",
+        "sale_date": "2024-07-03",
+        "price": 232000.0,
+        "lot_area_sqft": 4107.995537446943,
+        "building_sqft": 1000.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1940.0,
+        "sale_code": "0",
+        "distance_ft": 2530.9
+      },
+      {
+        "parcel_id": "0176L00010000000",
+        "sale_date": "2024-07-01",
+        "price": 415000.0,
+        "lot_area_sqft": 5457.71333358437,
+        "building_sqft": 2994.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1020.9
+      },
+      {
+        "parcel_id": "0175P00136000000",
+        "sale_date": "2024-06-28",
+        "price": 520000.0,
+        "lot_area_sqft": 6059.7809076815265,
+        "building_sqft": 2117.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1886.0,
+        "sale_code": "0",
+        "distance_ft": 1572.1
+      },
+      {
+        "parcel_id": "0176A00341000000",
+        "sale_date": "2024-06-18",
+        "price": 700000.0,
+        "lot_area_sqft": 4859.8345819406295,
+        "building_sqft": 1746.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 2121.2
+      },
+      {
+        "parcel_id": "0176F00186000000",
+        "sale_date": "2024-06-10",
+        "price": 385000.0,
+        "lot_area_sqft": 3871.270684848705,
+        "building_sqft": 1646.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1226.5
+      },
+      {
+        "parcel_id": "0176E00105000000",
+        "sale_date": "2024-06-04",
+        "price": 175000.0,
+        "lot_area_sqft": 2683.862902715588,
+        "building_sqft": 1296.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1959.7
+      },
+      {
+        "parcel_id": "0176E00088000000",
+        "sale_date": "2024-06-03",
+        "price": 553000.0,
+        "lot_area_sqft": 3268.1695342380453,
+        "building_sqft": 1818.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1905.0,
+        "sale_code": "0",
+        "distance_ft": 2124.6
+      },
+      {
+        "parcel_id": "0176K00004000000",
+        "sale_date": "2024-05-25",
+        "price": 425000.0,
+        "lot_area_sqft": 3099.3663955526517,
+        "building_sqft": 2160.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 1737.6
+      },
+      {
+        "parcel_id": "0176M00146000000",
+        "sale_date": "2024-05-13",
+        "price": 255000.0,
+        "lot_area_sqft": 2077.837258515472,
+        "building_sqft": 2340.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1915.0,
+        "sale_code": "0",
+        "distance_ft": 2221.2
+      },
+      {
+        "parcel_id": "0176M00034000000",
+        "sale_date": "2024-05-07",
+        "price": 193200.0,
+        "lot_area_sqft": 2370.420559453666,
+        "building_sqft": 1258.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1567.2
+      },
+      {
+        "parcel_id": "0176R00094000000",
+        "sale_date": "2024-05-03",
+        "price": 426000.0,
+        "lot_area_sqft": 4569.409529920885,
+        "building_sqft": 1680.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1921.0,
+        "sale_code": "0",
+        "distance_ft": 2223.2
+      },
+      {
+        "parcel_id": "0176E00233000000",
+        "sale_date": "2024-04-08",
+        "price": 612467.0,
+        "lot_area_sqft": 2922.040330118783,
+        "building_sqft": 1986.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 1617.0
+      },
+      {
+        "parcel_id": "0176G00030000000",
+        "sale_date": "2024-03-20",
+        "price": 410000.0,
+        "lot_area_sqft": 3450.425539872619,
+        "building_sqft": 3633.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1894.0,
+        "sale_code": "0",
+        "distance_ft": 929.4
+      },
+      {
+        "parcel_id": "0176A00278000000",
+        "sale_date": "2024-02-26",
+        "price": 600000.0,
+        "lot_area_sqft": 5467.042615239597,
+        "building_sqft": 2676.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 2218.9
+      },
+      {
+        "parcel_id": "0176A00184000000",
+        "sale_date": "2024-02-07",
+        "price": 460000.0,
+        "lot_area_sqft": 4981.998291534513,
+        "building_sqft": 2756.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1930.0,
+        "sale_code": "0",
+        "distance_ft": 2005.3
+      },
+      {
+        "parcel_id": "0176S00043000000",
+        "sale_date": "2023-12-19",
+        "price": 372500.0,
+        "lot_area_sqft": 4648.259707532603,
+        "building_sqft": 2479.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 2405.9
+      },
+      {
+        "parcel_id": "0175P00198000000",
+        "sale_date": "2023-12-18",
+        "price": 115000.0,
+        "lot_area_sqft": 3070.4511186660493,
+        "building_sqft": 1932.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1940.0,
+        "sale_code": "0",
+        "distance_ft": 793.3
+      },
+      {
+        "parcel_id": "0175K00022000000",
+        "sale_date": "2023-11-28",
+        "price": 550000.0,
+        "lot_area_sqft": 5914.347471596842,
+        "building_sqft": 2885.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1900.0,
+        "sale_code": "0",
+        "distance_ft": 2306.1
+      },
+      {
+        "parcel_id": "0175M00205000000",
+        "sale_date": "2023-11-15",
+        "price": 36000.0,
+        "lot_area_sqft": 2478.9922379140025,
+        "building_sqft": 1166.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 2612.6
+      },
+      {
+        "parcel_id": "0176K00018000000",
+        "sale_date": "2023-11-03",
+        "price": 320000.0,
+        "lot_area_sqft": 2965.148236048182,
+        "building_sqft": 1876.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 1506.6
+      },
+      {
+        "parcel_id": "0176A00309000000",
+        "sale_date": "2023-10-29",
+        "price": 480000.0,
+        "lot_area_sqft": 9839.495560890413,
+        "building_sqft": 1245.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1951.0,
+        "sale_code": "0",
+        "distance_ft": 2103.6
+      },
+      {
+        "parcel_id": "0176P00114000000",
+        "sale_date": "2023-10-12",
+        "price": 405500.0,
+        "lot_area_sqft": 3504.0542323344857,
+        "building_sqft": 2100.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1910.0,
+        "sale_code": "0",
+        "distance_ft": 2190.3
+      },
+      {
+        "parcel_id": "0233J00011000000",
+        "sale_date": "2023-10-06",
+        "price": 162000.0,
+        "lot_area_sqft": 4239.43018900936,
+        "building_sqft": 1682.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1925.0,
+        "sale_code": "0",
+        "distance_ft": 2349.8
+      },
+      {
+        "parcel_id": "0176C00175000000",
+        "sale_date": "2023-10-06",
+        "price": 155000.0,
+        "lot_area_sqft": 2597.977510626851,
+        "building_sqft": 1225.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1982.0,
+        "sale_code": "0",
+        "distance_ft": 416.5
+      },
+      {
+        "parcel_id": "0176F00260000000",
+        "sale_date": "2023-09-29",
+        "price": 235000.0,
+        "lot_area_sqft": 2017.8607409831268,
+        "building_sqft": 1280.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1940.0,
+        "sale_code": "0",
+        "distance_ft": 854.7
+      },
+      {
+        "parcel_id": "0176J00134000000",
+        "sale_date": "2023-09-28",
+        "price": 620000.0,
+        "lot_area_sqft": 5825.4290789225615,
+        "building_sqft": 2340.0,
+        "property_class": "RESIDENTIAL",
+        "year_built": 1907.0,
+        "sale_code": "0",
+        "distance_ft": 2423.1
+      }
+    ],
+    "rent_benchmarks": [
+      {
+        "source": "HUD SAFMR",
+        "geography": "15221",
+        "bedrooms": 0,
+        "monthly_rent": 960,
+        "as_of": "2024-11-05"
+      },
+      {
+        "source": "HUD SAFMR",
+        "geography": "15221",
+        "bedrooms": 1,
+        "monthly_rent": 1010,
+        "as_of": "2024-11-05"
+      },
+      {
+        "source": "HUD SAFMR",
+        "geography": "15221",
+        "bedrooms": 2,
+        "monthly_rent": 1210,
+        "as_of": "2024-11-05"
+      },
+      {
+        "source": "HUD SAFMR",
+        "geography": "15221",
+        "bedrooms": 3,
+        "monthly_rent": 1540,
+        "as_of": "2024-11-05"
+      },
+      {
+        "source": "HUD SAFMR",
+        "geography": "15221",
+        "bedrooms": 4,
+        "monthly_rent": 1670,
+        "as_of": "2024-11-05"
+      }
+    ],
+    "comps_radius_ft": 2640,
+    "comps_years": 3
+  },
+  "zba_cases_nearby": null,
+  "provenance": {
+    "parcels": {
+      "name": "Allegheny County Parcel Boundaries; Allegheny County Property Assessments",
+      "url": null,
+      "as_of": "2026-09-07",
+      "note": null
+    },
+    "zoning": {
+      "name": "Zoning; City Designated Historic Districts; PGHZoningHeightOverlay; Parking Reduction Zoning Overlay; Riverfront Zoning Overlay; Uptown IPOD Zoning; Greenways",
+      "url": null,
+      "as_of": "2024-02-07",
+      "note": "layer covers the City of Pittsburgh only"
+    },
+    "steep_slope": {
+      "name": "25% or Greater Slope",
+      "url": "https://data.wprdc.org/dataset/0f643c56-1c53-4c88-824d-3a3876c0d3a0/resource/5ce91a56-0799-46ea-9585-13fa8db5979e/download/slopes.geojson",
+      "as_of": "2026-09-23",
+      "note": "layer covers the City of Pittsburgh only"
+    },
+    "landslide_prone": {
+      "name": "Landslide Prone Areas",
+      "url": "https://data.wprdc.org/dataset/6eb1be84-7abe-45c3-8a37-90db80ea6149/resource/b5b45ac6-f8ef-4805-b4e4-fc7c63fb4075/download/landslides.geojson",
+      "as_of": "2026-09-23",
+      "note": "layer covers the City of Pittsburgh only"
+    },
+    "undermined": {
+      "name": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
+      "url": null,
+      "as_of": "2026-09-23",
+      "note": null
+    },
+    "flood": {
+      "name": "Flood Hazard Zones",
+      "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28",
+      "as_of": null,
+      "note": null
+    },
+    "environmental": {
+      "name": "Air Media; Storage Tanks Active; Storage Tanks Inactive",
+      "url": null,
+      "as_of": null,
+      "note": null
+    },
+    "sewer": {
+      "name": "Combined Sewershed",
+      "url": "https://data.wprdc.org/dataset/fe7e5332-4c87-410d-b0be-43c5d2c44ae0/resource/138d6b65-1630-4905-9421-de90cd9d59e5/download/___",
+      "as_of": "2018-07-27",
+      "note": "layer covers the City of Pittsburgh only"
+    },
+    "frontage": {
+      "name": "Allegheny County Addressing Street Centerlines; City of Pittsburgh Steps",
+      "url": null,
+      "as_of": "2022-12-19",
+      "note": null
+    },
+    "transit": {
+      "name": "Pittsburgh Regional Transit Stops",
+      "url": "https://data.wprdc.org/dataset/33d5f44b-5315-4374-b3e3-e4246e8ad5c9/resource/d6e6ed6e-9220-4a0e-9796-e72d83ce8e7a/download/stops.geojson",
+      "as_of": "2026-09-22",
+      "note": null
+    },
+    "market_sales": {
+      "name": "Allegheny County Property Sale Transactions",
+      "url": "https://data.wprdc.org/datastore/dump/5bbe6c55-bce6-4edb-9d04-68edeb6bf7b1",
+      "as_of": "2026-09-26",
+      "note": null
+    },
+    "market_rents": {
+      "name": "SAFMRyear; FAIR_MARKET_RENTS",
+      "url": null,
+      "as_of": "2024-11-05",
+      "note": null
+    },
+    "zba_cases": {
+      "name": "Zoning Board of Adjustment decisions",
+      "url": null,
+      "as_of": null,
+      "note": "Not available: pittsburghpa.gov blocks this client (HTTP 403)."
+    }
+  }
+}
