@@ -38,7 +38,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/parcels/{parcel_id}/analysis": {
+    "/api/map/features": {
         parameters: {
             query?: never;
             header?: never;
@@ -46,12 +46,50 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Parcel Analysis
-         * @description Screening analysis for one parcel, by county parcel ID (dashed or compact).
-         *
-         *     `product` and `units` are passed to the engine once it exists; the mock ignores them.
+         * Map Features
+         * @description Transit stops, parks, schools and neighborhood outlines (EPSG:4326).
          */
-        get: operations["parcel_analysis_api_parcels__parcel_id__analysis_get"];
+        get: operations["map_features_api_map_features_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/map/parcels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Map Parcels
+         * @description Every parcel's geometry (EPSG:4326) with its band and score. Ranks arrive with search.
+         */
+        get: operations["map_parcels_api_map_parcels_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/parcels/{parcel_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Parcel Report
+         * @description Report header and the engine's analysis, by county parcel ID (compact or dashed).
+         */
+        get: operations["parcel_report_api_parcels__parcel_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -64,43 +102,24 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** AnalysisMeta */
-        AnalysisMeta: {
-            /**
-             * Contract Version
-             * @default 0.1.0
-             */
-            contract_version: string;
-            /**
-             * Data Refreshed
-             * Format: date
-             */
-            data_refreshed: string;
-            /** Engine Version */
-            engine_version: string;
-            /**
-             * Illustrative
-             * @default false
-             */
-            illustrative: boolean;
-            /** Rules Version */
-            rules_version: string;
-        };
         /** Assumption */
         Assumption: {
-            /**
-             * Editable
-             * @default true
-             */
+            /** Editable */
             editable: boolean;
             /** Key */
             key: string;
             /** Label */
             label: string;
-            /** Source Label */
-            source_label: string;
+            /** Max */
+            max: number | null;
+            /** Min */
+            min: number | null;
+            /** Source */
+            source: string;
+            /** Unit */
+            unit: string;
             /** Value */
-            value: components["schemas"]["Range"] | number | string;
+            value: number;
         };
         /** Case */
         Case: {
@@ -120,12 +139,6 @@ export interface components {
             /** Source Url */
             source_url?: string | null;
         };
-        /** ClearedCheck */
-        ClearedCheck: {
-            /** Label */
-            label: string;
-            source?: components["schemas"]["SourceRef"] | null;
-        };
         /** CodeReference */
         CodeReference: {
             /**
@@ -140,8 +153,39 @@ export interface components {
             /** Url */
             url?: string | null;
         };
+        /** Comps */
+        Comps: {
+            /** Count */
+            count: number;
+            /** Radius Mi */
+            radius_mi: number;
+            /** Window Months */
+            window_months: number;
+        };
+        /** CostRange */
+        CostRange: {
+            /** Drivers */
+            drivers: string[];
+            /** High */
+            high: number;
+            /** Low */
+            low: number;
+        };
         /** Evidence */
         Evidence: {
+            /** As Of */
+            as_of: string | null;
+            /** Code Section */
+            code_section: string | null;
+            /** Layer */
+            layer: string | null;
+            /** Source */
+            source: string;
+            /** Url */
+            url: string | null;
+        };
+        /** EvidenceDetail */
+        EvidenceDetail: {
             /**
              * Ai Extracted
              * @default false
@@ -177,71 +221,65 @@ export interface components {
             /** Title */
             title: string;
         };
-        /** Finding */
-        Finding: {
+        /** Flag */
+        Flag: {
+            /**
+             * Category
+             * @enum {string}
+             */
+            category: "zoning" | "physical" | "environmental" | "infrastructure" | "market";
             /**
              * Confidence
              * @enum {string}
              */
             confidence: "high" | "medium" | "low";
-            /** Confidence Note */
-            confidence_note?: string | null;
-            /** Detail */
-            detail: string;
-            /** Evidence Id */
-            evidence_id?: string | null;
+            /** Cost Usd */
+            cost_usd: [
+                number,
+                number
+            ] | null;
+            /** Evidence */
+            evidence: components["schemas"]["Evidence"][];
             /** Id */
             id: string;
-            impact_cost?: components["schemas"]["Range"] | null;
-            /** Impact Label */
-            impact_label: string;
-            impact_months?: components["schemas"]["Range"] | null;
+            /** Months */
+            months: [
+                number,
+                number
+            ] | null;
+            /** Resolution */
+            resolution: string;
             /** Resolved By Step */
-            resolved_by_step?: number | null;
+            resolved_by_step: number | null;
             /**
              * Severity
              * @enum {string}
              */
-            severity: "deal_risk" | "caution" | "unknown";
-            /** Sources */
-            sources: components["schemas"]["SourceRef"][];
+            severity: "high" | "medium" | "low" | "unknown";
             /** Title */
             title: string;
+        };
+        /** Gap */
+        Gap: {
+            /** High */
+            high: number;
+            /** Low */
+            low: number;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** HeadlineNumbers */
-        HeadlineNumbers: {
-            /**
-             * Approval Path
-             * @enum {string}
-             */
-            approval_path: "by_right" | "special_exception" | "variance" | "rezoning" | "not_allowed";
-            /** Approval Summary */
-            approval_summary: string;
-            /** Comps Count */
-            comps_count: number;
-            /** Comps Radius Mi */
-            comps_radius_mi: number;
-            /** Comps Window Months */
-            comps_window_months: number;
-            /** Listed Price */
-            listed_price?: number | null;
-            max_land_price: components["schemas"]["Range"];
-            months_to_permit_ready: components["schemas"]["Range"];
-            site_cost_premium: components["schemas"]["Range"];
-            /** Site Cost Summary */
-            site_cost_summary: string;
-            /** Target Margin Pct */
-            target_margin_pct: number;
-        };
         /** Health */
         Health: {
-            /** Illustrative */
+            /**
+             * Illustrative
+             * @description True when any served parcel is mock data
+             */
             illustrative: boolean;
+            /** Parcels */
+            parcels: number;
             /**
              * Site Source
              * @enum {string}
@@ -255,39 +293,193 @@ export interface components {
             status: "ok";
             versions: components["schemas"]["Versions"];
         };
-        /** NextStep */
-        NextStep: {
-            /** @description low=high=0 means free */
-            cost: components["schemas"]["Range"];
-            /** Duration Label */
-            duration_label: string;
-            /** Order */
-            order: number;
-            /** Title */
-            title: string;
-            /** Who */
-            who: string;
-            /** Why */
-            why: string;
+        /** LandBasis */
+        LandBasis: {
+            /** Source */
+            source: string;
+            /** Value */
+            value: number;
+        };
+        /**
+         * LeadOption
+         * @description The engine's headline program (`metrics.option`), for lists and the inspector card.
+         */
+        LeadOption: {
+            /**
+             * Label
+             * @enum {string}
+             */
+            label: "by_right" | "with_relief";
+            /**
+             * Product Type
+             * @enum {string}
+             */
+            product_type: "single_family" | "duplex" | "triplex" | "townhome" | "walkup";
+            /**
+             * Relief
+             * @description Empty = by right
+             */
+            relief: string[];
+            /** Units */
+            units: number;
+        };
+        /** LotDimensions */
+        LotDimensions: {
+            /** Depth */
+            depth: number;
+            /** Width */
+            width: number;
+        };
+        /** MapFeature */
+        MapFeature: {
+            /**
+             * Geometry
+             * @description GeoJSON geometry, EPSG:4326
+             */
+            geometry: {
+                [key: string]: unknown;
+            };
+            properties: components["schemas"]["MapFeatureProperties"];
+            /**
+             * Type
+             * @default Feature
+             * @constant
+             */
+            type: "Feature";
+        };
+        /** MapFeatureCollection */
+        MapFeatureCollection: {
+            /** Features */
+            features: components["schemas"]["MapFeature"][];
+            /**
+             * Type
+             * @default FeatureCollection
+             * @constant
+             */
+            type: "FeatureCollection";
+        };
+        /** MapFeatureProperties */
+        MapFeatureProperties: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "transit_stop" | "park" | "school" | "neighborhood";
+            /** Name */
+            name?: string | null;
+        };
+        /**
+         * Metrics
+         * @description Headline numbers for the leading option (`option`).
+         */
+        Metrics: {
+            approval_prob: components["schemas"]["Range"];
+            comps: components["schemas"]["Comps"];
+            land_basis: components["schemas"]["LandBasis"];
+            land_over_max: components["schemas"]["Gap"] | null;
+            max_land_price: components["schemas"]["Range"];
+            months_to_permit: components["schemas"]["Range"];
+            /**
+             * Option
+             * @enum {string}
+             */
+            option: "by_right" | "with_relief";
+            site_cost_premium: components["schemas"]["CostRange"];
+        };
+        /** Narrative */
+        Narrative: {
+            /** Summary */
+            summary: string | null;
+        };
+        /** ParcelFeature */
+        ParcelFeature: {
+            /**
+             * Geometry
+             * @description GeoJSON geometry, EPSG:4326
+             */
+            geometry: {
+                [key: string]: unknown;
+            };
+            properties: components["schemas"]["ParcelProperties"];
+            /**
+             * Type
+             * @default Feature
+             * @constant
+             */
+            type: "Feature";
+        };
+        /** ParcelFeatureCollection */
+        ParcelFeatureCollection: {
+            /** Features */
+            features: components["schemas"]["ParcelFeature"][];
+            /**
+             * Type
+             * @default FeatureCollection
+             * @constant
+             */
+            type: "FeatureCollection";
+        };
+        /** ParcelProperties */
+        ParcelProperties: {
+            /** Assembly Id */
+            assembly_id?: string | null;
+            /** Band */
+            band: ("fast_track" | "feasible_with_conditions" | "high_risk" | "not_scored") | null;
+            /** Candidate */
+            candidate: boolean;
+            /** Display Name */
+            display_name: string;
+            /** Parcel Id */
+            parcel_id: string;
+            /** Rank */
+            rank?: number | null;
+            /** Score */
+            score: number | null;
+        };
+        /**
+         * ParcelReport
+         * @description Everything the report panel needs: the header and the engine's analysis.
+         */
+        ParcelReport: {
+            /** @description None when the lot is not a candidate */
+            analysis: components["schemas"]["SiteAnalysis"] | null;
+            parcel: components["schemas"]["ParcelSummary"];
         };
         /**
          * ParcelSummary
-         * @description One row in the results list, one feature on the map, one inspector card.
+         * @description One row in the results list, one feature on the map, the report header.
+         *
+         *     Facts come from SiteContext, judgments are copied from the engine's SiteAnalysis; the API
+         *     computes nothing here.
          */
         ParcelSummary: {
             /** Address */
-            address?: string | null;
-            /** Assessed Value */
-            assessed_value?: number | null;
+            address: string | null;
+            /**
+             * Assembly Id
+             * @description Lots that work together
+             */
+            assembly_id?: string | null;
+            /** Assessed Land */
+            assessed_land: number | null;
             /**
              * Band
-             * @enum {string}
+             * @description None when there is no analysis
              */
-            band: "fast_track" | "conditions" | "high_risk" | "unknown";
-            best_program?: components["schemas"]["ProgramOption"] | null;
+            band?: ("fast_track" | "feasible_with_conditions" | "high_risk" | "not_scored") | null;
+            /**
+             * Block Lot
+             * @description Dashed city block-lot, e.g. 55-A-137
+             */
+            block_lot: string | null;
+            /**
+             * Candidate
+             * @description False = not a development candidate (outline only)
+             */
+            candidate: boolean;
             /**
              * Centroid
-             * @description [lon, lat]
+             * @description [lon, lat], EPSG:4326
              */
             centroid: [
                 number,
@@ -297,94 +489,103 @@ export interface components {
             current_use: string;
             /** Display Name */
             display_name: string;
-            /** Listed Price */
-            listed_price?: number | null;
+            /**
+             * Illustrative
+             * @description True for generated mock parcels
+             */
+            illustrative: boolean;
+            lead_option?: components["schemas"]["LeadOption"] | null;
             /** Lot Area Sqft */
             lot_area_sqft: number;
             max_land_price?: components["schemas"]["Range"] | null;
+            /** Municipality */
+            municipality: string;
             /** Neighborhood */
-            neighborhood: string;
+            neighborhood: string | null;
             /**
              * Owner Type
              * @enum {string}
              */
-            owner_type: "land_bank" | "ura" | "city" | "private" | "other_public";
-            /** Parcel Id */
+            owner_type: "private" | "city" | "land_bank" | "ura" | "other_public";
+            /**
+             * Parcel Id
+             * @description Canonical 16-character county ID
+             */
             parcel_id: string;
-            /** Rank */
-            rank?: number | null;
             /** Score */
             score?: number | null;
-            /** Top Risk */
-            top_risk?: string | null;
-            /** Top Risk Severity */
-            top_risk_severity?: ("deal_risk" | "caution" | "unknown") | null;
-            /** Zoning District */
-            zoning_district: string;
+            /** Top Flag */
+            top_flag?: string | null;
+            /** Top Flag Severity */
+            top_flag_severity?: ("high" | "medium" | "low" | "unknown") | null;
+            /**
+             * Zoning
+             * @description Zoning district codes on the lot
+             */
+            zoning: string[];
         };
         /** ProgramOption */
         ProgramOption: {
+            approval_prob: components["schemas"]["Range"];
+            /** Entitlement Basis */
+            entitlement_basis: string[];
+            /** Gfa Sqft */
+            gfa_sqft: number;
             /**
-             * Approval Path
+             * Label
              * @enum {string}
              */
-            approval_path: "by_right" | "special_exception" | "variance" | "rezoning" | "not_allowed";
+            label: "by_right" | "with_relief";
+            margin: components["schemas"]["Range"];
+            max_land_price: components["schemas"]["Range"];
+            months: components["schemas"]["Range"];
             /**
-             * Code Basis
-             * @description e.g. 'By-right under Title Nine as of Sep 2026 · § 903.03'
-             */
-            code_basis?: string | null;
-            /** Evidence Id */
-            evidence_id?: string | null;
-            margin_pct: components["schemas"]["Range"];
-            months_to_permit_ready: components["schemas"]["Range"];
-            /** Precedent Granted */
-            precedent_granted?: number | null;
-            /** Precedent Total */
-            precedent_total?: number | null;
-            /**
-             * Product
+             * Product Type
              * @enum {string}
              */
-            product: "adu" | "duplex" | "townhomes" | "walkup";
-            /**
-             * Relief
-             * @description Code sections needing relief, e.g. '§ 911.02'
-             */
-            relief?: string[];
-            /** Sqft Each */
-            sqft_each?: number | null;
-            /**
-             * Tenure
-             * @default for_sale
-             * @enum {string}
-             */
-            tenure: "for_sale" | "rental";
+            product_type: "single_family" | "duplex" | "triplex" | "townhome" | "walkup";
+            /** Relief */
+            relief: string[];
+            /** Revenue Basis */
+            revenue_basis: string;
+            score: components["schemas"]["Range"];
+            /** Unit Sqft */
+            unit_sqft: number;
             /** Units */
             units: number;
         };
         /**
          * Range
-         * @description Every estimate is a range, never a point.
+         * @description Every estimate ships as a range: 10th, 50th and 90th percentile of the simulation.
          */
         Range: {
-            /** High */
-            high: number;
-            /** Low */
-            low: number;
-            /**
-             * Unit
-             * @enum {string}
-             */
-            unit: "usd" | "usd_per_sqft" | "pct" | "months" | "sqft" | "points";
+            /** P10 */
+            p10: number;
+            /** P50 */
+            p50: number;
+            /** P90 */
+            p90: number;
         };
-        /** ScoreComponent */
+        /** RulesSummary */
+        RulesSummary: {
+            /** Confidence */
+            confidence: ("high" | "medium" | "low") | null;
+            lot_dimensions_ft: components["schemas"]["LotDimensions"] | null;
+            /** Neighbors Built */
+            neighbors_built: boolean | null;
+            /** Scenario */
+            scenario: ("strict" | "contextual") | null;
+        };
+        /**
+         * ScoreComponent
+         * @description One bar of "Where the score comes from". Points of all components sum to the score.
+         */
         ScoreComponent: {
             /**
              * Key
-             * @description e.g. approval_path, site_cost, land_headroom
+             * @enum {string}
              */
-            key: string;
+            key: "approval_path" | "site_cost" | "land_headroom";
             /** Label */
             label: string;
             /** Max Points */
@@ -394,50 +595,58 @@ export interface components {
             /** Points */
             points: number;
         };
+        /**
+         * ScoreItem
+         * @description Counterfactual: points the score would regain without this driver.
+         */
+        ScoreItem: {
+            /**
+             * Component
+             * @enum {string}
+             */
+            component: "approval_path" | "site_cost" | "land_headroom";
+            /** Driver Flag Id */
+            driver_flag_id: string;
+            /** Points Lost */
+            points_lost: number;
+        };
         /** SiteAnalysis */
         SiteAnalysis: {
             /** Assumptions */
             assumptions: components["schemas"]["Assumption"][];
-            best_by_right?: components["schemas"]["ProgramOption"] | null;
-            best_with_approvals?: components["schemas"]["ProgramOption"] | null;
             /** Cleared */
-            cleared: components["schemas"]["ClearedCheck"][];
-            /**
-             * Findings
-             * @description Ordered worst first
-             */
-            findings: components["schemas"]["Finding"][];
-            headline_numbers: components["schemas"]["HeadlineNumbers"];
-            meta: components["schemas"]["AnalysisMeta"];
-            /**
-             * Next Steps
-             * @description Ordered cheapest deal-killers first
-             */
-            next_steps: components["schemas"]["NextStep"][];
-            parcel: components["schemas"]["ParcelSummary"];
+            cleared: string[];
+            /** Flags */
+            flags: components["schemas"]["Flag"][];
+            metrics: components["schemas"]["Metrics"] | null;
+            narrative: components["schemas"]["Narrative"];
+            /** Next Steps */
+            next_steps: components["schemas"]["Step"][];
+            /** Options */
+            options: components["schemas"]["ProgramOption"][];
+            rules: components["schemas"]["RulesSummary"];
             /** Score Breakdown */
-            score_breakdown: components["schemas"]["ScoreComponent"][];
+            score_breakdown: components["schemas"]["ScoreItem"][];
             verdict: components["schemas"]["Verdict"];
+            versions: components["schemas"]["Versions"];
         };
-        /**
-         * SourceRef
-         * @description Where a fact came from. Shown on every finding.
-         */
-        SourceRef: {
-            /** As Of */
-            as_of?: string | null;
-            /**
-             * Dataset
-             * @description Dataset or publisher, e.g. 'WPRDC'
-             */
-            dataset: string;
-            /**
-             * Label
-             * @description Short display label, e.g. 'City steep slopes 25%+'
-             */
-            label: string;
-            /** Url */
-            url?: string | null;
+        /** Step */
+        Step: {
+            /** Action */
+            action: string;
+            /** Cost Usd */
+            cost_usd: [
+                number,
+                number
+            ];
+            /** Flag Ids */
+            flag_ids: string[];
+            /** Order */
+            order: number;
+            /** Who */
+            who: string;
+            /** Why */
+            why: string;
         };
         /** ValidationError */
         ValidationError: {
@@ -458,32 +667,27 @@ export interface components {
              * Band
              * @enum {string}
              */
-            band: "fast_track" | "conditions" | "high_risk" | "unknown";
-            /**
-             * Headline
-             * @description One or two sentences. Screening language only, never 'approved' or 'compliant'.
-             */
+            band: "fast_track" | "feasible_with_conditions" | "high_risk" | "not_scored";
+            /** Components */
+            components: components["schemas"]["ScoreComponent"][];
+            /** Headline */
             headline: string;
+            /** Land Risk */
+            land_risk: string | null;
             /** Score */
-            score?: number | null;
-            score_range?: components["schemas"]["Range"] | null;
+            score: number | null;
+            score_range: components["schemas"]["Range"] | null;
         };
-        /**
-         * Versions
-         * @description What produced the data being served. Every SiteAnalysis stamps the same versions.
-         */
+        /** Versions */
         Versions: {
-            /**
-             * Data As Of
-             * Format: date
-             */
-            data_as_of: string;
+            /** Data As Of */
+            data_as_of: string | null;
             /** Engine */
             engine: string;
             /** Ruleset */
             ruleset: string;
-            /** Schema Version */
-            schema_version: string;
+            /** Schema */
+            schema: string;
         };
     };
     responses: never;
@@ -511,7 +715,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Evidence"];
+                    "application/json": components["schemas"]["EvidenceDetail"];
                 };
             };
             /** @description Validation Error */
@@ -545,12 +749,49 @@ export interface operations {
             };
         };
     };
-    parcel_analysis_api_parcels__parcel_id__analysis_get: {
+    map_features_api_map_features_get: {
         parameters: {
-            query?: {
-                product?: ("adu" | "duplex" | "townhomes" | "walkup") | null;
-                units?: number | null;
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapFeatureCollection"];
+                };
             };
+        };
+    };
+    map_parcels_api_map_parcels_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParcelFeatureCollection"];
+                };
+            };
+        };
+    };
+    parcel_report_api_parcels__parcel_id__get: {
+        parameters: {
+            query?: never;
             header?: never;
             path: {
                 parcel_id: string;
@@ -565,7 +806,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SiteAnalysis"];
+                    "application/json": components["schemas"]["ParcelReport"];
                 };
             };
             /** @description Validation Error */
