@@ -1,0 +1,378 @@
+{
+ "verdict": {
+  "score": 53,
+  "score_range": {
+   "p10": 49.5584932027678,
+   "p50": 53.255390945610955,
+   "p90": 57.217032922571605
+  },
+  "band": "feasible_with_conditions",
+  "headline": "Feasible with conditions: 45% of lot over mapped mine workings (UM-O overlay).",
+  "land_risk": "High risk at the assessed value",
+  "components": [
+   {
+    "key": "approval_path",
+    "label": "Approval path",
+    "points": 26,
+    "max_points": 35,
+    "note": "By right, no hearing; about 5 months to permit-ready"
+   },
+   {
+    "key": "site_cost",
+    "label": "Site cost",
+    "points": 27,
+    "max_points": 35,
+    "note": "45% of lot over mapped mine workings (UM-O overlay) causes most of it"
+   },
+   {
+    "key": "land_headroom",
+    "label": "Land headroom",
+    "points": 0,
+    "max_points": 30,
+    "note": "Build cost exceeds value: no room to pay for land"
+   }
+  ]
+ },
+ "narrative": {
+  "summary": "A by-right single-family home fits this lot, but at today's cost assumptions it cannot carry land: building costs plus a 15% margin exceed the sale value by about $225k."
+ },
+ "metrics": {
+  "option": "by_right",
+  "months_to_permit": {
+   "p10": 4.226912844986853,
+   "p50": 5.308892582244648,
+   "p90": 6.495449143442658
+  },
+  "approval_prob": {
+   "p10": 1.0,
+   "p50": 1.0,
+   "p90": 1.0
+  },
+  "max_land_price": {
+   "p10": -299548.44698866084,
+   "p50": -225470.9311266375,
+   "p90": -158560.02420924412
+  },
+  "land_basis": {
+   "value": 12000.0,
+   "source": "county assessed land value (not a market price)"
+  },
+  "site_cost_premium": {
+   "low": 15000.0,
+   "high": 60000.0,
+   "drivers": [
+    "45% of lot over mapped mine workings"
+   ]
+  },
+  "land_over_max": {
+   "low": 170560.02420924412,
+   "high": 311548.44698866084
+  },
+  "comps": {
+   "count": 97,
+   "radius_mi": 0.5,
+   "window_months": 36
+  }
+ },
+ "flags": [
+  {
+   "id": "undermined",
+   "category": "physical",
+   "severity": "high",
+   "title": "45% of lot over mapped mine workings (UM-O overlay)",
+   "cost_usd": [
+    15000.0,
+    60000.0
+   ],
+   "months": [
+    1.0,
+    3.0
+   ],
+   "evidence": [
+    {
+     "source": "Undermined Areas; Digitized Mined Area; AML Inventory Site; AML Polygon Feature",
+     "as_of": "2026-09-23",
+     "layer": "undermined",
+     "code_section": "906.05",
+     "url": null
+    }
+   ],
+   "confidence": "medium",
+   "resolution": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "resolved_by_step": 2
+  }
+ ],
+ "cleared": [
+  "steep slope",
+  "landslide-prone areas",
+  "FEMA floodplain",
+  "DEP environmental records",
+  "street frontage"
+ ],
+ "options": [
+  {
+   "label": "by_right",
+   "product_type": "single_family",
+   "units": 1,
+   "unit_sqft": 1500,
+   "gfa_sqft": 1500.0,
+   "relief": [],
+   "margin": {
+    "p10": -0.495811063950895,
+    "p50": -0.39546094551444694,
+    "p90": -0.2839700469745425
+   },
+   "months": {
+    "p10": 4.226912844986853,
+    "p50": 5.308892582244648,
+    "p90": 6.495449143442658
+   },
+   "approval_prob": {
+    "p10": 1.0,
+    "p50": 1.0,
+    "p90": 1.0
+   },
+   "max_land_price": {
+    "p10": -299548.44698866084,
+    "p50": -225470.9311266375,
+    "p90": -158560.02420924412
+   },
+   "score": {
+    "p10": 49.5584932027678,
+    "p50": 53.255390945610955,
+    "p90": 57.217032922571605
+   },
+   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+   "entitlement_basis": []
+  },
+  {
+   "label": "with_relief",
+   "product_type": "duplex",
+   "units": 2,
+   "unit_sqft": 1100,
+   "gfa_sqft": 2200.0,
+   "relief": [
+    "variance (903.03)"
+   ],
+   "margin": {
+    "p10": -0.4765606030731802,
+    "p50": -0.37811854384058063,
+    "p90": -0.2601079044084917
+   },
+   "months": {
+    "p10": 6.139054408545178,
+    "p50": 7.641515314701369,
+    "p90": 9.389546130969634
+   },
+   "approval_prob": {
+    "p10": 0.5776100404062434,
+    "p50": 0.682595348898756,
+    "p90": 0.775011043298141
+   },
+   "max_land_price": {
+    "p10": -410380.7618253826,
+    "p50": -311027.2747429464,
+    "p90": -214683.57791515606
+   },
+   "score": {
+    "p10": 41.671398763627664,
+    "p50": 45.13574619421318,
+    "p90": 48.46445774082078
+   },
+   "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
+   "entitlement_basis": [
+    "variance: PLACEHOLDER prior (ZBA)"
+   ]
+  }
+ ],
+ "next_steps": [
+  {
+   "order": 1,
+   "action": "Zoning pre-application meeting",
+   "who": "City Planning",
+   "cost_usd": [
+    0.0,
+    0.0
+   ],
+   "why": "Confirms the approval path before design money is spent",
+   "flag_ids": []
+  },
+  {
+   "order": 2,
+   "action": "Geotechnical site investigation incl. DEP mine records",
+   "who": "geotechnical consultant",
+   "cost_usd": [
+    8000.0,
+    25000.0
+   ],
+   "why": "DEP records + site investigation; possible grouting or special foundations; mine subsidence insurance",
+   "flag_ids": [
+    "undermined"
+   ]
+  }
+ ],
+ "score_breakdown": [
+  {
+   "component": "site_cost",
+   "points_lost": 11.0,
+   "driver_flag_id": "undermined"
+  }
+ ],
+ "assumptions": [
+  {
+   "key": "hard_cost_psf",
+   "label": "Hard cost per gross sq ft",
+   "value": 250.0,
+   "unit": "$/sf",
+   "source": "PLACEHOLDER - replace with local benchmark",
+   "editable": true,
+   "min": 200.0,
+   "max": 320.0
+  },
+  {
+   "key": "soft_cost_share",
+   "label": "Soft costs as share of hard",
+   "value": 0.2,
+   "unit": "share",
+   "source": "PLACEHOLDER - replace with local benchmark",
+   "editable": true,
+   "min": 0.15,
+   "max": 0.25
+  },
+  {
+   "key": "contingency_share",
+   "label": "Contingency on hard + soft",
+   "value": 0.07,
+   "unit": "share",
+   "source": "PLACEHOLDER - replace with local benchmark",
+   "editable": true,
+   "min": 0.05,
+   "max": 0.1
+  },
+  {
+   "key": "construction_months",
+   "label": "Construction duration",
+   "value": 12.0,
+   "unit": "months",
+   "source": "PLACEHOLDER - replace with local benchmark",
+   "editable": true,
+   "min": 9.0,
+   "max": 16.0
+  },
+  {
+   "key": "carry_rate",
+   "label": "Annual carrying cost of capital",
+   "value": 0.09,
+   "unit": "rate/yr",
+   "source": "PLACEHOLDER - replace with local benchmark",
+   "editable": true,
+   "min": 0.07,
+   "max": 0.11
+  },
+  {
+   "key": "target_margin",
+   "label": "Target margin on cost",
+   "value": 0.15,
+   "unit": "share",
+   "source": "developer input",
+   "editable": true,
+   "min": 0.15,
+   "max": 0.15
+  },
+  {
+   "key": "new_build_premium",
+   "label": "New construction price premium over resale comps",
+   "value": 0.25,
+   "unit": "share",
+   "source": "PLACEHOLDER - replace with local benchmark",
+   "editable": true,
+   "min": 0.1,
+   "max": 0.4
+  },
+  {
+   "key": "cap_rate",
+   "label": "Cap rate for rental exit",
+   "value": 0.065,
+   "unit": "rate",
+   "source": "PLACEHOLDER - replace with local benchmark",
+   "editable": true,
+   "min": 0.055,
+   "max": 0.075
+  },
+  {
+   "key": "opex_ratio",
+   "label": "Operating expenses + vacancy, share of gross rent",
+   "value": 0.4,
+   "unit": "share",
+   "source": "PLACEHOLDER - replace with local benchmark",
+   "editable": true,
+   "min": 0.35,
+   "max": 0.45
+  },
+  {
+   "key": "permit_review_months",
+   "label": "Building permit review (PLI)",
+   "value": 3.0,
+   "unit": "months",
+   "source": "PLACEHOLDER - PLI data has issue dates only",
+   "editable": true,
+   "min": 2.0,
+   "max": 5.0
+  },
+  {
+   "key": "score_time_scale_months",
+   "label": "Time factor: e-folding months",
+   "value": 18.0,
+   "unit": "months",
+   "source": "PLACEHOLDER - set in validation",
+   "editable": false,
+   "min": 18.0,
+   "max": 18.0
+  },
+  {
+   "key": "score_land_full_ratio",
+   "label": "Land headroom: max land price / land price that earns full points",
+   "value": 1.5,
+   "unit": "ratio",
+   "source": "PLACEHOLDER - set in validation",
+   "editable": false,
+   "min": 1.5,
+   "max": 1.5
+  },
+  {
+   "key": "score_premium_scale",
+   "label": "Cost factor: premium share that zeroes the score",
+   "value": 0.3,
+   "unit": "share",
+   "source": "PLACEHOLDER - set in validation",
+   "editable": false,
+   "min": 0.3,
+   "max": 0.3
+  },
+  {
+   "key": "land_price",
+   "label": "Land price",
+   "value": 12000.0,
+   "unit": "$",
+   "source": "county assessed land value (not a market price)",
+   "editable": true,
+   "min": null,
+   "max": null
+  }
+ ],
+ "rules": {
+  "scenario": "strict",
+  "confidence": "high",
+  "neighbors_built": false,
+  "lot_dimensions_ft": {
+   "width": 33.6,
+   "depth": 105.2
+  }
+ },
+ "versions": {
+  "engine": "sandbox-v0.1",
+  "ruleset": "sandbox rules drafts 2026-09-26",
+  "schema": "0.1.0",
+  "data_as_of": "2018-07-27"
+ }
+}
