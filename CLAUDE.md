@@ -95,3 +95,9 @@ Every outbound request sends exactly `User-Agent: market-data-client/1.0`; never
 details or spoof a browser to get past a block.
 
 Raw data never goes in git; `data/`, `*.duckdb`, `*.parquet`, and shapefiles are gitignored.
+
+## Web and API workstream
+
+Product, design and API specs for the web app and the API are in `docs/`
+(start with `docs/07-build-plan.md`). `web/CLAUDE.md` and `api/CLAUDE.md` add
+rules for those folders. Mockups: `docs/design/screens/`.

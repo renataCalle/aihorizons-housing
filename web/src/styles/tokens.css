@@ -1,0 +1,61 @@
+/* Design tokens: docs/02-design-system.md. The only place colors, fonts and radii are defined. */
+:root {
+  /* Ink */
+  --ink: #0b1b3f;
+  --ink-2: #3e4f6e;
+  --ink-3: #4a5b7a;
+  --ink-4: #5e6e8a; /* captions, 12px+ only */
+
+  /* Cobalt: brand, fast track, primary actions */
+  --cobalt: #1d3fd6;
+  --cobalt-deep: #1530a8;
+  --cobalt-tint: #e7eeff;
+  --cobalt-tint-2: #eef3ff;
+  --cobalt-line: #c9d6fb;
+  --sky: #8db4f5;
+
+  /* Orange: risk only */
+  --orange: #f07a1a;
+  --orange-text: #a8480b;
+  --orange-tint: #fff4eb;
+  --orange-line: #f6c39a;
+
+  /* Unknown: never styled as clear */
+  --unknown: #8c9bb5;
+  --unknown-tint: #f1f4f9;
+
+  /* Surfaces and lines */
+  --paper: #eef4fb;
+  --panel: #fbfcff;
+  --white: #ffffff;
+  --line: #dce5f5;
+  --line-soft: #eaf0fa;
+  --cleared-tint: #f3f7ff;
+  --illustrative-line: #9ab0d8;
+
+  /* Bands (map fills and swatches) */
+  --band-fast-track: var(--cobalt);
+  --band-conditions: var(--sky);
+  --band-high-risk: var(--orange);
+  --band-unknown: var(--unknown);
+  --band-none-outline: #c5d7ef;
+
+  /* Type */
+  --font-sans: 'Sora', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --tracking-label: 0.14em;
+
+  /* Shape */
+  --radius-chip: 8px;
+  --radius-control: 12px;
+  --radius-card: 16px;
+  --radius-panel: 20px;
+  --radius-pill: 999px;
+  --touch-target: 44px;
+
+  /* Glass: everything floating on the map */
+  --glass-bg: rgba(255, 255, 255, 0.74);
+  --glass-border: rgba(255, 255, 255, 0.95);
+  --glass-blur: blur(18px) saturate(150%);
+  --glass-shadow: 0 0 0 1px rgba(29, 63, 214, 0.08), 0 12px 36px rgba(11, 27, 63, 0.1);
+}

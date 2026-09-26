@@ -53,7 +53,9 @@ known-first-party = [
 
 [tool.pytest.ini_options]
 testpaths = ["contracts/tests", "engine/tests", "pipeline/tests", "api/tests"]
-addopts = "--import-mode=importlib"
+# Eval tests call the AI search parser; run them explicitly with `uv run pytest -m eval`.
+addopts = "--import-mode=importlib -m 'not eval'"
+markers = ["eval: AI search eval over fixtures/eval (excluded by default)"]
 
 # The engine is a pure library: no network, no database, no production code from research.
 [tool.importlinter]

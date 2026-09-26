@@ -1,0 +1,53 @@
+{
+  "id": "ev-variance-4-townhomes",
+  "kind": "zoning_relief",
+  "title": "Variance for 4 townhomes",
+  "applies_to": "Best with approvals · 4 attached townhomes",
+  "code": {
+    "section": "Title Nine § 911.02",
+    "as_of": "2026-09-01",
+    "summary": "R3-M allows up to three homes. A fourth needs a variance from the Zoning Board of Adjustment.",
+    "url": "https://library.municode.com/pa/pittsburgh/codes/code_of_ordinances"
+  },
+  "precedent_granted": 3,
+  "precedent_total": 9,
+  "median_months": 4.0,
+  "cases": [
+    {
+      "case_id": "41 of 2025",
+      "neighborhood": "Hazelwood",
+      "request": "4 homes, R3-M",
+      "outcome": "granted",
+      "months_to_decision": 4,
+      "source_url": null
+    },
+    {
+      "case_id": "77 of 2023",
+      "neighborhood": "Glen Hazel",
+      "request": "4 homes, R3-L",
+      "outcome": "granted",
+      "months_to_decision": 3,
+      "source_url": null
+    },
+    {
+      "case_id": "118 of 2024",
+      "neighborhood": "Greenfield",
+      "request": "5 homes, R3-M",
+      "outcome": "denied",
+      "months_to_decision": 5,
+      "source_url": null
+    },
+    {
+      "case_id": "12 of 2026",
+      "neighborhood": "Hazelwood",
+      "request": "4 homes, R3-M",
+      "outcome": "withdrawn",
+      "months_to_decision": null,
+      "source_url": null
+    }
+  ],
+  "ai_extracted": true,
+  "confidence": "low",
+  "confidence_note": "Only 9 comparable cases, and outcomes vary by neighborhood. Treat this as a signal, not a forecast.",
+  "how_to_resolve": "Before paying for design, ask Zoning for a free pre-application meeting to test the variance."
+}
