@@ -1,8 +1,15 @@
 from fastapi import APIRouter, Query
 
-from navigator_api.models import LookupResponse, SearchFilters, SearchResponse
+from navigator_api.models import (
+    LookupResponse,
+    ParseRequest,
+    ParseResult,
+    SearchFilters,
+    SearchResponse,
+)
 from navigator_api.routes.deps import Source
 from navigator_api.search.lookup import lookup
+from navigator_api.search.parse import parse
 from navigator_api.search.query import search
 
 router = APIRouter(tags=["search"])
@@ -18,3 +25,9 @@ def lookup_parcels(source: Source, q: str = Query(max_length=200)) -> LookupResp
 def search_parcels(filters: SearchFilters, source: Source) -> SearchResponse:
     """Candidates that pass every filter, ranked; near misses and a suggestion when empty."""
     return search(source.summaries(), filters, source.map_features())
+
+
+@router.post("/search/parse")
+def parse_text(request: ParseRequest) -> ParseResult:
+    """Plain-language description to search filters. It never searches, scores or ranks."""
+    return parse(request.text, request.current_filters)
