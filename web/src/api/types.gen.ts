@@ -38,6 +38,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lookup Parcels
+         * @description Parcels matching a county ID (dashed, compact or partial), block-lot or address.
+         */
+        get: operations["lookup_parcels_api_lookup_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/map/features": {
         parameters: {
             query?: never;
@@ -350,6 +370,33 @@ export interface components {
             relief: string[];
             /** Units */
             units: number;
+        };
+        /** LookupMatch */
+        LookupMatch: {
+            /**
+             * Matched On
+             * @enum {string}
+             */
+            matched_on: "county_id" | "block_lot" | "address";
+            parcel: components["schemas"]["ParcelSummary"];
+        };
+        /**
+         * LookupResponse
+         * @description What the search box detected, and the parcels it matches (IDs and addresses only).
+         */
+        LookupResponse: {
+            /**
+             * Format
+             * @description For parcel IDs: county ID or city block-lot
+             */
+            format?: ("county" | "block_lot") | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "parcel_id" | "address" | "description" | "empty";
+            /** Matches */
+            matches: components["schemas"]["LookupMatch"][];
         };
         /** LotDimensions */
         LotDimensions: {
@@ -850,6 +897,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Health"];
+                };
+            };
+        };
+    };
+    lookup_parcels_api_lookup_get: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LookupResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

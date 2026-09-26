@@ -740,6 +740,74 @@
         "title": "LeadOption",
         "type": "object"
       },
+      "LookupMatch": {
+        "additionalProperties": false,
+        "properties": {
+          "matched_on": {
+            "enum": [
+              "county_id",
+              "block_lot",
+              "address"
+            ],
+            "title": "Matched On",
+            "type": "string"
+          },
+          "parcel": {
+            "$ref": "#/components/schemas/ParcelSummary"
+          }
+        },
+        "required": [
+          "matched_on",
+          "parcel"
+        ],
+        "title": "LookupMatch",
+        "type": "object"
+      },
+      "LookupResponse": {
+        "additionalProperties": false,
+        "description": "What the search box detected, and the parcels it matches (IDs and addresses only).",
+        "properties": {
+          "format": {
+            "anyOf": [
+              {
+                "enum": [
+                  "county",
+                  "block_lot"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "For parcel IDs: county ID or city block-lot",
+            "title": "Format"
+          },
+          "kind": {
+            "enum": [
+              "parcel_id",
+              "address",
+              "description",
+              "empty"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "matches": {
+            "items": {
+              "$ref": "#/components/schemas/LookupMatch"
+            },
+            "title": "Matches",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "matches"
+        ],
+        "title": "LookupResponse",
+        "type": "object"
+      },
       "LotDimensions": {
         "additionalProperties": false,
         "properties": {
@@ -2119,6 +2187,50 @@
         "summary": "Health",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/lookup": {
+      "get": {
+        "description": "Parcels matching a county ID (dashed, compact or partial), block-lot or address.",
+        "operationId": "lookup_parcels_api_lookup_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "title": "Q",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LookupResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Lookup Parcels",
+        "tags": [
+          "search"
         ]
       }
     },
