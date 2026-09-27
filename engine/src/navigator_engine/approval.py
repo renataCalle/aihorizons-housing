@@ -19,6 +19,7 @@ entitlement.RUNGS.
 
 import json
 import math
+from datetime import date
 from importlib.resources import files
 
 import numpy as np
@@ -178,8 +179,11 @@ def sample(x: dict[str, float], n: int, rng: np.random.Generator) -> np.ndarray:
 
 
 def basis() -> str:
+    """The odds basis shown in reports, e.g. 'Zoning Board hearing: model of 202 board
+    decisions (28 denied), Feb 2025 - Aug 2026'."""
     d = MODEL["data"]
+    span = " - ".join(date.fromisoformat(d[k]).strftime("%b %Y") for k in ("from", "to"))
     return (
-        f"model {MODEL['name']}: Bayesian logistic regression on {d['cases']} Zoning Board "
-        f"decisions ({d['denials']} denied), {d['from']} to {d['to']}"
+        f"Zoning Board hearing: model of {d['cases']} board decisions "
+        f"({d['denials']} denied), {span}"
     )

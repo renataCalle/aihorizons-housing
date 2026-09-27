@@ -359,10 +359,12 @@ def lot_dims(rules: dict) -> dict | None:
 
 
 ODDS_NOTE = (
-    "Each rule either passes or fails. A failure that an approval can fix adds that approval; "
-    "the building's approval odds are the product of the odds of every approval it needs "
-    "(measured from City Council votes for conditional uses and rezonings, expert "
-    "placeholders for the others). A building that passes every rule is allowed outright."
+    "Each rule either passes or fails. A failure that an approval can fix adds that approval. "
+    "Variances and special exceptions are decided together at one Zoning Board hearing, with "
+    "odds from a model of the board's past decisions for lots like this one; conditional uses "
+    "and rezonings are measured from City Council votes; administrator exceptions and "
+    "subdivisions are expert estimates. The odds of approvals from different bodies multiply. "
+    "A building that passes every rule is allowed outright."
 )
 
 

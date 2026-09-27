@@ -67,7 +67,7 @@ def sample(relief: list[dict], n: int, rng: np.random.Generator, site: dict | No
             site,
         )
         p *= approval.sample(x, n, rng)
-        sources.append(f"zoning board hearing: {approval.basis()}")
+        sources.append(approval.basis())
     for item in relief:
         t = item["type"]
         if t in RUNGS:
@@ -84,4 +84,4 @@ def sample(relief: list[dict], n: int, rng: np.random.Generator, site: dict | No
         elif t in PROCEDURAL:
             by_body[t] = np.maximum(by_body.get(t, 0), rng.triangular(*PROCEDURAL[t], n))
     months = sum(by_body.values()) if by_body else np.zeros(n)
-    return {"p": p, "months": months, "sources": sources}
+    return {"p": p, "months": months, "sources": list(dict.fromkeys(sources))}

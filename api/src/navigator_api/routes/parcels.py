@@ -75,5 +75,9 @@ def scored_report(
     if product_type and context and analysis:
         program = Program(product_type=product_type, units=units)
         facts = context.model_dump(mode="json", by_alias=True)
-        analysis = SiteAnalysis.model_validate(analyze(facts, None, program.model_dump()))
+        try:
+            result = analyze(facts, None, program.model_dump())
+        except ValueError as e:  # a building size the engine doesn't test
+            raise HTTPException(422, str(e)) from e
+        analysis = SiteAnalysis.model_validate(result)
     return Scored(summary, context, analysis, program)

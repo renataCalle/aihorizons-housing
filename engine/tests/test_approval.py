@@ -72,7 +72,7 @@ def test_entitlement_uses_the_model_for_hearings_only() -> None:
         {"type": "subdivision", "section": "911.02"},
     ]
     out = entitlement.sample(relief, 500, np.random.default_rng(1), {"district": "R2-L"})
-    assert any(s.startswith("zoning board hearing: model") for s in out["sources"])
+    assert any(s.startswith("Zoning Board hearing: model of") for s in out["sources"])
     assert "subdivision: PLACEHOLDER prior" in out["sources"]
     assert not any(s.startswith("variance:") for s in out["sources"])
 

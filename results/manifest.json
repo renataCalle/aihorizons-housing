@@ -1,6 +1,6 @@
 {
   "area": "Hazelwood",
-  "generated_at": "2026-09-27T16:34:46+00:00",
+  "generated_at": "2026-09-27T19:16:22+00:00",
   "command": "uv run python -m navigator_pipeline.publish",
   "versions": {
     "engine": "0.1.0",
@@ -147,15 +147,15 @@
     },
     "summaries.json": {
       "bytes": 2415823,
-      "sha256": "a6fa0ae278e4b235b742a2f30476d126ac104633e0bd5b8eaadffe0b26abd9f0"
+      "sha256": "daa2fb11038c8bb4a7dffbb5328128d7d5f42600b581cf07309a4e7e2b44d90b"
     },
     "summaries.csv": {
       "bytes": 954406,
       "sha256": "26b178d261c70b3357ca33033a74b241b9d4f1bca4a92168cb61076473290f9f"
     },
     "site_analysis.jsonl.gz": {
-      "bytes": 4542694,
-      "sha256": "337ddc24b6289186f17fa06c7a7a26a9ae6611b508dedcd53614b99e7f79fe46"
+      "bytes": 4597996,
+      "sha256": "4a8c432e03ac0f3d5ad9091c97dc127c0e685fcff7cb068834f3dcfd69d20d26"
     },
     "site_context.jsonl.gz": {
       "bytes": 823515,

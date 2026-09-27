@@ -57,6 +57,14 @@ def test_report_scores_the_requested_building(client: TestClient) -> None:
     assert pick["analysis"] == client.get(f"/api/parcels/{GOLDEN_STEEP_SLOPE}").json()["analysis"]
 
 
+def test_untested_building_size_is_a_clear_422(client: TestClient) -> None:
+    r = client.get(
+        f"/api/parcels/{GOLDEN_STEEP_SLOPE}", params={"product_type": "walkup", "units": 20}
+    )
+    assert r.status_code == 422
+    assert "tested at" in r.json()["detail"]
+
+
 def test_requested_building_needs_stored_facts(client: TestClient) -> None:
     body = client.get(f"/api/parcels/{SAMPLE_LOT_A}", params={"product_type": "duplex"}).json()
     assert body["program"] is None

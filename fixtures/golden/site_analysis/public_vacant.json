@@ -234,7 +234,7 @@
       },
       "revenue_basis": "rental exit: HUD SAFMR $1,210/mo at cap rate",
       "entitlement_basis": [
-        "zoning board hearing: model approval_v1: Bayesian logistic regression on 202 Zoning Board decisions (28 denied), 2025-02-05 to 2026-08-28"
+        "Zoning Board hearing: model of 202 board decisions (28 denied), Feb 2025 - Aug 2026"
       ],
       "gfa_sqft": 4250,
       "unit_sqft": 850,
@@ -1675,7 +1675,7 @@
         "chosen_as": null
       }
     ],
-    "odds_note": "Each rule either passes or fails. A failure that an approval can fix adds that approval; the building's approval odds are the product of the odds of every approval it needs (measured from City Council votes for conditional uses and rezonings, expert placeholders for the others). A building that passes every rule is allowed outright."
+    "odds_note": "Each rule either passes or fails. A failure that an approval can fix adds that approval. Variances and special exceptions are decided together at one Zoning Board hearing, with odds from a model of the board's past decisions for lots like this one; conditional uses and rezonings are measured from City Council votes; administrator exceptions and subdivisions are expert estimates. The odds of approvals from different bodies multiply. A building that passes every rule is allowed outright."
   },
   "assumptions": [
     {
