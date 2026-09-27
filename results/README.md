@@ -1,46 +1,61 @@
-# Results bundle (real data)
+# Results bundle: Hazelwood
 
-What the API serves with `SITE_SOURCE=pipeline`: real Pittsburgh parcels, their facts from the
-pipeline's store, and the engine's analysis of each candidate lot. About 4 MB, compressed.
+Pre-computed screening results for **3,625 parcels** in Hazelwood (plus
+8 golden test parcels). The API and the demo read these files; they do not
+need the 1 GB data store. Generated 2026-09-27 by engine 0.1.0,
+rules `rules drafts 2026-09-26`, contracts 0.1.0.
 
-| File | What |
-|---|---|
-| `summaries.json.gz` | One `ParcelSummary` per parcel in scope (search, list, map colors, report header) |
-| `parcels.geojson.gz` | Parcel shapes, EPSG:4326, simplified to 0.5 ft, 6 decimals |
-| `map_features.geojson.gz` | Frequent transit stops (64+ weekday trips), parks near the scope, all 90 neighborhood outlines |
-| `site_analysis.jsonl.gz` | One line per candidate: `{"parcel_id", "analysis"}` with the full `SiteAnalysis` |
-| `manifest.json` | Scope, counts, engine/ruleset/schema versions, each source's as-of date |
-
-## Scope
-
-Every parcel in Hazelwood, Greenfield and Glen Hazel is on the map. The candidates, scored by the
-engine, are their vacant lots of 1,500–20,000 sq ft, plus the 8 golden parcels. Parcels that
-aren't candidates carry facts only (address, zoning, lot size, use, owner type).
-
-## How it's built
+**Regenerate** (needs the local data store; see pipeline/README.md):
 
 ```bash
-NAVIGATOR_DATA_DIR=/path/to/data uv run python api/scripts/build_results_bundle.py
+uv run python -m navigator_pipeline.publish
 ```
 
-The script reads the pipeline's runtime store (`data/`, see `pipeline/README.md`), builds each
-candidate's `SiteContext` with `live=False` (the stored copy, so the bundle is reproducible),
-runs the engine, and writes the files above. About two minutes.
+Candidates are the 1,018 vacant lots (county land use "VACANT LAND", no
+structure) plus the golden parcels. Engine picks: 838 high risk, 179 feasible with conditions, 1 not scored.
 
-## Rules
+## Files
 
-- **Commit the results, not the store.** Rebuild after the store or the engine changes, and
-  commit rarely: every commit of these files stays in the history for good.
-- **No personal data.** Owner type only, never owner names. The store's cleaned tables already
-  drop owner names and mailing addresses.
-- **Validated in CI.** `api/tests/test_results_bundle.py` loads every file with the contracts and
-  checks that every candidate has an analysis and every parcel a shape.
-- **Screening, not approval.** Every analysis is a screening estimate from the engine version
-  in `manifest.json`, not a zoning determination.
+| File | What it holds |
+|---|---|
+| `summaries.json` | One summary per parcel (all 3,625): the API's `ParcelSummary` shape. Non-candidates have no score. |
+| `summaries.csv` | One row per candidate and building type (5,090 rows). Columns below. |
+| `site_analysis.jsonl.gz` | One line per candidate: `{"parcel_id", "analysis": SiteAnalysis}`, the engine's pick. |
+| `site_context.jsonl.gz` | One line per candidate: `{"parcel_id", "context": SiteContext}`, the facts the engine used. Re-run the engine from these for other buildings or assumptions (about 10 ms each). |
+| `parcels.geojson` | Parcel outlines, EPSG:4326, simplified by 0.5 ft, 6 decimals. Properties: `parcel_id`, `block_lot`. |
+| `map_features.geojson` | The neighbourhood outline, its parks and transit stops (`kind`, `name`). |
+| `manifest.json` | Versions, counts, the as-of date of every data source, and a checksum per file. |
 
-## Data sources
+Load and validate everything in Python with `navigator_pipeline.bundle.load()`.
 
-Allegheny County parcels and assessments, City of Pittsburgh zoning, overlays and hazard layers,
-FEMA flood zones, PA DEP mine and environmental records, Port Authority transit stops, HUD rents
-and market data from WPRDC. `manifest.json` lists every source with its as-of date; the full
-catalog with URLs is in `navigator_pipeline.catalog`.
+## summaries.csv columns
+
+| Column | Meaning |
+|---|---|
+| `parcel_id`, `block_lot` | County ID (16 characters) and the city's dashed block-lot |
+| `neighborhood`, `zoning_district` | City neighbourhood; the zoning district covering most of the lot |
+| `lot_area_sqft`, `owner_type` | Lot area from the parcel map; owner type (private, city, land_bank, ura, other_public). No owner names |
+| `assessed_value` | County assessed land value, USD (the default land price; not a market price) |
+| `product`, `units` | Building type tested and its unit count (the largest the zoning rules allow, else the smallest tested) |
+| `lead` | True for the building type the engine picks for this lot; that row repeats the numbers in site_analysis |
+| `score_p10/p50/p90` | Score 0-100 (10th, 50th, 90th percentile of the simulation) |
+| `band` | fast_track (75+), feasible_with_conditions (50-74), high_risk (<50), not_scored (zoning not covered) |
+| `approval_path` | by_right; the approvals needed joined by `+` (e.g. `variance+subdivision`); not_allowed (the zoning rules rule it out); not_covered |
+| `months_p10/p50/p90` | Months to permit-ready |
+| `cost_premium_p10/p50/p90` | Extra site cost from constraints (slope, undermining, flood...), USD |
+| `max_land_p10/p50/p90` | Most a developer could pay for the land at the target margin, USD; negative = costs exceed value |
+| `top_flag`, `top_flag_severity` | The most severe constraint and its severity |
+| `unknown_flags` | IDs of checks the data could not answer, `;`-separated. Unknown is never clean |
+| `lon`, `lat` | Parcel centroid, EPSG:4326 |
+
+Empty cells mean not applicable (no score for a building the rules rule out).
+
+## Limits
+
+- **Screening, not advice.** Costs, prices and approval odds for special exceptions and
+  variances are placeholders until local benchmarks and zoning board decisions are available
+  (the city's site blocks this client). Every assumption is listed in each analysis.
+- **Snapshot.** Built from the stored copy of each source (dates in `manifest.json`); the live
+  app refreshes fast-changing records (assessments, liens, permits, sales) per parcel.
+- **No evidence file.** Zoning board decisions are not available, so there is no case evidence.
+- **Personal data.** Owner type only. Addresses are property addresses from public records.

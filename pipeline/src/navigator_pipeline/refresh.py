@@ -22,7 +22,7 @@ import time
 from datetime import UTC, datetime
 
 from navigator_pipeline import build, fetch
-from navigator_pipeline.catalog import SOURCES, Source, refresh_days
+from navigator_pipeline.catalog import BY_KEY, SOURCES, Source, refresh_days
 from navigator_pipeline.http import client, get_json
 from navigator_pipeline.settings import DATA_DIR, FEATURES, RAW
 
@@ -166,6 +166,15 @@ def _refetch(src: Source) -> dict:
     return info
 
 
+def _ensure_raw(key: str) -> None:
+    """Download a source's raw files if only its manifest is present (fresh clone)."""
+    folder = RAW / key
+    have = [f for f in folder.glob("*") if f.is_file() and not f.name.startswith("_")]
+    if not have:
+        print(f"  fetching missing raw input: {key}", flush=True)
+        fetch.fetch(BY_KEY[key], force=True)
+
+
 # ---------------------------------------------------------------- run
 
 
@@ -215,6 +224,8 @@ def run(keys: list[str] | None, force: set[str], dry_run: bool, features: bool) 
     if tables and not dry_run:
         print(f"rebuilding clean tables: {', '.join(tables)}", flush=True)
         for name in tables:
+            for dep in build.DEPENDS.get(name, [name]):
+                _ensure_raw(dep)  # a fresh clone has manifests but no raw files
             build.write(build.BUILDERS[name](), name)
     if features and not dry_run and set(tables) & FEATURE_INPUTS:
         print("recomputing per-parcel facts (city)", flush=True)

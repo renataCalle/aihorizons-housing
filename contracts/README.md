@@ -1,8 +1,8 @@
 # Contracts v0.1.0
 
-Latest additive changes: `SiteAnalysis.rule_checks` (rule-by-rule explanation);
-`Source.retrieved` / `retrieved_at` and `Title.recent_permits` (live data). No version bump;
-existing clients keep working.
+Latest additive changes: `ProgramOption.site_cost_premium` (range, USD);
+`SiteAnalysis.rule_checks` (rule-by-rule explanation); `Source.retrieved` / `retrieved_at` and
+`Title.recent_permits` (live data). No version bump; existing clients keep working.
 
 Two Pydantic models are the whole interface between data, engine and UI:
 
@@ -27,17 +27,22 @@ web app today.
 
 ```python
 from navigator_contracts import SiteAnalysis, SiteContext
-from sandbox.engine_v0.analyze import analyze   # moves to navigator_engine.analyze, same signature
+from navigator_engine import analyze
 
 ctx = SiteContext.model_validate(raw)                                  # from your SiteSource
 result = SiteAnalysis.model_validate(analyze(ctx.model_dump(mode="json"), {"land_price": 35000}))
+duplex = analyze(ctx.model_dump(mode="json"), program={"product_type": "duplex"})  # ?product=
 ```
 
 - `overrides` keys are `SiteAnalysis.assumptions[].key` where `editable` is true, plus
   `land_price` (the asking price; default is the assessed land value).
+- `program` (`?product=&units=`): `{"product_type": ..., "units": int | None}` scores that
+  building instead of the engine's pick; it becomes the only option. `units: None` = the
+  largest the zoning rules allow. A building the rules rule out comes back `high_risk` with no
+  options and the reason in the headline. Unknown types or untested unit counts raise
+  `ValueError` (tested counts: `navigator_engine.rules_engine.TEMPLATES`); map it to a 422.
 - Pure and deterministic: same input, same output. About 0.01 s per site (spec target: under 1 s).
-- Not yet supported: choosing a product/units (`?product=&units=`), a ruleset other than
-  current, `analyze_summary`, `attribute_bottlenecks`.
+- Not yet supported: a ruleset other than current, `analyze_summary`, `attribute_bottlenecks`.
 
 ## Conventions
 
@@ -121,9 +126,77 @@ every zoning rule it applied. `null` when zoning isn't covered (outside the city
 
 Reference rendering: `sandbox/report.py` (`rules_block`).
 
+## Handoff: serving real data from the API
+
+Two sources of real data, for two jobs:
+
+| | Results bundle (`results/`) | Live pipeline |
+|---|---|---|
+| Covers | Hazelwood (3,617 parcels, 1,010 vacant lots scored) + the 8 golden parcels | Any parcel in the county |
+| Needs | Nothing: it is in git (8 MB) | The local data store (not in git, see below) |
+| Freshness | Snapshot; dates in `results/manifest.json` | Nightly refresh + live per-parcel lookups |
+| Use it for | The demo, the map, lists and search | Opening a parcel outside the bundle; the latest records |
+
+**1. Results bundle.** `navigator_pipeline.bundle.load()` reads and validates everything
+(every line against the contracts; CI checks the bundle on every push):
+
+```python
+from navigator_pipeline import bundle
+b = bundle.load()                  # results/ at the repo root
+b.summaries                        # list of dicts in your ParcelSummary shape (all parcels)
+b.analyses[pid], b.contexts[pid]   # SiteAnalysis / SiteContext per candidate
+b.parcels, b.map_features          # GeoJSON, EPSG:4326 (parcel_id + block_lot; kind + name)
+```
+
+A `BundleSiteSource` is `MockSiteSource` with these inputs:
+
+| Method | From the bundle |
+|---|---|
+| `summaries` / `summary` | `TypeAdapter(list[ParcelSummary]).validate_python(b.summaries)` |
+| `analysis(pid)` | `b.analyses[pid]`; with `?product=` or edited assumptions: `analyze(b.contexts[pid].model_dump(mode="json"), overrides, program)` (~10 ms) |
+| `parcels_geojson` | geometry from `b.parcels`, properties from the summaries (as `MockSiteSource` does) |
+| `map_features` | `b.map_features` (neighbourhood outline, parks, transit stops) |
+| `versions` | `b.manifest["versions"]`, data dates in `b.manifest["data_as_of"]` |
+| `evidence` | `None`: zoning board decisions are unavailable |
+
+`results/summaries.csv` has one row per lot and building type (for filters such as "duplexes by
+right"); columns are in `results/README.md`. Regenerate the bundle with
+`uv run python -m navigator_pipeline.publish` after a refresh or an engine change.
+
+**2. Live pipeline (any parcel).** Needs the data store in `data/` (or `NAVIGATOR_DATA_DIR`).
+It is no longer tracked in git. The copy committed earlier is still in history, so the fastest
+way to get one is to extract it, then refresh:
+
+```bash
+git archive 5552051 data/clean data/features data/raw | tar -x   # ~230 MB, as of 2026-09-26
+uv run python -m navigator_pipeline.refresh                       # bring it up to date
+```
+
+**Pulling this change deletes the tracked copy from your working tree**; run the `git archive`
+line afterwards to get it back as untracked files. Building from scratch instead takes about
+30 minutes: `fetch`, `build`, `features` (`pipeline/README.md`).
+
+```python
+from navigator_contracts import SiteAnalysis, SiteContext
+from navigator_engine import analyze
+from navigator_pipeline import site_context
+
+ctx = SiteContext.model_validate(site_context.build([parcel_id], live=True))
+analysis = SiteAnalysis.model_validate(analyze(ctx.model_dump(mode="json"), overrides))
+```
+
+The first call in a process loads the tables (~2 s); after that a context takes ~0.1 s plus
+1–2 s of live lookups (cached for an hour). Tables reload by themselves when the refresh
+rewrites them. Reference data for other methods: `data/clean/parcels.parquet` (geometry,
+`block_lot`, `address` for lookup), `data/features/parcel_facts.parquet` (one row per city
+parcel), `data/clean/{transit_stops,parks,neighborhoods}.parquet`.
+
+**Freshness.** Show `provenance[...].retrieved` (`live` / `snapshot`) and `retrieved_at` in
+the report. Install the nightly refresh where the API runs (`pipeline/README.md`).
+
 ## Changing the contract
 
 Additive fields are free; renames, removals and type changes bump `SCHEMA_VERSION` and need
 both owners to approve the PR. Regenerate fixtures with `uv run python -m sandbox.golden
---export` and schemas with `uv run python -m navigator_contracts.export`; CI checks every
+--export`, the results bundle with `uv run python -m navigator_pipeline.publish`, and schemas with `uv run python -m navigator_contracts.export`; CI checks every
 fixture against the models.

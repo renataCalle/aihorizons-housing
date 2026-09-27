@@ -1,10 +1,7 @@
-"""Rules engine v0 (research prototype): buildable envelope and relief check per program.
+"""Rules engine: buildable envelope and the zoning checks for every building type.
 
-    uv run python -m sandbox.engine_v0.rules_engine            # all golden fixtures
-    uv run python -m sandbox.engine_v0.rules_engine flood_zone # one fixture
-
-Input: a SiteContext-shaped fixture + the rules tables in sandbox/rules/. Pure computation, no
-I/O beyond loading those files, so it can move into engine/ once the contracts exist.
+Input: a SiteContext-shaped dict and the rules tables in navigator_engine/config/rules/
+(drafted by sandbox/rules/extract.py from the zoning code). Pure computation.
 
 Pittsburgh's residential districts set no density or coverage limit (925.03), so capacity comes
 from the envelope: (lot width - side setbacks) x (lot depth - front and rear setbacks) x stories.
@@ -13,17 +10,14 @@ Lot width and depth are read from the parcel's minimum rotated rectangle. Contex
 """
 
 import csv
-import json
-import sys
+import io
 from dataclasses import dataclass, field
-from pathlib import Path
+from importlib.resources import files
 
 import shapely
 from shapely.geometry import shape
 
-HERE = Path(__file__).resolve().parent
-RULES = HERE.parent / "rules"
-FIXTURES = HERE.parents[1] / "fixtures" / "golden" / "site_context"
+RULES = files("navigator_engine") / "config" / "rules"
 
 # ---------------------------------------------------------------- assumptions (editable)
 # Product templates are judgments, not code: surfaced to the user as editable assumptions.
@@ -67,8 +61,7 @@ RELIEF_FOR = {
 
 
 def _load(name: str) -> list[dict]:
-    with (RULES / name).open() as f:
-        return list(csv.DictReader(f))
+    return list(csv.DictReader(io.StringIO((RULES / name).read_text())))
 
 
 def _num(v: str):
@@ -601,45 +594,3 @@ def analyze(ctx: dict) -> dict:
         "readings": readings,
         "overlays": overlay_items(ctx, units),
     }
-
-
-def _fmt(p: dict | None) -> str:
-    if not p:
-        return "none"
-    s = f"{p['units']} {p['product']}"
-    if p["relief"]:
-        s += " <- " + "; ".join(f"{i['type']} ({i['section']}): {i['what']}" for i in p["relief"])
-    return s
-
-
-def main() -> None:
-    names = sys.argv[1:] or sorted(p.stem for p in FIXTURES.glob("*.json"))
-    for name in names:
-        ctx = json.loads((FIXTURES / f"{name}.json").read_text())
-        res = analyze(ctx)
-        p = ctx["parcels"][0]
-        print(f"\n== {name}: {p['block_lot']} {p['address']}")
-        if not res["covered"]:
-            print("   ", res["note"])
-            continue
-        print(f"   adjacent lots built: {res['neighbors_built']}")
-        for r in res["readings"]:
-            if not r["covered"]:
-                print(f"   {r['district']} ({r['share']:.0%}): NOT COVERED - {r['note']}")
-                continue
-            for scen, v in r["scenarios"].items():
-                e = v["envelope"]
-                print(
-                    f"   {r['district']} ({r['share']:.0%}) [{scen}]: {e['width_ft']:.0f} x "
-                    f"{e['depth_ft']:.0f} ft lot, sides {e['side_setback_ft']:.0f} ft -> "
-                    f"footprint {e['footprint_sqft']:,.0f} sf x {e['stories'] or '?'} st"
-                )
-                print(f"      by right:    {_fmt(v['best_by_right'])}")
-                print(f"      with relief: {_fmt(v['best_with_relief'])}")
-        for o in res["overlays"]:
-            print(f"   overlay: {o['type']} ({o['section']}): {o['what']}")
-        print(f"   confidence: {res['confidence']}")
-
-
-if __name__ == "__main__":
-    main()

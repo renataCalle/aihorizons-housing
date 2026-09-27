@@ -715,6 +715,17 @@
           },
           "title": "Entitlement Basis",
           "type": "array"
+        },
+        "site_cost_premium": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Range"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [

@@ -44,6 +44,7 @@ select = ["E", "F", "I", "B", "UP", "SIM"]
 
 [tool.ruff.lint.per-file-ignores]
 "sandbox/report.py" = ["E501"]  # HTML/CSS templates
+"pipeline/src/navigator_pipeline/publish.py" = ["E501"]  # results/README.md template
 
 [tool.ruff.lint.isort]
 known-first-party = [

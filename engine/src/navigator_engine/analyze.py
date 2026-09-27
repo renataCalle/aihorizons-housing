@@ -3,21 +3,21 @@
     rules engine -> constraint flags -> entitlement samples -> pro forma Monte Carlo
     -> score (with counterfactual breakdown) -> next steps by cost-to-kill
 
-Pure: reads only the context, the rules CSVs, and the assumptions module. Every number that
-is not derived from the context is listed in `assumptions` with its source.
+Pure: reads only the context, the rules tables in config/, and the assumptions module. Every
+number that is not derived from the context is listed in `assumptions` with its source.
 """
 
 import math
 
 import numpy as np
 
-from sandbox.engine_v0 import constraints, entitlement
-from sandbox.engine_v0.assumptions import resolve
-from sandbox.engine_v0.rules_engine import NOT_CHECKED, TEMPLATES, site_checks
-from sandbox.engine_v0.rules_engine import analyze as rules_analyze
+from navigator_engine import constraints, entitlement
+from navigator_engine.assumptions import resolve
+from navigator_engine.rules_engine import NOT_CHECKED, TEMPLATES, site_checks
+from navigator_engine.rules_engine import analyze as rules_analyze
 
 N = 2_000
-ENGINE_VERSION = "sandbox-v0.1"
+ENGINE_VERSION = "0.1.0"
 RESIDENTIAL = {"RESIDENTIAL"}
 
 
@@ -136,6 +136,7 @@ def proforma(ctx, program, flag_list, relief, A, land_price, rng) -> dict:
         "total": total,
         "margin": margin,
         "max_land": max_land,
+        "premium": premium,
         "premium_share": premium / total,
         "p": ent["p"],
         "months": months_permit,
@@ -382,25 +383,63 @@ def rule_checks(ctx: dict, rules: dict, scenario: str | None, options: list[dict
 # ---------------------------------------------------------------- orchestration
 
 
-def _options(rules: dict) -> tuple[list[dict], str | None]:
-    """Candidate programs from the primary district reading."""
+BLOCKING = ("use_variance", "implausible")
+
+
+def _requested(programs: list[dict], product: str, units: int | None) -> dict:
+    """The tested program for a requested building type. Without a unit count: the largest
+    allowed outright, else the largest that approvals could allow, else the smallest tested."""
+    if product not in TEMPLATES:
+        raise ValueError(f"unknown product_type {product!r}; one of {sorted(TEMPLATES)}")
+    mine = [p for p in programs if p["product"] == product]
+    if units is not None:
+        pick = next((p for p in mine if p["units"] == units), None)
+        if pick is None:
+            raise ValueError(
+                f"{product} is tested at {TEMPLATES[product]['units']} units, not {units}"
+            )
+        return pick
+    by_right = [p for p in mine if not p["relief"]]
+    plausible = [p for p in mine if not any(i["type"] in BLOCKING for i in p["relief"])]
+    return (
+        max(by_right, key=lambda p: p["units"], default=None)
+        or max(plausible, key=lambda p: p["units"], default=None)
+        or min(mine, key=lambda p: p["units"])
+    )
+
+
+def _options(
+    rules: dict, program: dict | None = None
+) -> tuple[list[dict], str | None, dict | None]:
+    """Candidate programs from the primary district reading, and the requested program (if
+    any). With a request, it is the only option; a request the rules reject has none."""
     covered = [r for r in rules.get("readings", []) if r["covered"]]
     if not covered:
-        return [], None
+        return [], None, None
     reading = covered[0]
     scen = "contextual" if "contextual" in reading["scenarios"] else "strict"
     s = reading["scenarios"][scen]
+    if program is not None:
+        pick = _requested(s["programs"], program["product_type"], program.get("units"))
+        if any(i["type"] in BLOCKING for i in pick["relief"]):
+            return [], scen, pick
+        return [{"label": "with_relief" if pick["relief"] else "by_right", **pick}], scen, pick
     out = []
     if s["best_by_right"]:
         out.append({"label": "by_right", **s["best_by_right"]})
     if s["best_with_relief"]:
         out.append({"label": "with_relief", **s["best_with_relief"]})
-    return out, scen
+    return out, scen, None
 
 
-def analyze(ctx: dict, overrides: dict | None = None) -> dict:
-    """SiteContext (dict) -> SiteAnalysis (dict). `overrides` keys are the editable
-    `assumptions[].key` values, including `land_price` (default: assessed land value)."""
+def analyze(ctx: dict, overrides: dict | None = None, program: dict | None = None) -> dict:
+    """SiteContext (dict) -> SiteAnalysis (dict).
+
+    `overrides` keys are the editable `assumptions[].key` values, including `land_price`
+    (default: assessed land value). `program` = {"product_type": ..., "units": ... | None}
+    scores that building instead of the engine's pick (units None = the largest the rules
+    allow); a building the rules reject comes back high risk, with the reason.
+    """
     overrides = dict(overrides or {})
     land_price = overrides.pop("land_price", None)
     A = resolve(overrides)
@@ -413,7 +452,7 @@ def analyze(ctx: dict, overrides: dict | None = None) -> dict:
     )
 
     rules = rules_analyze(ctx)
-    options, scenario = _options(rules)
+    options, scenario, requested = _options(rules, program)
     units_hint = max((o["units"] for o in options), default=1)
     flag_list, cleared = constraints.flags(ctx, rules, units_hint)
     if scenario == "contextual":
@@ -502,6 +541,19 @@ def analyze(ctx: dict, overrides: dict | None = None) -> dict:
             )
         else:
             vband, headline = "high_risk", "No plausible program fits this lot"
+            if requested is not None:
+                why = "; ".join(
+                    c["note"] or c["label"]
+                    for c in requested["checks"]
+                    if c["status"] == "rejected"
+                )
+                name = program_name(requested)
+                name = (
+                    name
+                    if name[0].isdigit() and requested["product"] == "townhome"
+                    else f"a {name}"
+                )
+                headline = f"High risk: the zoning rules rule out {name} here ({why})."
     else:
         opt, pf, sc = head
         score = float(np.nanmedian(sc["total"]))
@@ -572,6 +624,7 @@ def analyze(ctx: dict, overrides: dict | None = None) -> dict:
             "entitlement_basis": pf["ent_sources"],
             "gfa_sqft": pf["gfa"],
             "unit_sqft": TEMPLATES[o["product"]]["unit_sqft"],
+            "site_cost_premium": _range(pf["premium"]),
         }
 
     assumptions = [
@@ -654,7 +707,7 @@ def analyze(ctx: dict, overrides: dict | None = None) -> dict:
         },
         "versions": {
             "engine": ENGINE_VERSION,
-            "ruleset": "sandbox rules drafts 2026-09-26",
+            "ruleset": "rules drafts 2026-09-26",
             "schema": ctx.get("schema_version"),
             "data_as_of": min(
                 (v["as_of"] for v in (ctx.get("provenance") or {}).values() if v.get("as_of")),

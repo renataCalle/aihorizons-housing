@@ -3,7 +3,7 @@ name = "navigator-engine"
 version = "0.1.0"
 description = "Pure-Python feasibility engine: SiteContext in, SiteAnalysis out"
 requires-python = ">=3.12"
-dependencies = ["navigator-contracts", "numpy>=2.0"]
+dependencies = ["navigator-contracts", "numpy>=2.0", "shapely>=2.0"]
 
 [build-system]
 requires = ["hatchling"]

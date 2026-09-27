@@ -1,4 +1,4 @@
-"""Render a SiteAnalysis (from engine_v0) as the one-page report (spec: UI > Report blocks).
+"""Render a SiteAnalysis (from navigator_engine) as the one-page report (spec: UI > Report blocks).
 
     uv run python -m sandbox.report 0055A00137000000     # after sandbox.navigator ran it
     (sandbox.navigator also writes the HTML next to the JSON)

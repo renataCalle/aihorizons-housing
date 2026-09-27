@@ -190,7 +190,12 @@
       "revenue_basis": "for-sale: 198 resale comps $253-$376/sf + new-build premium",
       "entitlement_basis": [],
       "gfa_sqft": 4250,
-      "unit_sqft": 850
+      "unit_sqft": 850,
+      "site_cost_premium": {
+        "p10": 8957.20624617755,
+        "p50": 15067.420472026577,
+        "p90": 21308.97705407582
+      }
     },
     {
       "label": "with_relief",
@@ -229,7 +234,12 @@
         "variance: PLACEHOLDER prior (ZBA)"
       ],
       "gfa_sqft": 6375,
-      "unit_sqft": 850
+      "unit_sqft": 850,
+      "site_cost_premium": {
+        "p10": 9087.241892103211,
+        "p50": 15146.467363088661,
+        "p90": 21285.778703254986
+      }
     }
   ],
   "next_steps": [
@@ -1832,8 +1842,8 @@
     }
   },
   "versions": {
-    "engine": "sandbox-v0.1",
-    "ruleset": "sandbox rules drafts 2026-09-26",
+    "engine": "0.1.0",
+    "ruleset": "rules drafts 2026-09-26",
     "schema": "0.1.0",
     "data_as_of": "2018-07-27"
   }

@@ -382,8 +382,7 @@ score 77 (fast track).
 
 ## Appendix A. Logic ↔ code cross-tabulation
 
-Paths are relative to the repository root. The v0 engine lives in `sandbox/engine_v0/` and
-will move to `engine/` unchanged in logic.
+Paths are relative to the repository root. The v0 engine lives in `engine/src/navigator_engine/`.
 
 | Concept (section) | Module · function | Configuration / data |
 |---|---|---|
@@ -394,22 +393,23 @@ will move to `engine/` unchanged in logic.
 | Share / distance facts (3) | `navigator_pipeline/features.py` · `area_shares`, `nearest_distance`, `physical`, `flood`, `zoning`, `environmental`, `infrastructure`, `access`, `ownership` | `ENV_RADIUS_FT`, `FRONTAGE_RADIUS_FT`, `TRANSIT_TIERS` |
 | Site fact assembly, adjacency, comps (3) | `navigator_pipeline/site_context.py` · `build` | `COMPS_RADIUS_FT`, `COMPS_YEARS` |
 | Fact interface (3, 10) | `contracts/src/navigator_contracts/site_context.py` · `SiteContext` | `contracts/schema/SiteContext.schema.json` |
-| Rules extraction (4) | `sandbox/rules/extract.py` · `residential_rows`, `hillside_rows` | `sandbox/rules/residential_draft.csv` |
-| Use permissions, standards (4) | read by `sandbox/engine_v0/rules_engine.py` | `sandbox/rules/use_permissions_draft.csv`, `standards_draft.csv` |
+| Rules extraction (4) | `sandbox/rules/extract.py` · `residential_rows`, `hillside_rows` | `engine/src/navigator_engine/config/rules/residential_draft.csv` |
+| Use permissions, standards (4) | read by `engine/src/navigator_engine/rules_engine.py` | `config/rules/use_permissions_draft.csv`, `standards_draft.csv` |
 | Envelope, contextual and narrow-lot setbacks (4) | `rules_engine.py` · `envelope`, `lot_dimensions`, `neighbors_built`, `single_unit_side_setback` | `CONTEXTUAL_MIN_SIDE_FT` |
 | Programs, relief list, plausibility cap (4) | `rules_engine.py` · `relief_for`, `best_programs`, `TEMPLATES` | `MAX_DIMENSIONAL_SHORTFALL` |
 | Rule-by-rule table: every check, pass or fail; odds per building (4, 10) | `rules_engine.py` · `check_program`, `evaluate_programs`, `site_checks`; `analyze.py` · `rule_checks`; `sandbox/report.py` · `rules_block` | `NOT_CHECKED`, `CHECK_LABELS` |
 | Overlay procedures (4) | `rules_engine.py` · `overlay_items` | — |
-| Flags, thresholds, unknowns (5) | `sandbox/engine_v0/constraints.py` · `flags` | inline threshold table |
-| Entitlement odds and months (6) | `sandbox/engine_v0/entitlement.py` · `sample` | `RUNGS`, `PROCEDURAL` |
+| Flags, thresholds, unknowns (5) | `engine/src/navigator_engine/constraints.py` · `flags` | inline threshold table |
+| Entitlement odds and months (6) | `engine/src/navigator_engine/entitlement.py` · `sample` | `RUNGS`, `PROCEDURAL` |
 | Council outcomes (6) | `navigator_pipeline/build.py` · `build_council_zoning_matters` | `data/clean/council_zoning_matters.parquet` |
-| Comps, rents, exits (7) | `sandbox/engine_v0/analyze.py` · `sale_psf`, `rent_for`, `proforma` | `NEW_BUILD_YEAR`, `MIN_COMPS` |
-| Costs, margin, residual land value, Monte Carlo (7) | `analyze.py` · `proforma` | `sandbox/engine_v0/assumptions.py`; `N` |
+| Comps, rents, exits (7) | `engine/src/navigator_engine/analyze.py` · `sale_psf`, `rent_for`, `proforma` | `NEW_BUILD_YEAR`, `MIN_COMPS` |
+| Costs, margin, residual land value, Monte Carlo (7) | `analyze.py` · `proforma` | `assumptions.py`; `N` |
 | Score, bands (8) | `analyze.py` · `score_samples`, `band` | `WEIGHTS`; `score_*` assumptions |
 | Leading option, attribution, verdict text (8) | `analyze.py` · `analyze`, `explain` | — |
 | Recommendations (9) | `analyze.py` · `analyze` (next steps); `constraints.py` actions | `P_KILL` |
 | Output interface (10) | `contracts/src/navigator_contracts/site_analysis.py` · `SiteAnalysis` | `contracts/schema/SiteAnalysis.schema.json` |
 | Report rendering (10) | `sandbox/report.py` · `render` | — |
+| Results bundle for the demo (10) | `navigator_pipeline/publish.py` · `publish`; `bundle.py` · `load` | `results/` (see `results/README.md`) |
 | End-to-end run (all) | `sandbox/navigator.py` · `main` | output: `data/output/` |
 | Golden parcels (11) | `sandbox/golden.py` · `cases`, `rank` | `fixtures/golden/`, `sandbox/golden_parcels.json` |
 | Contract conformance (11) | `contracts/tests/test_golden_fixtures.py` | — |

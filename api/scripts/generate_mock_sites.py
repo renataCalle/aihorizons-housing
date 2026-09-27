@@ -14,14 +14,12 @@ Output (committed; regenerate after changing this script or the engine):
     fixtures/mock/generated/map_features.geojson    transit stops, parks, school, neighborhoods
     fixtures/mock/generated/site_analysis/*.json    SiteAnalysis for each synthetic candidate
 
-Dev-only: the engine is imported from sandbox/ until it moves to navigator_engine. The API
-never imports sandbox.
+The engine is navigator_engine, the same package the pipeline scores with.
 """
 
 import copy
 import json
 import math
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -30,13 +28,11 @@ from pyproj import Transformer
 from shapely.geometry import LineString, Point, Polygon, mapping, shape
 from shapely.ops import transform, unary_union
 
+from navigator_api.summaries import summarize
+from navigator_contracts import SCHEMA_VERSION, SiteAnalysis, SiteContext
+from navigator_engine import analyze
+
 REPO = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(REPO))  # for `sandbox`, which is not an installed package
-
-from navigator_api.summaries import summarize  # noqa: E402
-from navigator_contracts import SCHEMA_VERSION, SiteAnalysis, SiteContext  # noqa: E402
-from sandbox.engine_v0.analyze import analyze  # noqa: E402
-
 SEED = 20260926
 GOLDEN = REPO / "fixtures" / "golden"
 OUT = REPO / "fixtures" / "mock" / "generated"

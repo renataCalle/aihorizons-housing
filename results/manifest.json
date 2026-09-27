@@ -1,77 +1,173 @@
 {
-  "generated_at": "2026-09-27T00:24:36+00:00",
-  "script": "api/scripts/build_results_bundle.py",
-  "scope": {
-    "neighborhoods": [
-      "Hazelwood",
-      "Greenfield",
-      "Glen Hazel"
-    ],
-    "candidates": "vacant land, 1,500-20,000 sq ft, plus the golden parcels"
-  },
+  "area": "Hazelwood",
+  "generated_at": "2026-09-27T00:20:29+00:00",
+  "command": "uv run python -m navigator_pipeline.publish",
   "versions": {
-    "engine": "sandbox-v0.1",
-    "ruleset": "sandbox rules drafts 2026-09-26",
-    "schema": "0.1.0",
-    "data_as_of": "2018-07-27"
+    "engine": "0.1.0",
+    "ruleset": "rules drafts 2026-09-26",
+    "schema": "0.1.0"
   },
   "counts": {
-    "parcels": 7273,
-    "candidates_scored": 981,
-    "failed_to_build": 0,
+    "parcels": 3625,
+    "candidates": 1018,
+    "golden_parcels": 8,
+    "csv_rows": 5090,
     "bands": {
-      "feasible_with_conditions": 259,
-      "high_risk": 721,
+      "high_risk": 838,
+      "feasible_with_conditions": 179,
       "not_scored": 1
-    },
-    "map_features": 249
+    }
   },
-  "failed": {},
-  "source_as_of": {
-    "address_points": "2026-09-23T06:55:37.782704",
-    "assessments": "2026-09-07T01:42:02.893599",
-    "assessments_dictionary": "2025-05-09T17:37:02.923086",
-    "city_owned": "2026-09-26T00:31:44.719771",
-    "city_steps": "2022-12-19T15:25:40.055990",
-    "city_street_centerlines": "2026-09-23T08:57:19.861094",
-    "combined_sewershed": "2018-07-27T14:26:32.748741",
-    "condemned": "2026-09-26T03:48:08.103717",
-    "council_zoning_matters": "2026-09-25T21:33:49.483",
-    "dep_aml_polygons": "2026-09-26T18:03:59+00:00",
-    "dep_aml_sites": "2026-09-26T18:03:50+00:00",
-    "dep_digitized_mined_area": "2026-09-26T18:10:31+00:00",
-    "dep_land_recycling": "2026-09-26T17:58:56+00:00",
-    "dep_storage_tanks_active": "2026-09-26T17:59:05+00:00",
-    "dep_storage_tanks_inactive": "2026-09-26T18:03:43+00:00",
-    "fema_flood_zones": "2026-09-26T18:02:53+00:00",
-    "greenways": "2026-09-23T08:20:44.356794",
-    "gtfs": "2026-08-28T07:07:18.417756",
-    "height_overlay": "2026-09-23T08:58:59.725874",
-    "historic_districts": "2026-09-23T08:08:17.415538",
-    "historic_sites": "2026-09-23T08:30:26.655696",
-    "hud_dda": "2025-09-30T14:51:32.906000+00:00",
-    "hud_fmr_metro": "2025-09-30T23:49:22.016000+00:00",
-    "hud_qct": "2025-09-30T14:51:02.931000+00:00",
-    "hud_safmr": "2024-11-05T23:46:40.480000+00:00",
-    "landslide_prone": "2026-09-23T08:05:08.796792",
-    "landslides_observed": "2018-07-05T16:30:16.391000",
-    "market_value_analysis": "2025-07-08T01:38:08.645660",
-    "municipalities": "2026-08-30T13:15:12.599232",
-    "neighborhoods": "2026-09-23T08:45:53.288993",
-    "opportunity_zones": "2026-06-02T12:05:58.629000+00:00",
-    "parcels": "2026-09-23T06:55:20.647415",
-    "parking_reduction_overlay": "2024-07-12T16:53:02.360114",
-    "parks": "2026-09-23T08:10:37.425142",
-    "pli_permits": "2026-09-26T03:22:05.014160",
-    "riverfront_overlay": "2024-06-07T20:06:29.737507",
-    "sales": "2026-09-26T07:07:00.825307",
-    "steep_slope": "2026-09-23T08:43:39.218835",
-    "street_centerlines": "2026-09-23T06:55:55.682414",
-    "tax_liens": "2026-09-07T02:52:32.787778",
-    "transit_stops": "2026-09-22T15:35:04.172613",
-    "undermined": "2026-09-23T08:40:33.994603",
-    "uptown_ipod": "2024-02-07T08:01:08.079313",
-    "water_providers_by_parcel": "2025-09-23T15:26:16.358742",
-    "zoning": "2026-09-23T08:27:32.185089"
+  "data_as_of": {
+    "assessments": {
+      "source_as_of": "2026-09-07T01:42:02.893599",
+      "fetched_at": "2026-09-26T18:03:08+00:00"
+    },
+    "city_steps": {
+      "source_as_of": "2022-12-19T15:25:40.055990",
+      "fetched_at": "2026-09-26T18:11:28+00:00"
+    },
+    "combined_sewershed": {
+      "source_as_of": "2018-07-27T14:26:32.748741",
+      "fetched_at": "2026-09-26T18:06:05+00:00"
+    },
+    "dep_aml_polygons": {
+      "source_as_of": null,
+      "fetched_at": "2026-09-26T18:03:59+00:00"
+    },
+    "dep_aml_sites": {
+      "source_as_of": null,
+      "fetched_at": "2026-09-26T18:03:50+00:00"
+    },
+    "dep_digitized_mined_area": {
+      "source_as_of": null,
+      "fetched_at": "2026-09-26T18:10:31+00:00"
+    },
+    "dep_land_recycling": {
+      "source_as_of": null,
+      "fetched_at": "2026-09-26T17:58:56+00:00"
+    },
+    "dep_storage_tanks_active": {
+      "source_as_of": null,
+      "fetched_at": "2026-09-26T17:59:05+00:00"
+    },
+    "dep_storage_tanks_inactive": {
+      "source_as_of": null,
+      "fetched_at": "2026-09-26T18:03:43+00:00"
+    },
+    "fema_flood_zones": {
+      "source_as_of": null,
+      "fetched_at": "2026-09-26T18:02:53+00:00"
+    },
+    "greenways": {
+      "source_as_of": "2026-09-23T08:20:44.356794",
+      "fetched_at": "2026-09-26T18:03:12+00:00"
+    },
+    "height_overlay": {
+      "source_as_of": "2026-09-23T08:58:59.725874",
+      "fetched_at": "2026-09-26T18:03:14+00:00"
+    },
+    "historic_districts": {
+      "source_as_of": "2026-09-23T08:08:17.415538",
+      "fetched_at": "2026-09-26T18:03:11+00:00"
+    },
+    "hud_fmr_metro": {
+      "source_as_of": "2025-09-30T23:49:22.016000+00:00",
+      "fetched_at": "2026-09-26T18:06:16+00:00"
+    },
+    "hud_safmr": {
+      "source_as_of": "2024-11-05T23:46:40.480000+00:00",
+      "fetched_at": "2026-09-26T18:06:15+00:00"
+    },
+    "landslide_prone": {
+      "source_as_of": "2026-09-23T08:05:08.796792",
+      "fetched_at": "2026-09-26T18:03:22+00:00"
+    },
+    "parcels": {
+      "source_as_of": "2026-09-23T06:55:20.647415",
+      "fetched_at": "2026-09-26T18:03:00+00:00"
+    },
+    "parking_reduction_overlay": {
+      "source_as_of": "2024-07-12T16:53:02.360114",
+      "fetched_at": "2026-09-26T18:03:16+00:00"
+    },
+    "riverfront_overlay": {
+      "source_as_of": "2024-06-07T20:06:29.737507",
+      "fetched_at": "2026-09-26T18:03:19+00:00"
+    },
+    "sales": {
+      "source_as_of": "2026-09-26T07:07:00.825307",
+      "fetched_at": "2026-09-26T23:21:40+00:00"
+    },
+    "steep_slope": {
+      "source_as_of": "2026-09-23T08:43:39.218835",
+      "fetched_at": "2026-09-26T18:03:21+00:00"
+    },
+    "street_centerlines": {
+      "source_as_of": "2026-09-23T06:55:55.682414",
+      "fetched_at": "2026-09-26T18:06:07+00:00"
+    },
+    "transit_stops": {
+      "source_as_of": "2026-09-22T15:35:04.172613",
+      "fetched_at": "2026-09-26T18:07:53+00:00"
+    },
+    "undermined": {
+      "source_as_of": "2026-09-23T08:40:33.994603",
+      "fetched_at": "2026-09-26T17:57:19+00:00"
+    },
+    "uptown_ipod": {
+      "source_as_of": "2024-02-07T08:01:08.079313",
+      "fetched_at": "2026-09-26T18:03:19+00:00"
+    },
+    "zoning": {
+      "source_as_of": "2026-09-23T08:27:32.185089",
+      "fetched_at": "2026-08-01T00:00:00+00:00"
+    },
+    "city_owned": {
+      "source_as_of": "2026-09-26T00:31:44.719771",
+      "fetched_at": "2026-09-26T18:07:55+00:00"
+    },
+    "condemned": {
+      "source_as_of": "2026-09-26T03:48:08.103717",
+      "fetched_at": "2026-09-26T18:06:20+00:00"
+    },
+    "pli_permits": {
+      "source_as_of": "2026-09-26T03:22:05.014160",
+      "fetched_at": "2026-09-26T18:06:19+00:00"
+    },
+    "tax_liens": {
+      "source_as_of": "2026-09-07T02:52:32.787778",
+      "fetched_at": "2026-09-26T18:07:56+00:00"
+    }
+  },
+  "files": {
+    "README.md": {
+      "bytes": 3914,
+      "sha256": "efe708a6912479242e67cd3637acb6ddd79551cbcddeda2368ecf90de68adacc"
+    },
+    "summaries.json": {
+      "bytes": 2415530,
+      "sha256": "451a0611ce7347209aee6e86c759d98a373319b8533afe2d96e871423b3af502"
+    },
+    "summaries.csv": {
+      "bytes": 913381,
+      "sha256": "a5a1fc1959f3d0e8321c53ef4a255b5f03d5192e46ca3c57d79719420d1d176c"
+    },
+    "site_analysis.jsonl.gz": {
+      "bytes": 2817525,
+      "sha256": "1cfdbfbaec3eaa108bc59556edcf98339952da11d238f0ff993a7d6c8cb7aec1"
+    },
+    "site_context.jsonl.gz": {
+      "bytes": 711083,
+      "sha256": "99546295aaa3e10af5850bbfbddd6894a7d914ad15b565cc4abcbdb282a6342a"
+    },
+    "parcels.geojson": {
+      "bytes": 947023,
+      "sha256": "4965f1e0cf28e6a1124484064bb94fcbd1801fd9556e53460d63b2d5b80377e7"
+    },
+    "map_features.geojson": {
+      "bytes": 29973,
+      "sha256": "2c9e73e20690d65faa19fa36dd43085086a5455979cdf4afc18aa48d42882189"
+    }
   }
 }

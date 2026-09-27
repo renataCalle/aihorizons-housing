@@ -3,13 +3,14 @@
     uv run python -m navigator_pipeline.site_context 0001B00024000000
     uv run python -m navigator_pipeline.site_context 12-A-34 --out x.json
 
-Mirrors the spec's SiteContext fields so the output can seed golden-parcel fixtures. It is a
-research convenience, not the production feature builder (that lives in pipeline/).
+Mirrors the spec's SiteContext fields. Tables are loaded once per process and reloaded when
+the refresh rewrites them, so building many contexts (navigator_pipeline.publish) is fast.
 """
 
 import argparse
 import json
 import math
+import threading
 from datetime import date, datetime
 from pathlib import Path
 
@@ -74,8 +75,15 @@ def _clean(v):
     return v
 
 
+def _manifest(key: str) -> dict:
+    cache = _store.setdefault("manifests", {})
+    if key not in cache:
+        cache[key] = json.loads((RAW / key / "_manifest.json").read_text())
+    return cache[key]
+
+
 def _source(keys: list[str]) -> dict:
-    ms = [json.loads((RAW / k / "_manifest.json").read_text()) for k in keys]
+    ms = [_manifest(k) for k in keys]
     as_of = [m["source_as_of"] for m in ms if m.get("source_as_of")]
     fetched = [m.get("fetched_at") for m in ms if m.get("fetched_at")]
     return {
@@ -122,6 +130,64 @@ def _load(stem: str) -> pd.DataFrame:
     return df.drop_duplicates("parcel_id", keep="last") if stem == "parcel_facts" else df
 
 
+_store: dict = {}
+_store_lock = threading.Lock()
+PARCEL_COLUMNS = [
+    "parcel_id",
+    "geometry",
+    "lot_area_sqft_gis",
+    "living_area_sqft",
+    "property_class",
+    "year_built",
+    "has_structure",
+    "address",
+]
+
+
+def _signature() -> tuple:
+    return tuple(
+        (p.name, p.stat().st_mtime_ns) for d in (CLEAN, FEAT) for p in sorted(d.glob("*.parquet"))
+    )
+
+
+def store() -> dict:
+    """The tables build() reads, loaded once per process and reloaded when the files change."""
+    sig = _signature()
+    with _store_lock:
+        if _store.get("sig") != sig:
+            sales = pd.read_parquet(CLEAN / "sales.parquet")
+            _store.clear()
+            _store.update(
+                sig=sig,
+                facts=_load("parcel_facts").set_index("parcel_id"),
+                parcels=gpd.read_parquet(CLEAN / "parcels.parquet", columns=PARCEL_COLUMNS),
+                zoning=_load("parcel_zoning").drop_duplicates(),
+                flood=_load("parcel_flood").drop_duplicates(),
+                env=_load("parcel_env_nearby").drop_duplicates(),
+                sales=sales[sales["arms_length"] & ~sales["multi_parcel"]],
+                permits=pd.read_parquet(
+                    CLEAN / "pli_permits.parquet",
+                    columns=[
+                        "parcel_id",
+                        "permit_id",
+                        "permit_type",
+                        "work_type",
+                        "issue_date",
+                        "status",
+                    ],
+                ),
+                manifests={},
+            )
+            _ = _store["parcels"].sindex  # build the spatial index once
+        return _store
+
+
+def _within(gdf: gpd.GeoDataFrame, geom, distance: float) -> gpd.GeoDataFrame:
+    """Rows within `distance` of geom, in table order (same result as a dwithin scan)."""
+    idx = gdf.sindex.query(geom, predicate="dwithin", distance=distance)
+    return gdf.iloc[np.sort(idx)]
+
+
 def build(ids: list[str], live: bool = False) -> dict:
     """SiteContext for one parcel or an assemblage.
 
@@ -129,11 +195,12 @@ def build(ids: list[str], live: bool = False) -> dict:
     live=True: fast-changing records are fetched from the source APIs for these parcels,
     falling back to the stored copy per record if a lookup fails (see navigator_pipeline.live).
     """
-    facts = _load("parcel_facts").set_index("parcel_id")
+    st = store()
+    facts = st["facts"]
     ids = resolve_ids(ids, facts)
     f = facts.loc[ids]
-    geoms = gpd.read_parquet(CLEAN / "parcels.parquet", columns=["parcel_id", "geometry"])
-    geoms = geoms[geoms["parcel_id"].isin(ids)].set_index("parcel_id").loc[ids]
+    pts = st["parcels"]
+    geoms = pts[pts["parcel_id"].isin(ids)].set_index("parcel_id").loc[ids]
     site = shapely.union_all(geoms.geometry.values)
     lot = f["lot_area_sqft_gis"].to_numpy()
     in_city = bool(f["in_pittsburgh"].all())
@@ -164,7 +231,7 @@ def build(ids: list[str], live: bool = False) -> dict:
     ]
 
     # zoning: lot-area-weighted shares over the assemblage
-    z = _load("parcel_zoning").drop_duplicates()
+    z = st["zoning"]
     z = z[z["parcel_id"].isin(ids)].merge(
         f["lot_area_sqft_gis"].rename("lot"), left_on="parcel_id", right_index=True
     )
@@ -174,7 +241,7 @@ def build(ids: list[str], live: bool = False) -> dict:
         for (code, kind), a in z.groupby(["code", "kind"])["a"].sum().items()
     ]
 
-    fl = _load("parcel_flood").drop_duplicates()
+    fl = st["flood"]
     fl = fl[fl["parcel_id"].isin(ids)].merge(
         f["lot_area_sqft_gis"].rename("lot"), left_on="parcel_id", right_index=True
     )
@@ -184,7 +251,7 @@ def build(ids: list[str], live: bool = False) -> dict:
         for zc, a in fl.groupby("flood_zone")["a"].sum().items()
     ]
 
-    env = _load("parcel_env_nearby").drop_duplicates()
+    env = st["env"]
     env = (
         env[env["parcel_id"].isin(ids)]
         .sort_values("distance_ft")
@@ -204,21 +271,19 @@ def build(ids: list[str], live: bool = False) -> dict:
     frontage = min(f["frontage_type"], key=lambda t: frontage_rank.get(t, 9))
 
     # market: arm's-length sales within radius over the last N years
-    sales = pd.read_parquet(CLEAN / "sales.parquet")
+    sales = st["sales"]
     cutoff = pd.Timestamp.today() - pd.DateOffset(years=COMPS_YEARS)
-    sales = sales[sales["arms_length"] & ~sales["multi_parcel"] & (sales["sale_date"] >= cutoff)]
-    pts = gpd.read_parquet(
-        CLEAN / "parcels.parquet",
-        columns=[
+    sales = sales[sales["sale_date"] >= cutoff]
+    near = _within(pts, site, COMPS_RADIUS_FT)[
+        [
             "parcel_id",
             "geometry",
             "lot_area_sqft_gis",
             "living_area_sqft",
             "property_class",
             "year_built",
-        ],
-    )
-    near = pts[pts.geometry.dwithin(site, COMPS_RADIUS_FT)]
+        ]
+    ]
     near = near.assign(distance_ft=near.geometry.distance(site))
     comps = sales.merge(near.drop(columns="geometry"), on="parcel_id")
     comps = comps[~comps["parcel_id"].isin(ids)].sort_values("sale_date", ascending=False)
@@ -238,10 +303,8 @@ def build(ids: list[str], live: bool = False) -> dict:
     ]
     # Adjacent parcels (touching the site) and whether they carry a structure: contextual side
     # setbacks (925.06.C) are available only next to built lots.
-    ptab = gpd.read_parquet(
-        CLEAN / "parcels.parquet", columns=["parcel_id", "geometry", "has_structure", "address"]
-    )
-    touch = ptab[ptab.geometry.dwithin(site, 1.0) & ~ptab["parcel_id"].isin(ids)]
+    touch = _within(pts, site, 1.0)
+    touch = touch[~touch["parcel_id"].isin(ids)]
     adjacent = [
         {
             "parcel_id": r.parcel_id,
@@ -282,10 +345,7 @@ def build(ids: list[str], live: bool = False) -> dict:
     for record, key in LIVE_RECORDS.items():
         provenance[record] = _source([key])
 
-    permits = pd.read_parquet(
-        CLEAN / "pli_permits.parquet",
-        columns=["parcel_id", "permit_id", "permit_type", "work_type", "issue_date", "status"],
-    )
+    permits = st["permits"]
     permits = permits[permits["parcel_id"].isin(ids)].sort_values("issue_date", ascending=False)
     recent_permits = [
         {
