@@ -4,7 +4,7 @@
   position: absolute;
   top: 100px;
   /* Lined up with the top bar's left edge (map.css .map-topbar). */
-  left: max(24px, calc((100% - 1120px) / 2));
+  left: max(24px, calc((100% - var(--topbar-width)) / 2));
   z-index: 2;
   display: inline-flex;
   align-items: center;

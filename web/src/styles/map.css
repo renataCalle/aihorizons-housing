@@ -20,12 +20,13 @@
   top: 20px;
   left: 0;
   right: 0;
-  width: min(1120px, calc(100% - 48px));
+  width: min(var(--topbar-width), calc(100% - 48px));
   margin: 0 auto;
   z-index: 2;
-  /* Brand | search | badges: equal side columns keep the search box centered. */
+  /* Brand | search | badges: equal side columns keep the search box centered. When the badges
+     need more room than a side column has, the search box narrows instead of them wrapping. */
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(max-content, 1fr) minmax(240px, 560px) minmax(max-content, 1fr);
   align-items: center;
   gap: 16px;
   height: 60px;
@@ -39,6 +40,7 @@
 
 .map-topbar-end {
   display: flex;
+  white-space: nowrap;
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
@@ -58,7 +60,7 @@
 }
 
 .map-topbar .omnibox-root {
-  width: min(560px, 45vw);
+  width: 100%;
 }
 
 .map-controls {
