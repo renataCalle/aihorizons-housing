@@ -260,6 +260,83 @@
         "title": "CheckResult",
         "type": "object"
       },
+      "CodeSection": {
+        "additionalProperties": false,
+        "description": "One zoning code section cited anywhere in the analysis, for the UI's code drawer.",
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "effective": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective"
+          },
+          "section": {
+            "title": "Section",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "section",
+          "title",
+          "summary",
+          "url",
+          "as_of",
+          "effective"
+        ],
+        "title": "CodeSection",
+        "type": "object"
+      },
       "Comps": {
         "additionalProperties": false,
         "properties": {
@@ -409,17 +486,13 @@
             "title": "Category",
             "type": "string"
           },
-          "code_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "The zoning code online, when a section is cited",
-            "title": "Code Url"
+          "code_sections": {
+            "description": "The code sections this evidence cites, explained",
+            "items": {
+              "$ref": "#/components/schemas/CodeSection"
+            },
+            "title": "Code Sections",
+            "type": "array"
           },
           "confidence": {
             "anyOf": [
@@ -655,7 +728,6 @@
           "parcel_id",
           "title",
           "category",
-          "code_url",
           "how_to_resolve",
           "resolved_by",
           "illustrative",
@@ -2066,6 +2138,18 @@
             "description": "Why decisions are unavailable",
             "title": "Note"
           },
+          "rule": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "What the engine counts as similar",
+            "title": "Rule"
+          },
           "status": {
             "enum": [
               "available",
@@ -2357,12 +2441,48 @@
             "title": "Relief",
             "type": "array"
           },
+          "resolution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolution"
+          },
+          "resolved_by_step": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolved By Step"
+          },
           "revenue_basis": {
             "title": "Revenue Basis",
             "type": "string"
           },
           "score": {
             "$ref": "#/components/schemas/Range"
+          },
+          "similar_cases": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Similar Cases"
           },
           "site_cost_premium": {
             "anyOf": [
@@ -3151,6 +3271,13 @@
             "title": "Cleared",
             "type": "array"
           },
+          "code_sections": {
+            "items": {
+              "$ref": "#/components/schemas/CodeSection"
+            },
+            "title": "Code Sections",
+            "type": "array"
+          },
           "flags": {
             "items": {
               "$ref": "#/components/schemas/Flag"
@@ -3478,6 +3605,18 @@
           "ruleset": {
             "title": "Ruleset",
             "type": "string"
+          },
+          "ruleset_as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ruleset As Of"
           },
           "schema": {
             "title": "Schema",

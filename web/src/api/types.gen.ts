@@ -285,6 +285,24 @@ export interface components {
             /** Unit */
             unit: string | null;
         };
+        /**
+         * CodeSection
+         * @description One zoning code section cited anywhere in the analysis, for the UI's code drawer.
+         */
+        CodeSection: {
+            /** As Of */
+            as_of: string | null;
+            /** Effective */
+            effective: string | null;
+            /** Section */
+            section: string;
+            /** Summary */
+            summary: string | null;
+            /** Title */
+            title: string | null;
+            /** Url */
+            url: string | null;
+        };
         /** Comps */
         Comps: {
             /** Count */
@@ -330,10 +348,10 @@ export interface components {
              */
             category: "zoning" | "physical" | "environmental" | "infrastructure" | "market";
             /**
-             * Code Url
-             * @description The zoning code online, when a section is cited
+             * Code Sections
+             * @description The code sections this evidence cites, explained
              */
-            code_url: string | null;
+            code_sections?: components["schemas"]["CodeSection"][];
             /**
              * Confidence
              * @description Findings only
@@ -936,6 +954,11 @@ export interface components {
              */
             note?: string | null;
             /**
+             * Rule
+             * @description What the engine counts as similar
+             */
+            rule?: string | null;
+            /**
              * Status
              * @enum {string}
              */
@@ -1042,9 +1065,15 @@ export interface components {
             product_type: "single_family" | "duplex" | "triplex" | "townhome" | "walkup";
             /** Relief */
             relief: string[];
+            /** Resolution */
+            resolution?: string | null;
+            /** Resolved By Step */
+            resolved_by_step?: number | null;
             /** Revenue Basis */
             revenue_basis: string;
             score: components["schemas"]["Range"];
+            /** Similar Cases */
+            similar_cases?: string[] | null;
             site_cost_premium?: components["schemas"]["Range"] | null;
             /** Unit Sqft */
             unit_sqft: number;
@@ -1300,6 +1329,8 @@ export interface components {
             assumptions: components["schemas"]["Assumption"][];
             /** Cleared */
             cleared: string[];
+            /** Code Sections */
+            code_sections?: components["schemas"]["CodeSection"][];
             /** Flags */
             flags: components["schemas"]["Flag"][];
             metrics: components["schemas"]["Metrics"] | null;
@@ -1399,6 +1430,8 @@ export interface components {
             engine: string;
             /** Ruleset */
             ruleset: string;
+            /** Ruleset As Of */
+            ruleset_as_of?: string | null;
             /** Schema */
             schema: string;
         };

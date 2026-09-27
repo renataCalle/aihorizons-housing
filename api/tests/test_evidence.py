@@ -40,7 +40,9 @@ def test_finding_carries_the_engines_judgments(client: TestClient) -> None:
     assert source["code_section"] == "915.02"
     assert source["as_of"] == "2026-09-23"
     assert source["url"].startswith("https://data.wprdc.org/")
-    assert body["code_url"]
+    [section] = body["code_sections"]
+    assert section["section"] == "915.02"
+    assert section["title"] and section["summary"] and section["url"]
     assert body["resolved_by"]["order"] == flag["resolved_by_step"] == 3
     assert body["resolved_by"]["action"] == "Geotechnical and grading feasibility study"
     assert body["precedent"] is None
@@ -59,6 +61,18 @@ def test_approvals_option_lists_the_failing_rules(client: TestClient) -> None:
     assert body["entitlement_basis"]
 
 
+def test_approvals_option_says_how_to_get_them(client: TestClient) -> None:
+    body = get(client, STEEP_SLOPE, "option.with_relief")
+    report = client.get(f"/api/parcels/{STEEP_SLOPE}").json()["analysis"]
+    option = next(o for o in report["options"] if o["label"] == "with_relief")
+    assert body["how_to_resolve"] == option["resolution"]
+    assert body["resolved_by"]["order"] == option["resolved_by_step"] == 1
+    assert body["resolved_by"]["action"] == "Zoning pre-application meeting"
+    # The failing rules' sections, then the procedure the resolution cites (922.07).
+    cited = [c["section"] for c in body["code_sections"]]
+    assert cited == ["911.04.A.69A", "911.02", "922.07"]
+
+
 def test_real_lot_has_no_zoning_board_cases(client: TestClient) -> None:
     precedent = get(client, STEEP_SLOPE, "option.with_relief")["precedent"]
     assert precedent["status"] == "unavailable"
@@ -67,12 +81,22 @@ def test_real_lot_has_no_zoning_board_cases(client: TestClient) -> None:
     assert precedent["granted"] is None and precedent["total"] is None
 
 
-def test_finding_without_a_date_keeps_it_null(client: TestClient) -> None:
-    # A code rule, not a data layer: no as-of date anywhere, so none is invented.
+def test_code_rule_finding_is_dated_by_the_code_text(client: TestClient) -> None:
     body = get(client, CONTEXTUAL, "flag.contextual_setbacks")
     [source] = body["sources"]
-    assert (source["code_section"], source["as_of"]) == ("925.06.C", None)
+    ruleset_as_of = body["versions"]["ruleset_as_of"]
+    assert (source["code_section"], source["as_of"]) == ("925.06.C", ruleset_as_of)
+    assert source["as_of_from_provenance"] is False
+    [section] = body["code_sections"]
+    assert (section["section"], section["as_of"]) == ("925.06.C", ruleset_as_of)
     assert body["resolved_by"]["order"] == 1
+
+
+def test_no_zoning_board_cases_when_no_approval_goes_to_the_board(client: TestClient) -> None:
+    # Administrator exceptions are decided by the Zoning Administrator, not the board.
+    body = get(client, CONTEXTUAL, "option.with_relief")
+    assert {r.split(" (")[0] for r in body["relief"]} == {"administrator_exception"}
+    assert body["precedent"] is None
 
 
 def test_evidence_follows_the_reports_building(client: TestClient) -> None:
@@ -91,8 +115,19 @@ def test_unknown_evidence_is_404(client: TestClient, evidence_id: str) -> None:
     assert client.get(url).status_code == 404
 
 
-def test_zoning_board_cases_are_formatted_when_stored(client: TestClient) -> None:
+def test_only_the_cases_the_engine_judged_similar_are_listed(client: TestClient) -> None:
     source = client.app.state.source
+    analysis = source.analysis(STEEP_SLOPE)
+    analysis = analysis.model_copy(
+        update={
+            "options": [
+                o.model_copy(update={"similar_cases": ["41 of 2025", "12 of 2026"]})
+                if o.label == "with_relief"
+                else o
+                for o in analysis.options
+            ]
+        }
+    )
     context = source.context(STEEP_SLOPE).model_copy(
         update={
             "zba_cases_nearby": [
@@ -114,13 +149,22 @@ def test_zoning_board_cases_are_formatted_when_stored(client: TestClient) -> Non
                     days_to_decision=None,
                     distance_ft=300,
                 ),
+                ZbaCase(
+                    case_id="3 of 2019",
+                    decision_date=None,
+                    relief_types=["variance"],
+                    district="R3-M",
+                    outcome="approved",
+                    days_to_decision=60,
+                    distance_ft=100,
+                ),
             ]
         }
     )
     body = build_evidence(
         "option.with_relief",
         STEEP_SLOPE,
-        source.analysis(STEEP_SLOPE),
+        analysis,
         context,
         illustrative=False,
         mock_precedent=None,
@@ -130,3 +174,4 @@ def test_zoning_board_cases_are_formatted_when_stored(client: TestClient) -> Non
     assert (p.status, p.granted, p.total, p.median_months) == ("available", 1, 2, 4.0)
     assert [c.case_id for c in p.cases] == ["12 of 2026", "41 of 2025"]  # nearest first
     assert p.cases[1].outcome == "granted"
+    assert p.rule

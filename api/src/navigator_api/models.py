@@ -19,6 +19,7 @@ from navigator_contracts.site_analysis import (
     Band,
     Category,
     CheckResult,
+    CodeSection,
     CostRange,
     OptionLabel,
     ProductType,
@@ -370,6 +371,7 @@ class Precedent(Model):
 
     status: Literal["available", "unavailable", "illustrative"]
     note: str | None = Field(default=None, description="Why decisions are unavailable")
+    rule: str | None = Field(default=None, description="What the engine counts as similar")
     granted: int | None = None
     total: int | None = None
     median_months: float | None = None
@@ -413,7 +415,9 @@ class EvidenceDetail(Model):
         default_factory=list, description="The rules the building fails (approvals option)"
     )
     sources: list[EvidenceSource] = Field(default_factory=list)
-    code_url: str | None = Field(description="The zoning code online, when a section is cited")
+    code_sections: list[CodeSection] = Field(
+        default_factory=list, description="The code sections this evidence cites, explained"
+    )
     how_to_resolve: str | None
     resolved_by: Step | None = Field(description="The next step that resolves the finding")
     precedent: Precedent | None = Field(

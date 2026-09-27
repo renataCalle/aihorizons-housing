@@ -65,7 +65,13 @@ function toInterval(pair: [number, number] | null): Interval | null {
 }
 
 function toVersions(v: S['Versions']): Versions {
-  return { engine: v.engine, ruleset: v.ruleset, schema: v.schema, dataAsOf: v.data_as_of }
+  return {
+    engine: v.engine,
+    ruleset: v.ruleset,
+    schema: v.schema,
+    dataAsOf: v.data_as_of,
+    rulesetAsOf: v.ruleset_as_of ?? null,
+  }
 }
 
 export function toParcel(p: S['ParcelSummary']): Parcel {
@@ -324,13 +330,21 @@ export function toEvidence(data: unknown): Evidence {
       codeSection: s.code_section,
       url: s.url,
     })),
-    codeUrl: e.code_url,
+    codeSections: (e.code_sections ?? []).map((c) => ({
+      section: c.section,
+      title: c.title,
+      summary: c.summary,
+      url: c.url,
+      asOf: c.as_of,
+      effective: c.effective,
+    })),
     howToResolve: e.how_to_resolve,
     resolvedBy: e.resolved_by ? toStep(e.resolved_by) : null,
     precedent: p
       ? {
           status: p.status,
           note: p.note ?? null,
+          rule: p.rule ?? null,
           granted: p.granted ?? null,
           total: p.total ?? null,
           medianMonths: p.median_months ?? null,

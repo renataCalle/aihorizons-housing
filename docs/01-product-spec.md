@@ -72,7 +72,7 @@ Opens as a 720px panel on the right. The map shifts so the selected parcel stays
 
 ### 5 · Evidence drawer
 
-A 580px drawer over the report. For zoning relief it shows: what the code requires (section, date, plain-language summary, link to Municode), similar cases nearby (granted count, median months, table of the closest cases with outcome pills), a note that an AI model extracted the cases from decision PDFs with a link per case, a confidence note, and "How to resolve".
+A 580px drawer over the report. For zoning relief it shows: what the code requires (section, date, plain-language summary, link to the code on eCode360), similar cases nearby (granted count, median months, table of the closest cases with outcome pills), a note that an AI model extracted the cases from decision PDFs with a link per case, a confidence note, and "How to resolve".
 
 ### 3D score view (wow layer)
 

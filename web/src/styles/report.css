@@ -879,6 +879,19 @@
   stroke-linejoin: round;
 }
 
+.code-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.code-sections li p + p {
+  margin-top: 4px;
+}
+
 .evidence-rules {
   margin: 0;
   padding: 0;

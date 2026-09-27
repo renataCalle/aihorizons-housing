@@ -10,11 +10,11 @@ from statistics import median
 
 from navigator_api.models import Case, EvidenceDetail, EvidenceSource, Outcome, Precedent
 from navigator_contracts import SiteAnalysis, SiteContext
-from navigator_contracts.site_analysis import Evidence, Flag
+from navigator_contracts.site_analysis import CodeSection, Evidence, Flag, ProgramOption, Step
 from navigator_contracts.site_context import ZbaCase
-
-# Pittsburgh's code of ordinances; the engine cites sections, not per-section links.
-CODE_URL = "https://library.municode.com/pa/pittsburgh/codes/code_of_ordinances"
+from navigator_engine.code import sections_in
+from navigator_engine.precedents import RULE as SIMILAR_RULE
+from navigator_engine.precedents import ZBA_RELIEF
 
 FAILING = ("needs_approval", "rejected")
 
@@ -43,9 +43,16 @@ def build_evidence(
         flag = next((f for f in analysis.flags if f.id == key), None)
         return flag and _finding(evidence_id, parcel_id, flag, analysis, context, illustrative)
     if kind == "option" and key == "with_relief":
-        precedent = mock_precedent if illustrative and mock_precedent else _precedent(context)
-        return _approvals(evidence_id, parcel_id, analysis, precedent, illustrative)
+        return _approvals(evidence_id, parcel_id, analysis, context, illustrative, mock_precedent)
     return None
+
+
+def _cited(analysis: SiteAnalysis, citations: list[str | None]) -> list[CodeSection]:
+    """The analysis's explanations of the sections in `citations`, in citation order.
+    Citations such as "911.02 (own lot per unit)" are read the way the engine reads them."""
+    by_section = {c.section: c for c in analysis.code_sections}
+    wanted = dict.fromkeys(s for text in citations for s in sections_in(text))
+    return [by_section[s] for s in wanted if s in by_section]
 
 
 def _finding(
@@ -68,11 +75,9 @@ def _finding(
         cost_usd=flag.cost_usd,
         months=flag.months,
         sources=sources,
-        code_url=CODE_URL if any(s.code_section for s in sources) else None,
+        code_sections=_cited(analysis, [s.code_section for s in sources]),
         how_to_resolve=flag.resolution,
-        resolved_by=next(
-            (s for s in analysis.next_steps if s.order == flag.resolved_by_step), None
-        ),
+        resolved_by=_step(analysis, flag.resolved_by_step),
         illustrative=illustrative,
         versions=analysis.versions,
     )
@@ -82,8 +87,9 @@ def _approvals(
     evidence_id: str,
     parcel_id: str,
     analysis: SiteAnalysis,
-    precedent: Precedent,
+    context: SiteContext | None,
     illustrative: bool,
+    mock_precedent: Precedent | None,
 ) -> EvidenceDetail | None:
     option = next((o for o in analysis.options if o.label == "with_relief"), None)
     if option is None:
@@ -91,6 +97,10 @@ def _approvals(
     rc = analysis.rule_checks
     program = next((p for p in rc.programs if p.chosen_as == "with_relief"), None) if rc else None
     checks = [c for c in program.checks if c.status in FAILING] if program else []
+    if illustrative and mock_precedent:
+        precedent: Precedent | None = mock_precedent
+    else:
+        precedent = _precedent(option, context)
     return EvidenceDetail(
         id=evidence_id,
         kind="approvals",
@@ -106,9 +116,9 @@ def _approvals(
         entitlement_basis=option.entitlement_basis,
         odds_note=rc.odds_note if rc else None,
         rule_checks=checks,
-        code_url=CODE_URL if any(c.section for c in checks) else None,
-        how_to_resolve=None,
-        resolved_by=None,
+        code_sections=_cited(analysis, [c.section for c in checks] + [option.resolution]),
+        how_to_resolve=option.resolution,
+        resolved_by=_step(analysis, option.resolved_by_step),
         precedent=precedent,
         illustrative=illustrative,
         versions=analysis.versions,
@@ -129,12 +139,23 @@ def _source(e: Evidence, context: SiteContext | None) -> EvidenceSource:
     )
 
 
-def _precedent(context: SiteContext | None) -> Precedent:
+def _step(analysis: SiteAnalysis, order: int | None) -> Step | None:
+    return next((s for s in analysis.next_steps if s.order == order), None)
+
+
+def _precedent(option: ProgramOption, context: SiteContext | None) -> Precedent | None:
+    """The cases the engine judged similar (`option.similar_cases`). None when none of the
+    option's approvals goes to the zoning board."""
+    relief_types = {r.split(" (")[0] for r in option.relief}
+    if not relief_types & ZBA_RELIEF:
+        return None
     cases = context.zba_cases_nearby if context else None
-    if cases is None:
+    if cases is None or option.similar_cases is None:
         stored = context.provenance.get("zba_cases") if context else None
         return Precedent(status="unavailable", note=stored.note if stored else None)
-    rows = [_case(c) for c in sorted(cases, key=lambda c: c.distance_ft or float("inf"))]
+    similar = set(option.similar_cases)
+    chosen = [c for c in cases if c.case_id in similar]
+    rows = [_case(c) for c in sorted(chosen, key=lambda c: c.distance_ft or float("inf"))]
     months = [c.months_to_decision for c in rows if c.months_to_decision is not None]
     return Precedent(
         status="available",
@@ -142,6 +163,7 @@ def _precedent(context: SiteContext | None) -> Precedent:
         total=len(rows),
         median_months=round(median(months), 1) if months else None,
         cases=rows,
+        rule=SIMILAR_RULE,
     )
 
 

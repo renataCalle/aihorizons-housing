@@ -10,7 +10,7 @@ import {
 import { programLabel, reliefShortLabel } from '../lib/labels'
 import { useAsync } from '../lib/useAsync'
 import { spanOf } from '../models/estimate'
-import type { Evidence, EvidenceSource, Precedent } from '../models/evidence'
+import type { CodeSection, Evidence, EvidenceSource, Precedent } from '../models/evidence'
 import type { NextStep, Program, Severity } from '../models/report'
 import { checkDetail } from '../report/ruleChecks'
 
@@ -105,6 +105,7 @@ function EvidenceBody({ evidence: e }: { evidence: Evidence }) {
       {approvals ? <ApprovalsBody evidence={e} /> : <FindingBody evidence={e} />}
       <p className="evidence-foot">
         Screening only. Zoning rules: {e.versions.ruleset}
+        {e.versions.rulesetAsOf && `, code text as of ${e.versions.rulesetAsOf}`}
         {e.versions.dataAsOf && ` · oldest data ${e.versions.dataAsOf}`}.
       </p>
     </>
@@ -137,15 +138,16 @@ function FindingBody({ evidence: e }: { evidence: Evidence }) {
         <h3 className="evidence-label">Where this comes from</h3>
         {e.sources.length === 0 && <p className="evidence-muted">No source cited.</p>}
         {e.sources.map((s) => (
-          <SourceRow key={`${s.source}|${s.codeSection}`} source={s} codeUrl={e.codeUrl} />
+          <SourceRow key={`${s.source}|${s.codeSection}`} source={s} />
         ))}
       </section>
+      <CodeSections sections={e.codeSections} />
       <Resolve text={e.howToResolve} step={e.resolvedBy} />
     </>
   )
 }
 
-function SourceRow({ source: s, codeUrl }: { source: EvidenceSource; codeUrl: string | null }) {
+function SourceRow({ source: s }: { source: EvidenceSource }) {
   return (
     <div className="evidence-source">
       <p>{s.source}</p>
@@ -153,8 +155,9 @@ function SourceRow({ source: s, codeUrl }: { source: EvidenceSource; codeUrl: st
         <span className="code-chip">
           {s.codeSection ? `§ ${s.codeSection}` : 'No code section cited'}
         </span>
-        {s.codeSection && codeUrl && <ExternalLink href={codeUrl}>Open in Municode</ExternalLink>}
-        {s.url && <ExternalLink href={s.url}>Open the data</ExternalLink>}
+        {s.url && (
+          <ExternalLink href={s.url}>{s.codeSection ? 'Open the source' : 'Open the data'}</ExternalLink>
+        )}
       </p>
       <p className="evidence-muted">
         {s.asOf
@@ -195,12 +198,8 @@ function ApprovalsBody({ evidence: e }: { evidence: Evidence }) {
             })}
           </ul>
         )}
-        {e.codeUrl && (
-          <p className="evidence-chips">
-            <ExternalLink href={e.codeUrl}>Open in Municode</ExternalLink>
-          </p>
-        )}
       </section>
+      <CodeSections sections={e.codeSections} />
       <section className="evidence-section">
         <h3 className="evidence-label">Approval odds and time</h3>
         <dl className="evidence-kv">
@@ -231,6 +230,48 @@ function ApprovalsBody({ evidence: e }: { evidence: Evidence }) {
       {e.precedent && <PrecedentSection precedent={e.precedent} />}
       <Resolve text={e.howToResolve} step={e.resolvedBy} />
     </>
+  )
+}
+
+/** "What the code says": each cited section's title and summary, with its dates. */
+function CodeSections({ sections }: { sections: CodeSection[] }) {
+  if (sections.length === 0) return null
+  const links = [...new Set(sections.map((c) => c.url).filter((u): u is string => !!u))]
+  return (
+    <section className="evidence-section">
+      <h3 className="evidence-label">What the code says</h3>
+      <ul className="code-sections">
+        {sections.map((c) => (
+          <li key={c.section}>
+            <p>
+              <span className="code-chip">§ {c.section}</span> {c.title}
+            </p>
+            {c.summary && <p className="evidence-lead">{c.summary}</p>}
+            <p className="evidence-muted">
+              {[
+                c.asOf && `Code text as of ${formatMonthYear(c.asOf)}`,
+                c.effective && `last amended ${formatMonthYear(c.effective)}`,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
+            </p>
+          </li>
+        ))}
+      </ul>
+      <p className="evidence-muted">
+        Summaries are drafted from the code text and not yet checked by a person. Read the
+        section before relying on it.
+      </p>
+      {links.length > 0 && (
+        <p className="evidence-chips">
+          {links.map((url) => (
+            <ExternalLink key={url} href={url}>
+              Open the zoning code
+            </ExternalLink>
+          ))}
+        </p>
+      )}
+    </section>
   )
 }
 
@@ -305,6 +346,7 @@ function PrecedentSection({ precedent: p }: { precedent: Precedent }) {
           </table>
         </div>
       )}
+      {p.rule && <p className="evidence-muted">Similar means: {p.rule}.</p>}
       {p.aiExtracted && (
         <p className="evidence-muted">
           An AI model pulled these cases from zoning board decision PDFs. Each one links to its
@@ -322,10 +364,7 @@ function Resolve({ text, step }: { text: string | null; step: NextStep | null })
       {text ? (
         <p className="evidence-lead">{text}</p>
       ) : (
-        <p className="evidence-muted">
-          The engine doesn't link a step to these approvals yet. The report's “What to check
-          next” lists the checks to run first.
-        </p>
+        <p className="evidence-muted">No resolution recorded.</p>
       )}
       {step && (
         <div className="resolve-step">

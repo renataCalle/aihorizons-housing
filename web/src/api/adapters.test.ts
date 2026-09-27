@@ -113,6 +113,7 @@ const versions = {
   ruleset: 'rules drafts 2026-09-26',
   schema: '0.1.0',
   data_as_of: '2018-07-27',
+  ruleset_as_of: '2026-09-26',
 }
 
 // Trimmed from GET /api/parcels/0055A00137000000/evidence/flag.steep_slope
@@ -136,7 +137,16 @@ const steepSlope = {
       url: 'https://data.wprdc.org/slopes.geojson',
     },
   ],
-  code_url: 'https://library.municode.com/pa/pittsburgh/codes/code_of_ordinances',
+  code_sections: [
+    {
+      section: '915.02',
+      title: 'Environmental Standards',
+      summary: 'Sets grading, cut-and-fill and retaining wall rules.',
+      url: 'https://ecode360.com/PI6865',
+      as_of: '2026-09-26',
+      effective: '2005-12-30',
+    },
+  ],
   how_to_resolve: 'Geotechnical report; walls under 10 ft, cut/fill under 25% (915.02)',
   resolved_by: {
     order: 3,
@@ -180,7 +190,16 @@ const approvals = {
     },
   ],
   sources: [],
-  code_url: 'https://library.municode.com/pa/pittsburgh/codes/code_of_ordinances',
+  code_sections: [
+    {
+      section: '915.02',
+      title: 'Environmental Standards',
+      summary: 'Sets grading, cut-and-fill and retaining wall rules.',
+      url: 'https://ecode360.com/PI6865',
+      as_of: '2026-09-26',
+      effective: '2005-12-30',
+    },
+  ],
   how_to_resolve: null,
   resolved_by: null,
   precedent: {
@@ -204,6 +223,8 @@ describe('toEvidence', () => {
     expect(e.cost).toEqual({ low: 40000, high: 150000 })
     expect(e.sources[0]).toMatchObject({ codeSection: '915.02', asOf: '2026-09-23' })
     expect(e.resolvedBy).toMatchObject({ order: 3, cost: { low: 3000, high: 8000 } })
+    expect(e.codeSections[0]).toMatchObject({ section: '915.02', effective: '2005-12-30' })
+    expect(e.versions.rulesetAsOf).toBe('2026-09-26')
     expect(e.program).toBeNull()
     expect(e.precedent).toBeNull()
   })

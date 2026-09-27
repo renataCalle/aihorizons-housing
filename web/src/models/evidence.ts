@@ -19,6 +19,8 @@ export interface Precedent {
   status: 'available' | 'unavailable' | 'illustrative'
   /** Why decisions are unavailable */
   note: string | null
+  /** What the engine counts as a similar case, in words */
+  rule: string | null
   granted: number | null
   total: number | null
   medianMonths: number | null
@@ -33,6 +35,19 @@ export interface EvidenceSource {
   asOfFromLayer: boolean
   codeSection: string | null
   url: string | null
+}
+
+/** A zoning code section, explained. */
+export interface CodeSection {
+  section: string
+  title: string | null
+  /** One plain-language sentence, drafted from the code text */
+  summary: string | null
+  url: string | null
+  /** ISO date of the code text the summary was read from */
+  asOf: string | null
+  /** ISO date of the section's latest amendment, when known */
+  effective: string | null
 }
 
 /** One finding (`flag.<id>`) or the approvals option (`option.with_relief`) of a report. */
@@ -58,8 +73,8 @@ export interface Evidence {
   /** The rules the building fails */
   ruleChecks: RuleCheck[]
   sources: EvidenceSource[]
-  /** The zoning code online, when a section is cited */
-  codeUrl: string | null
+  /** The code sections this evidence cites, explained */
+  codeSections: CodeSection[]
   howToResolve: string | null
   resolvedBy: NextStep | null
   precedent: Precedent | null

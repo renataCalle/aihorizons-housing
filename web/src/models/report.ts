@@ -13,6 +13,8 @@ export interface Versions {
   schema: string
   /** ISO date of the oldest input, when known */
   dataAsOf: string | null
+  /** ISO date of the zoning code text the rules were read from */
+  rulesetAsOf: string | null
 }
 
 export interface LeadOption {
