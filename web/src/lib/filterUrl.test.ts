@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULT_FILTERS } from '../models/filters'
-import { decodeFilters, encodeFilters } from './filterUrl'
+import { decodeFilters, encodeFilters, filterParam } from './filterUrl'
 
 describe('filters in the URL', () => {
   it('round-trips, including non-ASCII neighborhood names', () => {
@@ -25,5 +25,12 @@ describe('filters in the URL', () => {
     expect(decodeFilters(null)).toBeNull()
     const withJunk = btoa(JSON.stringify({ areas: ['Hazelwood'], hacked: true }))
     expect(decodeFilters(withJunk)).toEqual({ ...DEFAULT_FILTERS, areas: ['Hazelwood'] })
+  })
+
+  it('keeps an empty filter set next to a query, so removing every chip sticks', () => {
+    const f = filterParam(DEFAULT_FILTERS, true)
+    expect(f).not.toBeNull()
+    expect(decodeFilters(f)).toEqual(DEFAULT_FILTERS)
+    expect(filterParam(DEFAULT_FILTERS, false)).toBeNull()
   })
 })

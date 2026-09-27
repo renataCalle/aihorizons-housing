@@ -16,6 +16,17 @@ export function encodeFilters(filters: Filters): string {
     .replace(/=+$/, '')
 }
 
+/** `?f=` for no changes at all: base64url of "{}". */
+export const NO_FILTERS = 'e30'
+
+/**
+ * `?f=` for a search. Next to a query (`?q=`) it is never left out, even with every filter
+ * removed: a missing `f` means "read the query", which would bring its filters back.
+ */
+export function filterParam(filters: Filters, hasQuery: boolean): string | null {
+  return encodeFilters(filters) || (hasQuery ? NO_FILTERS : null)
+}
+
 /** Back to filters; null when the parameter is missing or unreadable (a hand-edited link). */
 export function decodeFilters(encoded: string | null): Filters | null {
   if (!encoded) return null

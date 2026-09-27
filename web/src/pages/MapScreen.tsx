@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router'
 import { fetchHealth, fetchMapFeatures, fetchParcelLayer, fetchParse, fetchSearch } from '../api'
 import { TopBar } from '../components/TopBar'
-import { decodeFilters, encodeFilters } from '../lib/filterUrl'
+import { decodeFilters, encodeFilters, filterParam } from '../lib/filterUrl'
 import { useAsync } from '../lib/useAsync'
 import { DEFAULT_FILTERS, type Filters } from '../models/filters'
 import type { ParcelLayer } from '../models/map'
@@ -105,8 +105,8 @@ export function MapScreen() {
 
   const searchParams = new URLSearchParams()
   if (q) searchParams.set('q', q)
-  const encoded = filters ? encodeFilters(filters) : ''
-  if (encoded) searchParams.set('f', encoded)
+  const f = filters ? filterParam(filters, !!q) : null
+  if (f) searchParams.set('f', f)
   const searchQuery = searchParams.toString()
 
   // Stable callbacks: the results list is memoized and only re-renders rows that change.
@@ -127,8 +127,8 @@ export function MapScreen() {
   )
   const select = useCallback((id: string | null) => update({ selected: id }), [update])
   const setFilters = useCallback(
-    (next: Filters) => update({ f: encodeFilters(next) || null }),
-    [update],
+    (next: Filters) => update({ f: filterParam(next, !!q) }),
+    [update, q],
   )
 
   const context: MapScreenContext = {
