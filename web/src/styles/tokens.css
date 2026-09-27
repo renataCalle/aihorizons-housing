@@ -42,6 +42,11 @@
   --lot-fill: #eaf1fa; /* parcels that are not candidates */
   --assembly-tint: #dce6ff;
 
+  /* 3D view: buildings pale to blue by height, sky above the horizon */
+  --building-3d: #f4f7fc;
+  --building-3d-tall: #b9cdf0;
+  --sky-3d: #a9c8f5;
+
   /* Type */
   --font-sans: 'Sora', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;

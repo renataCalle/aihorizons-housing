@@ -17,6 +17,10 @@ export interface MapPalette {
   lotFill: string
   lotLine: string
   assemblyTint: string
+  building: string
+  buildingTall: string
+  skyTop: string
+  paper: string
 }
 
 export function readPalette(root: Element = document.documentElement): MapPalette {
@@ -32,6 +36,10 @@ export function readPalette(root: Element = document.documentElement): MapPalett
     lotFill: token('--lot-fill'),
     lotLine: token('--band-none-outline'),
     assemblyTint: token('--assembly-tint'),
+    building: token('--building-3d'),
+    buildingTall: token('--building-3d-tall'),
+    skyTop: token('--sky-3d'),
+    paper: token('--paper'),
   }
 }
 
@@ -132,39 +140,58 @@ export function parcelLayers(
   return layers
 }
 
-/** Metres of height per score point in the 3D score view: a score of 100 stands 120 m tall. */
-export const METRES_PER_POINT = 1.2
+/** Elevation tiles for the 3D view: Terrarium PNGs on AWS Open Data (no key). */
+export const TERRAIN = 'terrain-dem'
+export const TERRAIN_TILES = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
+/** Pittsburgh's hills read better slightly raised. */
+export const TERRAIN_EXAGGERATION = 1.3
+/** Camera for the 3D view; every camera move keeps it while the view is on. */
+export const CAMERA_3D = { pitch: 66, bearing: -25 }
+/** Soft light from the upper left, so building sides stay pale rather than grey. */
+export const LIGHT_3D = { anchor: 'viewport' as const, position: [1.5, 210, 30] as [number, number, number], intensity: 0.25, color: '#ffffff' }
+export const CAMERA_2D = { pitch: 0, bearing: 0 }
 
 /**
- * The 3D score view: each scored lot raised by its score and coloured by its band. Lots
- * outside the search stay flat; unknown lots get a low block so they are never hidden.
+ * The 3D view's buildings: the basemap's building footprints raised to their mapped heights
+ * (OpenMapTiles `render_height`), in the blueprint's pale blues.
  */
-export function scoreExtrusion(p: MapPalette): Layer {
-  const band: ExpressionSpecification = ['get', 'band']
+export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': string } {
   return {
-    id: 'parcels-3d',
+    id: 'buildings-3d',
     type: 'fill-extrusion',
-    source: PARCELS,
-    filter: ['!=', band, 'none'],
+    source: 'openmaptiles',
+    'source-layer': 'building',
+    minzoom: 13,
+    filter: ['!=', ['get', 'hide_3d'], true],
     paint: {
       'fill-extrusion-color': [
-        'match',
-        band,
-        'fast_track',
-        p.cobalt,
-        'conditions',
-        p.sky,
-        'high_risk',
-        p.orange,
-        p.unknown,
+        'interpolate',
+        ['linear'],
+        ['coalesce', ['get', 'render_height'], 0],
+        0,
+        p.building,
+        60,
+        p.buildingTall,
       ],
-      'fill-extrusion-height': [
-        '*',
-        ['coalesce', ['get', 'score'], 3],
-        METRES_PER_POINT,
-      ],
-      'fill-extrusion-opacity': 0.92,
+      'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 0],
+      'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
+      // Heights arrive with the zoom 14 tiles: fade the buildings in as they do.
+      'fill-extrusion-opacity': ['interpolate', ['linear'], ['zoom'], 13.5, 0, 14.5, 0.9],
+      'fill-extrusion-vertical-gradient': true,
     },
+  }
+}
+
+/** Sky and horizon haze for the tilted view, in the design's paper and sky blues. */
+export function skySpec(p: MapPalette) {
+  return {
+    'sky-color': p.skyTop,
+    'horizon-color': p.paper,
+    'fog-color': p.paper,
+    'sky-horizon-blend': 0.6,
+    'horizon-fog-blend': 0.6,
+    'fog-ground-blend': 0.8,
+    'atmosphere-blend': 0,
   }
 }
 

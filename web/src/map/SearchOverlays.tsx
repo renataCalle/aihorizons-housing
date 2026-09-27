@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type RefObject } from 'react'
 import type { MapFeatures } from '../models/map'
 import type { SearchResult } from '../models/search'
 import { MAP_ID } from './BlueprintMap'
+import { CAMERA_2D, CAMERA_3D } from './layers'
 
 const WORLD: Position[] = [
   [-180, -85],
@@ -126,7 +127,15 @@ export function LeaderLine({
 }
 
 /** Zoom to the searched neighborhoods, leaving room for the panels on both sides. */
-export function FitToAreas({ features, areas }: { features: MapFeatures; areas: string[] }) {
+export function FitToAreas({
+  features,
+  areas,
+  view3d = false,
+}: {
+  features: MapFeatures
+  areas: string[]
+  view3d?: boolean
+}) {
   const map = useMap()[MAP_ID]
   const key = areas.join('|')
   useEffect(() => {
@@ -138,14 +147,25 @@ export function FitToAreas({ features, areas }: { features: MapFeatures; areas: 
     if (points.length === 0) return
     const lons = points.map((p) => p[0])
     const lats = points.map((p) => p[1])
+    const padding = { top: 110, bottom: 80, left: 420, right: 360 }
+    if (view3d) {
+      // A whole neighborhood seen tilted is too far out to show buildings: go to street level
+      // over its middle instead.
+      const center: [number, number] = [
+        (Math.min(...lons) + Math.max(...lons)) / 2,
+        (Math.min(...lats) + Math.max(...lats)) / 2,
+      ]
+      map.easeTo({ center, zoom: 15.5, padding, duration: 1200, ...CAMERA_3D })
+      return
+    }
     map.fitBounds(
       [
         [Math.min(...lons), Math.min(...lats)],
         [Math.max(...lons), Math.max(...lats)],
       ],
-      { padding: { top: 110, bottom: 80, left: 420, right: 360 }, duration: 600, maxZoom: 17.5 },
+      { padding, duration: 600, maxZoom: 17.5, ...CAMERA_2D },
     )
-  }, [map, features, key])
+  }, [map, features, key, view3d])
   return null
 }
 
@@ -160,9 +180,11 @@ export interface Padding {
 export function FlyToSelection({
   center,
   padding,
+  view3d = false,
 }: {
   center: [number, number] | null
   padding: Padding
+  view3d?: boolean
 }) {
   const map = useMap()[MAP_ID]
   const key = center ? center.join(',') : ''
@@ -176,7 +198,8 @@ export function FlyToSelection({
       zoom: Math.max(map.getZoom(), 17),
       padding: { top, right, bottom, left },
       duration: 700,
+      ...(view3d ? CAMERA_3D : CAMERA_2D),
     })
-  }, [map, key, pad])
+  }, [map, key, pad, view3d])
   return null
 }

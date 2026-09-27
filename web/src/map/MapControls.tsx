@@ -3,12 +3,12 @@ import { MAP_ID } from './BlueprintMap'
 
 interface Props {
   show3d?: boolean
-  /** The 3D score view is on */
+  /** The 3D view is on */
   view3d?: boolean
   onToggle3d?: () => void
 }
 
-/** 3D score view toggle and zoom, bottom right. */
+/** 3D view toggle and zoom, bottom right. */
 export function MapControls({ show3d = true, view3d = false, onToggle3d }: Props) {
   const maps = useMap()
   const map = maps[MAP_ID]
@@ -20,7 +20,7 @@ export function MapControls({ show3d = true, view3d = false, onToggle3d }: Props
           <button
             type="button"
             className="map-control map-control-3d"
-            aria-label="3D score view"
+            aria-label="3D view"
             aria-pressed={view3d}
             disabled={!onToggle3d}
             onClick={onToggle3d}

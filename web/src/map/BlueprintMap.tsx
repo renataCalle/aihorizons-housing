@@ -20,8 +20,15 @@ import {
   INTERACTIVE_LAYERS,
   PARCELS,
   parcelLayers,
+  buildingExtrusion,
+  CAMERA_2D,
+  CAMERA_3D,
+  LIGHT_3D,
   readPalette,
-  scoreExtrusion,
+  skySpec,
+  TERRAIN,
+  TERRAIN_EXAGGERATION,
+  TERRAIN_TILES,
 } from './layers'
 import { ringCenter } from './readout'
 
@@ -45,7 +52,7 @@ interface Props {
   onHover?: (parcelId: string | null) => void
   /** Show transit stops (the Layers menu). */
   showTransit?: boolean
-  /** 3D score view: lots raised by score, camera tilted */
+  /** 3D view: real buildings and terrain, camera tilted; lots stay coloured on the ground */
   view3d?: boolean
   /** Extra sources, layers and markers drawn over the parcels. */
   children?: ReactNode
@@ -94,7 +101,8 @@ export function BlueprintMap({
     [palette, selectedId, hatchReady, hoveredId],
   )
   const overlays = useMemo(() => featureLayers(palette), [palette])
-  const extrusion = useMemo(() => scoreExtrusion(palette), [palette])
+  const buildings = useMemo(() => buildingExtrusion(palette), [palette])
+  const sky = useMemo(() => skySpec(palette), [palette])
 
   if (!style) return <div className="map-canvas map-loading" aria-hidden="true" />
 
@@ -107,7 +115,11 @@ export function BlueprintMap({
       maxZoom={20}
       style={{ position: 'absolute', inset: 0 }}
       attributionControl={{ compact: true }}
-      interactiveLayerIds={view3d ? [extrusion.id, ...INTERACTIVE_LAYERS] : INTERACTIVE_LAYERS}
+      interactiveLayerIds={INTERACTIVE_LAYERS}
+      maxPitch={70}
+      terrain={view3d ? { source: TERRAIN, exaggeration: TERRAIN_EXAGGERATION } : undefined}
+      sky={view3d ? sky : undefined}
+      light={view3d ? LIGHT_3D : undefined}
       cursor={hovering ? 'pointer' : 'grab'}
       onLoad={(e) => {
         const map = e.target
@@ -137,7 +149,6 @@ export function BlueprintMap({
           {layers.map((layer) => (
             <Layer key={layer.id} {...layer} />
           ))}
-          {view3d && <Layer {...extrusion} />}
         </Source>
       )}
       {features && (
@@ -151,6 +162,19 @@ export function BlueprintMap({
           ))}
         </Source>
       )}
+      {view3d && (
+        <>
+          <Source
+            id={TERRAIN}
+            type="raster-dem"
+            tiles={[TERRAIN_TILES]}
+            encoding="terrarium"
+            tileSize={256}
+            maxzoom={15}
+          />
+          <Layer {...buildings} />
+        </>
+      )}
       {children}
       <TiltCamera view3d={view3d} />
       {selectedCenter && (
@@ -162,16 +186,18 @@ export function BlueprintMap({
   )
 }
 
-/** Tilt and turn the camera for the 3D score view, and back to flat for the map. */
+/** Tilt and turn the camera for the 3D view, and back to flat for the map. */
 function TiltCamera({ view3d }: { view3d: boolean }) {
   const { current: map } = useMap()
   useEffect(() => {
-    if (!map) return
+    // A fit to the searched area or a glide to the selection already carries the tilt.
+    if (!map || map.isMoving()) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // Buildings carry heights from zoom 14: come close enough to read them as a city.
     map.easeTo({
-      pitch: view3d ? 55 : 0,
-      bearing: view3d ? -30 : 0,
-      duration: reduce ? 0 : 900,
+      ...(view3d ? CAMERA_3D : CAMERA_2D),
+      zoom: view3d ? Math.max(map.getZoom(), 15) : map.getZoom(),
+      duration: reduce ? 0 : 1200,
     })
   }, [map, view3d])
   return null

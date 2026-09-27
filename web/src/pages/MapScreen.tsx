@@ -34,7 +34,6 @@ function matchLayer(parcels: ParcelLayer, response: SearchResponse | null): Parc
   const ranks = new Map(response.results.map((r) => [r.parcel.id, r.rank]))
   // Colour by what each lot is ranked on: the searched building type, or the engine's pick.
   const bands = new Map(response.results.map((r) => [r.parcel.id, r.scored?.band]))
-  const scores = new Map(response.results.map((r) => [r.parcel.id, r.scored?.score]))
   const showAssemblies = response.filters.showAssemblies
   return {
     ...parcels,
@@ -45,8 +44,6 @@ function matchLayer(parcels: ParcelLayer, response: SearchResponse | null): Parc
         properties: {
           ...f.properties,
           band: rank ? (bands.get(f.properties.id) ?? f.properties.band) : 'none',
-          // The 3D view raises each lot by the same score it is coloured by.
-          score: rank ? (scores.get(f.properties.id) ?? f.properties.score) : null,
           rank: rank ?? null,
           assemblyId: showAssemblies ? f.properties.assemblyId : null,
         },
@@ -105,7 +102,7 @@ export function MapScreen() {
   )
 
   const selectedId = reportId ?? params.get('selected')
-  // 3D score view (docs/01, "3D score view"): lots raised by score, camera tilted.
+  // 3D view: the city's buildings and hills in 3D, lots coloured on the ground.
   const view3d = params.get('view') === '3d'
   const selectedCenter = useMemo(() => {
     if (!selectedId) return null
@@ -192,13 +189,16 @@ export function MapScreen() {
           {featureData && filters && (
             <>
               <AreaOverlay features={featureData} areas={filters.areas} />
-              {!selectedId && <FitToAreas features={featureData} areas={filters.areas} />}
+              {!selectedId && (
+                <FitToAreas features={featureData} areas={filters.areas} view3d={view3d} />
+              )}
             </>
           )}
           {response && <RankTags results={response.results} />}
           <FlyToSelection
             center={selectedCenter}
             padding={reportId ? REPORT_PADDING : RESULTS_PADDING}
+            view3d={view3d}
           />
         </BlueprintMap>
 
