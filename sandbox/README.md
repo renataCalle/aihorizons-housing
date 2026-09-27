@@ -20,17 +20,20 @@ uv run python -m sandbox.navigator 52-H-93 --no-live     # stored copy only
 
 Reports use live lookups for fast-changing records by default and say which ones were live.
 
-Runs the v0 engine (`engine_v0/`: rules engine -> constraint flags -> entitlement odds ->
-pro forma Monte Carlo -> score -> next steps) and writes the full JSON to
+Runs the engine (`navigator_engine` in `engine/`: rules engine -> constraint flags ->
+entitlement odds -> pro forma Monte Carlo -> score -> next steps) and writes the full JSON to
 `data/output/<parcel_id>.json`. Every non-data number lives in
-`engine_v0/assumptions.py` (and the flag table in `engine_v0/constraints.py`), marked
+`engine/src/navigator_engine/assumptions.py` (and the flag table in `constraints.py`), marked
 PLACEHOLDER until replaced by local benchmarks or calibration; the report lists them.
 
 ## Run it
 
 The data code (fetch, build, features, SiteContext, refresh, live lookups) now lives in
 `pipeline/` as `navigator_pipeline`; see `pipeline/README.md`. The sandbox keeps the research
-prototypes: the v0 engine, rules drafts, golden parcels, navigator and report.
+prototypes: rules extraction, golden parcels, navigator and report. The engine moved to
+`engine/` (`navigator_engine`); the rules tables it reads are in
+`engine/src/navigator_engine/config/rules/`. The Hazelwood results bundle is published by
+`uv run python -m navigator_pipeline.publish` (see `results/README.md`).
 
 
 ```bash
@@ -47,7 +50,7 @@ Manual downloads (sites that block this client) go in `data/manual/`. From the
 zoning code PDFs saved there, a draft rules table is generated for review:
 
 ```bash
-uv run python -m sandbox.rules.extract         # -> sandbox/rules/residential_draft.csv
+uv run python -m sandbox.rules.extract         # -> engine/src/navigator_engine/config/rules/residential_draft.csv
 ```
 
 Each row has the district, standard, value, code section, effective date, source page, and
@@ -58,20 +61,19 @@ absent from Pittsburgh's code, or still missing.
 Two companion drafts were read by hand from the 254-page Title Nine download
 (`data/manual/zoning_code/`), because their tables do not survive text extraction:
 
-- `rules/use_permissions_draft.csv`: which residential product types each district allows
+- `use_permissions_draft.csv` (same folder): which residential product types each district allows
   (P / A / S / C) from the 911.02 use table, read from the page image.
-- `rules/standards_draft.csv`: parking minimums and reductions (914), Hillside conditions
+- `standards_draft.csv`: parking minimums and reductions (914), Hillside conditions
   (911.04.A.69), grading and retaining-wall limits (915.02), ADU overlay (912.08).
 
-Golden parcels and the rules engine prototype:
+Golden parcels:
 
 ```bash
-uv run python -m sandbox.golden --export              # pick 8 golden parcels -> fixtures/golden/site_context/
-uv run python -m sandbox.engine_v0.rules_engine       # envelope + relief check on each fixture
+uv run python -m sandbox.golden --export              # pick 8 golden parcels -> fixtures/golden/
 ```
 
 `golden.py` encodes each spec case as a filter that isolates one condition (the picks are in
-`golden_parcels.json`). `engine_v0/rules_engine.py` reads only a fixture and the rules CSVs:
+`golden_parcels.json`). `navigator_engine/rules_engine.py` reads only a context and the rules tables:
 strict envelope from the district table, a contextual envelope (925.06.C, 3 ft sides) when
 both neighbors are built, the 911.04.A.69A townhome width rule, 925.01.C undersized lots,
 and the UM-O / FP-O overlay procedures. Product templates and the 25% dimensional-variance

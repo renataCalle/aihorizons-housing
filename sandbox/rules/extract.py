@@ -2,10 +2,10 @@
 
     uv run python -m sandbox.rules.extract
 
-Writes sandbox/rules/residential_draft.csv: one row per district and standard, each with
-its code section, effective date, source page, and the verbatim source line. Every row
-ships with reviewed_by empty; a person checks each one against the PDF before it moves
-into engine config (spec: "a person reviews every row before it ships").
+Writes the engine's rules table (engine/src/navigator_engine/config/rules/residential_draft.csv):
+one row per district and standard, each with its code section, effective date, source page,
+and the verbatim source line. Every row ships with reviewed_by empty; a person checks each
+one against the PDF (spec: "a person reviews every row before it ships").
 
 Covers what these chapters contain: minimum lot size, setbacks, height, stories, and the
 Hillside disturbance limit. Use permissions (911.02), parking (914), and coverage and
@@ -20,7 +20,10 @@ from pathlib import Path
 from navigator_pipeline.settings import MANUAL
 
 CODE = MANUAL / "zoning_code"
-OUT = Path(__file__).parent / "residential_draft.csv"
+OUT = (
+    Path(__file__).resolve().parents[2]
+    / "engine/src/navigator_engine/config/rules/residential_draft.csv"
+)
 
 USE_SUBDISTRICTS = ["R1D", "R1A", "R2", "R3", "RM"]
 DEV_SUBDISTRICTS = {  # heading in 903.03 -> map suffix, sub-section letter

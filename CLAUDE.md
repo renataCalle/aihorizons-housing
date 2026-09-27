@@ -11,9 +11,10 @@ a pro forma, and next steps. The full product spec is "Development Feasibility &
 Navigator — Specification.md" (kept outside the repo); consult it before designing any module.
 
 Contracts v0.1 (SiteContext, SiteAnalysis) are in `contracts/`; read `contracts/README.md`
-first. The v0 engine is prototyped in `sandbox/engine_v0/` and moves to `engine/` next;
-`engine/`, `pipeline/` and `api/` are still scaffolds. Golden fixtures (8 real parcels, context
-and analysis) are in `fixtures/golden/`.
+first. The v0 engine is `engine/` (`navigator_engine.analyze`), the data pipeline is
+`pipeline/`, and the API and web app are in `api/` and `web/`. Golden fixtures (8 real parcels,
+context and analysis) are in `fixtures/golden/`; the committed Hazelwood results bundle is in
+`results/`.
 
 ## Commands
 
@@ -43,8 +44,8 @@ assumption (cost premium, severity, approval probability, score, recommendations
 versioned Pydantic contracts in `contracts/` are the only interface between the two:
 
 - `SiteContext` (facts): built by `pipeline/`, the ingestion and feature builder.
-- `SiteAnalysis` (judgments): built by `engine/` via `analyze`, `analyze_summary`,
-  `attribute_bottlenecks`, `list_rulesets`.
+- `SiteAnalysis` (judgments): built by `engine/` via `analyze(context, overrides, program)`
+  (planned: `analyze_summary`, `attribute_bottlenecks`, `list_rulesets`).
 
 `api/` (FastAPI) imports the engine as a library, not a service. `web/` (React + MapLibre)
 renders SiteAnalysis generically: flags, assumptions, and next steps are arrays, so new flag
@@ -91,15 +92,23 @@ is visible to both owners.
 (clean GeoParquet, EPSG:2272) → `features` (per-parcel facts) → `site_context.build(ids,
 live=True)`; `refresh` re-pulls changed sources on a schedule and `live` fetches fast-changing
 per-parcel records at report time, falling back to the stored copy. Data lives in `data/`
-(gitignored) or `NAVIGATOR_DATA_DIR`. See `pipeline/README.md`.
+(gitignored except `data/manual/`) or `NAVIGATOR_DATA_DIR`. See `pipeline/README.md`.
 
-`sandbox/` holds research prototypes outside the production import graph: the v0 engine
-(`engine_v0/`), rules drafts, golden parcels, `navigator` and `report`. Its README lists data
+`results/` is the committed results bundle (Hazelwood + golden parcels, under 20 MB): written
+by `uv run python -m navigator_pipeline.publish`, read by `navigator_pipeline.bundle.load()`,
+and checked in CI by `pipeline/tests/test_results_bundle.py` (contracts, ID consistency, size,
+no personal data). Regenerate it after an engine or data change. Commit results, never raw
+data: large files cannot be removed from history later.
+
+`sandbox/` holds research prototypes outside the production import graph: rules extraction
+(it writes `engine/src/navigator_engine/config/rules/`), golden parcels, `navigator` (CLI) and
+`report` (HTML). Its README lists data
 gaps (notably: pittsburghpa.gov returns 403, so ZBA decisions are unavailable).
 Every outbound request sends exactly `User-Agent: market-data-client/1.0`; never add contact
 details or spoof a browser to get past a block.
 
-Raw data never goes in git; `data/`, `*.duckdb`, `*.parquet`, and shapefiles are gitignored.
+Data never goes in git; `data/` (except the hand-downloaded zoning PDFs in `data/manual/`),
+`*.duckdb`, `*.parquet`, and shapefiles are gitignored.
 
 ## Web and API workstream
 

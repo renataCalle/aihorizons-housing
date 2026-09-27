@@ -240,7 +240,12 @@
       "revenue_basis": "for-sale: 9 new-build comps $293-$311/sf",
       "entitlement_basis": [],
       "gfa_sqft": 1500,
-      "unit_sqft": 1500
+      "unit_sqft": 1500,
+      "site_cost_premium": {
+        "p10": 44381.15089524187,
+        "p50": 64701.809542145726,
+        "p90": 83815.31915461588
+      }
     }
   ],
   "next_steps": [
@@ -1807,8 +1812,8 @@
     }
   },
   "versions": {
-    "engine": "sandbox-v0.1",
-    "ruleset": "sandbox rules drafts 2026-09-26",
+    "engine": "0.1.0",
+    "ruleset": "rules drafts 2026-09-26",
     "schema": "0.1.0",
     "data_as_of": "2018-07-27"
   }

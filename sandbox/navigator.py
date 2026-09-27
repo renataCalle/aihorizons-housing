@@ -16,9 +16,9 @@ import sys
 
 import pandas as pd
 
+from navigator_engine import analyze
 from navigator_pipeline import site_context
 from navigator_pipeline.settings import DATA_DIR
-from sandbox.engine_v0.analyze import analyze
 from sandbox.report import render
 
 DATA = DATA_DIR

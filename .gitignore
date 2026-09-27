@@ -12,23 +12,15 @@ dist/
 # Notebooks
 .ipynb_checkpoints/
 
-# Data. Raw downloads stay local: they are large (up to 416 MB per file), include owner
-# mailing addresses that cleaning removes, and navigator_pipeline re-fetches them. The runtime
-# store is committed so a fresh clone can build a SiteContext at once: clean tables, per-parcel
-# facts, the manual zoning PDFs, and the provenance manifests.
+# Data. The data store (raw downloads, clean tables, per-parcel facts: about 1.2 GB) stays
+# local and is rebuilt by navigator_pipeline; raw downloads include owner mailing addresses
+# that cleaning removes. The repo ships the small results bundle in results/ instead. Only the
+# hand-downloaded zoning code PDFs are committed, since the city's site blocks automated clients.
 data/*
-!data/clean/
-!data/features/
 !data/manual/
-!data/raw/
-data/raw/*/*
-!data/raw/*/_manifest.json
 *.duckdb
 *.duckdb.wal
 *.parquet
-!data/clean/*.parquet
-!data/features/*.parquet
-data/features/*_adhoc_*.parquet
 *.gpkg
 *.shp
 *.shx

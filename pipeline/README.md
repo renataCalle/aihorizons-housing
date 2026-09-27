@@ -25,8 +25,24 @@ ctx = site_context.build(["0052H00093000000"], live=False)  # stored copy only, 
 copy from <date>"`. A report never fails because a source is down. Results are cached for an
 hour per parcel.
 
-For the API: a `PipelineSiteSource` can call `site_context.build(ids, live=True)` and validate
-the result with `navigator_contracts.SiteContext`.
+Tables are loaded once per process (~2 s) and reloaded when the refresh rewrites them, so
+later contexts take about 0.1 s. For the API: a `PipelineSiteSource` can call
+`site_context.build(ids, live=True)` and validate the result with
+`navigator_contracts.SiteContext`.
+
+## Publish the results bundle
+
+```bash
+uv run python -m navigator_pipeline.publish               # Hazelwood + golden parcels -> results/
+uv run python -m navigator_pipeline.publish --area Greenfield --out /tmp/greenfield
+```
+
+Scores every vacant lot in the area with the engine (from the stored copy, so it is
+reproducible) and writes the small bundle the API and demo serve without the data store:
+summaries, per-building-type CSV, analyses and contexts as gzipped JSON Lines, and simplified
+EPSG:4326 geometry. About 90 s for Hazelwood; fails if the bundle exceeds 20 MB. Load it with
+`navigator_pipeline.bundle.load()`; `pipeline/tests/test_results_bundle.py` checks it in CI.
+Files and columns: `results/README.md`.
 
 ## Keep the store fresh
 
@@ -57,13 +73,19 @@ only if one of their inputs changed. Every run appends to `data/refresh_log.json
 
 ## Data location
 
-`data/` at the repository root, or `NAVIGATOR_DATA_DIR`. The runtime store is committed, so a
-fresh clone works immediately: cleaned tables (`data/clean/`), per-parcel facts
-(`data/features/`), the manual zoning PDFs, and each source's `_manifest.json`. Raw downloads
-stay out of git (up to 416 MB per file, and they include owner mailing addresses that cleaning
-removes); the refresh fetches any raw input it needs. To rebuild everything from scratch:
-`fetch`, then `build`, then `features` (about 30 minutes and 1.2 GB). The zoning code PDFs in `data/manual/zoning_code/` are downloaded by
-hand, because the city's sites block automated clients.
+`data/` at the repository root, or `NAVIGATOR_DATA_DIR`. The store is not in git (only the
+zoning code PDFs in `data/manual/zoning_code/` are, because the city's sites block automated
+clients and they are downloaded by hand). Raw downloads also include owner mailing addresses
+that cleaning removes. The repository ships the results bundle (`results/`) instead.
+
+To get a store: extract the copy committed earlier (still in history, as of 2026-09-26) and
+refresh it, or rebuild from scratch with `fetch`, `build`, `features` (about 30 minutes and
+1.2 GB):
+
+```bash
+git archive 5552051 data/clean data/features data/raw | tar -x
+uv run python -m navigator_pipeline.refresh   # fetches any raw input it needs
+```
 
 ## Rules for outbound requests
 
@@ -76,4 +98,5 @@ decisions, zoning code) and WPRDC's SQL endpoint.
 
 `catalog` (sources and cadences) · `http` (the one client) · `fetch` (download + manifest) ·
 `build` (clean tables) · `features` (per-parcel facts) · `site_context` (assembly) · `live`
-(per-parcel lookups) · `refresh` (scheduled updates) · `settings` (data location).
+(per-parcel lookups) · `refresh` (scheduled updates) · `publish` / `bundle` (results bundle) ·
+`settings` (data location).

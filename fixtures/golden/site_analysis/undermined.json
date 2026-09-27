@@ -190,7 +190,12 @@
       "revenue_basis": "for-sale: 7 new-build comps $246-$328/sf",
       "entitlement_basis": [],
       "gfa_sqft": 2850,
-      "unit_sqft": 950
+      "unit_sqft": 950,
+      "site_cost_premium": {
+        "p10": 31396.892764513526,
+        "p50": 50367.78305642776,
+        "p90": 68903.31344115501
+      }
     },
     {
       "label": "with_relief",
@@ -229,7 +234,12 @@
         "variance: PLACEHOLDER prior (ZBA)"
       ],
       "gfa_sqft": 4250,
-      "unit_sqft": 850
+      "unit_sqft": 850,
+      "site_cost_premium": {
+        "p10": 31946.719481992634,
+        "p50": 50150.50140942217,
+        "p90": 68518.04424285605
+      }
     }
   ],
   "next_steps": [
@@ -1813,8 +1823,8 @@
     }
   },
   "versions": {
-    "engine": "sandbox-v0.1",
-    "ruleset": "sandbox rules drafts 2026-09-26",
+    "engine": "0.1.0",
+    "ruleset": "rules drafts 2026-09-26",
     "schema": "0.1.0",
     "data_as_of": "2018-07-27"
   }

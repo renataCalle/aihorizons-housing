@@ -112,6 +112,7 @@ class ProgramOption(Contract):
     score: Range
     revenue_basis: str  # comps or rent basis, in words
     entitlement_basis: list[str]  # where the approval odds come from
+    site_cost_premium: Range | None = None  # USD, simulated sum of the priced site constraints
 
 
 class Step(Contract):

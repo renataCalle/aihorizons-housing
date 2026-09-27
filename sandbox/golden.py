@@ -10,6 +10,7 @@ broken by a seeded shuffle so the pick is reproducible.
 """
 
 import argparse
+import io
 import json
 import subprocess
 import sys
@@ -18,9 +19,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from navigator_engine import analyze
+from navigator_engine.rules_engine import RULES
 from navigator_pipeline import site_context
 from navigator_pipeline.settings import CLEAN, FEATURES
-from sandbox.engine_v0.analyze import analyze
 
 ROOT = Path(__file__).resolve().parents[1]
 FEAT = FEATURES
@@ -53,7 +55,7 @@ def load() -> pd.DataFrame:
     f["title_clear"] = ~f["condemned"] & f["tax_lien_count"].eq(0)
     f["simple_zoning"] = f["zoning_district_count"].eq(1) & f["historic_district_share"].eq(0)
     f["street"] = f["frontage_type"].eq("street")
-    rules = pd.read_csv(Path(__file__).parent / "rules" / "residential_draft.csv")
+    rules = pd.read_csv(io.StringIO((RULES / "residential_draft.csv").read_text()))
     min_lot = rules[rules["standard"].eq("min_lot_size")].groupby("district")["value"].first()
     need = f["zoning_primary"].map(min_lot)
     f["meets_min_lot"] = need.isna() | (f["lot_area_sqft_gis"] >= need)

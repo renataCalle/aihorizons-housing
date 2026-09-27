@@ -1585,12 +1585,14 @@ source = { editable = "engine" }
 dependencies = [
     { name = "navigator-contracts" },
     { name = "numpy" },
+    { name = "shapely" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "navigator-contracts", editable = "contracts" },
     { name = "numpy", specifier = ">=2.0" },
+    { name = "shapely", specifier = ">=2.0" },
 ]
 
 [[package]]
@@ -1602,6 +1604,7 @@ dependencies = [
     { name = "geopandas" },
     { name = "httpx" },
     { name = "navigator-contracts" },
+    { name = "navigator-engine" },
     { name = "pyarrow" },
     { name = "pyogrio" },
     { name = "pyproj" },
@@ -1613,6 +1616,7 @@ requires-dist = [
     { name = "geopandas", specifier = ">=1.0" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "navigator-contracts", editable = "contracts" },
+    { name = "navigator-engine", editable = "engine" },
     { name = "pyarrow", specifier = ">=18" },
     { name = "pyogrio", specifier = ">=0.10" },
     { name = "pyproj", specifier = ">=3.7" },
