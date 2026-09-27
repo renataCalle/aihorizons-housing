@@ -211,11 +211,6 @@ export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) 
             ),
           )}
         </ul>
-        <div className="omnibox-hints" aria-hidden="true">
-          <span>↵ {matches.length > 0 && !suggestOnly ? 'Open report' : 'Search'}</span>
-          <span>↑↓ Move</span>
-          <span>Esc Close</span>
-        </div>
       </div>
     </div>
   )
@@ -292,11 +287,6 @@ function ParcelRow({ id, match, query, active, onHover, onChoose }: RowProps) {
           <span className="omnibox-row-band">Not a candidate</span>
         )}
       </span>
-      {active && (
-        <span className="omnibox-row-enter" aria-hidden="true">
-          ↵
-        </span>
-      )}
     </li>
   )
 }
