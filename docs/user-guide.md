@@ -55,11 +55,13 @@ on the map. You get a full site report.
 ### Find lots that fit what you want to build
 
 Describe what you're after in your own words, for example *"3 townhomes in Hazelwood under
-$25k"* or *"flat lots near a bus stop, no zoning hearing"*. Pencil It turns your sentence into
-search filters, shows them as chips you can remove or edit, and lists the matching lots, best
-first. You can also set the filters by hand: building type and number of homes, neighbourhoods,
-approval path, land price, lot size, flat lots, near transit, vacant or public land, and hazards
-to exclude.
+$25k"* or *"flat lots near a bus stop, no zoning hearing"*. Pencil It uses AI to turn your
+sentence into search filters, shows them as chips you can remove or edit, and lists the
+matching lots, best first. The AI only sets the filters: the scores and the ranking never
+come from it. If AI search is unavailable, the search still works from keywords and shows a
+"Basic search" tag. You can also set the filters by hand: building type and number of homes,
+neighbourhoods, approval path, land price, lot size, flat lots, near transit, vacant or public
+land, and hazards to exclude.
 
 It also shows **near misses**: lots that would match if you relaxed one filter.
 

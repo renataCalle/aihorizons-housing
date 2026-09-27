@@ -42,7 +42,9 @@ cd web && npm install && cd ..
 ```
 
 **2. Optional: AI search.** Copy `.env.example` to `.env` and set `ANTHROPIC_API_KEY`.
-Without a key, search still works with the built-in rule-based parser.
+Search then reads plain-language text with Claude (Haiku 4.5, `AI_SEARCH_MODEL`). Without a
+key, or when a call fails (for example no API credit), search still works with the built-in
+rule-based parser and shows a "Basic search" tag. `/api/health` reports `ai_search`.
 
 ```bash
 cp .env.example .env

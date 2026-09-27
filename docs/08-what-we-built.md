@@ -114,10 +114,10 @@ kill probabilities for next steps. Listed in technical report Appendix B.
 
 | Endpoint | Returns | Status |
 |---|---|---|
-| `GET /api/health` | Status, site source, versions, whether data is illustrative | Built |
+| `GET /api/health` | Status, site source, versions, whether data is illustrative, whether AI search is on (`ai_search`) | Built |
 | `GET /api/examples` | A parcel ID, an address and an AI prompt taken from the data served, for the landing chips | Built |
 | `GET /api/lookup?q=` | Up to 8 matches on county ID (dashed, compact, partial), city block-lot or address, with score and band | Built |
-| `POST /api/search/parse` | Plain language → `SearchFilters`, plus readings and anything not understood. Rule-based parser (keywords, regex, fuzzy matching for typos) | Built. The AI parser (Claude with a forced tool call, `docs/05`) is **not built**: `ANTHROPIC_API_KEY` is read into settings but never used |
+| `POST /api/search/parse` | Plain language → `SearchFilters`, plus readings and anything not understood. AI parser (`search/parse_ai.py`): Claude Haiku 4.5 with one forced tool call whose schema is `SearchFilters` (neighbourhoods limited to the city's 90 names); it returns only the fields asked about, which are validated, alias-expanded and merged with the current filters; answers cached per process. Falls back to the rule-based parser (keywords, regex, fuzzy matching for typos) with no key or on any API error, and says which one answered (`parser`) | Built |
 | `POST /api/search` | Filtered, ranked lots; removable filter chips; near misses (one filter away); an empty-state suggestion ("remove X → N sites"); filters it couldn't apply | Built |
 | `POST /api/search/summary` | Lots per band, what holds sites back, near misses, assemblies (for the Area view) | Built; land headroom added on `feat/web-api` |
 | `GET /api/neighborhoods` | Names with candidate counts | Built |
@@ -142,7 +142,7 @@ public land, cheap, fast …) maps to fixed thresholds; neighbourhood aliases ("
 |---|---|
 | Faded full-screen city map; click any lot to open its report | Built |
 | Headline "What can you build here?" and one search box | Built |
-| Three example chips (ID, Address, ✦ AI) filled from the served data; clicking fills the box and opens suggestions | Built (the "AI" chip runs the rule-based parser) |
+| Three example chips (ID, Address, ✦ AI) filled from the served data; clicking fills the box and opens suggestions | Built |
 | "Open the map" button; "Illustrative data" badge on mock data | Built |
 | "Saved sites" | Not built |
 
@@ -152,10 +152,10 @@ public land, cheap, fast …) maps to fixed thresholds; neighbourhood aliases ("
 |---|---|
 | Detects parcel ID / block-lot / address / description as you type, with a "Detected: …" or "AI search" tag | Built |
 | Dropdown of matching lots with score and band ("Not a candidate" when unscored); Enter opens the report | Built |
-| "Search with AI for …" row for descriptions; Enter runs the search | Built; the label says AI but the rule-based parser answers |
+| "Search with AI for …" row for descriptions; Enter runs the search | Built |
 | Keyboard: ↑↓, Enter, Esc | Built |
 | "How we read it" preview in the dropdown (readings, not understood, "Show N sites") | Not built: the reading shows as filter chips on the results screen instead |
-| "Basic search" tag when the fallback parser was used | Not built (the API reports it) |
+| "Basic search" tag next to the filter chips when the rule-based parser answered (no key, no credit, or an API error) | Built |
 
 ### 5.3 Results (`/search?q=…`)
 
@@ -235,7 +235,7 @@ A panel over the map; "Back to N lots" pill; Esc closes; focus moves into the pa
 - Last end-to-end run (`f0d22ac`): 256 Python tests, 110 web tests, 71 live API checks.
 - Golden fixtures are snapshot tests: an engine change that moves a golden score shows up in
   review.
-- Search eval: 43 prompts (`uv run pytest -m eval`), run against the rule-based parser; all pass.
+- Search eval: 43 prompts (`uv run pytest -m eval -s`); it uses the AI parser when `ANTHROPIC_API_KEY` works, else the rule-based one, and prints which. Rule-based: 86/86 fields. AI parser (Haiku 4.5): 85–86/86 over two runs (99–100%), about 1–1.5 s per search. The AI parser also reads loose phrasing the rules miss ("a couple of rowhouses without going before the zoning board" → 2 townhomes, by-right only). What the rules know can't be a filter (places outside the city, school quality, rentals, ADUs) is always added to "not understood", even if the model leaves it out. Strict tool use was tried and dropped: the API rejects the SearchFilters schema as too complex.
 
 ---
 
