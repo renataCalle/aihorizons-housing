@@ -3,6 +3,7 @@ import {
   formatAssumption,
   formatAssumptionRange,
   formatMaxLand,
+  formatMonthYear,
   formatMoneyRange,
   formatMonthsRange,
   formatNumberRange,
@@ -56,5 +57,12 @@ describe('format', () => {
     expect(formatAssumptionRange(200, 320, '$/sf')).toBe('$200–$320/sq ft')
     expect(formatAssumptionRange(9, 16, 'months')).toBe('9–16 months')
     expect(formatAssumptionRange(0.15, 0.25, 'share')).toBe('15–25%')
+  })
+})
+
+describe('formatMonthYear', () => {
+  it('reads the date as written', () => {
+    expect(formatMonthYear('2026-09-01')).toBe('Sep 2026')
+    expect(formatMonthYear('2018-07-27')).toBe('Jul 2018')
   })
 })

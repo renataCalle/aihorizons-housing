@@ -96,3 +96,11 @@ export function sentenceCase(text: string): string {
   const lower = text.toLowerCase()
   return lower.charAt(0).toUpperCase() + lower.slice(1)
 }
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+/** "2026-09-23" -> "Sep 2026" (no time zone shift: the date is read as written). */
+export function formatMonthYear(isoDate: string): string {
+  const [year, month] = isoDate.split('-')
+  return `${MONTHS[Number(month) - 1] ?? ''} ${year}`.trim()
+}

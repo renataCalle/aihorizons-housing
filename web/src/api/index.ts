@@ -37,17 +37,28 @@ export async function fetchSiteReport(
   signal?: AbortSignal,
   program?: Program | null,
 ): Promise<SiteReport> {
+  const path = `/api/parcels/${encodeURIComponent(parcelId)}${programQuery(program)}`
+  return toSiteReport(await getJson(path, signal))
+}
+
+function programQuery(program?: Program | null): string {
   const query = new URLSearchParams()
   if (program) {
     query.set('product_type', program.productType)
     if (program.units !== null) query.set('units', String(program.units))
   }
-  const path = `/api/parcels/${encodeURIComponent(parcelId)}${query.size ? `?${query}` : ''}`
-  return toSiteReport(await getJson(path, signal))
+  return query.size ? `?${query}` : ''
 }
 
-export async function fetchEvidence(evidenceId: string, signal?: AbortSignal): Promise<Evidence> {
-  return toEvidence(await getJson(`/api/evidence/${encodeURIComponent(evidenceId)}`, signal))
+/** One finding or the approvals option of the report for the same `program`. */
+export async function fetchEvidence(
+  parcelId: string,
+  evidenceId: string,
+  signal?: AbortSignal,
+  program?: Program | null,
+): Promise<Evidence> {
+  const path = `/api/parcels/${encodeURIComponent(parcelId)}/evidence/${encodeURIComponent(evidenceId)}`
+  return toEvidence(await getJson(`${path}${programQuery(program)}`, signal))
 }
 
 export async function fetchParcelLayer(signal?: AbortSignal): Promise<ParcelLayer> {

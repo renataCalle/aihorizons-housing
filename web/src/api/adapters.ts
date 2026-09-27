@@ -10,7 +10,9 @@ import type { MapBand, MapFeatureKind, MapFeatures, ParcelLayer } from '../model
 import type {
   Analysis,
   Band,
+  NextStep,
   Parcel,
+  RuleCheck,
   RuleChecks,
   Severity,
   SiteReport,
@@ -172,14 +174,7 @@ export function toAnalysis(a: S['SiteAnalysis']): Analysis {
       revenueBasis: o.revenue_basis,
       entitlementBasis: o.entitlement_basis,
     })),
-    nextSteps: a.next_steps.map((s) => ({
-      order: s.order,
-      action: s.action,
-      who: s.who,
-      cost: { low: s.cost_usd[0], high: s.cost_usd[1] },
-      why: s.why,
-      flagIds: s.flag_ids,
-    })),
+    nextSteps: a.next_steps.map(toStep),
     assumptions: a.assumptions.map((x) => ({
       key: x.key,
       label: x.label,
@@ -195,6 +190,31 @@ export function toAnalysis(a: S['SiteAnalysis']): Analysis {
     setbackScenario: a.rules.scenario,
     lotDimensionsFt: a.rules.lot_dimensions_ft,
     versions: toVersions(a.versions),
+  }
+}
+
+function toStep(s: S['Step']): NextStep {
+  return {
+    order: s.order,
+    action: s.action,
+    who: s.who,
+    cost: { low: s.cost_usd[0], high: s.cost_usd[1] },
+    why: s.why,
+    flagIds: s.flag_ids,
+  }
+}
+
+function toCheck(c: S['CheckResult']): RuleCheck {
+  return {
+    id: c.check_id,
+    label: c.label,
+    section: c.section,
+    status: c.status,
+    required: c.required,
+    provided: c.provided,
+    unit: c.unit,
+    relief: c.relief_type,
+    note: c.note,
   }
 }
 
@@ -215,17 +235,7 @@ function toRuleChecks(rc: S['RuleChecks']): RuleChecks {
       productType: p.product_type,
       units: p.units,
       outcome: p.outcome,
-      checks: p.checks.map((c) => ({
-        id: c.check_id,
-        label: c.label,
-        section: c.section,
-        status: c.status,
-        required: c.required,
-        provided: c.provided,
-        unit: c.unit,
-        relief: c.relief_type,
-        note: c.note,
-      })),
+      checks: p.checks.map(toCheck),
       approvalProbability: p.approval_prob ? toEstimate(p.approval_prob) : null,
       representative: p.representative,
       chosenAs: p.chosen_as,
@@ -288,36 +298,55 @@ export function toMapFeatures(data: unknown): MapFeatures {
 
 export function toEvidence(data: unknown): Evidence {
   const e = data as S['EvidenceDetail']
+  const p = e.precedent
   return {
     id: e.id,
     kind: e.kind,
     title: e.title,
-    appliesTo: e.applies_to,
-    code: e.code
+    program:
+      e.product_type && e.units != null ? { productType: e.product_type, units: e.units } : null,
+    category: e.category,
+    severity: e.severity ? toSeverity(e.severity) : null,
+    confidence: e.confidence ?? null,
+    cost: toInterval(e.cost_usd ?? null),
+    months: toInterval(e.months ?? null),
+    monthsToPermitReady: e.months_to_permit ? toEstimate(e.months_to_permit) : null,
+    approvalProbability: e.approval_prob ? toEstimate(e.approval_prob) : null,
+    approvalMonths: e.approval_months ? toEstimate(e.approval_months) : null,
+    relief: e.relief ?? [],
+    entitlementBasis: e.entitlement_basis ?? [],
+    oddsNote: e.odds_note ?? null,
+    ruleChecks: (e.rule_checks ?? []).map(toCheck),
+    sources: (e.sources ?? []).map((s) => ({
+      source: s.source,
+      asOf: s.as_of,
+      asOfFromLayer: s.as_of_from_provenance ?? false,
+      codeSection: s.code_section,
+      url: s.url,
+    })),
+    codeUrl: e.code_url,
+    howToResolve: e.how_to_resolve,
+    resolvedBy: e.resolved_by ? toStep(e.resolved_by) : null,
+    precedent: p
       ? {
-          section: e.code.section,
-          asOf: e.code.as_of,
-          summary: e.code.summary,
-          url: e.code.url ?? null,
+          status: p.status,
+          note: p.note ?? null,
+          granted: p.granted ?? null,
+          total: p.total ?? null,
+          medianMonths: p.median_months ?? null,
+          cases: (p.cases ?? []).map((c) => ({
+            id: c.case_id,
+            area: c.area ?? null,
+            request: c.request ?? null,
+            outcome: c.outcome,
+            monthsToDecision: c.months_to_decision ?? null,
+            sourceUrl: c.source_url ?? null,
+          })),
+          aiExtracted: p.ai_extracted ?? false,
         }
       : null,
-    precedent:
-      e.precedent_granted != null && e.precedent_total != null
-        ? { granted: e.precedent_granted, total: e.precedent_total }
-        : null,
-    medianMonths: e.median_months ?? null,
-    cases: (e.cases ?? []).map((c) => ({
-      id: c.case_id,
-      neighborhood: c.neighborhood,
-      request: c.request,
-      outcome: c.outcome,
-      monthsToDecision: c.months_to_decision ?? null,
-      sourceUrl: c.source_url ?? null,
-    })),
-    aiExtracted: e.ai_extracted ?? false,
-    confidence: e.confidence,
-    confidenceNote: e.confidence_note,
-    howToResolve: e.how_to_resolve,
+    illustrative: e.illustrative,
+    versions: toVersions(e.versions),
   }
 }
 

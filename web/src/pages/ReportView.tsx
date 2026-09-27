@@ -10,6 +10,7 @@ import { BuildOptions } from '../report/BuildOptions'
 import { KeyNumbers } from '../report/KeyNumbers'
 import { AboutReport, ParcelFacts } from '../report/ParcelFacts'
 import { RuleTable } from '../report/RuleTable'
+import { useEvidenceLink } from '../report/evidenceLink'
 import { formatCountyId } from '../search/highlight'
 import { useMapScreen } from './mapScreenContext'
 
@@ -131,7 +132,7 @@ export function ReportView() {
         )}
       </article>
 
-      <Outlet />
+      <Outlet context={program} />
     </>
   )
 }
@@ -328,6 +329,7 @@ function AnalysisSections({ analysis: a }: { analysis: Analysis }) {
 }
 
 function FlagRow({ flag: f }: { flag: Flag }) {
+  const evidenceLink = useEvidenceLink()
   const ev = f.evidence[0]
   const section = f.evidence.find((e) => e.codeSection)?.codeSection
   const link = f.evidence.find((e) => e.url)?.url
@@ -364,6 +366,10 @@ function FlagRow({ flag: f }: { flag: Flag }) {
             See source<span aria-hidden="true"> →</span>
           </a>
         )}
+        <Link className="evidence-link" to={evidenceLink(`flag.${f.id}`)}>
+          Evidence<span className="visually-hidden"> for {f.title}</span>
+          <span aria-hidden="true"> →</span>
+        </Link>
       </div>
     </li>
   )

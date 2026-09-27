@@ -4,23 +4,6 @@
  */
 
 export interface paths {
-    "/api/evidence/{evidence_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Evidence */
-        get: operations["evidence_api_evidence__evidence_id__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/examples": {
         parameters: {
             query?: never;
@@ -162,6 +145,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/parcels/{parcel_id}/evidence/{evidence_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Evidence
+         * @description One finding (`flag.<flag id>`) or the approvals option (`option.with_relief`) of the
+         *     lot's report, for the same building type as the report (`product_type`, `units`).
+         */
+        get: operations["evidence_api_parcels__parcel_id__evidence__evidence_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/search": {
         parameters: {
             query?: never;
@@ -234,19 +238,22 @@ export interface components {
         };
         /** Case */
         Case: {
+            /**
+             * Area
+             * @description Neighborhood or zoning district
+             */
+            area?: string | null;
             /** Case Id */
             case_id: string;
             /** Months To Decision */
             months_to_decision?: number | null;
-            /** Neighborhood */
-            neighborhood: string;
             /**
              * Outcome
              * @enum {string}
              */
-            outcome: "granted" | "denied" | "withdrawn" | "pending";
+            outcome: "granted" | "denied" | "withdrawn" | "pending" | "unknown";
             /** Request */
-            request: string;
+            request?: string | null;
             /** Source Url */
             source_url?: string | null;
         };
@@ -277,20 +284,6 @@ export interface components {
             status: "pass" | "needs_approval" | "rejected" | "not_applicable";
             /** Unit */
             unit: string | null;
-        };
-        /** CodeReference */
-        CodeReference: {
-            /**
-             * As Of
-             * Format: date
-             */
-            as_of: string;
-            /** Section */
-            section: string;
-            /** Summary */
-            summary: string;
-            /** Url */
-            url?: string | null;
         };
         /** Comps */
         Comps: {
@@ -323,42 +316,111 @@ export interface components {
             /** Url */
             url: string | null;
         };
-        /** EvidenceDetail */
+        /**
+         * EvidenceDetail
+         * @description What the engine and the stored facts say about one finding (`flag.<id>`) or the
+         *     approvals option (`option.with_relief`) of one lot's report.
+         */
         EvidenceDetail: {
+            approval_months?: components["schemas"]["Range"] | null;
+            approval_prob?: components["schemas"]["Range"] | null;
             /**
-             * Ai Extracted
-             * @default false
-             */
-            ai_extracted: boolean;
-            /** Applies To */
-            applies_to: string;
-            /** Cases */
-            cases?: components["schemas"]["Case"][];
-            code?: components["schemas"]["CodeReference"] | null;
-            /**
-             * Confidence
+             * Category
              * @enum {string}
              */
-            confidence: "high" | "medium" | "low";
-            /** Confidence Note */
-            confidence_note: string;
+            category: "zoning" | "physical" | "environmental" | "infrastructure" | "market";
+            /**
+             * Code Url
+             * @description The zoning code online, when a section is cited
+             */
+            code_url: string | null;
+            /**
+             * Confidence
+             * @description Findings only
+             */
+            confidence?: ("high" | "medium" | "low") | null;
+            /** Cost Usd */
+            cost_usd?: [
+                number,
+                number
+            ] | null;
+            /** Entitlement Basis */
+            entitlement_basis?: string[];
             /** How To Resolve */
-            how_to_resolve: string;
-            /** Id */
+            how_to_resolve: string | null;
+            /**
+             * Id
+             * @description flag.<flag id> or option.with_relief
+             */
             id: string;
+            /** Illustrative */
+            illustrative: boolean;
             /**
              * Kind
              * @enum {string}
              */
-            kind: "zoning_relief" | "physical" | "infrastructure" | "market";
-            /** Median Months */
-            median_months?: number | null;
-            /** Precedent Granted */
-            precedent_granted?: number | null;
-            /** Precedent Total */
-            precedent_total?: number | null;
-            /** Title */
-            title: string;
+            kind: "finding" | "approvals";
+            /** Months */
+            months?: [
+                number,
+                number
+            ] | null;
+            /** @description Approvals option only */
+            months_to_permit?: components["schemas"]["Range"] | null;
+            /** Odds Note */
+            odds_note?: string | null;
+            /** Parcel Id */
+            parcel_id: string;
+            /** @description Zoning board decisions (approvals option only) */
+            precedent?: components["schemas"]["Precedent"] | null;
+            /**
+             * Product Type
+             * @description Approvals option only
+             */
+            product_type?: ("single_family" | "duplex" | "triplex" | "townhome" | "walkup") | null;
+            /** Relief */
+            relief?: string[];
+            /** @description The next step that resolves the finding */
+            resolved_by: components["schemas"]["Step"] | null;
+            /**
+             * Rule Checks
+             * @description The rules the building fails (approvals option)
+             */
+            rule_checks?: components["schemas"]["CheckResult"][];
+            /**
+             * Severity
+             * @description Findings only
+             */
+            severity?: ("high" | "medium" | "low" | "unknown") | null;
+            /** Sources */
+            sources?: components["schemas"]["EvidenceSource"][];
+            /**
+             * Title
+             * @description The flag's title; None for the approvals option
+             */
+            title: string | null;
+            /** Units */
+            units?: number | null;
+            versions: components["schemas"]["Versions"];
+        };
+        /** EvidenceSource */
+        EvidenceSource: {
+            /** As Of */
+            as_of: string | null;
+            /**
+             * As Of From Provenance
+             * @description The flag had no date; this is the layer's as-of date
+             * @default false
+             */
+            as_of_from_provenance: boolean;
+            /** Code Section */
+            code_section: string | null;
+            /** Layer */
+            layer: string | null;
+            /** Source */
+            source: string;
+            /** Url */
+            url: string | null;
         };
         /**
          * Examples
@@ -851,6 +913,36 @@ export interface components {
             /** Readings */
             readings?: components["schemas"]["Reading"][];
         };
+        /**
+         * Precedent
+         * @description Zoning board decisions near the lot. Real lots have none until decisions are
+         *     available; generated lots carry the mockups' cases, marked illustrative.
+         */
+        Precedent: {
+            /**
+             * Ai Extracted
+             * @default false
+             */
+            ai_extracted: boolean;
+            /** Cases */
+            cases?: components["schemas"]["Case"][];
+            /** Granted */
+            granted?: number | null;
+            /** Median Months */
+            median_months?: number | null;
+            /**
+             * Note
+             * @description Why decisions are unavailable
+             */
+            note?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "available" | "unavailable" | "illustrative";
+            /** Total */
+            total?: number | null;
+        };
         /** ProductFilter */
         ProductFilter: {
             /**
@@ -1319,37 +1411,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    evidence_api_evidence__evidence_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                evidence_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EvidenceDetail"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     examples_api_examples_get: {
         parameters: {
             query?: never;
@@ -1502,6 +1563,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ParcelReport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    evidence_api_parcels__parcel_id__evidence__evidence_id__get: {
+        parameters: {
+            query?: {
+                product_type?: ("single_family" | "duplex" | "triplex" | "townhome" | "walkup") | null;
+                units?: number | null;
+            };
+            header?: never;
+            path: {
+                parcel_id: string;
+                evidence_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvidenceDetail"];
                 };
             };
             /** @description Validation Error */

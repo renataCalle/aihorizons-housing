@@ -89,6 +89,18 @@
       "Case": {
         "additionalProperties": false,
         "properties": {
+          "area": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Neighborhood or zoning district",
+            "title": "Area"
+          },
           "case_id": {
             "title": "Case Id",
             "type": "string"
@@ -96,7 +108,7 @@
           "months_to_decision": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
@@ -104,23 +116,27 @@
             ],
             "title": "Months To Decision"
           },
-          "neighborhood": {
-            "title": "Neighborhood",
-            "type": "string"
-          },
           "outcome": {
             "enum": [
               "granted",
               "denied",
               "withdrawn",
-              "pending"
+              "pending",
+              "unknown"
             ],
             "title": "Outcome",
             "type": "string"
           },
           "request": {
-            "title": "Request",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request"
           },
           "source_url": {
             "anyOf": [
@@ -136,8 +152,6 @@
         },
         "required": [
           "case_id",
-          "neighborhood",
-          "request",
           "outcome"
         ],
         "title": "Case",
@@ -244,42 +258,6 @@
           "note"
         ],
         "title": "CheckResult",
-        "type": "object"
-      },
-      "CodeReference": {
-        "additionalProperties": false,
-        "properties": {
-          "as_of": {
-            "format": "date",
-            "title": "As Of",
-            "type": "string"
-          },
-          "section": {
-            "title": "Section",
-            "type": "string"
-          },
-          "summary": {
-            "title": "Summary",
-            "type": "string"
-          },
-          "url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Url"
-          }
-        },
-        "required": [
-          "section",
-          "as_of",
-          "summary"
-        ],
-        "title": "CodeReference",
         "type": "object"
       },
       "Comps": {
@@ -398,112 +376,361 @@
       },
       "EvidenceDetail": {
         "additionalProperties": false,
+        "description": "What the engine and the stored facts say about one finding (`flag.<id>`) or the\napprovals option (`option.with_relief`) of one lot's report.",
         "properties": {
-          "ai_extracted": {
-            "default": false,
-            "title": "Ai Extracted",
-            "type": "boolean"
-          },
-          "applies_to": {
-            "title": "Applies To",
-            "type": "string"
-          },
-          "cases": {
-            "items": {
-              "$ref": "#/components/schemas/Case"
-            },
-            "title": "Cases",
-            "type": "array"
-          },
-          "code": {
+          "approval_months": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CodeReference"
+                "$ref": "#/components/schemas/Range"
               },
               {
                 "type": "null"
               }
             ]
           },
-          "confidence": {
+          "approval_prob": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category": {
             "enum": [
-              "high",
-              "medium",
-              "low"
+              "zoning",
+              "physical",
+              "environmental",
+              "infrastructure",
+              "market"
             ],
-            "title": "Confidence",
+            "title": "Category",
             "type": "string"
           },
-          "confidence_note": {
-            "title": "Confidence Note",
-            "type": "string"
+          "code_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The zoning code online, when a section is cited",
+            "title": "Code Url"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Findings only",
+            "title": "Confidence"
+          },
+          "cost_usd": {
+            "anyOf": [
+              {
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Usd"
+          },
+          "entitlement_basis": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Entitlement Basis",
+            "type": "array"
           },
           "how_to_resolve": {
-            "title": "How To Resolve",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "How To Resolve"
           },
           "id": {
+            "description": "flag.<flag id> or option.with_relief",
             "title": "Id",
             "type": "string"
           },
+          "illustrative": {
+            "title": "Illustrative",
+            "type": "boolean"
+          },
           "kind": {
             "enum": [
-              "zoning_relief",
-              "physical",
-              "infrastructure",
-              "market"
+              "finding",
+              "approvals"
             ],
             "title": "Kind",
             "type": "string"
           },
-          "median_months": {
+          "months": {
             "anyOf": [
               {
-                "type": "number"
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Median Months"
+            "title": "Months"
           },
-          "precedent_granted": {
+          "months_to_permit": {
             "anyOf": [
               {
-                "type": "integer"
+                "$ref": "#/components/schemas/Range"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Precedent Granted"
+            "description": "Approvals option only"
           },
-          "precedent_total": {
+          "odds_note": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "string"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Precedent Total"
+            "title": "Odds Note"
+          },
+          "parcel_id": {
+            "title": "Parcel Id",
+            "type": "string"
+          },
+          "precedent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Precedent"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Zoning board decisions (approvals option only)"
+          },
+          "product_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "single_family",
+                  "duplex",
+                  "triplex",
+                  "townhome",
+                  "walkup"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Approvals option only",
+            "title": "Product Type"
+          },
+          "relief": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Relief",
+            "type": "array"
+          },
+          "resolved_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Step"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The next step that resolves the finding"
+          },
+          "rule_checks": {
+            "description": "The rules the building fails (approvals option)",
+            "items": {
+              "$ref": "#/components/schemas/CheckResult"
+            },
+            "title": "Rule Checks",
+            "type": "array"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Findings only",
+            "title": "Severity"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceSource"
+            },
+            "title": "Sources",
+            "type": "array"
           },
           "title": {
-            "title": "Title",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The flag's title; None for the approvals option",
+            "title": "Title"
+          },
+          "units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Units"
+          },
+          "versions": {
+            "$ref": "#/components/schemas/Versions"
           }
         },
         "required": [
           "id",
           "kind",
+          "parcel_id",
           "title",
-          "applies_to",
-          "confidence",
-          "confidence_note",
-          "how_to_resolve"
+          "category",
+          "code_url",
+          "how_to_resolve",
+          "resolved_by",
+          "illustrative",
+          "versions"
         ],
         "title": "EvidenceDetail",
+        "type": "object"
+      },
+      "EvidenceSource": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "as_of_from_provenance": {
+            "default": false,
+            "description": "The flag had no date; this is the layer's as-of date",
+            "title": "As Of From Provenance",
+            "type": "boolean"
+          },
+          "code_section": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code Section"
+          },
+          "layer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "source",
+          "as_of",
+          "layer",
+          "code_section",
+          "url"
+        ],
+        "title": "EvidenceSource",
         "type": "object"
       },
       "Examples": {
@@ -1787,6 +2014,83 @@
           "parser"
         ],
         "title": "ParseResult",
+        "type": "object"
+      },
+      "Precedent": {
+        "additionalProperties": false,
+        "description": "Zoning board decisions near the lot. Real lots have none until decisions are\navailable; generated lots carry the mockups' cases, marked illustrative.",
+        "properties": {
+          "ai_extracted": {
+            "default": false,
+            "title": "Ai Extracted",
+            "type": "boolean"
+          },
+          "cases": {
+            "items": {
+              "$ref": "#/components/schemas/Case"
+            },
+            "title": "Cases",
+            "type": "array"
+          },
+          "granted": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Granted"
+          },
+          "median_months": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Months"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Why decisions are unavailable",
+            "title": "Note"
+          },
+          "status": {
+            "enum": [
+              "available",
+              "unavailable",
+              "illustrative"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "Precedent",
         "type": "object"
       },
       "ProductFilter": {
@@ -3197,48 +3501,6 @@
   },
   "openapi": "3.1.0",
   "paths": {
-    "/api/evidence/{evidence_id}": {
-      "get": {
-        "operationId": "evidence_api_evidence__evidence_id__get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "evidence_id",
-            "required": true,
-            "schema": {
-              "title": "Evidence Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EvidenceDetail"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Evidence",
-        "tags": [
-          "evidence"
-        ]
-      }
-    },
     "/api/examples": {
       "get": {
         "description": "Example searches for the landing page, from the data being served.",
@@ -3477,6 +3739,99 @@
         "summary": "Parcel Report",
         "tags": [
           "parcels"
+        ]
+      }
+    },
+    "/api/parcels/{parcel_id}/evidence/{evidence_id}": {
+      "get": {
+        "description": "One finding (`flag.<flag id>`) or the approvals option (`option.with_relief`) of the\nlot's report, for the same building type as the report (`product_type`, `units`).",
+        "operationId": "evidence_api_parcels__parcel_id__evidence__evidence_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parcel_id",
+            "required": true,
+            "schema": {
+              "title": "Parcel Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "evidence_id",
+            "required": true,
+            "schema": {
+              "title": "Evidence Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "single_family",
+                    "duplex",
+                    "triplex",
+                    "townhome",
+                    "walkup"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "units",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 50,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Units"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Evidence",
+        "tags": [
+          "evidence"
         ]
       }
     },
