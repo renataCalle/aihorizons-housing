@@ -117,13 +117,40 @@ uv run python -m navigator_pipeline.refresh   # fetches any raw input it needs
 ## Rules for outbound requests
 
 Every request goes through `navigator_pipeline.http` with the identity `market-data-client/1.0`
-and nothing else. No contact details, and no disguising the client to get past a block. Two
-endpoints block this client and are therefore not used: the city's website (zoning board
-decisions, zoning code) and WPRDC's SQL endpoint.
+and nothing else. No contact details, and no disguising the client to get past a block. The
+city's older pages (the zoning code) and WPRDC's SQL endpoint block this client and are not
+used. The city's current site (www.pittsburghpa.gov) allows it: zoning board agendas and
+decisions are downloaded from its meeting pages, following robots.txt, two seconds apart.
+
+## Zoning Board decisions
+
+```bash
+uv run python -m navigator_pipeline.zba_download                   # 2025 and 2026 hearings
+uv run python -m navigator_pipeline.zba_download --years 2026 --dry-run
+```
+
+Reads the meeting pages listed in the city's sitemap and keeps each hearing's agenda and the
+board's decisions (posted weeks after the hearing) in `data/manual/zba/{agendas,decisions}/`,
+with `_manifest.jsonl` (URL, date, checksum). Applicants' forms are skipped. The folder is
+gitignored: decisions name applicants. Re-running downloads only new files. Meeting pages
+start in January 2025; the site's older ZBA archive is disallowed by robots.txt.
+
+```bash
+uv run python -m navigator_pipeline.zba                  # PDFs -> data/clean/zba_cases.parquet
+uv run python -m navigator_research.approval_model       # fit -> engine config + docs/approval-model.md
+```
+
+`zba` reads every decision's header (case, dates, lot and block, district, the approvals
+asked and their code sections) and its ruling, merges the agendas (cases without a posted
+decision), and links each case to its parcel by lot-and-block, base lot or address. No names
+are kept. `site_context` then lists decided cases within a mile as `zba_cases_nearby`.
+`navigator_research.approval_model` fits the approval model the engine uses for variances and
+special exceptions; refit when new decisions are downloaded.
 
 ## Modules
 
 `catalog` (sources and cadences) · `http` (the one client) · `fetch` (download + manifest) ·
 `build` (clean tables) · `features` (per-parcel facts) · `site_context` (assembly) · `live`
 (per-parcel lookups) · `refresh` (scheduled updates) · `publish` / `bundle` (results bundle) ·
-`score_all` / `scores` (every city parcel, stored) · `settings` (data location).
+`score_all` / `scores` (every city parcel, stored) · `zba_download` (zoning board
+decisions) · `settings` (data location).

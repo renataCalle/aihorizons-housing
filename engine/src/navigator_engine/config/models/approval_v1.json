@@ -1,0 +1,208 @@
+{
+  "name": "approval_v1",
+  "fitted_at": "2026-09-27T16:31:53+00:00",
+  "method": "Bayesian logistic regression; MAP (Newton) + Laplace covariance",
+  "target": "P(the Zoning Board grants the hearing's variances / special exceptions)",
+  "features": [
+    "intercept",
+    "special_exception_only",
+    "vacant_lot",
+    "steep_slope",
+    "undermined",
+    "flood_zone"
+  ],
+  "coef_mean": [
+    1.364376,
+    0.852441,
+    0.832846,
+    0.945513,
+    -0.065301,
+    -0.518523
+  ],
+  "coef_cov": [
+    [
+      0.04971117,
+      -0.01721132,
+      -0.02989121,
+      -0.02296114,
+      -0.03378529,
+      -0.0253605
+    ],
+    [
+      -0.01721132,
+      0.15085519,
+      0.00681842,
+      0.00031457,
+      0.00524826,
+      -0.00014947
+    ],
+    [
+      -0.02989121,
+      0.00681842,
+      0.24740986,
+      -0.00974318,
+      0.00018885,
+      0.00227611
+    ],
+    [
+      -0.02296114,
+      0.00031457,
+      -0.00974318,
+      0.2923542,
+      -0.01620573,
+      -0.00950249
+    ],
+    [
+      -0.03378529,
+      0.00524826,
+      0.00018885,
+      -0.01620573,
+      0.20033377,
+      0.01391232
+    ],
+    [
+      -0.0253605,
+      -0.00014947,
+      0.00227611,
+      -0.00950249,
+      0.01391232,
+      0.36823662
+    ]
+  ],
+  "prior": {
+    "intercept": {
+      "mean": 0.8473,
+      "sd": 0.5
+    },
+    "special_exception_only": {
+      "mean": 0.539,
+      "sd": 0.5
+    },
+    "vacant_lot": {
+      "mean": 0.0,
+      "sd": 1.0
+    },
+    "steep_slope": {
+      "mean": 0.0,
+      "sd": 1.0
+    },
+    "undermined": {
+      "mean": 0.0,
+      "sd": 1.0
+    },
+    "flood_zone": {
+      "mean": 0.0,
+      "sd": 1.0
+    }
+  },
+  "data": {
+    "cases": 202,
+    "denials": 28,
+    "from": "2025-02-05",
+    "to": "2026-08-28",
+    "left_out": {
+      "no_decision_posted": 74,
+      "nonconforming": 8,
+      "unknown": 4,
+      "denied": 2,
+      "granted_with_conditions": 1,
+      "partial": 1,
+      "granted": 1,
+      "no_relief_needed": 1,
+      "ruling but no stored parcel facts": 1
+    }
+  },
+  "validation": {
+    "chosen": "+ site conditions (vacant, slope, undermined, flood)",
+    "candidates": {
+      "base (approval type only)": {
+        "cv_log_loss": 0.3978510322743432,
+        "cv_brier": 0.11838447315786463,
+        "cv_auc": 0.5451559934318555,
+        "test_n": 91,
+        "test_log_loss": 0.47993270521003756,
+        "test_brier": 0.15204265706054257
+      },
+      "+ number of approvals": {
+        "cv_log_loss": 0.3991173169524662,
+        "cv_brier": 0.1186423189452679,
+        "cv_auc": 0.5529556650246306,
+        "test_n": 91,
+        "test_log_loss": 0.48020418404607507,
+        "test_brier": 0.152111481046847
+      },
+      "+ housing request": {
+        "cv_log_loss": 0.3962715995616632,
+        "cv_brier": 0.11774852382917653,
+        "cv_auc": 0.5939039408866995,
+        "test_n": 91,
+        "test_log_loss": 0.47511238591850086,
+        "test_brier": 0.15092478140943974
+      },
+      "+ rule relaxed": {
+        "cv_log_loss": 0.4006968912125104,
+        "cv_brier": 0.11925594405359395,
+        "cv_auc": 0.5572660098522167,
+        "test_n": 91,
+        "test_log_loss": 0.4766951381340948,
+        "test_brier": 0.15146949797904066
+      },
+      "+ place (district, market, lot)": {
+        "cv_log_loss": 0.40147512163145677,
+        "cv_brier": 0.12035387467496078,
+        "cv_auc": 0.5782019704433498,
+        "test_n": 91,
+        "test_log_loss": 0.542273198075175,
+        "test_brier": 0.1638507666837925
+      },
+      "+ site conditions (vacant, slope, undermined, flood)": {
+        "cv_log_loss": 0.3892853353928751,
+        "cv_brier": 0.11673763047683294,
+        "cv_auc": 0.6076559934318555,
+        "test_n": 91,
+        "test_log_loss": 0.46162926541366656,
+        "test_brier": 0.1466951069665907
+      },
+      "full": {
+        "cv_log_loss": 0.39837899668092414,
+        "cv_brier": 0.11882444977727252,
+        "cv_auc": 0.6284893267651889,
+        "test_n": 91,
+        "test_log_loss": 0.5089391178833385,
+        "test_brier": 0.15702835604581744
+      }
+    },
+    "cv_calibration": [
+      {
+        "n": 51,
+        "predicted": 0.774,
+        "observed": 0.843
+      },
+      {
+        "n": 51,
+        "predicted": 0.805,
+        "observed": 0.725
+      },
+      {
+        "n": 50,
+        "predicted": 0.892,
+        "observed": 0.96
+      },
+      {
+        "n": 50,
+        "predicted": 0.931,
+        "observed": 0.92
+      }
+    ],
+    "laplace_vs_mcmc_max_abs_diff_mean": 0.1075,
+    "laplace_vs_mcmc_sd_ratio": [
+      0.987,
+      0.966,
+      1.031,
+      1.03,
+      1.03,
+      1.093
+    ]
+  },
+  "base_rate": 0.8614
+}

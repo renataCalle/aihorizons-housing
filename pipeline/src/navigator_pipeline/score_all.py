@@ -234,7 +234,8 @@ def failed_row(pid: str, facts: pd.Series, error: str) -> dict:
 # ---------------------------------------------------------------- batch
 
 BOOL = {"has_structure", "vacant", "lead"}
-FLOAT = {"assessed_land", "assessed_total", "land_price", "approval_prob_p50", "lon", "lat"}
+FLOAT = {"assessed_land", "assessed_total", "land_price", "lon", "lat"}
+FLOAT |= {f"approval_prob_{q}" for q in ("p10", "p50", "p90")}
 FLOAT |= {f"{k}_{q}" for k in ("score", "months") for q in ("p10", "p50", "p90")}
 INT = {"lot_area_sqft", "assessed_value", "score", "units", "lead_units", "high_flags"}
 INT |= {f"{k}_{q}" for k in ("cost_premium", "max_land") for q in ("p10", "p50", "p90")}

@@ -1,6 +1,6 @@
 {
   "area": "Hazelwood",
-  "generated_at": "2026-09-27T14:54:56+00:00",
+  "generated_at": "2026-09-27T16:34:46+00:00",
   "command": "uv run python -m navigator_pipeline.publish",
   "versions": {
     "engine": "0.1.0",
@@ -13,8 +13,8 @@
     "golden_parcels": 8,
     "csv_rows": 5090,
     "bands": {
-      "high_risk": 838,
-      "feasible_with_conditions": 179,
+      "high_risk": 818,
+      "feasible_with_conditions": 199,
       "not_scored": 1
     }
   },
@@ -142,24 +142,24 @@
   },
   "files": {
     "README.md": {
-      "bytes": 3914,
-      "sha256": "efe708a6912479242e67cd3637acb6ddd79551cbcddeda2368ecf90de68adacc"
+      "bytes": 4235,
+      "sha256": "7eee7e993644992661ac7ab1a5be6ed3b04977c98ed9d5f1453ab65d97c338a4"
     },
     "summaries.json": {
-      "bytes": 2415530,
-      "sha256": "ecf9886e081fba6985dc9191f1bc837c97709f3a07c35668c68a63d81fd93235"
+      "bytes": 2415823,
+      "sha256": "a6fa0ae278e4b235b742a2f30476d126ac104633e0bd5b8eaadffe0b26abd9f0"
     },
     "summaries.csv": {
-      "bytes": 913381,
-      "sha256": "329532f22fc8b4c0db5d6ee1932883f502a0f8f517b67819492f0284df85616d"
+      "bytes": 954406,
+      "sha256": "26b178d261c70b3357ca33033a74b241b9d4f1bca4a92168cb61076473290f9f"
     },
     "site_analysis.jsonl.gz": {
-      "bytes": 4527586,
-      "sha256": "4f9b01d2fe33487dc11cd9ecf2df2c5cd22c314415592f8afec4f3b27571376b"
+      "bytes": 4542694,
+      "sha256": "337ddc24b6289186f17fa06c7a7a26a9ae6611b508dedcd53614b99e7f79fe46"
     },
     "site_context.jsonl.gz": {
-      "bytes": 711073,
-      "sha256": "9d3d409cb18540739d825df6c6096337e2dd9b0b498dc317e18cef108ec61541"
+      "bytes": 823515,
+      "sha256": "678ddf5821517be261a5c18245e58afc42b569df5e17693bbf74d85beb31b7be"
     },
     "parcels.geojson": {
       "bytes": 947023,

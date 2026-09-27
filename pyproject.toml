@@ -56,7 +56,7 @@ known-first-party = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["contracts/tests", "engine/tests", "pipeline/tests", "api/tests"]
+testpaths = ["contracts/tests", "engine/tests", "pipeline/tests", "api/tests", "research/tests"]
 # Eval tests call the AI search parser; run them explicitly with `uv run pytest -m eval`.
 addopts = "--import-mode=importlib -m 'not eval'"
 markers = ["eval: AI search eval over fixtures/eval (excluded by default)"]

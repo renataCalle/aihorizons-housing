@@ -72,7 +72,7 @@ duplex = analyze(ctx.model_dump(mode="json"), program={"product_type": "duplex"}
 | `adjacent[]` | Neighbours sharing a lot line and whether they're built | `navigator_pipeline.site_context` |
 | `title`, `area` | Liens, condemned, city inventory, recent permits; neighbourhood, market type, QCT, Opportunity Zone | `features.py` `ownership()`, `context()` |
 | `market` | Arm's-length sales within 0.5 mi / 3 yrs with building size; HUD rents by bedroom | `site_context.py` |
-| `zba_cases_nearby` | `null` for now: zoning board decisions are not yet available | — |
+| `zba_cases_nearby` | Decided Zoning Board cases within 1 mi (up to 25, nearest first): case, decision date, approval types, district, outcome, days to decision, distance, link to the decision | `navigator_pipeline.zba` → `site_context` |
 | `provenance` | Source, URL, as-of date and note per layer; `retrieved` = `live` (fetched for this report, with `retrieved_at`) or `snapshot` (from the refreshed store) | `navigator_pipeline.site_context` |
 
 `uv run python -m navigator_pipeline.site_context <parcel> --live` builds any Allegheny County
@@ -96,7 +96,7 @@ Answers to the checklist in `docs/04-contracts.md` (feat/web-api):
 | Next steps | `next_steps[]`: order, action, who, cost_usd, why | no duration yet |
 | Assumptions | `assumptions[]`: key, label, value, min/max, unit, source, editable | ✓ |
 | Versions | `versions.{engine, ruleset, schema, data_as_of, ruleset_as_of}` | ✓ (`data_as_of` = oldest input) |
-| Evidence drawer: precedents | `options[].similar_cases`: the `case_id`s in `zba_cases_nearby` that count as precedent (rule below); `null` when no zoning board approval is needed or cases are unavailable | ✓ logic; data blocked: `zba_cases_nearby` is `null` until zoning board decisions are available |
+| Evidence drawer: precedents | `options[].similar_cases`: the `case_id`s in `zba_cases_nearby` that count as precedent (rule below); `null` when no zoning board approval is needed or cases are unavailable | ✓ filled from board decisions (2025 on) |
 | Rule by rule (why this score) | `rule_checks`: every building type tested, each rule `pass` / `needs_approval` / `rejected` / `not_applicable` with § section and required vs. provided; approval odds per building; site-wide overlay rules; rules not checked yet | ✓ (additive, optional) |
 
 **Names in your draft → names here**: Finding → `Flag` (detail ≈ title + resolution);
@@ -107,9 +107,10 @@ relief types. Tenure is in `revenue_basis` (for-sale or rental exit).
 
 **Placeholders**: every assumption whose `source` starts with `PLACEHOLDER` is a default,
 not a local benchmark. Hard cost drives most results; show the label. Approval odds for
-administrator exceptions, special exceptions, variances and subdivisions are also placeholder
-priors (`entitlement_basis` says so) until zoning board decisions are available; conditional
-uses and rezonings are measured from City Council votes.
+variances and special exceptions come from the Zoning Board approval model
+(`entitlement_basis`: "zoning board hearing: model approval_v1 ..."; see
+`docs/approval-model.md`); conditional uses and rezonings are measured from City Council votes;
+administrator exceptions and subdivisions are still placeholder priors.
 
 **Similar zoning board cases** (`navigator_engine.precedents`): same approval type (variance
 or special exception), same base district (R1D for R1D-M), within 0.5 mi, decided in the 5

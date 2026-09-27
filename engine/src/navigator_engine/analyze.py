@@ -11,7 +11,7 @@ import math
 
 import numpy as np
 
-from navigator_engine import code, constraints, entitlement
+from navigator_engine import approval, code, constraints, entitlement
 from navigator_engine.assumptions import resolve
 from navigator_engine.precedents import similar_cases
 from navigator_engine.rules_engine import NOT_CHECKED, TEMPLATES, site_checks
@@ -109,7 +109,7 @@ def proforma(ctx, program, flag_list, relief, A, land_price, rng) -> dict:
         rev_basis = "no usable comps"
 
     # entitlement and schedule
-    ent = entitlement.sample(relief, N, rng)
+    ent = entitlement.sample(relief, N, rng, approval.site_features(ctx))
     flag_months = [f["months"] for f in flag_list if f["months"]]
     study = (
         np.max([rng.uniform(lo, hi, N) for lo, hi in flag_months], axis=0)
@@ -386,7 +386,9 @@ def rule_checks(ctx: dict, rules: dict, scenario: str | None, options: list[dict
         )
         odds = months = None
         if outcome != "rejected":
-            ent = entitlement.sample(prog["relief"], N, np.random.default_rng(11))
+            ent = entitlement.sample(
+                prog["relief"], N, np.random.default_rng(11), approval.site_features(ctx)
+            )
             odds, months = _range(ent["p"]), _range(ent["months"])
         out.append(
             {

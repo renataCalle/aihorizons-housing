@@ -18,6 +18,8 @@ dist/
 # hand-downloaded zoning code PDFs are committed, since the city's site blocks automated clients.
 data/*
 !data/manual/
+# Zoning Board decisions and agendas name applicants and owners: local only.
+data/manual/zba/
 *.duckdb
 *.duckdb.wal
 *.parquet

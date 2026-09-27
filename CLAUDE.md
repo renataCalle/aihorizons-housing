@@ -100,6 +100,12 @@ and checked in CI by `pipeline/tests/test_results_bundle.py` (contracts, ID cons
 no personal data). Regenerate it after an engine or data change. Commit results, never raw
 data: large files cannot be removed from history later.
 
+Zoning Board approval odds (variances, special exceptions) come from a Bayesian logistic
+regression fitted on the board's decisions: `navigator_pipeline.zba_download` → `zba` →
+`navigator_research.approval_model` writes `engine/src/navigator_engine/config/models/
+approval_v1.json`; `navigator_engine.approval.features()` is the one feature definition for
+training and prediction. See `docs/approval-model.md`.
+
 `data/scores/` (gitignored) holds every city parcel scored once: `navigator_pipeline.score_all`
 writes zstd Parquet tables sorted by parcel ID (`parcels`, `programs`, `analyses`, `contexts`),
 and `navigator_pipeline.scores` looks them up by ID or runs SQL (DuckDB).
@@ -107,7 +113,7 @@ and `navigator_pipeline.scores` looks them up by ID or runs SQL (DuckDB).
 `sandbox/` holds research prototypes outside the production import graph: rules extraction
 (it writes `engine/src/navigator_engine/config/rules/`), golden parcels, `navigator` (CLI) and
 `report` (HTML). Its README lists data
-gaps (notably: pittsburghpa.gov returns 403, so ZBA decisions are unavailable).
+gaps. Zoning Board decisions come from the city's current meeting pages (2025 on).
 Every outbound request sends exactly `User-Agent: market-data-client/1.0`; never add contact
 details or spoof a browser to get past a block.
 

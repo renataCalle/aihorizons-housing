@@ -16,8 +16,9 @@ score from 0 to 100, and explains every point it takes away.
 
 The first version works end to end on any parcel in Allegheny County in about a hundredth of a
 second. It draws on 46 public data sources and 335 rules taken from the city's zoning code.
-Some inputs are real measurements, such as past City Council votes, recent home sales and
-mapped hazards. Others are still placeholder guesses, most importantly the cost of
+Some inputs are real measurements, such as past City Council votes, 202 Zoning Board
+decisions (which now set the odds for variances and special exceptions through a Bayesian
+logistic regression), recent home sales and mapped hazards. Others are still placeholder guesses, most importantly the cost of
 construction. Those placeholders currently decide most of the outcomes, so calibrating them is
 the main job ahead.
 
@@ -103,8 +104,8 @@ live lookup fails, the stored copy is used and the report says so. Every fact re
 was live or stored, and when.
 
 **Known gaps.** Some hazard maps only cover the City of Pittsburgh, so suburban lots get
-"unknown" for those. Past zoning board decisions aren't available yet (the city's site blocks
-automated access), which limits the approval model (Section 6).
+"unknown" for those. Zoning Board decisions are available only from 2025 (the city's current
+meeting pages), which limits the approval model to 202 decided cases (Section 6).
 
 ## 4. What can be built, and what approval it needs
 
@@ -199,22 +200,226 @@ All cost and time ranges in this version are expert placeholders, listed in Appe
 ## 6. How likely the approvals are, and how long they take
 
 For each approval a project needs, the system estimates the chance it will be granted and how
-many months it will take.
+many months it will take. Who decides matters, so approvals are grouped by the body that rules
+on them:
 
-- **Measured from real decisions.** City Council records from 2000 to 2026 give us two kinds of
-  approval. Of 29 conditional uses that reached a decision, 27 passed, typically in about 60
-  days (with 10% taking under 44 days and 10% over 162). Of 101 rezonings, 91 passed, typically
-  in 79 days. We turn these counts into a probability range with a standard Beta distribution,
-  which is wider when there are fewer cases.
-- **A caution.** These rates are flattering. Applications that were withdrawn before a vote,
-  often the weak ones, never show up in the records.
-- **Educated guesses for the rest.** Past Zoning Board decisions aren't available yet, so for
-  exceptions and variances we use expert ranges for now. For a variance, for example, the
-  chance of approval is assumed to be somewhere between 50% and 85%, most likely 70%, taking
-  2 to 7 months.
-- **Several approvals at once.** Approvals are treated as independent, so their chances
-  multiply. Requests to the same body are heard together (the time is that of the longest one);
-  requests to different bodies happen one after another (the times add up).
+| Approval | Decided by | Where the odds come from |
+|---|---|---|
+| Variance, special exception | Zoning Board of Adjustment, at one hearing | **Statistical model** fitted on the board's decisions (6.2) |
+| Conditional use, rezoning | City Council | **Measured** from Council votes (6.1) |
+| Administrator exception | Zoning Administrator | Expert guess (no decision data) |
+| Subdivision | City Planning | Expert guess (no decision data) |
+
+### 6.1 Approvals decided by City Council (measured)
+
+City Council records from 2000 to 2026 give two kinds of approval. Of 29 conditional uses that
+reached a decision, 27 passed, typically in about 60 days (10% under 44 days, 10% over 162).
+Of 101 rezonings, 91 passed, typically in 79 days. These counts become a probability range with
+a Beta distribution, which is wider when there are fewer cases.
+
+### 6.2 Approvals decided by the Zoning Board (a Bayesian logistic regression)
+
+Variances and special exceptions are the approvals small projects need most (a setback, a lot
+that is slightly too small, a use the district lists as "special exception"). Until now their
+odds were expert guesses. They now come from a model fitted on the board's own decisions.
+
+**Where the data come from.**
+
+- The city posts every Zoning Board hearing on its website (www.pittsburghpa.gov, City
+  Planning → ZBA Agendas): an **agenda** listing every case heard, and weeks later the board's
+  **written decision** for each case. Pages exist from January 2025; the older archive is
+  closed to automated access by the site's robots.txt.
+- `navigator_pipeline.zba_download` fetches the agendas and decisions of all 63 hearings from
+  January 2025 to October 2026 (our standard client, following robots.txt, two seconds apart).
+  Applicants' own forms are not downloaded. The files stay on the local machine and out of git,
+  because decisions name applicants.
+- `navigator_pipeline.zba` reads each decision's fixed header (case number, hearing and decision
+  dates, lot and block, zoning district, what was requested, each approval asked for with its
+  code section) and its closing ruling ("…is hereby APPROVED", "…DENIED"). It uses fixed text
+  rules, keeps no names, and links each case to its county parcel by lot and block (or the
+  street address), so the parcel's facts from Section 3 can be attached.
+- **Quality check.** 30 decisions were read by hand, independently of the parser. The parser
+  agreed on the case number and district in 30 of 30 and on granted-versus-denied in 29 of 30;
+  the one miss (a request partly withdrawn and partly denied) was fixed.
+
+**Two sources for two kinds of variables.** Each past case contributes two things, and each
+comes from where it is recorded:
+
+- **What was asked for** (the request): which approvals, which rule each relaxes, whether it is
+  for homes. Only the decision records this, so it is read from the decision.
+- **What the parcel is like** (the site): its zoning, market, size, whether it is vacant, its
+  slope, mining and flood conditions. These come from **our own dataset**, not from the PDF:
+  each case is linked to its county parcel ID, and the parcel's stored SiteContext is looked
+  up in `data/scores` (the `contexts` table, the same query by parcel ID the API uses). So the
+  model learns from exactly the facts the system shows for that parcel, and it will read the
+  same facts when it scores any other parcel.
+
+**The sample.**
+
+| | Cases |
+|---|---|
+| Cases on the 2025–2026 agendas and decisions | 295 |
+| No written decision posted yet | 74 (left out) |
+| Board found no approval was needed ("legally nonconforming", "allowed by right") | 9 (left out) |
+| Ruling could not be read | 4 (left out) |
+| Ruled on something other than a variance or special exception (appeals and similar) | 5 (left out) |
+| Ruling whose parcel has no stored facts (not matched to a parcel) | 1 (left out) |
+| **Estimation sample: rulings on variances or special exceptions** | **202** (Feb 2025 – Aug 2026) |
+| of which granted (incl. with conditions or partly) / denied | 174 (86%) / 28 (14%) |
+| decided in 2025 / 2026 | 111 (90% granted) / 91 (81% granted) |
+
+202 cases with 28 denials is a small sample for a regression. That is why the model starts from
+the earlier expert guesses (its prior) and why only a few explanatory variables can be used.
+
+**Left-hand side: what the model predicts.** One row per hearing, because the board rules on
+all of a case's requests together:
+
+> y = 1 if the board granted the hearing's requests (granted, granted with conditions, or
+> granted in part); y = 0 if it denied them.
+
+**Right-hand side: the candidate explanatory variables.** One function,
+`navigator_engine.approval.features()`, builds the row for past cases and for new proposals.
+The parcel part always goes through `approval.site_features(SiteContext)`.
+
+| Variable | Meaning | Past case: taken from | New proposal: taken from | Cases with it (granted vs others) |
+|---|---|---|---|---|
+| `intercept` | Any board hearing (baseline: one that includes a variance) | — | — | 202 |
+| `special_exception_only` | Every request is a special exception | the decision | the engine's zoning check | 38 (95% vs 84%) |
+| `extra_approvals` | Requests beyond the first | the decision | the zoning check | mean 0.16 |
+| `housing` | The request is for homes | the decision's wording | always 1 | 60 (90% vs 85%) |
+| `rule_use`, `rule_lot_size`, `rule_setback`, `rule_height`, `rule_parking` | Which rule is relaxed | the decision's code sections and wording | the failed check | 78 / 3 / 33 / 9 / 12 |
+| `residential_district` | Zoned R1D, R1A, R2, R3, RM or H | **parcel's stored SiteContext** | the parcel's SiteContext | 121 (87% vs 85%) |
+| `strong_market` | URA market type A–E | **parcel's stored SiteContext** | the parcel's SiteContext | 119 (82% vs 93%) |
+| `log_lot_area` | Lot size, log(area / 3,000 sq ft) | **parcel's stored SiteContext** | the parcel's SiteContext | all |
+| `vacant_lot` | No building on the lot | **parcel's stored SiteContext** | the parcel's SiteContext | 46 (93% vs 84%) |
+| `steep_slope` | A quarter or more of the lot on 25%+ grade | **parcel's stored SiteContext** | the parcel's SiteContext | 41 (95% vs 84%) |
+| `undermined` | Any part in the undermined overlay | **parcel's stored SiteContext** | the parcel's SiteContext | 38 (84% vs 87%) |
+| `flood_zone` | Any part in the 1% flood zone or floodway | **parcel's stored SiteContext** | the parcel's SiteContext | 11 (73% vs 87%) |
+
+Whether anyone came to oppose the request is recorded in decisions but deliberately left out:
+it isn't known when a site is being screened. One timing caveat: the parcel facts are today's,
+while the decisions are from 2025–2026; a lot that was vacant at its hearing and built since
+would be misread, which is rare over so short a window.
+
+**The model.**
+
+> logit P(y = 1) = β₀ + β₁ · special_exception_only + Σ βₖ · xₖ
+
+- **Priors.** β₀ starts at the old guess for a variance hearing (70%, i.e. logit 0.85) and
+  β₁ at the old gap between special exceptions (80%) and variances, both with a standard
+  deviation of 0.5 on the logit scale (about ±10 points). Every other coefficient starts at 0
+  with a standard deviation of 1, a mild pull toward "no effect".
+- **Estimation.** The most likely coefficients given the data and the priors are found with
+  Newton's method. Their uncertainty is a Gaussian around that point (the Laplace
+  approximation), checked against a full Monte Carlo sampler.
+
+**Which variables made it into the model.** Seven nested versions were fitted and compared on
+cases they had not seen: five-fold cross-validation, and a separate test on the 2026 decisions
+after fitting on 2025. The rule, set before looking: keep the simplest version unless a richer
+one lowers the cross-validated log loss (the standard penalty for wrong probabilities) by more
+than 0.005.
+
+| Version | Cross-validated log loss | Held-out 2026 log loss |
+|---|---|---|
+| Approval type only (intercept + special exceptions only) | 0.398 | 0.480 |
+| + number of approvals | 0.399 | 0.480 |
+| + housing request | 0.396 | 0.475 |
+| + rule relaxed | 0.401 | 0.477 |
+| + place (district, market, lot size) | 0.401 | 0.542 |
+| **+ site conditions (vacant, steep slope, undermined, flood)** | **0.389** | **0.462** |
+| All variables | 0.398 | 0.509 |
+
+The site conditions, read from our parcel data, are the only group that predicts better on
+both tests; the request details and the place variables do not. The model in use therefore has
+six coefficients:
+
+| Coefficient | Prior | Posterior (sd) | Reading |
+|---|---|---|---|
+| β₀ (hearing with a variance, built lot, no hazard) | 0.85 (70%) | **1.36** (0.22) | 80% granted (75–84%, 10th–90th percentile) |
+| special exceptions only | 0.54 | **+0.85** (0.39) | higher odds |
+| vacant lot | 0 | **+0.83** (0.50) | higher odds: nothing existing is being worsened |
+| steep slope | 0 | **+0.95** (0.54) | higher odds (see below) |
+| undermined | 0 | −0.07 (0.45) | no clear effect |
+| flood zone | 0 | −0.52 (0.61) | lower odds, but only 11 cases, so very uncertain |
+
+What that means in probabilities (median, with the 10th–90th percentile range):
+
+| Hearing | Approval odds |
+|---|---|
+| Variance, built lot, no hazards | 80% (75–84%) |
+| Variance, vacant lot | 90% (83–94%) |
+| Variance, vacant lot on a steep slope | 96% (91–98%) |
+| Variance, built lot in a flood zone | 70% (52–84%) |
+| Special exceptions only, vacant lot | 96% (91–98%) |
+
+**Why a steep slope raises the odds.** Of 41 rulings on steep lots, 39 were granted (95%, vs
+84% elsewhere), and the coefficient stays at +0.95 to +0.99 whichever other variables are in the
+model, so it isn't standing in for the kind of request. Two reasons make it plausible:
+Pennsylvania's variance test asks for a hardship caused by the property's physical conditions,
+and steep topography is the classic one; and steep lots deter ambitious projects, so what
+reaches the board tends to be modest (parking, walls, fences, small homes). It is a statement
+about the board's decision once a request is filed, not about steep land being good to build
+on: the engine still charges the slope as a site cost and delay, so a steep lot's score goes
+down. The evidence is thin, though: two denials among 41 cases, a 95% interval of about −0.1 to
++2.0, and a 96% chance the effect is positive.
+
+With 28 denials these effects are estimated loosely (their ranges are wide), which the
+simulation carries into every report. One trend to watch: 2026 decisions were granted less
+often than 2025 ones (81% vs 90%). The model pools both years; a time trend can be added once
+more decisions are posted, and refitting is one command.
+
+### 6.3 How the probability is produced for a new parcel and building type
+
+The model never needs the parcel itself to have a hearing history. It predicts from what the
+proposal would ask for and from the parcel's own facts, so it works for any parcel and any
+building type the engine tests:
+
+1. **The zoning check** (Section 4) tests the building on the lot and lists the approvals it
+   needs, for example "variance (903.03)" when the building doesn't fit the setbacks, plus
+   "subdivision" for townhomes.
+2. **The approvals are grouped by who decides.** Variances and special exceptions go to one
+   Zoning Board hearing; the others to the Zoning Administrator, City Planning or Council.
+3. **The right-hand-side row** is built with the same `features()` function used for fitting:
+   the request part from the zoning check (approval types, rule relaxed), the parcel part from
+   the parcel's SiteContext through `site_features()` (vacant, slope, mining, flood, zoning,
+   market, lot size). These are the same facts the report shows for that parcel ID.
+4. **In each of the 2,000 simulation draws**, the coefficients are drawn from the model's
+   posterior and turned into a probability, P = 1 / (1 + e^(−row · coefficients)). The
+   model's own uncertainty therefore flows into the report's ranges and into the score.
+5. **Other bodies** multiply in, draw by draw: the Council's measured Beta ranges, and the
+   expert ranges for administrator exceptions and subdivisions.
+6. **Time** still uses the earlier ranges per approval (a variance 2–7 months from filing).
+   The decisions show that the ruling itself comes 20–46 days after the hearing (35 typical,
+   219 cases), but not when the application was filed, so the full duration can't be measured
+   yet.
+7. **Into the score**: each draw's probability and months feed the approval part of the score
+   (Section 8).
+
+**Examples from the golden lots.** A six-unit walk-up on the clean by-right lot (vacant) needs
+a setback variance: 90% (83–94%). Two townhomes on the steep-slope lot (vacant, 84% steep) need
+a special exception and a subdivision: 91% (86–95%), the model's hearing odds times the expert
+range for the subdivision.
+
+**Where the probabilities are stored.** Every city parcel and building type has its approval
+odds in `data/scores/programs.parquet` (and the Hazelwood demo in `results/summaries.csv`):
+`approval_prob_p10/p50/p90` and `approval_basis` (by_right, model, measured, placeholder).
+`navigator_pipeline.scores.load().approval_odds("55-A-225")` returns them for one parcel; any
+other combination is computed on request with `analyze(context, program=...)`.
+
+**Refitting.** Run `navigator_pipeline.zba_download` (new decisions only), `navigator_pipeline.zba`
+and `navigator_research.approval_model` (it reads the parcel facts from `data/scores`), then
+rescore. The model, its validation tables and its caveats are also written to
+`docs/approval-model.md` on every fit.
+
+**Cautions.**
+
+- Only requests that were filed and decided are seen. Applicants tend not to file weak cases,
+  so the odds are for "a request like this, once filed", and they are likely optimistic for
+  unusual proposals. The same applies to the Council rates.
+- The board data start in 2025, so the sample is small and recent; effects other than the
+  approval type rest on a few dozen cases each.
+- Requests the board rarely sees (for example, lot-size variances: 3 cases) can't be told apart
+  from the average yet.
 
 The time until the project can get a building permit is then the city's permit review time
 plus whichever takes longer: the approvals or the site studies.
@@ -362,8 +567,10 @@ score 77 (fast track).
 
 1. **Construction cost is a guess.** It drives most verdicts. Getting real local cost figures
    from builders is the most valuable next step.
-2. **No Zoning Board history yet.** Exceptions and variances (and subdivisions) still rely on
-   expert guesses, and the report can't yet show similar past cases.
+2. **Short Zoning Board history.** The approval model rests on 202 decisions from 2025–2026
+   with 28 denials: enough for rates by approval type and a few site conditions, estimated
+   loosely. Administrator exceptions and subdivisions still rely on expert guesses, and the time
+   from filing to a hearing isn't measured.
 3. **The score isn't calibrated.** Its weights and constants should be fitted so that the bands
    match real outcomes, such as permits issued and projects completed.
 4. **Inputs move independently.** In reality, costs and prices tend to rise and fall together.
@@ -403,7 +610,11 @@ Paths are relative to the repository root. The v0 engine lives in `engine/src/na
 | Rule-by-rule table: every check, pass or fail; odds per building (4, 10) | `rules_engine.py` · `check_program`, `evaluate_programs`, `site_checks`; `analyze.py` · `rule_checks`; `sandbox/report.py` · `rules_block` | `NOT_CHECKED`, `CHECK_LABELS` |
 | Overlay procedures (4) | `rules_engine.py` · `overlay_items` | — |
 | Flags, thresholds, unknowns (5) | `engine/src/navigator_engine/constraints.py` · `flags` | inline threshold table |
-| Entitlement odds and months (6) | `engine/src/navigator_engine/entitlement.py` · `sample` | `RUNGS`, `PROCEDURAL` |
+| Entitlement odds and months (6) | `engine/src/navigator_engine/entitlement.py` · `sample`, `site_features` | `RUNGS`, `PROCEDURAL` |
+| Zoning Board decisions: download and case table (6.2) | `navigator_pipeline/zba_download.py`; `navigator_pipeline/zba.py` · `parse_decision`, `parse_agenda`, `link_parcels` | `data/manual/zba/` (local), `data/clean/zba_cases.parquet` |
+| Approval model: features (both sides), prediction (6.2, 6.3) | `engine/src/navigator_engine/approval.py` · `features`, `rule_of`, `sample` | `config/models/approval_v1.json` |
+| Approval model: fitting and validation (6.2) | `research/src/navigator_research/approval_model.py` · `design`, `fit_map`, `metropolis`, `cross_validate` | `docs/approval-model.md` |
+| Nearby and similar board cases (6, 10) | `navigator_pipeline/site_context.py` · `_zba_nearby`; `engine/src/navigator_engine/precedents.py` · `similar_cases` | `SIMILAR_RADIUS_FT`, `SIMILAR_YEARS` |
 | Council outcomes (6) | `navigator_pipeline/build.py` · `build_council_zoning_matters` | `data/clean/council_zoning_matters.parquet` |
 | Comps, rents, exits (7) | `engine/src/navigator_engine/analyze.py` · `sale_psf`, `rent_for`, `proforma` | `NEW_BUILD_YEAR`, `MIN_COMPS` |
 | Costs, margin, residual land value, Monte Carlo (7) | `analyze.py` · `proforma` | `assumptions.py`; `N` |
@@ -435,7 +646,8 @@ Paths are relative to the repository root. The v0 engine lives in `engine/src/na
 | Dimensional-variance plausibility cap | 25% | — | placeholder |
 | Flag cost and delay ranges | per flag (§5) | — | placeholder |
 | P(kill) by severity | 0.30 / 0.10 / 0.15 / 0.03 | — | placeholder |
-| Zoning-board rung priors | per rung (§6) | — | placeholder |
+| Zoning-board approval odds | model `approval_v1` (§6, `docs/approval-model.md`) | — | fitted on board decisions |
+| Administrator exception, subdivision odds | per rung (§6) | — | placeholder |
 | Conditional use, rezoning odds and durations | Beta(28, 3), Beta(92, 11); observed days | — | measured (council, 2000–2026) |
 | Comparable sales, rents | per parcel | — | measured (county sales; HUD) |
 
@@ -456,6 +668,7 @@ Paths are relative to the repository root. The v0 engine lives in `engine/src/na
 | Small Area Fair Market Rents; QCT, DDA, Opportunity Zones (HUD) | Rent benchmarks; financing overlays |
 | Building permits since 2019 (City PLI) | By-right validation ground truth |
 | Zoning legislation 2000–2026 (City Council, Legistar) | Conditional use and rezoning outcomes |
+| Zoning Board of Adjustment agendas and decisions, 2025–2026 (City Planning meeting pages) | Approval model sample (outcome, approval types, rules relaxed); nearby and similar cases |
 | City-owned property, condemned properties, tax liens (City, County) | Title and public-land facts |
 | Market Value Analysis 2021 (URA) | Market typology |
 
@@ -464,7 +677,9 @@ Paths are relative to the repository root. The v0 engine lives in `engine/src/na
 **By right** — permitted without discretionary approval. **Administrator exception** —
 minor relief granted by the Zoning Administrator. **Special exception** — use or standard
 allowed after a Zoning Board hearing on stated criteria. **Variance** — relief from a
-standard on a hardship showing, granted by the Zoning Board. **Conditional use** — use
+standard on a hardship showing, granted by the Zoning Board. **Logistic regression** — a model
+for a yes/no outcome whose output is a probability between 0 and 1. **Prior / posterior** —
+what the model believes before seeing the data, and after. **Conditional use** — use
 allowed after Planning Commission review and City Council vote. **UM-O** — Undermined Area
 Overlay District. **FP-O** — Floodplain Overlay District. **SFHA** — FEMA Special Flood
 Hazard Area (1% annual chance). **BFE** — base flood elevation. **SAFMR** — HUD Small Area
