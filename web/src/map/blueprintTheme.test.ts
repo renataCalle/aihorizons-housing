@@ -1,6 +1,6 @@
 import type { LayerSpecification, StyleSpecification } from 'maplibre-gl'
 import { describe, expect, it } from 'vitest'
-import { applyBlueprintTheme, basemapPaint, BLUEPRINT, STANDARD } from './blueprintTheme'
+import { applyMapTheme, BLUEPRINT, STANDARD } from './blueprintTheme'
 
 const layers = [
   { id: 'background', type: 'background', paint: { 'background-color': '#f8f4f0' } },
@@ -15,29 +15,33 @@ const layers = [
   { id: 'mystery', type: 'fill', source: 'omt', 'source-layer': 'mystery', paint: { 'fill-color': '#123456' } },
 ] as LayerSpecification[]
 
-const style: StyleSpecification = { version: 8, sources: {}, layers }
+const style: StyleSpecification = {
+  version: 8,
+  sources: { openmaptiles: { type: 'vector', url: 'https://example.test/tiles' } },
+  layers,
+}
 
 function layer(themed: StyleSpecification, layerId: string): any {
   return themed.layers.find((l) => l.id === layerId)
 }
 
-describe('applyBlueprintTheme', () => {
-  const themed = applyBlueprintTheme(style)
+describe('applyMapTheme', () => {
+  const themed = applyMapTheme(style)
 
-  it('paints land, parks, water and buildings in blueprint blues', () => {
-    expect(layer(themed, 'background').paint['background-color']).toBe(BLUEPRINT.land)
-    expect(layer(themed, 'park').paint['fill-color']).toBe(BLUEPRINT.park)
-    expect(layer(themed, 'water').paint['fill-outline-color']).toBe(BLUEPRINT.waterLine)
-    expect(layer(themed, 'building').paint['fill-color']).toBe(BLUEPRINT.building)
+  it('paints land, parks, water and buildings in the Standard palette', () => {
+    expect(layer(themed, 'background').paint['background-color']).toBe(STANDARD.land)
+    expect(layer(themed, 'park').paint['fill-color']).toBe(STANDARD.park)
+    expect(layer(themed, 'water').paint['fill-outline-color']).toBe(STANDARD.waterLine)
+    expect(layer(themed, 'building').paint['fill-color']).toBe(STANDARD.building)
   })
 
-  it('makes roads white with pale casings, keeping their widths', () => {
+  it('recolours roads and casings, keeping their widths', () => {
     expect(layer(themed, 'highway_minor').paint).toEqual({
-      'line-color': BLUEPRINT.road,
+      'line-color': STANDARD.road,
       'line-opacity': 1,
       'line-width': 2,
     })
-    expect(layer(themed, 'highway_major_casing').paint['line-color']).toBe(BLUEPRINT.roadCasing)
+    expect(layer(themed, 'highway_major_casing').paint['line-color']).toBe(STANDARD.roadCasing)
   })
 
   it('hides shields and uppercases place labels', () => {
@@ -45,12 +49,12 @@ describe('applyBlueprintTheme', () => {
     const label = layer(themed, 'label_city')
     expect(label.layout['text-transform']).toBe('uppercase')
     expect(label.layout['text-field']).toBe('{name}')
-    expect(label.paint['text-color']).toBe(BLUEPRINT.label)
+    expect(label.paint['text-color']).toBe(STANDARD.label)
   })
 
   it('recolors street names without uppercasing them', () => {
     const name = layer(themed, 'highway-name-minor')
-    expect(name.paint['text-color']).toBe(BLUEPRINT.label)
+    expect(name.paint['text-color']).toBe(STANDARD.label)
     expect(name.layout['text-transform']).toBeUndefined()
   })
 
@@ -60,25 +64,15 @@ describe('applyBlueprintTheme', () => {
   })
 })
 
-describe('basemapPaint', () => {
-  const changes = basemapPaint(applyBlueprintTheme(style).layers, STANDARD)
-  const paintOf = (layerId: string) => changes.find((c) => c.layer === layerId)?.paint
-
-  it('recolours the same layers in the Standard palette', () => {
-    expect(paintOf('background')).toEqual({ 'background-color': STANDARD.land })
-    expect(paintOf('water')).toEqual({
-      'fill-color': STANDARD.water,
-      'fill-outline-color': STANDARD.waterLine,
-    })
-    expect(paintOf('highway_minor')?.['line-color']).toBe(STANDARD.road)
+describe('applyMapTheme extras', () => {
+  it('adds a grass layer under the buildings', () => {
+    const ids = applyMapTheme(style).layers.map((l) => l.id)
+    expect(ids.indexOf('landcover-grass')).toBe(ids.indexOf('building') - 1)
+    expect(layer(applyMapTheme(style), 'landcover-grass').paint['fill-color']).toBe(STANDARD.park)
   })
 
-  it('changes only paint the layer type has, and leaves unmatched layers alone', () => {
-    expect(paintOf('label_city')).toEqual({
-      'text-color': STANDARD.label,
-      'text-halo-color': STANDARD.land,
-    })
-    expect(paintOf('mystery')).toBeUndefined()
-    expect(paintOf('road_shield_us')).toBeUndefined()
+  it('still themes in the blueprint palette on request', () => {
+    const blueprint = applyMapTheme(style, BLUEPRINT)
+    expect(layer(blueprint, 'background').paint['background-color']).toBe(BLUEPRINT.land)
   })
 })

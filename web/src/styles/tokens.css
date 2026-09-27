@@ -38,8 +38,8 @@
   --band-conditions: var(--sky);
   --band-high-risk: var(--orange);
   --band-unknown: var(--unknown);
-  --band-none-outline: #c5d7ef;
-  --lot-fill: #eaf1fa; /* parcels that are not candidates */
+  --band-none-outline: #d6d0c4; /* warm grey lot lines on the cream map */
+  --lot-fill: transparent; /* parcels that are not candidates: outline only */
   --assembly-tint: #dce6ff;
 
   /* 3D view (Standard-like palette): cream houses, glassy blue towers, sky above the horizon */

@@ -10,7 +10,7 @@ import type { Map as MapLibreMap, StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { MapFeatures, ParcelLayer } from '../models/map'
-import { applyBlueprintTheme, basemapPaint, FALLBACK_STYLE, STANDARD } from './blueprintTheme'
+import { applyMapTheme, FALLBACK_STYLE } from './blueprintTheme'
 import { Crosshair } from './Crosshair'
 import { hatchPattern } from './hatch'
 import {
@@ -24,7 +24,6 @@ import {
   buildingExtrusion,
   CAMERA_2D,
   CAMERA_3D,
-  grassLayer,
   LIGHT_3D,
   readPalette,
   PARCELS_3D,
@@ -65,7 +64,7 @@ function useBlueprintStyle(): StyleSpecification | null {
     const controller = new AbortController()
     fetch(BASEMAP_URL, { signal: controller.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.statusText))))
-      .then((raw: StyleSpecification) => setStyle(applyBlueprintTheme(raw)))
+      .then((raw: StyleSpecification) => setStyle(applyMapTheme(raw)))
       .catch(() => {
         if (!controller.signal.aborted) setStyle(FALLBACK_STYLE)
       })
@@ -168,7 +167,7 @@ export function BlueprintMap({
       )}
       {children}
       <TiltCamera view3d={view3d} />
-      <Palette3D view3d={view3d} />
+      <Layers3D view3d={view3d} />
       {selectedCenter && (
         <Marker longitude={selectedCenter[0]} latitude={selectedCenter[1]} anchor="center">
           <Crosshair />
@@ -196,25 +195,20 @@ function TiltCamera({ view3d }: { view3d: boolean }) {
 }
 
 /**
- * The 3D view's colours: the basemap in the Standard palette and the parcels thinned out.
- * Applied to the live map and undone on the way out, so the 2D blueprint look is untouched.
+ * The 3D view's layers: buildings kept above the lots, and lots outside the search thinned
+ * out. Applied to the live map and undone on the way out.
  */
 type PaintKey = Parameters<MapLibreMap['getPaintProperty']>[1]
 type PaintValue = Parameters<MapLibreMap['setPaintProperty']>[2]
 
-function Palette3D({ view3d }: { view3d: boolean }) {
+function Layers3D({ view3d }: { view3d: boolean }) {
   const { current: ref } = useMap()
   useEffect(() => {
     const map = ref?.getMap()
     if (!map || !view3d) return
     const before: [string, PaintKey, PaintValue][] = []
-    const grass = grassLayer(STANDARD.park)
     const apply = () => {
-      if (!map.getLayer(grass.id)) {
-        map.addLayer(grass, map.getLayer('building') ? 'building' : undefined)
-      }
-      const changes = [...basemapPaint(map.getStyle().layers, STANDARD), ...PARCELS_3D]
-      for (const { layer, paint } of changes) {
+      for (const { layer, paint } of PARCELS_3D) {
         if (!map.getLayer(layer)) continue
         for (const [name, value] of Object.entries(paint)) {
           const prop = name as PaintKey
@@ -241,7 +235,6 @@ function Palette3D({ view3d }: { view3d: boolean }) {
     return () => {
       map.off('styledata', keepBuildingsOnTop)
       map.off('idle', apply)
-      if (map.getLayer(grass.id)) map.removeLayer(grass.id)
       for (const [layer, prop, value] of before) {
         if (map.getLayer(layer)) map.setPaintProperty(layer, prop, value)
       }

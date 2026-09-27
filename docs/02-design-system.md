@@ -92,32 +92,37 @@ Use these sparingly; they carry the style:
 
 ## Map style
 
-Base (MapLibre GL JS 6, already in `web/package.json`): **OpenFreeMap Positron** (`https://tiles.openfreemap.org/styles/positron`), recolored at load time. Write one function, `applyBlueprintTheme(style)`, that walks the style's layers and overrides paint properties:
+Base (MapLibre GL JS 6, already in `web/package.json`): **OpenFreeMap Positron** (`https://tiles.openfreemap.org/styles/positron`), recolored at load time by `applyMapTheme(style, palette)` in `web/src/map/blueprintTheme.ts`, which walks the style's layers and overrides paint properties.
 
-| Layer group | Paint |
-|---|---|
-| background, landuse, park | `#EEF4FB` (parks one step lighter, no green) |
-| water | `#D3E3F7`, outline `#B4CCEC` |
-| buildings | fill `#E3ECF8`, outline `#C5D7EF` |
-| roads (minor) | `#FFFFFF` |
-| roads (major) | `#FFFFFF`, casing `#D5E2F4` |
-| rail, paths | `#C9D9F0`, dashed |
-| labels | Plex Mono–like letter-spaced uppercase in `#6A84B8` for places; hide POI icons |
+**Current palette (Sep 2026): Standard.** The map (2D and 3D) now uses colours sampled from Mapbox's "Standard" day style, chosen for contrast with the band colours. The panels keep the blueprint look. The original blueprint palette is still in the code (`BLUEPRINT`) and in the right-hand column below.
+
+| Layer group | Standard (in use) | Blueprint (original) |
+|---|---|---|
+| background, landuse | `#F0ECE2` | `#EEF4FB` |
+| parks, grass | `#BEE8B2` (grass layer added: Positron has none) | one step lighter than land, no green |
+| woods | `#B4E0A7` | as land |
+| water | `#A7DAFA`, outline `#97CFF3` | `#D3E3F7`, outline `#B4CCEC` |
+| buildings | fill `#E4E0D7`, outline `#D8D4CC` | fill `#E3ECF8`, outline `#C5D7EF` |
+| roads | `#BFC5D6`, casing `#B0B7CB` | `#FFFFFF`, casing `#D5E2F4` |
+| rail, paths | `#C9CDD8`, dashed | `#C9D9F0`, dashed |
+| labels | `#56657E`, letter-spaced uppercase for places; hide POI icons | same style in `#6A84B8` |
 
 Add a technical grid feel with a faint 48px grid as a CSS background behind a slightly transparent basemap, or skip it if it hurts performance.
 
 **Data layers** (from `GET /api/map/parcels`):
 1. `parcels-fill`: fill by `band` using the band colors; unknown uses a hatch pattern image (`map.addImage` of a 6px diagonal pattern).
-2. `parcels-outline`: `#C5D7EF`, 0.8px; selected parcel `#0B1B3F`, 2.5px.
+2. `parcels-outline`: `#D6D0C4` (was `#C5D7EF`), 0.8px; selected parcel `#0B1B3F`, 2.5px. Lots that aren't candidates have no fill, outline only.
 3. `area-dim`: a polygon of the world minus the searched neighborhoods, fill `#F5F8FD` at 0.66 opacity.
 4. `area-boundary`: dashed cobalt line, 1.5px, with a mono label chip.
 5. `rank-tags`: symbol layer with rank numbers for the top results (or HTML markers).
 6. `transit-stops`: white circles with a cobalt stroke (Layers toggle).
 7. Crosshair: an HTML marker on the selected parcel's centroid.
 
-**Terrain (stretch):** hillshade from AWS Terrain Tiles (Terrarium encoding), tinted blue, low opacity, so Pittsburgh's slopes read on the map.
+**Terrain:** tried in 3D (AWS Terrain Tiles, Terrarium) and dropped: lots draped over hillsides read poorly.
 
-**3D score view:** deck.gl rendered interleaved with MapLibre through deck.gl's MapLibre overlay (check the deck.gl "Using with MapLibre" page for the current package name and MapLibre 6 support; in React, mount it with react-map-gl's `useControl`). A `PolygonLayer` with `extruded: true`, elevation = score scaled, fill by band, pitch about 55°, bearing about −30°. Glow: a `ScatterplotLayer` with large radius and low alpha under fast-track parcels.
+**3D view (built, replaces the score view below):** the "3D" control (`view=3d` in the URL) tilts the camera to 66° at street level and raises the basemap's buildings to their mapped heights (OpenMapTiles `render_height`, MapLibre `fill-extrusion`): cream `#E9E5DC` for houses, glassy blue `#9EB7CD` for towers, solid and always drawn above the lots. Lots stay coloured by band on the ground. Sky and horizon haze via MapLibre's sky.
+
+*Original plan, not built:* deck.gl extruded parcels, elevation = score scaled, fill by band, pitch about 55°, bearing about −30°, with a glow under fast-track parcels.
 
 ## Icons
 

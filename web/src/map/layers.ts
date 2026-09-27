@@ -184,29 +184,10 @@ export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': stri
 }
 
 /**
- * Grass for the 3D view: the basemap tiles carry it, but the Positron style draws no layer for
- * it. Added under the buildings while the view is on.
- */
-export function grassLayer(color: string): LayerSpecification {
-  return {
-    id: 'landcover-grass-3d',
-    type: 'fill',
-    source: 'openmaptiles',
-    'source-layer': 'landcover',
-    filter: ['==', ['get', 'class'], 'grass'],
-    paint: { 'fill-color': color },
-  }
-}
-
-/**
- * Paint changes to our own parcel layers in the 3D view: lots outside the search turn
- * transparent and their outlines faint, so only the candidates stand out on the cream.
+ * Paint changes to our own parcel layers in the 3D view: lot outlines turn faint, so the
+ * candidates and the buildings stand out.
  */
 export const PARCELS_3D: { layer: string; paint: Record<string, unknown> }[] = [
-  {
-    layer: 'parcels-fill',
-    paint: { 'fill-opacity': ['case', ['==', ['get', 'band'], 'none'], 0, 0.9] },
-  },
   { layer: 'parcels-outline', paint: { 'line-opacity': 0.35 } },
 ]
 

@@ -1,6 +1,6 @@
 import type { LayerSpecification, StyleSpecification } from 'maplibre-gl'
 
-/** Basemap palette from docs/02-design-system.md ("Map style"). */
+/** The original blueprint palette from docs/02-design-system.md ("Map style"). */
 export const BLUEPRINT = {
   land: '#EEF4FB',
   park: '#F3F7FD',
@@ -16,9 +16,9 @@ export const BLUEPRINT = {
 } as const
 
 /**
- * The 3D view's basemap: Mapbox's "Standard" day palette, sampled from its rendering (cream
- * ground, green parks and woods, sky-blue water, lavender-grey roads). It gives the band
- * colours more contrast than the blueprint.
+ * The map's palette, in 2D and 3D: Mapbox's "Standard" day palette, sampled from its
+ * rendering (cream ground, green parks and woods, sky-blue water, lavender-grey roads). It
+ * gives the band colours more contrast than the blueprint.
  */
 export const STANDARD: BasemapPalette = {
   land: '#F0ECE2',
@@ -82,10 +82,31 @@ const rules = (c: BasemapPalette): Rule[] => [
   },
 ]
 
-/** Recolor a basemap style (OpenFreeMap Positron) into the light blueprint look. Pure. */
-export function applyBlueprintTheme(style: StyleSpecification): StyleSpecification {
+/**
+ * Grass: the basemap tiles carry it, but the Positron style draws no layer for it. Added under
+ * the buildings so lawns read green like parks.
+ */
+export function grassLayer(color: string): LayerSpecification {
+  return {
+    id: 'landcover-grass',
+    type: 'fill',
+    source: 'openmaptiles',
+    'source-layer': 'landcover',
+    filter: ['==', ['get', 'class'], 'grass'],
+    paint: { 'fill-color': color },
+  }
+}
+
+/**
+ * Recolor a basemap style (OpenFreeMap Positron) into `palette`, keeping the blueprint's quiet
+ * labels and hidden shields, and add a grass layer under the buildings. Pure.
+ */
+export function applyMapTheme(
+  style: StyleSpecification,
+  palette: BasemapPalette = STANDARD,
+): StyleSpecification {
   const themed = structuredClone(style)
-  const RULES = rules(BLUEPRINT)
+  const RULES = rules(palette)
   themed.layers = themed.layers.map((layer) => {
     const rule = RULES.find((r) => r.match(layer))
     if (!rule) return layer
@@ -94,24 +115,11 @@ export function applyBlueprintTheme(style: StyleSpecification): StyleSpecificati
     if (rule.layout) next.layout = { ...next.layout, ...rule.layout }
     return next as LayerSpecification
   })
+  const building = themed.layers.findIndex((l) => l.id === 'building')
+  if (building >= 0 && 'openmaptiles' in themed.sources) {
+    themed.layers.splice(building, 0, grassLayer(palette.park))
+  }
   return themed
-}
-
-/**
- * The paint changes that turn an already themed map into `palette`, layer by layer: what the
- * 3D view applies to the live map (and undoes on the way out). Layout is left as it is.
- */
-export function basemapPaint(
-  layers: LayerSpecification[],
-  palette: BasemapPalette,
-): { layer: string; paint: Paint }[] {
-  const RULES = rules(palette)
-  return layers.flatMap((layer) => {
-    const rule = RULES.find((r) => r.match(layer))
-    if (!rule?.paint || !('paint' in layer)) return []
-    const paint = kept(layer, rule.paint)
-    return Object.keys(paint).length ? [{ layer: layer.id, paint }] : []
-  })
 }
 
 /** Only set paint properties that belong to the layer's type (fill-* on fills, etc.). */
@@ -124,5 +132,5 @@ function kept(layer: LayerSpecification, paint: Paint): Paint {
 export const FALLBACK_STYLE: StyleSpecification = {
   version: 8,
   sources: {},
-  layers: [{ id: 'background', type: 'background', paint: { 'background-color': BLUEPRINT.land } }],
+  layers: [{ id: 'background', type: 'background', paint: { 'background-color': STANDARD.land } }],
 }
