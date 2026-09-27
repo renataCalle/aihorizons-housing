@@ -23,6 +23,7 @@ import {
   buildingExtrusion,
   CAMERA_2D,
   CAMERA_3D,
+  grassLayer,
   LIGHT_3D,
   readPalette,
   PARCELS_3D,
@@ -206,7 +207,11 @@ function Palette3D({ view3d }: { view3d: boolean }) {
     const map = ref?.getMap()
     if (!map || !view3d) return
     const before: [string, PaintKey, PaintValue][] = []
+    const grass = grassLayer(STANDARD.park)
     const apply = () => {
+      if (!map.getLayer(grass.id)) {
+        map.addLayer(grass, map.getLayer('building') ? 'building' : undefined)
+      }
       const changes = [...basemapPaint(map.getStyle().layers, STANDARD), ...PARCELS_3D]
       for (const { layer, paint } of changes) {
         if (!map.getLayer(layer)) continue
@@ -223,6 +228,7 @@ function Palette3D({ view3d }: { view3d: boolean }) {
     else map.once('idle', apply)
     return () => {
       map.off('idle', apply)
+      if (map.getLayer(grass.id)) map.removeLayer(grass.id)
       for (const [layer, prop, value] of before) {
         if (map.getLayer(layer)) map.setPaintProperty(layer, prop, value)
       }

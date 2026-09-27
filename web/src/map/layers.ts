@@ -143,7 +143,7 @@ export function parcelLayers(
 /** Camera for the 3D view; every camera move keeps it while the view is on. */
 export const CAMERA_3D = { pitch: 66, bearing: -25 }
 /** Soft light from the upper left, so building sides stay pale rather than grey. */
-export const LIGHT_3D = { anchor: 'viewport' as const, position: [1.5, 210, 30] as [number, number, number], intensity: 0.25, color: '#ffffff' }
+export const LIGHT_3D = { anchor: 'viewport' as const, position: [1.5, 210, 30] as [number, number, number], intensity: 0.4, color: '#ffffff' }
 export const CAMERA_2D = { pitch: 0, bearing: 0 }
 
 /**
@@ -177,6 +177,21 @@ export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': stri
       'fill-extrusion-opacity': ['interpolate', ['linear'], ['zoom'], 13.5, 0, 14.5, 0.9],
       'fill-extrusion-vertical-gradient': true,
     },
+  }
+}
+
+/**
+ * Grass for the 3D view: the basemap tiles carry it, but the Positron style draws no layer for
+ * it. Added under the buildings while the view is on.
+ */
+export function grassLayer(color: string): LayerSpecification {
+  return {
+    id: 'landcover-grass-3d',
+    type: 'fill',
+    source: 'openmaptiles',
+    'source-layer': 'landcover',
+    filter: ['==', ['get', 'class'], 'grass'],
+    paint: { 'fill-color': color },
   }
 }
 

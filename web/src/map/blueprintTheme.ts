@@ -4,6 +4,7 @@ import type { LayerSpecification, StyleSpecification } from 'maplibre-gl'
 export const BLUEPRINT = {
   land: '#EEF4FB',
   park: '#F3F7FD',
+  wood: '#EEF4FB', // woods read as plain land in the blueprint
   water: '#D3E3F7',
   waterLine: '#B4CCEC',
   building: '#E3ECF8',
@@ -15,19 +16,21 @@ export const BLUEPRINT = {
 } as const
 
 /**
- * The 3D view's basemap: after Mapbox's "Standard" day palette (warm cream land and houses,
- * blue water, soft green parks, white roads), which gives the band colours more contrast.
+ * The 3D view's basemap: Mapbox's "Standard" day palette, sampled from its rendering (cream
+ * ground, green parks and woods, sky-blue water, lavender-grey roads). It gives the band
+ * colours more contrast than the blueprint.
  */
 export const STANDARD: BasemapPalette = {
-  land: '#F4F1EC',
-  park: '#D5EBC5',
-  water: '#9ECBF2',
-  waterLine: '#8BBDE8',
-  building: '#E9E3D9',
-  buildingLine: '#DCD4C8',
-  road: '#FFFFFF',
-  roadCasing: '#D8DDE6',
-  rail: '#CDD3DD',
+  land: '#F0ECE2',
+  park: '#BEE8B2',
+  wood: '#B4E0A7',
+  water: '#A7DAFA',
+  waterLine: '#97CFF3',
+  building: '#E4E0D7',
+  buildingLine: '#D8D4CC',
+  road: '#BFC5D6',
+  roadCasing: '#B0B7CB',
+  rail: '#C9CDD8',
   label: '#56657E',
 }
 
@@ -55,6 +58,7 @@ const rules = (c: BasemapPalette): Rule[] => [
   },
   { match: id(/^background$/), paint: { 'background-color': c.land } },
   { match: id(/^park$/), paint: { 'fill-color': c.park } },
+  { match: id(/^landcover_wood$/), paint: { 'fill-color': c.wood } },
   { match: id(/^(landuse|landcover|aeroway-area)/), paint: { 'fill-color': c.land } },
   {
     match: id(/^water$/),
