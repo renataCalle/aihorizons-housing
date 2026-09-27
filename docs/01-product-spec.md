@@ -20,7 +20,7 @@ The mockups for every screen are in `docs/design/screens/`, and the exact markup
 | 3 | Results | `SearchMap.dc.html` (uses `MapBase.dc.html`) | `/search?q=…` |
 | 4 | Report open | `ReportOpen.dc.html` (uses `ReportPanel.dc.html`) | `/parcel/:id` |
 | 5 | Evidence drawer | `EvidenceOpen.dc.html` | `/parcel/:id/evidence/:evidenceId` |
-| — | 3D score view | `ScoreView3D.dc.html` | `/search?q=…&view=3d` |
+| — | 3D view | `ScoreView3D.dc.html` (original concept) | any map route with `view=3d` |
 
 Routes are deep-linkable so a developer can share a report or a search.
 
@@ -74,9 +74,11 @@ Opens as a 720px panel on the right. The map shifts so the selected parcel stays
 
 A 580px drawer over the report. For zoning relief it shows: what the code requires (section, date, plain-language summary, link to the code on eCode360), similar cases nearby (granted count, median months, table of the closest cases with outcome pills), a note that an AI model extracted the cases from decision PDFs with a link per case, a confidence note, and "How to resolve".
 
-### 3D score view (wow layer)
+### 3D view (wow layer)
 
-Opened from the "3D" map control. Isometric view of the searched neighborhood with candidate parcels extruded by score and colored by band, a soft glow under fast-track parcels, and a tooltip on the selected parcel. Left panel: "Hazelwood at a glance" with counts per band, "What holds sites back" bars, and a near-misses card. A "2D map / 3D score" toggle returns to the map.
+Opened from the "3D" map control (`view=3d`, kept while moving between results, reports and evidence). The camera tilts over the searched area at street level and the basemap's buildings rise to their mapped heights, solid, in the active map theme's colours (Blueprint or Standard, switched from the Layers menu or the style button). Lots stay flat and coloured by band; the selected lot is raised 3 m in its band colour. The same button reads "2D" and returns to the flat map.
+
+*Changed from the original concept* (`ScoreView3D.dc.html`: lots extruded by score, glow under fast-track lots): a 3D city read better than score blocks, and Hazelwood has no fast-track lots to glow. Still to build: the "Hazelwood at a glance" panel (docs/07-build-plan.md, M5).
 
 ## States every screen needs
 

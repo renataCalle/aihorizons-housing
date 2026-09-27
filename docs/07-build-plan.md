@@ -35,10 +35,15 @@ Build in this order, on your own branch (`feat/web-api`), merging with normal me
 - Evidence drawer; print stylesheet for "Export memo"; loading, empty, error, outside-city and unknown states.
 - **Done when:** the Sample lot A report matches the PNG section by section and prints as a clean two-page memo.
 
-## M5 · 3D score view
+## M5 · 3D view
 
-- deck.gl extruded parcels, glow, tooltip, "2D map / 3D score" toggle; neighborhood summary panel (bottlenecks from the engine's `attribute_bottlenecks` once available, mock until then).
-- **Done when:** it matches `ScoreView3D` closely and toggling back keeps the selection.
+- **Built:** "3D / 2D" toggle kept in the URL (`view=3d`); tilted camera; the basemap's buildings raised to their heights with MapLibre `fill-extrusion` (no deck.gl), solid and above the lots; selected lot raised 3 m; Blueprint and Standard map themes; toggling back keeps the selection. Replaces the original deck.gl score blocks (see `docs/01-product-spec.md`, 3D view).
+- **Still to build: "Hazelwood at a glance" panel**, on the left in 3D, for the searched area:
+  - lots per band (from the parcel summaries);
+  - "What holds sites back": for each score driver, how many lots it costs points and how many points on average, summed from each lot's `score_breakdown` (the engine's own counterfactuals; the API only adds them up). Confirm with the engine owner that this can stand in for the planned `attribute_bottlenecks`;
+  - near misses (from `/api/search` with `show_near_misses`).
+- **Dropped for lack of data:** the glow under fast-track lots (Hazelwood has none in the current results).
+- **Done when:** the panel shows for the searched area in 3D, and toggling back keeps the selection.
 
 ## M6 · Polish and submission
 
