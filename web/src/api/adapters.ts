@@ -10,6 +10,7 @@ import type { MapBand, MapFeatureKind, MapFeatures, ParcelLayer } from '../model
 import type { Analysis, Band, Parcel, Severity, SiteReport, Versions } from '../models/report'
 import { DEFAULT_FILTERS, type Filters } from '../models/filters'
 import type {
+  Examples,
   FilterChip,
   LookupResult,
   Neighborhood,
@@ -429,4 +430,9 @@ export function toParseResult(data: unknown): ParseResult {
 
 export function toNeighborhoods(data: unknown): Neighborhood[] {
   return (data as S['Neighborhood'][]).map((n) => ({ name: n.name, candidates: n.candidates }))
+}
+
+export function toExamples(data: unknown): Examples {
+  const e = data as S['Examples']
+  return { parcelId: e.parcel_id, address: e.address, prompt: e.prompt }
 }

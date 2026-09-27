@@ -58,6 +58,13 @@ export interface ParseResult {
   parser: 'ai' | 'rules'
 }
 
+/** Example searches for the landing page, from the data being served. */
+export interface Examples {
+  parcelId: string
+  address: string
+  prompt: string
+}
+
 export interface Neighborhood {
   name: string
   candidates: number

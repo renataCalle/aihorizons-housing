@@ -3,9 +3,16 @@ import type { Health } from '../models/health'
 import type { MapFeatures, ParcelLayer } from '../models/map'
 import type { SiteReport } from '../models/report'
 import type { Filters } from '../models/filters'
-import type { LookupResult, Neighborhood, ParseResult, SearchResponse } from '../models/search'
+import type {
+  Examples,
+  LookupResult,
+  Neighborhood,
+  ParseResult,
+  SearchResponse,
+} from '../models/search'
 import {
   toEvidence,
+  toExamples,
   toHealth,
   toLookup,
   toApiFilters,
@@ -59,4 +66,8 @@ export async function fetchParse(
 
 export async function fetchNeighborhoods(signal?: AbortSignal): Promise<Neighborhood[]> {
   return toNeighborhoods(await getJson('/api/neighborhoods', signal))
+}
+
+export async function fetchExamples(signal?: AbortSignal): Promise<Examples> {
+  return toExamples(await getJson('/api/examples', signal))
 }
