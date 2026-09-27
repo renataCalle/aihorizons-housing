@@ -78,7 +78,7 @@ A 580px drawer over the report. For zoning relief it shows: what the code requir
 
 Opened from the "3D" map control (`view=3d`, kept while moving between results, reports and evidence). The camera tilts over the searched area at street level and the basemap's buildings rise to their mapped heights, solid, in the active map theme's colours (Blueprint or Standard, switched from the Layers menu or the style button). Lots stay flat and coloured by band; the selected lot is raised 3 m in its band colour. The same button reads "2D" and returns to the flat map.
 
-*Changed from the original concept* (`ScoreView3D.dc.html`: lots extruded by score, glow under fast-track lots): a 3D city read better than score blocks, and Hazelwood has no fast-track lots to glow. In 3D the left panel shows the searched lots at a glance: lots per band, "What holds sites back" (points each constraint costs, from the engine's score breakdown), and near misses; the ranked list is one click away.
+*Changed from the original concept* (`ScoreView3D.dc.html`: lots extruded by score, glow under fast-track lots): a 3D city read better than score blocks, and Hazelwood has no fast-track lots to glow. Built but switched off for now: in 3D the left panel can show the searched lots at a glance: lots per band, "What holds sites back" (points each constraint costs, from the engine's score breakdown), and near misses; the ranked list is one click away.
 
 ## States every screen needs
 

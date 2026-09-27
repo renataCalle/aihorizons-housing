@@ -10,6 +10,9 @@ import { LayersMenu } from '../results/LayersMenu'
 import { ResultsPanel } from '../results/ResultsPanel'
 import { useMapScreen } from './mapScreenContext'
 
+/** The 3D view's at-a-glance panel (GlancePanel). Off for now; true brings it back. */
+const SHOW_GLANCE = false
+
 /** /search: the results panel and the inspector card over the map (docs/01, §3). */
 export function ResultsView() {
   const s = useMapScreen()
@@ -26,7 +29,7 @@ export function ResultsView() {
 
   // In 3D the left panel shows the searched lots at a glance; the ranked list is one click away.
   const [showList, setShowList] = useState(false)
-  const glance = s.view3d && !showList
+  const glance = SHOW_GLANCE && s.view3d && !showList
   const summary = useAsync(glance && s.filters ? `glance:${encodeFilters(s.filters)}` : 'none', (signal) =>
     glance && s.filters ? fetchAreaSummary(s.filters, signal) : Promise.resolve(null),
   )
@@ -58,7 +61,7 @@ export function ResultsView() {
           onHover={s.setHoveredId}
           onRetry={s.retry}
           layers={layers}
-          onGlance={s.view3d ? () => setShowList(false) : undefined}
+          onGlance={SHOW_GLANCE && s.view3d ? () => setShowList(false) : undefined}
           showTransit={s.transit}
         />
       )}
