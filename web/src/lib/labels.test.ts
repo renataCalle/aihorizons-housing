@@ -6,6 +6,7 @@ describe('labels', () => {
     expect(programLabel('townhome', 3)).toBe('3 townhomes')
     expect(programLabel('walkup', 6)).toBe('6-unit walk-up')
     expect(programLabel('triplex', 3)).toBe('Triplex')
+    expect(programLabel('townhome', null)).toBe('Townhomes')
   })
 
   it('names approval paths from relief types', () => {

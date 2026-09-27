@@ -33,13 +33,13 @@ export function reliefShortLabel(type: string): string {
   return RELIEF_LABEL[type] ?? type.replace(/_/g, ' ')
 }
 
-/** "3 townhomes", "Duplex", "6-unit walk-up" */
-export function programLabel(productType: string, units: number): string {
+/** "3 townhomes", "Duplex", "6-unit walk-up"; without a unit count: "Townhomes", "Walk-up". */
+export function programLabel(productType: string, units: number | null): string {
   switch (productType) {
     case 'townhome':
-      return `${units} townhome${units === 1 ? '' : 's'}`
+      return units === null ? 'Townhomes' : `${units} townhome${units === 1 ? '' : 's'}`
     case 'walkup':
-      return `${units}-unit walk-up`
+      return units === null ? 'Walk-up' : `${units}-unit walk-up`
     case 'single_family':
       return 'Single-family home'
     default:

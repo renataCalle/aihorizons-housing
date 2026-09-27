@@ -70,6 +70,21 @@
   text-transform: uppercase;
 }
 
+.program-note {
+  margin: -12px 0 20px;
+  padding: 10px 14px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: var(--radius-control);
+  background: var(--cobalt-tint-2);
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.program-note a {
+  color: var(--cobalt);
+  font-weight: 500;
+}
+
 .report-none,
 .report-checklist {
   color: var(--ink-2);

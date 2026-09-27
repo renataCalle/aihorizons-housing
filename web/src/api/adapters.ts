@@ -242,6 +242,9 @@ export function toSiteReport(data: unknown): SiteReport {
     freshness: f
       ? { parcelsAsOf: f.parcels_as_of, live: f.live, liveAt: f.live_at, fellBack: f.fell_back }
       : null,
+    program: r.program
+      ? { productType: r.program.product_type, units: r.program.units ?? null }
+      : null,
   }
 }
 

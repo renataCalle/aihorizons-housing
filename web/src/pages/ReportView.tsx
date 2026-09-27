@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react'
-import { Link, Outlet, useNavigate, useParams } from 'react-router'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { Link, Outlet, useNavigate, useParams, useSearchParams } from 'react-router'
 import { fetchSiteReport } from '../api'
 import { formatMoneyRange, formatNumberRange, formatSqft } from '../lib/format'
-import { BAND_LABEL } from '../lib/labels'
+import { BAND_LABEL, programLabel } from '../lib/labels'
 import { useAsync } from '../lib/useAsync'
 import { spanOf } from '../models/estimate'
-import type { Analysis, Flag, Severity, SiteReport } from '../models/report'
+import type { Analysis, Flag, Program, Severity, SiteReport } from '../models/report'
 import { BuildOptions } from '../report/BuildOptions'
 import { KeyNumbers } from '../report/KeyNumbers'
 import { AboutReport, ParcelFacts } from '../report/ParcelFacts'
@@ -25,7 +25,17 @@ export function ReportView() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const s = useMapScreen()
-  const report = useAsync(id, (signal) => fetchSiteReport(id, signal))
+  const [params] = useSearchParams()
+  // The building the search asked for, unless the viewer switched to the engine's pick.
+  const product = s.filters?.product
+  const searched: Program | null = product?.type
+    ? { productType: product.type, units: product.units }
+    : null
+  const showPick = params.get('pick') === 'engine'
+  const program = showPick ? null : searched
+  const report = useAsync(`${id}|${program?.productType}|${program?.units}`, (signal) =>
+    fetchSiteReport(id, signal, program),
+  )
   const panelRef = useRef<HTMLElement>(null)
 
   const back = `/search?${new URLSearchParams([
@@ -81,7 +91,20 @@ export function ReportView() {
         {report.status === 'error' && (
           <p role="alert">Couldn't load this report: {report.error.message}</p>
         )}
-        {report.status === 'ready' && <ReportBody report={report.data} />}
+        {report.status === 'ready' && (
+          <ReportBody
+            report={report.data}
+            programNote={
+              searched && (
+                <ProgramNote
+                  searched={searched}
+                  scored={report.data.program}
+                  showPick={showPick}
+                />
+              )
+            }
+          />
+        )}
       </article>
 
       <Outlet />
@@ -101,7 +124,45 @@ function ReportLoading() {
   )
 }
 
-function ReportBody({ report }: { report: SiteReport }) {
+/** Which building the report scores: the one searched for, or the engine's pick. */
+function ProgramNote(props: { searched: Program; scored: Program | null; showPick: boolean }) {
+  const [params] = useSearchParams()
+  const label = programLabel(props.searched.productType, props.searched.units).toLowerCase()
+  const toggle = (pick: boolean) => {
+    const next = new URLSearchParams(params)
+    if (pick) next.set('pick', 'engine')
+    else next.delete('pick')
+    return `?${next}`
+  }
+  if (props.showPick) {
+    return (
+      <p className="program-note">
+        Showing the engine’s best pick for this lot.{' '}
+        <Link to={toggle(false)} replace>
+          Score {label} instead
+        </Link>
+      </p>
+    )
+  }
+  if (!props.scored) {
+    return (
+      <p className="program-note">
+        This lot’s facts aren’t stored, so it can’t be scored for {label}: showing the engine’s
+        pick.
+      </p>
+    )
+  }
+  return (
+    <p className="program-note">
+      Scored for {label}, as searched.{' '}
+      <Link to={toggle(true)} replace>
+        See the engine’s best pick
+      </Link>
+    </p>
+  )
+}
+
+function ReportBody({ report, programNote }: { report: SiteReport; programNote: ReactNode }) {
   const { parcel, analysis } = report
   const title = parcel.neighborhood ? `${parcel.name}, ${parcel.neighborhood}` : parcel.name
   const meta = [
@@ -117,6 +178,7 @@ function ReportBody({ report }: { report: SiteReport }) {
         <span className="mono">{meta.join(' · ')}</span>
         {parcel.illustrative && <span className="badge-illustrative">Illustrative data</span>}
       </p>
+      {analysis && programNote}
       {analysis ? (
         <AnalysisSections analysis={analysis} />
       ) : (

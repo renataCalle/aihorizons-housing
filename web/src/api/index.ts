@@ -1,7 +1,7 @@
 import type { Evidence } from '../models/evidence'
 import type { Health } from '../models/health'
 import type { MapFeatures, ParcelLayer } from '../models/map'
-import type { SiteReport } from '../models/report'
+import type { Program, SiteReport } from '../models/report'
 import type { Filters } from '../models/filters'
 import type {
   Examples,
@@ -31,8 +31,19 @@ export async function fetchHealth(signal?: AbortSignal): Promise<Health> {
   return toHealth(await getJson('/api/health', signal))
 }
 
-export async function fetchSiteReport(parcelId: string, signal?: AbortSignal): Promise<SiteReport> {
-  return toSiteReport(await getJson(`/api/parcels/${encodeURIComponent(parcelId)}`, signal))
+/** The report; with `program`, the engine scores that building instead of its own pick. */
+export async function fetchSiteReport(
+  parcelId: string,
+  signal?: AbortSignal,
+  program?: Program | null,
+): Promise<SiteReport> {
+  const query = new URLSearchParams()
+  if (program) {
+    query.set('product_type', program.productType)
+    if (program.units !== null) query.set('units', String(program.units))
+  }
+  const path = `/api/parcels/${encodeURIComponent(parcelId)}${query.size ? `?${query}` : ''}`
+  return toSiteReport(await getJson(path, signal))
 }
 
 export async function fetchEvidence(evidenceId: string, signal?: AbortSignal): Promise<Evidence> {
