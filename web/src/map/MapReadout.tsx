@@ -1,8 +1,34 @@
-import type { MapView } from './BlueprintMap'
+import { useMap } from '@vis.gl/react-maplibre'
+import { useEffect, useState } from 'react'
+import { MAP_ID, type MapView } from './BlueprintMap'
 import { formatCoordinates, scaleBar } from './readout'
 
-/** Coordinates of the map center and a dashed scale bar, bottom center. */
-export function MapReadout({ view }: { view: MapView }) {
+/**
+ * Coordinates of the map center and a dashed scale bar, bottom center. It follows the map
+ * itself (once per frame at most), so moving the map re-renders only this readout.
+ */
+export function MapReadout({ initial }: { initial: MapView }) {
+  const map = useMap()[MAP_ID]
+  const [view, setView] = useState(initial)
+
+  useEffect(() => {
+    if (!map) return
+    let frame = 0
+    const update = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const c = map.getCenter()
+        setView({ longitude: c.lng, latitude: c.lat, zoom: map.getZoom() })
+      })
+    }
+    update()
+    map.on('move', update)
+    return () => {
+      cancelAnimationFrame(frame)
+      map.off('move', update)
+    }
+  }, [map])
+
   const bar = scaleBar(view.latitude, view.zoom)
   const width = Math.round(bar.px)
   return (

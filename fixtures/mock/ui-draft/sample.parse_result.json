@@ -1,7 +1,7 @@
 {
   "filters": {
     "product": {
-      "type": "townhomes",
+      "type": "townhome",
       "units": 3
     },
     "areas": [

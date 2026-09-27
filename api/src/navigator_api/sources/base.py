@@ -4,6 +4,7 @@ from typing import Literal, Protocol
 
 from navigator_api.models import (
     EvidenceDetail,
+    Examples,
     MapFeatureCollection,
     ParcelFeatureCollection,
     ParcelSummary,
@@ -35,3 +36,5 @@ class SiteSource(Protocol):
     def map_features(self) -> MapFeatureCollection: ...
 
     def evidence(self, evidence_id: str) -> EvidenceDetail | None: ...
+
+    def examples(self) -> Examples: ...

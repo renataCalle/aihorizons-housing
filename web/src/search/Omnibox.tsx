@@ -229,9 +229,13 @@ interface RowProps {
 
 function ParcelRow({ id, match, query, active, onHover, onChoose }: RowProps) {
   const p = match.parcel
+  // Real parcels are named by their address: show it once, in the name's casing.
+  const nameIsAddress = !!p.address && p.address.toLowerCase() === p.name.toLowerCase()
   const primary =
     match.matchedOn === 'address'
-      ? (p.address ?? p.name)
+      ? nameIsAddress
+        ? p.name
+        : (p.address ?? p.name)
       : match.matchedOn === 'block_lot'
         ? (p.blockLot ?? p.id)
         : formatCountyId(p.id)
@@ -264,7 +268,11 @@ function ParcelRow({ id, match, query, active, onHover, onChoose }: RowProps) {
           {rest}
         </span>
         <span className="omnibox-row-name">
-          {match.matchedOn === 'address' ? p.name : [p.name, p.neighborhood].filter(Boolean).join(' · ')}
+          {match.matchedOn === 'address' && !nameIsAddress
+            ? p.name
+            : match.matchedOn === 'address'
+              ? (p.neighborhood ?? p.municipality)
+              : [p.name, p.neighborhood].filter(Boolean).join(' · ')}
           <span className="omnibox-row-meta">{meta.join(' · ')}</span>
         </span>
       </span>

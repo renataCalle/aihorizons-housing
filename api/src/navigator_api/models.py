@@ -14,7 +14,14 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from navigator_contracts import Range, SiteAnalysis
-from navigator_contracts.site_analysis import Band, OptionLabel, ProductType, Severity, Versions
+from navigator_contracts.site_analysis import (
+    Band,
+    CostRange,
+    OptionLabel,
+    ProductType,
+    Severity,
+    Versions,
+)
 from navigator_contracts.site_context import OwnerType
 
 
@@ -34,6 +41,16 @@ class LeadOption(Model):
     product_type: ProductType
     units: int
     relief: list[str] = Field(description="Empty = by right")
+    margin: Range | None = Field(default=None, description="Margin on cost, as a fraction")
+
+
+class ProgramFit(Model):
+    """One building type the engine tested on the lot (`rule_checks.programs`)."""
+
+    product_type: ProductType
+    units: int
+    outcome: Literal["by_right", "needs_approval", "rejected"]
+    relief_types: list[str] = Field(description="Approvals that fix the failing rules")
 
 
 class ParcelSummary(Model):
@@ -64,6 +81,20 @@ class ParcelSummary(Model):
     top_flag_severity: Severity | None = None
     max_land_price: Range | None = None
     lead_option: LeadOption | None = None
+    months_to_permit: Range | None = None
+    site_cost_premium: CostRange | None = None
+    programs: list[ProgramFit] = Field(
+        default_factory=list, description="Every building type the engine tested"
+    )
+    # Facts copied from SiteContext for search filters. None = unknown, never zero.
+    has_structure: bool = False
+    steep_slope_share: float | None = None
+    landslide_share: float | None = None
+    undermined_share: float | None = None
+    flood_share: float | None = Field(default=None, description="FEMA zones, excluding X500")
+    combined_sewershed: bool | None = None
+    transit_distance_ft: float | None = None
+    tax_lien_usd: float = 0.0
 
 
 class ParcelReport(Model):
@@ -93,15 +124,18 @@ class LookupResponse(Model):
     matches: list[LookupMatch]
 
 
-ApprovalPath = Literal["by_right", "special_exception", "variance", "rezoning", "not_allowed"]
+# "administrative": approvals without a zoning board hearing, such as a lot subdivision.
+ApprovalPath = Literal[
+    "by_right", "administrative", "special_exception", "variance", "rezoning", "not_allowed"
+]
 NearFeature = Literal["transit_stop", "park", "school", "grocery"]
 Constraint = Literal["undermined", "flood_zone", "landslide", "combined_sewer", "steep_slope"]
 SortKey = Literal["score_desc", "headroom_desc", "fastest", "cheapest"]
 
 
 class ProductFilter(Model):
-    type: ProductType
-    units: int | None = Field(default=None, ge=1, le=24)
+    type: ProductType | None = Field(default=None, description="None = any building type")
+    units: int | None = Field(default=None, ge=1, le=24, description="At least this many")
 
 
 class NearFilter(Model):
@@ -137,6 +171,77 @@ class SearchFilters(Model):
     show_assemblies: bool = False
     show_near_misses: bool = False
     sort: SortKey = "score_desc"
+
+
+class Neighborhood(Model):
+    name: str
+    candidates: int = Field(description="Development candidates with data in this neighborhood")
+
+
+class Reading(Model):
+    """How one phrase of the user's text was read. Shown in the AI search preview."""
+
+    phrase: str
+    interpreted_as: str
+
+
+class ParseRequest(Model):
+    text: str = Field(max_length=500)
+    current_filters: SearchFilters | None = None
+
+
+class FilterChip(Model):
+    """One active filter as the UI shows it. `key` says what removing the chip resets."""
+
+    key: str = Field(description="SearchFilters field, or near:<feature> / constraint:<name>")
+    label: str
+
+
+class ParseResult(Model):
+    filters: SearchFilters
+    chips: list[FilterChip]
+    readings: list[Reading] = Field(default_factory=list)
+    not_understood: list[str] = Field(default_factory=list)
+    detected: Literal["parcel_id", "address", "description"] = "description"
+    parser: Literal["ai", "rules"] = Field(description="rules = basic search (AI unavailable)")
+
+
+class SearchResult(Model):
+    rank: int
+    parcel: ParcelSummary
+    fit: ProgramFit | None = Field(description="The program that matched the product filter")
+
+
+class NearMiss(Model):
+    """A candidate that fails exactly one active filter."""
+
+    parcel: ParcelSummary
+    failed: FilterChip
+
+
+class Assembly(Model):
+    assembly_id: str
+    parcel_ids: list[str]
+
+
+class Suggestion(Model):
+    """When nothing matches: the filter whose removal brings back the most sites."""
+
+    remove: FilterChip
+    would_return: int
+
+
+class SearchResponse(Model):
+    total: int
+    filters: SearchFilters
+    chips: list[FilterChip]
+    results: list[SearchResult]
+    near_misses: list[NearMiss] = Field(default_factory=list)
+    assemblies: list[Assembly] = Field(default_factory=list)
+    not_applied: list[FilterChip] = Field(
+        default_factory=list, description="Filters the data can't answer yet; ignored"
+    )
+    suggestion: Suggestion | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -224,6 +329,14 @@ class EvidenceDetail(Model):
 # ---------------------------------------------------------------------------
 # Health
 # ---------------------------------------------------------------------------
+
+
+class Examples(Model):
+    """Example searches for the landing page, taken from the data being served."""
+
+    parcel_id: str = Field(description="A partial county ID, dashed")
+    address: str
+    prompt: str
 
 
 class Health(Model):

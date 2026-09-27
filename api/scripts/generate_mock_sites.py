@@ -64,6 +64,8 @@ AREAS = [
 DISTRICTS = (["R1D-M", "R2-M", "R3-M", "RM-M", "LNC"], [0.20, 0.35, 0.25, 0.15, 0.05])
 OWNERS = (["private", "land_bank", "ura", "city"], [0.70, 0.15, 0.08, 0.07])
 CANDIDATE_SHARE = 0.15
+# Share of candidates that span two old lots (docs/06: lots run 1,800-6,500 sq ft).
+DOUBLE_LOT_SHARE = 0.35
 # Street names that can't be mistaken for real Pittsburgh streets.
 FAKE_STREETS = ["Sample St", "Example Ave", "Draft Way", "Sketch St", "Model Ave", "Proto Ln"]
 
@@ -386,6 +388,33 @@ def choose_candidates(lots: list[Lot], rng: np.random.Generator) -> None:
     outside[2].candidate = True
 
 
+def widen_some(lots: list[Lot], rng: np.random.Generator) -> list[Lot]:
+    """Merge some candidates with the next lot on the same side of the block."""
+    keep: list[Lot] = []
+    absorbed: set[str] = set()
+    for i, lot in enumerate(lots):
+        if lot.parcel_id in absorbed:
+            continue
+        nxt = lots[i + 1] if i + 1 < len(lots) else None
+        special = lot.overrides is not None or lot.assembly_id is not None
+        widen = lot.address == "123 Sample St" or (
+            lot.candidate and not special and rng.random() < DOUBLE_LOT_SHARE
+        )
+        if (
+            widen
+            and nxt is not None
+            and nxt.block == lot.block
+            and nxt.row == lot.row
+            and not nxt.candidate
+            and nxt.overrides is None
+            and nxt.assembly_id is None
+        ):
+            lot.polygon = unary_union([lot.polygon, nxt.polygon]).convex_hull
+            absorbed.add(nxt.parcel_id)
+        keep.append(lot)
+    return keep
+
+
 def main() -> None:
     rng = np.random.default_rng(SEED)
     golden = load_golden()
@@ -397,6 +426,9 @@ def main() -> None:
         lots_by_area[area.name] = area_lots
         lots.extend(area_lots)
     choose_candidates(lots, rng)
+    lots = widen_some(lots, rng)
+    for area in AREAS:
+        lots_by_area[area.name] = [lot for lot in lots if lot.area is area]
 
     letters = iter(_names())
     for lot in lots:

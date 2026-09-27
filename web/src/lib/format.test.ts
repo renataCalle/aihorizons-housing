@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { formatMoneyRange, formatMonthsRange, formatNumberRange, formatSqft } from './format'
+import {
+  formatMaxLand,
+  formatMoneyRange,
+  formatMonthsRange,
+  formatNumberRange,
+  formatSqft,
+} from './format'
 
 describe('format', () => {
   it('formats money as a k range', () => {
@@ -24,5 +30,11 @@ describe('format', () => {
 
   it('formats lot area', () => {
     expect(formatSqft(3960.4)).toBe('3,960 sq ft')
+  })
+
+  it('says when no land price works', () => {
+    expect(formatMaxLand({ low: -520_000, high: -254_000 })).toBe('None at target margin')
+    expect(formatMaxLand({ low: -5_000, high: 41_000 })).toBe('Up to $41k')
+    expect(formatMaxLand({ low: 24_000, high: 41_000 })).toBe('$24k–$41k')
   })
 })

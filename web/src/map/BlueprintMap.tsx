@@ -4,11 +4,10 @@ import {
   Marker,
   Source,
   type MapLayerMouseEvent,
-  type ViewStateChangeEvent,
 } from '@vis.gl/react-maplibre'
 import type { StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { MapFeatures, ParcelLayer } from '../models/map'
 import { applyBlueprintTheme, FALLBACK_STYLE } from './blueprintTheme'
 import { Crosshair } from './Crosshair'
@@ -40,7 +39,12 @@ interface Props {
   selectedId: string | null
   onSelect: (parcelId: string | null) => void
   initialView: MapView
-  onViewChange?: (view: MapView) => void
+  hoveredId?: string | null
+  onHover?: (parcelId: string | null) => void
+  /** Show transit stops (the Layers menu). */
+  showTransit?: boolean
+  /** Extra sources, layers and markers drawn over the parcels. */
+  children?: ReactNode
 }
 
 /** Load the basemap once and recolor it; fall back to plain paper when it can't load. */
@@ -65,7 +69,10 @@ export function BlueprintMap({
   selectedId,
   onSelect,
   initialView,
-  onViewChange,
+  hoveredId = null,
+  onHover,
+  showTransit = true,
+  children,
 }: Props) {
   const style = useBlueprintStyle()
   const palette = useMemo(() => readPalette(), [])
@@ -77,8 +84,11 @@ export function BlueprintMap({
     return feature ? ringCenter(feature.geometry) : null
   }, [parcels, selectedId])
 
-  const layers = parcelLayers(palette, selectedId, hatchReady)
-  const overlays = featureLayers(palette)
+  const layers = useMemo(
+    () => parcelLayers(palette, selectedId, hatchReady, hoveredId),
+    [palette, selectedId, hatchReady, hoveredId],
+  )
+  const overlays = useMemo(() => featureLayers(palette), [palette])
 
   if (!style) return <div className="map-canvas map-loading" aria-hidden="true" />
 
@@ -100,19 +110,21 @@ export function BlueprintMap({
         }
         setHatchReady(true)
       }}
-      onMouseMove={(e: MapLayerMouseEvent) => setHovering((e.features?.length ?? 0) > 0)}
-      onMouseLeave={() => setHovering(false)}
+      onMouseMove={(e: MapLayerMouseEvent) => {
+        const id = e.features?.[0]?.properties?.id
+        setHovering(typeof id === 'string')
+        if (onHover && (typeof id === 'string' ? id : null) !== hoveredId) {
+          onHover(typeof id === 'string' ? id : null)
+        }
+      }}
+      onMouseLeave={() => {
+        setHovering(false)
+        onHover?.(null)
+      }}
       onClick={(e: MapLayerMouseEvent) => {
         const id = e.features?.[0]?.properties?.id
         onSelect(typeof id === 'string' ? id : null)
       }}
-      onMove={(e: ViewStateChangeEvent) =>
-        onViewChange?.({
-          longitude: e.viewState.longitude,
-          latitude: e.viewState.latitude,
-          zoom: e.viewState.zoom,
-        })
-      }
     >
       {parcels && (
         <Source id={PARCELS} type="geojson" data={parcels}>
@@ -124,10 +136,15 @@ export function BlueprintMap({
       {features && (
         <Source id={FEATURES} type="geojson" data={features}>
           {overlays.map((layer) => (
-            <Layer key={layer.id} {...layer} />
+            <Layer
+              key={layer.id}
+              {...layer}
+              layout={{ visibility: showTransit ? 'visible' : 'none' }}
+            />
           ))}
         </Source>
       )}
+      {children}
       {selectedCenter && (
         <Marker longitude={selectedCenter[0]} latitude={selectedCenter[1]} anchor="center">
           <Crosshair />

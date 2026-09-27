@@ -8,7 +8,16 @@ import type { Evidence } from '../models/evidence'
 import type { Health } from '../models/health'
 import type { MapBand, MapFeatureKind, MapFeatures, ParcelLayer } from '../models/map'
 import type { Analysis, Band, Parcel, Severity, SiteReport, Versions } from '../models/report'
-import type { LookupResult } from '../models/search'
+import { DEFAULT_FILTERS, type Filters } from '../models/filters'
+import type {
+  Examples,
+  FilterChip,
+  LookupResult,
+  Neighborhood,
+  ParseResult,
+  ProgramFit,
+  SearchResponse,
+} from '../models/search'
 import type { components } from './types.gen'
 
 type S = components['schemas']
@@ -271,4 +280,159 @@ export function toHealth(data: unknown): Health {
     parcels: h.parcels,
     versions: toVersions(h.versions),
   }
+}
+
+// ---------------------------------------------------------------- search
+
+type ApiFilters = S['SearchFilters']
+
+export function toFilters(f: ApiFilters): Filters {
+  return {
+    product: f.product ? { type: f.product.type ?? null, units: f.product.units ?? null } : null,
+    areas: f.areas ?? [],
+    near: (f.near ?? []).map((n) => ({ feature: n.feature, withinFt: n.within_ft ?? 1320 })),
+    approvalPaths: f.approval_paths ?? [],
+    bands: (f.bands ?? []).map(toBand),
+    minScore: f.min_score ?? null,
+    maxLandPrice: f.max_land_price ?? null,
+    minMarginPct: f.min_margin_pct ?? null,
+    maxSiteCostPremium: f.max_site_cost_premium ?? null,
+    lotMinSqft: f.lot_min_sqft ?? null,
+    lotMaxSqft: f.lot_max_sqft ?? null,
+    vacantOnly: f.vacant_only ?? false,
+    ownerTypes: f.owner_types ?? [],
+    taxDelinquentOnly: f.tax_delinquent_only ?? false,
+    maxSteepSlopePct: f.max_steep_slope_pct ?? null,
+    excludeConstraints: f.exclude_constraints ?? [],
+    includeUnknowns: f.include_unknowns ?? true,
+    maxMonthsToPermit: f.max_months_to_permit ?? null,
+    showAssemblies: f.show_assemblies ?? false,
+    showNearMisses: f.show_near_misses ?? false,
+    sort: f.sort ?? 'score_desc',
+  }
+}
+
+const API_BANDS: Record<string, NonNullable<ApiFilters['bands']>[number]> = {
+  fast_track: 'fast_track',
+  conditions: 'feasible_with_conditions',
+  high_risk: 'high_risk',
+  unknown: 'not_scored',
+}
+
+export function toApiFilters(f: Filters): ApiFilters {
+  return {
+    product: f.product ? { type: f.product.type, units: f.product.units } : null,
+    areas: f.areas,
+    near: f.near.map((n) => ({ feature: n.feature, within_ft: n.withinFt })),
+    approval_paths: f.approvalPaths,
+    bands: f.bands.map((b) => API_BANDS[b]),
+    min_score: f.minScore,
+    max_land_price: f.maxLandPrice,
+    min_margin_pct: f.minMarginPct,
+    max_site_cost_premium: f.maxSiteCostPremium,
+    lot_min_sqft: f.lotMinSqft,
+    lot_max_sqft: f.lotMaxSqft,
+    vacant_only: f.vacantOnly,
+    owner_types: f.ownerTypes,
+    tax_delinquent_only: f.taxDelinquentOnly,
+    max_steep_slope_pct: f.maxSteepSlopePct,
+    exclude_constraints: f.excludeConstraints,
+    include_unknowns: f.includeUnknowns,
+    max_months_to_permit: f.maxMonthsToPermit,
+    show_assemblies: f.showAssemblies,
+    show_near_misses: f.showNearMisses,
+    sort: f.sort,
+  }
+}
+
+/** API chip keys (snake_case) to the view-model fields they reset. */
+const CHIP_FIELDS: Record<string, (keyof Filters)[]> = {
+  product: ['product'],
+  approval_paths: ['approvalPaths'],
+  bands: ['bands'],
+  min_score: ['minScore'],
+  max_land_price: ['maxLandPrice'],
+  min_margin_pct: ['minMarginPct'],
+  max_site_cost_premium: ['maxSiteCostPremium'],
+  max_months_to_permit: ['maxMonthsToPermit'],
+  lot_size: ['lotMinSqft', 'lotMaxSqft'],
+  vacant_only: ['vacantOnly'],
+  owner_types: ['ownerTypes'],
+  tax_delinquent_only: ['taxDelinquentOnly'],
+  max_steep_slope_pct: ['maxSteepSlopePct'],
+  include_unknowns: ['includeUnknowns'],
+  show_assemblies: ['showAssemblies'],
+  show_near_misses: ['showNearMisses'],
+}
+
+/** The filters with one chip removed (mirrors `without` in the API's vocabulary.py). */
+export function removeChip(f: Filters, key: string): Filters {
+  const [kind, value] = key.split(/:(.*)/s)
+  if (kind === 'area') return { ...f, areas: f.areas.filter((a) => a !== value) }
+  if (kind === 'near') return { ...f, near: f.near.filter((n) => n.feature !== value) }
+  if (kind === 'constraint') {
+    return { ...f, excludeConstraints: f.excludeConstraints.filter((c) => c !== value) }
+  }
+  const next = { ...f }
+  for (const field of CHIP_FIELDS[key] ?? []) {
+    ;(next as Record<string, unknown>)[field] = DEFAULT_FILTERS[field]
+  }
+  return next
+}
+
+function toChip(c: S['FilterChip']): FilterChip {
+  return { key: c.key, label: c.label }
+}
+
+function toFit(p: S['ProgramFit']): ProgramFit {
+  return {
+    productType: p.product_type,
+    units: p.units,
+    outcome: p.outcome,
+    reliefTypes: p.relief_types,
+  }
+}
+
+export function toSearchResponse(data: unknown): SearchResponse {
+  const r = data as S['SearchResponse']
+  return {
+    total: r.total,
+    filters: toFilters(r.filters),
+    chips: r.chips.map(toChip),
+    results: r.results.map((x) => ({
+      rank: x.rank,
+      parcel: toParcel(x.parcel),
+      fit: x.fit ? toFit(x.fit) : null,
+    })),
+    nearMisses: (r.near_misses ?? []).map((n) => ({
+      parcel: toParcel(n.parcel),
+      failed: toChip(n.failed),
+    })),
+    assemblies: (r.assemblies ?? []).map((a) => ({ id: a.assembly_id, parcelIds: a.parcel_ids })),
+    notApplied: (r.not_applied ?? []).map(toChip),
+    suggestion: r.suggestion
+      ? { remove: toChip(r.suggestion.remove), wouldReturn: r.suggestion.would_return }
+      : null,
+  }
+}
+
+export function toParseResult(data: unknown): ParseResult {
+  const r = data as S['ParseResult']
+  return {
+    filters: toFilters(r.filters),
+    chips: r.chips.map(toChip),
+    readings: (r.readings ?? []).map((x) => ({ phrase: x.phrase, interpretedAs: x.interpreted_as })),
+    notUnderstood: r.not_understood ?? [],
+    detected: r.detected ?? 'description',
+    parser: r.parser,
+  }
+}
+
+export function toNeighborhoods(data: unknown): Neighborhood[] {
+  return (data as S['Neighborhood'][]).map((n) => ({ name: n.name, candidates: n.candidates }))
+}
+
+export function toExamples(data: unknown): Examples {
+  const e = data as S['Examples']
+  return { parcelId: e.parcel_id, address: e.address, prompt: e.prompt }
 }

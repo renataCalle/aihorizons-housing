@@ -21,6 +21,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/examples": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Examples
+         * @description Example searches for the landing page, from the data being served.
+         */
+        get: operations["examples_api_examples_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -98,6 +118,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/neighborhoods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Neighborhoods
+         * @description The city's 90 neighborhoods, with how many candidates each has in the data.
+         */
+        get: operations["neighborhoods_api_neighborhoods_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/parcels/{parcel_id}": {
         parameters: {
             query?: never;
@@ -118,10 +158,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Search Parcels
+         * @description Candidates that pass every filter, ranked; near misses and a suggestion when empty.
+         */
+        post: operations["search_parcels_api_search_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/search/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Parse Text
+         * @description Plain-language description to search filters. It never searches, scores or ranks.
+         */
+        post: operations["parse_text_api_search_parse_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Assembly */
+        Assembly: {
+            /** Assembly Id */
+            assembly_id: string;
+            /** Parcel Ids */
+            parcel_ids: string[];
+        };
         /** Assumption */
         Assumption: {
             /** Editable */
@@ -269,6 +356,34 @@ export interface components {
             /** Title */
             title: string;
         };
+        /**
+         * Examples
+         * @description Example searches for the landing page, taken from the data being served.
+         */
+        Examples: {
+            /** Address */
+            address: string;
+            /**
+             * Parcel Id
+             * @description A partial county ID, dashed
+             */
+            parcel_id: string;
+            /** Prompt */
+            prompt: string;
+        };
+        /**
+         * FilterChip
+         * @description One active filter as the UI shows it. `key` says what removing the chip resets.
+         */
+        FilterChip: {
+            /**
+             * Key
+             * @description SearchFilters field, or near:<feature> / constraint:<name>
+             */
+            key: string;
+            /** Label */
+            label: string;
+        };
         /** Flag */
         Flag: {
             /**
@@ -358,6 +473,8 @@ export interface components {
              * @enum {string}
              */
             label: "by_right" | "with_relief";
+            /** @description Margin on cost, as a fraction */
+            margin?: components["schemas"]["Range"] | null;
             /**
              * Product Type
              * @enum {string}
@@ -466,6 +583,38 @@ export interface components {
             /** Summary */
             summary: string | null;
         };
+        /** NearFilter */
+        NearFilter: {
+            /**
+             * Feature
+             * @enum {string}
+             */
+            feature: "transit_stop" | "park" | "school" | "grocery";
+            /**
+             * Within Ft
+             * @description Default: a quarter mile
+             * @default 1320
+             */
+            within_ft: number;
+        };
+        /**
+         * NearMiss
+         * @description A candidate that fails exactly one active filter.
+         */
+        NearMiss: {
+            failed: components["schemas"]["FilterChip"];
+            parcel: components["schemas"]["ParcelSummary"];
+        };
+        /** Neighborhood */
+        Neighborhood: {
+            /**
+             * Candidates
+             * @description Development candidates with data in this neighborhood
+             */
+            candidates: number;
+            /** Name */
+            name: string;
+        };
         /** NotChecked */
         NotChecked: {
             /** Label */
@@ -569,19 +718,34 @@ export interface components {
                 number,
                 number
             ];
+            /** Combined Sewershed */
+            combined_sewershed?: boolean | null;
             /** Current Use */
             current_use: string;
             /** Display Name */
             display_name: string;
             /**
+             * Flood Share
+             * @description FEMA zones, excluding X500
+             */
+            flood_share?: number | null;
+            /**
+             * Has Structure
+             * @default false
+             */
+            has_structure: boolean;
+            /**
              * Illustrative
              * @description True for generated mock parcels
              */
             illustrative: boolean;
+            /** Landslide Share */
+            landslide_share?: number | null;
             lead_option?: components["schemas"]["LeadOption"] | null;
             /** Lot Area Sqft */
             lot_area_sqft: number;
             max_land_price?: components["schemas"]["Range"] | null;
+            months_to_permit?: components["schemas"]["Range"] | null;
             /** Municipality */
             municipality: string;
             /** Neighborhood */
@@ -596,17 +760,75 @@ export interface components {
              * @description Canonical 16-character county ID
              */
             parcel_id: string;
+            /**
+             * Programs
+             * @description Every building type the engine tested
+             */
+            programs?: components["schemas"]["ProgramFit"][];
             /** Score */
             score?: number | null;
+            site_cost_premium?: components["schemas"]["CostRange"] | null;
+            /** Steep Slope Share */
+            steep_slope_share?: number | null;
+            /**
+             * Tax Lien Usd
+             * @default 0
+             */
+            tax_lien_usd: number;
             /** Top Flag */
             top_flag?: string | null;
             /** Top Flag Severity */
             top_flag_severity?: ("high" | "medium" | "low" | "unknown") | null;
+            /** Transit Distance Ft */
+            transit_distance_ft?: number | null;
+            /** Undermined Share */
+            undermined_share?: number | null;
             /**
              * Zoning
              * @description Zoning district codes on the lot
              */
             zoning: string[];
+        };
+        /** ParseRequest */
+        ParseRequest: {
+            current_filters?: components["schemas"]["SearchFilters"] | null;
+            /** Text */
+            text: string;
+        };
+        /** ParseResult */
+        ParseResult: {
+            /** Chips */
+            chips: components["schemas"]["FilterChip"][];
+            /**
+             * Detected
+             * @default description
+             * @enum {string}
+             */
+            detected: "parcel_id" | "address" | "description";
+            filters: components["schemas"]["SearchFilters"];
+            /** Not Understood */
+            not_understood?: string[];
+            /**
+             * Parser
+             * @description rules = basic search (AI unavailable)
+             * @enum {string}
+             */
+            parser: "ai" | "rules";
+            /** Readings */
+            readings?: components["schemas"]["Reading"][];
+        };
+        /** ProductFilter */
+        ProductFilter: {
+            /**
+             * Type
+             * @description None = any building type
+             */
+            type?: ("single_family" | "duplex" | "triplex" | "townhome" | "walkup") | null;
+            /**
+             * Units
+             * @description At least this many
+             */
+            units?: number | null;
         };
         /** ProgramEvaluation */
         ProgramEvaluation: {
@@ -630,6 +852,29 @@ export interface components {
             product_type: "single_family" | "duplex" | "triplex" | "townhome" | "walkup";
             /** Representative */
             representative: boolean;
+            /** Units */
+            units: number;
+        };
+        /**
+         * ProgramFit
+         * @description One building type the engine tested on the lot (`rule_checks.programs`).
+         */
+        ProgramFit: {
+            /**
+             * Outcome
+             * @enum {string}
+             */
+            outcome: "by_right" | "needs_approval" | "rejected";
+            /**
+             * Product Type
+             * @enum {string}
+             */
+            product_type: "single_family" | "duplex" | "triplex" | "townhome" | "walkup";
+            /**
+             * Relief Types
+             * @description Approvals that fix the failing rules
+             */
+            relief_types: string[];
             /** Units */
             units: number;
         };
@@ -658,6 +903,7 @@ export interface components {
             /** Revenue Basis */
             revenue_basis: string;
             score: components["schemas"]["Range"];
+            site_cost_premium?: components["schemas"]["Range"] | null;
             /** Unit Sqft */
             unit_sqft: number;
             /** Units */
@@ -674,6 +920,16 @@ export interface components {
             p50: number;
             /** P90 */
             p90: number;
+        };
+        /**
+         * Reading
+         * @description How one phrase of the user's text was read. Shown in the AI search preview.
+         */
+        Reading: {
+            /** Interpreted As */
+            interpreted_as: string;
+            /** Phrase */
+            phrase: string;
         };
         /**
          * RuleChecks
@@ -742,6 +998,118 @@ export interface components {
             /** Points Lost */
             points_lost: number;
         };
+        /**
+         * SearchFilters
+         * @description The single filter state shared by the manual controls, the chips and AI search.
+         */
+        SearchFilters: {
+            /**
+             * Approval Paths
+             * @description Empty = any
+             */
+            approval_paths?: ("by_right" | "administrative" | "special_exception" | "variance" | "rezoning" | "not_allowed")[];
+            /**
+             * Areas
+             * @description Pittsburgh neighborhood names, canonical spelling
+             */
+            areas?: string[];
+            /**
+             * Bands
+             * @description Empty = all bands
+             */
+            bands?: ("fast_track" | "feasible_with_conditions" | "high_risk" | "not_scored")[];
+            /** Exclude Constraints */
+            exclude_constraints?: ("undermined" | "flood_zone" | "landslide" | "combined_sewer" | "steep_slope")[];
+            /**
+             * Include Unknowns
+             * @default true
+             */
+            include_unknowns: boolean;
+            /** Lot Max Sqft */
+            lot_max_sqft?: number | null;
+            /** Lot Min Sqft */
+            lot_min_sqft?: number | null;
+            /**
+             * Max Land Price
+             * @description USD, land only
+             */
+            max_land_price?: number | null;
+            /** Max Months To Permit */
+            max_months_to_permit?: number | null;
+            /**
+             * Max Site Cost Premium
+             * @description USD
+             */
+            max_site_cost_premium?: number | null;
+            /**
+             * Max Steep Slope Pct
+             * @description Max percent of lot at 25%+ slope
+             */
+            max_steep_slope_pct?: number | null;
+            /** Min Margin Pct */
+            min_margin_pct?: number | null;
+            /** Min Score */
+            min_score?: number | null;
+            /** Near */
+            near?: components["schemas"]["NearFilter"][];
+            /** Owner Types */
+            owner_types?: ("private" | "city" | "land_bank" | "ura" | "other_public")[];
+            product?: components["schemas"]["ProductFilter"] | null;
+            /**
+             * Show Assemblies
+             * @default false
+             */
+            show_assemblies: boolean;
+            /**
+             * Show Near Misses
+             * @default false
+             */
+            show_near_misses: boolean;
+            /**
+             * Sort
+             * @default score_desc
+             * @enum {string}
+             */
+            sort: "score_desc" | "headroom_desc" | "fastest" | "cheapest";
+            /**
+             * Tax Delinquent Only
+             * @default false
+             */
+            tax_delinquent_only: boolean;
+            /**
+             * Vacant Only
+             * @default false
+             */
+            vacant_only: boolean;
+        };
+        /** SearchResponse */
+        SearchResponse: {
+            /** Assemblies */
+            assemblies?: components["schemas"]["Assembly"][];
+            /** Chips */
+            chips: components["schemas"]["FilterChip"][];
+            filters: components["schemas"]["SearchFilters"];
+            /** Near Misses */
+            near_misses?: components["schemas"]["NearMiss"][];
+            /**
+             * Not Applied
+             * @description Filters the data can't answer yet; ignored
+             */
+            not_applied?: components["schemas"]["FilterChip"][];
+            /** Results */
+            results: components["schemas"]["SearchResult"][];
+            suggestion?: components["schemas"]["Suggestion"] | null;
+            /** Total */
+            total: number;
+        };
+        /** SearchResult */
+        SearchResult: {
+            /** @description The program that matched the product filter */
+            fit: components["schemas"]["ProgramFit"] | null;
+            parcel: components["schemas"]["ParcelSummary"];
+            /** Rank */
+            rank: number;
+        };
         /** SiteAnalysis */
         SiteAnalysis: {
             /** Assumptions */
@@ -799,6 +1167,15 @@ export interface components {
             who: string;
             /** Why */
             why: string;
+        };
+        /**
+         * Suggestion
+         * @description When nothing matches: the filter whose removal brings back the most sites.
+         */
+        Suggestion: {
+            remove: components["schemas"]["FilterChip"];
+            /** Would Return */
+            would_return: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -877,6 +1254,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    examples_api_examples_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Examples"];
                 };
             };
         };
@@ -972,6 +1369,26 @@ export interface operations {
             };
         };
     };
+    neighborhoods_api_neighborhoods_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Neighborhood"][];
+                };
+            };
+        };
+    };
     parcel_report_api_parcels__parcel_id__get: {
         parameters: {
             query?: never;
@@ -990,6 +1407,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ParcelReport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_parcels_api_search_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchFilters"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    parse_text_api_search_parse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParseResult"];
                 };
             };
             /** @description Validation Error */

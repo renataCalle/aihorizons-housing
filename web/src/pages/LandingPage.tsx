@@ -1,7 +1,7 @@
 import { MapProvider } from '@vis.gl/react-maplibre'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { fetchHealth, fetchMapFeatures, fetchParcelLayer } from '../api'
+import { fetchExamples, fetchHealth, fetchMapFeatures, fetchParcelLayer } from '../api'
 import { BrandMark } from '../components/BrandMark'
 import { useAsync } from '../lib/useAsync'
 import { BlueprintMap, type MapView } from '../map/BlueprintMap'
@@ -11,11 +11,6 @@ import { Omnibox } from '../search/Omnibox'
 /** Hazelwood, Greenfield and Glen Hazel, where the mock lots are. */
 const LANDING_VIEW: MapView = { longitude: -79.936, latitude: 40.4115, zoom: 14.9 }
 
-const EXAMPLES = [
-  { tag: 'ID', text: '0000-X-00000', mono: true, ai: false },
-  { tag: 'Address', text: '123 Sample St', mono: false, ai: false },
-  { tag: '✦ AI', text: '3 townhomes in Hazelwood under $25k', mono: false, ai: true },
-]
 
 /** Landing (docs/01, §1): the city map, faded, and one search box. */
 export function LandingPage() {
@@ -25,6 +20,16 @@ export function LandingPage() {
   const parcels = useAsync('parcels', fetchParcelLayer)
   const features = useAsync('features', fetchMapFeatures)
   const health = useAsync('health', fetchHealth)
+  // Examples come from the data being served, so they always find something.
+  const examples = useAsync('examples', fetchExamples)
+  const chips =
+    examples.status === 'ready'
+      ? [
+          { tag: 'ID', text: examples.data.parcelId, mono: true, ai: false },
+          { tag: 'Address', text: examples.data.address, mono: false, ai: false },
+          { tag: '✦ AI', text: examples.data.prompt, mono: false, ai: true },
+        ]
+      : []
 
   return (
     <MapProvider>
@@ -62,9 +67,9 @@ export function LandingPage() {
             initialText={example.text}
             autoOpen={example.n > 0}
           />
-          <div className="landing-examples">
+          <div className="landing-examples" hidden={chips.length === 0}>
             <span>Try</span>
-            {EXAMPLES.map((ex) => (
+            {chips.map((ex) => (
               <button
                 key={ex.text}
                 type="button"

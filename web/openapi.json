@@ -1,6 +1,28 @@
 {
   "components": {
     "schemas": {
+      "Assembly": {
+        "additionalProperties": false,
+        "properties": {
+          "assembly_id": {
+            "title": "Assembly Id",
+            "type": "string"
+          },
+          "parcel_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Parcel Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "assembly_id",
+          "parcel_ids"
+        ],
+        "title": "Assembly",
+        "type": "object"
+      },
       "Assumption": {
         "additionalProperties": false,
         "properties": {
@@ -484,6 +506,53 @@
         "title": "EvidenceDetail",
         "type": "object"
       },
+      "Examples": {
+        "additionalProperties": false,
+        "description": "Example searches for the landing page, taken from the data being served.",
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          },
+          "parcel_id": {
+            "description": "A partial county ID, dashed",
+            "title": "Parcel Id",
+            "type": "string"
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parcel_id",
+          "address",
+          "prompt"
+        ],
+        "title": "Examples",
+        "type": "object"
+      },
+      "FilterChip": {
+        "additionalProperties": false,
+        "description": "One active filter as the UI shows it. `key` says what removing the chip resets.",
+        "properties": {
+          "key": {
+            "description": "SearchFilters field, or near:<feature> / constraint:<name>",
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "FilterChip",
+        "type": "object"
+      },
       "Flag": {
         "additionalProperties": false,
         "properties": {
@@ -706,6 +775,17 @@
             ],
             "title": "Label",
             "type": "string"
+          },
+          "margin": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Margin on cost, as a fraction"
           },
           "product_type": {
             "enum": [
@@ -982,6 +1062,72 @@
         "title": "Narrative",
         "type": "object"
       },
+      "NearFilter": {
+        "additionalProperties": false,
+        "properties": {
+          "feature": {
+            "enum": [
+              "transit_stop",
+              "park",
+              "school",
+              "grocery"
+            ],
+            "title": "Feature",
+            "type": "string"
+          },
+          "within_ft": {
+            "default": 1320,
+            "description": "Default: a quarter mile",
+            "maximum": 5280.0,
+            "minimum": 100.0,
+            "title": "Within Ft",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "feature"
+        ],
+        "title": "NearFilter",
+        "type": "object"
+      },
+      "NearMiss": {
+        "additionalProperties": false,
+        "description": "A candidate that fails exactly one active filter.",
+        "properties": {
+          "failed": {
+            "$ref": "#/components/schemas/FilterChip"
+          },
+          "parcel": {
+            "$ref": "#/components/schemas/ParcelSummary"
+          }
+        },
+        "required": [
+          "parcel",
+          "failed"
+        ],
+        "title": "NearMiss",
+        "type": "object"
+      },
+      "Neighborhood": {
+        "additionalProperties": false,
+        "properties": {
+          "candidates": {
+            "description": "Development candidates with data in this neighborhood",
+            "title": "Candidates",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "candidates"
+        ],
+        "title": "Neighborhood",
+        "type": "object"
+      },
       "NotChecked": {
         "additionalProperties": false,
         "properties": {
@@ -1245,6 +1391,17 @@
             "title": "Centroid",
             "type": "array"
           },
+          "combined_sewershed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Combined Sewershed"
+          },
           "current_use": {
             "title": "Current Use",
             "type": "string"
@@ -1253,10 +1410,38 @@
             "title": "Display Name",
             "type": "string"
           },
+          "flood_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "FEMA zones, excluding X500",
+            "title": "Flood Share"
+          },
+          "has_structure": {
+            "default": false,
+            "title": "Has Structure",
+            "type": "boolean"
+          },
           "illustrative": {
             "description": "True for generated mock parcels",
             "title": "Illustrative",
             "type": "boolean"
+          },
+          "landslide_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Landslide Share"
           },
           "lead_option": {
             "anyOf": [
@@ -1273,6 +1458,16 @@
             "type": "number"
           },
           "max_land_price": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "months_to_permit": {
             "anyOf": [
               {
                 "$ref": "#/components/schemas/Range"
@@ -1313,6 +1508,14 @@
             "title": "Parcel Id",
             "type": "string"
           },
+          "programs": {
+            "description": "Every building type the engine tested",
+            "items": {
+              "$ref": "#/components/schemas/ProgramFit"
+            },
+            "title": "Programs",
+            "type": "array"
+          },
           "score": {
             "anyOf": [
               {
@@ -1323,6 +1526,32 @@
               }
             ],
             "title": "Score"
+          },
+          "site_cost_premium": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CostRange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "steep_slope_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Steep Slope Share"
+          },
+          "tax_lien_usd": {
+            "default": 0.0,
+            "title": "Tax Lien Usd",
+            "type": "number"
           },
           "top_flag": {
             "anyOf": [
@@ -1352,6 +1581,28 @@
             ],
             "title": "Top Flag Severity"
           },
+          "transit_distance_ft": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transit Distance Ft"
+          },
+          "undermined_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Undermined Share"
+          },
           "zoning": {
             "description": "Zoning district codes on the lot",
             "items": {
@@ -1378,6 +1629,126 @@
           "illustrative"
         ],
         "title": "ParcelSummary",
+        "type": "object"
+      },
+      "ParseRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "current_filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SearchFilters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "text": {
+            "maxLength": 500,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "ParseRequest",
+        "type": "object"
+      },
+      "ParseResult": {
+        "additionalProperties": false,
+        "properties": {
+          "chips": {
+            "items": {
+              "$ref": "#/components/schemas/FilterChip"
+            },
+            "title": "Chips",
+            "type": "array"
+          },
+          "detected": {
+            "default": "description",
+            "enum": [
+              "parcel_id",
+              "address",
+              "description"
+            ],
+            "title": "Detected",
+            "type": "string"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/SearchFilters"
+          },
+          "not_understood": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Not Understood",
+            "type": "array"
+          },
+          "parser": {
+            "description": "rules = basic search (AI unavailable)",
+            "enum": [
+              "ai",
+              "rules"
+            ],
+            "title": "Parser",
+            "type": "string"
+          },
+          "readings": {
+            "items": {
+              "$ref": "#/components/schemas/Reading"
+            },
+            "title": "Readings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "filters",
+          "chips",
+          "parser"
+        ],
+        "title": "ParseResult",
+        "type": "object"
+      },
+      "ProductFilter": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "single_family",
+                  "duplex",
+                  "triplex",
+                  "townhome",
+                  "walkup"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = any building type",
+            "title": "Type"
+          },
+          "units": {
+            "anyOf": [
+              {
+                "maximum": 24.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "At least this many",
+            "title": "Units"
+          }
+        },
+        "title": "ProductFilter",
         "type": "object"
       },
       "ProgramEvaluation": {
@@ -1472,6 +1843,52 @@
         "title": "ProgramEvaluation",
         "type": "object"
       },
+      "ProgramFit": {
+        "additionalProperties": false,
+        "description": "One building type the engine tested on the lot (`rule_checks.programs`).",
+        "properties": {
+          "outcome": {
+            "enum": [
+              "by_right",
+              "needs_approval",
+              "rejected"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          },
+          "product_type": {
+            "enum": [
+              "single_family",
+              "duplex",
+              "triplex",
+              "townhome",
+              "walkup"
+            ],
+            "title": "Product Type",
+            "type": "string"
+          },
+          "relief_types": {
+            "description": "Approvals that fix the failing rules",
+            "items": {
+              "type": "string"
+            },
+            "title": "Relief Types",
+            "type": "array"
+          },
+          "units": {
+            "title": "Units",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "product_type",
+          "units",
+          "outcome",
+          "relief_types"
+        ],
+        "title": "ProgramFit",
+        "type": "object"
+      },
       "ProgramOption": {
         "additionalProperties": false,
         "properties": {
@@ -1531,6 +1948,16 @@
           "score": {
             "$ref": "#/components/schemas/Range"
           },
+          "site_cost_premium": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "unit_sqft": {
             "title": "Unit Sqft",
             "type": "integer"
@@ -1581,6 +2008,26 @@
           "p90"
         ],
         "title": "Range",
+        "type": "object"
+      },
+      "Reading": {
+        "additionalProperties": false,
+        "description": "How one phrase of the user's text was read. Shown in the AI search preview.",
+        "properties": {
+          "interpreted_as": {
+            "title": "Interpreted As",
+            "type": "string"
+          },
+          "phrase": {
+            "title": "Phrase",
+            "type": "string"
+          }
+        },
+        "required": [
+          "phrase",
+          "interpreted_as"
+        ],
+        "title": "Reading",
         "type": "object"
       },
       "RuleChecks": {
@@ -1779,6 +2226,332 @@
         "title": "ScoreItem",
         "type": "object"
       },
+      "SearchFilters": {
+        "additionalProperties": false,
+        "description": "The single filter state shared by the manual controls, the chips and AI search.",
+        "properties": {
+          "approval_paths": {
+            "description": "Empty = any",
+            "items": {
+              "enum": [
+                "by_right",
+                "administrative",
+                "special_exception",
+                "variance",
+                "rezoning",
+                "not_allowed"
+              ],
+              "type": "string"
+            },
+            "title": "Approval Paths",
+            "type": "array"
+          },
+          "areas": {
+            "description": "Pittsburgh neighborhood names, canonical spelling",
+            "items": {
+              "type": "string"
+            },
+            "title": "Areas",
+            "type": "array"
+          },
+          "bands": {
+            "description": "Empty = all bands",
+            "items": {
+              "enum": [
+                "fast_track",
+                "feasible_with_conditions",
+                "high_risk",
+                "not_scored"
+              ],
+              "type": "string"
+            },
+            "title": "Bands",
+            "type": "array"
+          },
+          "exclude_constraints": {
+            "items": {
+              "enum": [
+                "undermined",
+                "flood_zone",
+                "landslide",
+                "combined_sewer",
+                "steep_slope"
+              ],
+              "type": "string"
+            },
+            "title": "Exclude Constraints",
+            "type": "array"
+          },
+          "include_unknowns": {
+            "default": true,
+            "title": "Include Unknowns",
+            "type": "boolean"
+          },
+          "lot_max_sqft": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lot Max Sqft"
+          },
+          "lot_min_sqft": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lot Min Sqft"
+          },
+          "max_land_price": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "USD, land only",
+            "title": "Max Land Price"
+          },
+          "max_months_to_permit": {
+            "anyOf": [
+              {
+                "maximum": 60.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Months To Permit"
+          },
+          "max_site_cost_premium": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "USD",
+            "title": "Max Site Cost Premium"
+          },
+          "max_steep_slope_pct": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Max percent of lot at 25%+ slope",
+            "title": "Max Steep Slope Pct"
+          },
+          "min_margin_pct": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Margin Pct"
+          },
+          "min_score": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Score"
+          },
+          "near": {
+            "items": {
+              "$ref": "#/components/schemas/NearFilter"
+            },
+            "title": "Near",
+            "type": "array"
+          },
+          "owner_types": {
+            "items": {
+              "enum": [
+                "private",
+                "city",
+                "land_bank",
+                "ura",
+                "other_public"
+              ],
+              "type": "string"
+            },
+            "title": "Owner Types",
+            "type": "array"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductFilter"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "show_assemblies": {
+            "default": false,
+            "title": "Show Assemblies",
+            "type": "boolean"
+          },
+          "show_near_misses": {
+            "default": false,
+            "title": "Show Near Misses",
+            "type": "boolean"
+          },
+          "sort": {
+            "default": "score_desc",
+            "enum": [
+              "score_desc",
+              "headroom_desc",
+              "fastest",
+              "cheapest"
+            ],
+            "title": "Sort",
+            "type": "string"
+          },
+          "tax_delinquent_only": {
+            "default": false,
+            "title": "Tax Delinquent Only",
+            "type": "boolean"
+          },
+          "vacant_only": {
+            "default": false,
+            "title": "Vacant Only",
+            "type": "boolean"
+          }
+        },
+        "title": "SearchFilters",
+        "type": "object"
+      },
+      "SearchResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "assemblies": {
+            "items": {
+              "$ref": "#/components/schemas/Assembly"
+            },
+            "title": "Assemblies",
+            "type": "array"
+          },
+          "chips": {
+            "items": {
+              "$ref": "#/components/schemas/FilterChip"
+            },
+            "title": "Chips",
+            "type": "array"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/SearchFilters"
+          },
+          "near_misses": {
+            "items": {
+              "$ref": "#/components/schemas/NearMiss"
+            },
+            "title": "Near Misses",
+            "type": "array"
+          },
+          "not_applied": {
+            "description": "Filters the data can't answer yet; ignored",
+            "items": {
+              "$ref": "#/components/schemas/FilterChip"
+            },
+            "title": "Not Applied",
+            "type": "array"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/SearchResult"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "suggestion": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Suggestion"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "filters",
+          "chips",
+          "results"
+        ],
+        "title": "SearchResponse",
+        "type": "object"
+      },
+      "SearchResult": {
+        "additionalProperties": false,
+        "properties": {
+          "fit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProgramFit"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The program that matched the product filter"
+          },
+          "parcel": {
+            "$ref": "#/components/schemas/ParcelSummary"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rank",
+          "parcel",
+          "fit"
+        ],
+        "title": "SearchResult",
+        "type": "object"
+      },
       "SiteAnalysis": {
         "additionalProperties": false,
         "properties": {
@@ -1970,6 +2743,25 @@
           "flag_ids"
         ],
         "title": "Step",
+        "type": "object"
+      },
+      "Suggestion": {
+        "additionalProperties": false,
+        "description": "When nothing matches: the filter whose removal brings back the most sites.",
+        "properties": {
+          "remove": {
+            "$ref": "#/components/schemas/FilterChip"
+          },
+          "would_return": {
+            "title": "Would Return",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "remove",
+          "would_return"
+        ],
+        "title": "Suggestion",
         "type": "object"
       },
       "ValidationError": {
@@ -2169,6 +2961,28 @@
         ]
       }
     },
+    "/api/examples": {
+      "get": {
+        "description": "Example searches for the landing page, from the data being served.",
+        "operationId": "examples_api_examples_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Examples"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Examples",
+        "tags": [
+          "health"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "operationId": "health_api_health_get",
@@ -2278,6 +3092,32 @@
         ]
       }
     },
+    "/api/neighborhoods": {
+      "get": {
+        "description": "The city's 90 neighborhoods, with how many candidates each has in the data.",
+        "operationId": "neighborhoods_api_neighborhoods_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Neighborhood"
+                  },
+                  "title": "Response Neighborhoods Api Neighborhoods Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Neighborhoods",
+        "tags": [
+          "search"
+        ]
+      }
+    },
     "/api/parcels/{parcel_id}": {
       "get": {
         "description": "Report header and the engine's analysis, by county parcel ID (compact or dashed).",
@@ -2318,6 +3158,90 @@
         "summary": "Parcel Report",
         "tags": [
           "parcels"
+        ]
+      }
+    },
+    "/api/search": {
+      "post": {
+        "description": "Candidates that pass every filter, ranked; near misses and a suggestion when empty.",
+        "operationId": "search_parcels_api_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchFilters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search Parcels",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/api/search/parse": {
+      "post": {
+        "description": "Plain-language description to search filters. It never searches, scores or ranks.",
+        "operationId": "parse_text_api_search_parse_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParseResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Parse Text",
+        "tags": [
+          "search"
         ]
       }
     }

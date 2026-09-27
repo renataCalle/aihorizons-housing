@@ -7,6 +7,7 @@ from navigator_api.routes import evidence, health, maps, parcels, search
 from navigator_api.settings import Settings
 from navigator_api.sources.base import SiteSource
 from navigator_api.sources.mock import MockSiteSource
+from navigator_api.sources.pipeline import PipelineSiteSource
 
 
 def build_source(settings: Settings) -> SiteSource:
@@ -14,7 +15,7 @@ def build_source(settings: Settings) -> SiteSource:
         return MockSiteSource(
             settings.golden_dir, settings.mock_generated_dir, settings.mock_evidence_dir
         )
-    raise NotImplementedError("SITE_SOURCE=pipeline arrives with the pipeline")
+    return PipelineSiteSource(settings.results_dir)
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
