@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type RefObject } from 'react'
 import type { MapFeatures } from '../models/map'
 import type { SearchResult } from '../models/search'
 import { MAP_ID } from './BlueprintMap'
+import { visibleTags } from './rankTags'
 import { CAMERA_2D, CAMERA_3D } from './layers'
 
 const WORLD: Position[] = [
@@ -69,7 +70,10 @@ export function AreaOverlay({ features, areas }: { features: MapFeatures; areas:
 
 const MAX_TAGS = 9
 
-/** "01", "02" … on the top results. Clicking one selects its lot, like clicking the lot. */
+/**
+ * "01", "02" … on the top results. Clicking one selects its lot, like clicking the lot. Tags
+ * that would overlap a better-ranked one stay hidden until the map zooms in (rankTags.ts).
+ */
 export function RankTags({
   results,
   onSelect,
@@ -77,7 +81,36 @@ export function RankTags({
   results: SearchResult[]
   onSelect: (parcelId: string) => void
 }) {
-  return results.slice(0, MAX_TAGS).map((r) => (
+  const map = useMap()[MAP_ID]
+  const top = useMemo(() => results.slice(0, MAX_TAGS), [results])
+  const [shown, setShown] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!map) return
+    let frame = 0
+    const update = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const points = top.map((r) => {
+          const { x, y } = map.project(r.parcel.centroid)
+          return { id: r.parcel.id, x, y }
+        })
+        // A string, so an unchanged set doesn't re-render the tags on every frame.
+        setShown([...visibleTags(points)].join('|'))
+      })
+    }
+    update()
+    map.on('move', update)
+    return () => {
+      map.off('move', update)
+      cancelAnimationFrame(frame)
+    }
+  }, [map, top])
+
+  const visible = shown === null ? null : new Set(shown.split('|'))
+  return top
+    .filter((r) => !visible || visible.has(r.parcel.id))
+    .map((r) => (
     <Marker
       key={r.parcel.id}
       longitude={r.parcel.centroid[0]}

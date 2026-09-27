@@ -748,27 +748,32 @@ p.results-panel {
 }
 
 /* Map overlays */
+/* Rank tags: navy circles with a white ring (no score band uses navy); the best in cobalt. */
 .rank-tag {
-  display: inline-block;
-  padding: 1px 7px;
-  border: 1px solid var(--cobalt);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: 2px solid var(--white);
   border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--cobalt);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1.4;
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(11, 27, 63, 0.3);
   cursor: pointer;
 }
 
 .rank-tag:hover {
-  background: var(--cobalt-tint);
+  background: var(--ink-2);
 }
 
 .rank-tag.is-first {
   background: var(--cobalt);
-  color: var(--white);
 }
 
 .rank-tag.is-first:hover {
