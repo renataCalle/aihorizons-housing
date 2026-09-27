@@ -27,15 +27,18 @@ def test_townhome_search_ranks_by_the_townhome_score(client: TestClient) -> None
     assert body["ranked_for"] == {"type": "townhome", "units": None}
     lot = result(body, BIGELOW_356)
     assert lot["scored"]["product_type"] == "townhome"
-    assert lot["scored"]["score"] == 43
+    # 50 since the zoning board model replaced the placeholder special exception odds (was 43).
+    assert lot["scored"]["score"] == 50
     assert lot["scored"]["basis"] == "up_to" and lot["scored"]["units"] == 2
     # The pick is another type, so it's offered as the better fit.
     assert lot["better_fit"]["product_type"] == "single_family"
     assert lot["better_fit"]["score"] == 61
     scores = [r["scored"]["score"] for r in body["results"]]
     assert scores == sorted(scores, key=lambda s: -(s if s is not None else -1))
-    # Ranked below every lot with a better townhome score.
-    assert lot["rank"] == 1 + sum(1 for s in scores if s is not None and s > 43)
+    # Ranked below every lot with a better townhome score, among the lots that tie with it.
+    better = sum(1 for s in scores if s is not None and s > 50)
+    tied = sum(1 for s in scores if s == 50)
+    assert better < lot["rank"] <= better + tied
 
 
 def test_search_without_a_type_ranks_by_the_pick(client: TestClient) -> None:
