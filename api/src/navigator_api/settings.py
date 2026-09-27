@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     golden_dir: Path = REPO_ROOT / "fixtures" / "golden"
     mock_generated_dir: Path = REPO_ROOT / "fixtures" / "mock" / "generated"
     mock_evidence_dir: Path = REPO_ROOT / "fixtures" / "mock" / "ui-draft"
+    # SITE_SOURCE=pipeline: the real-data bundle (api/scripts/build_results_bundle.py).
+    results_dir: Path = REPO_ROOT / "results"
 
     @property
     def cors_origin_list(self) -> list[str]:
