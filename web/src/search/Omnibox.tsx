@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router'
-import { BAND_LABEL } from '../lib/labels'
+import { BAND_LABEL, programLabel } from '../lib/labels'
 import { formatSqft } from '../lib/format'
 import type { LookupMatch } from '../models/search'
 import { detect, isStreetStart, shouldLookUp } from './detect'
@@ -238,7 +238,10 @@ function ParcelRow({ id, match, query, active, onHover, onChoose }: RowProps) {
         ? (p.blockLot ?? p.id)
         : formatCountyId(p.id)
   const [hit, rest] = splitMatch(primary, query)
+  // The score is the engine's pick: name the building it is for.
+  const lead = p.leadOption
   const meta = [
+    lead && programLabel(lead.productType, lead.units),
     p.zoning.join(', '),
     formatSqft(p.lotAreaSqft).replace('sq ft', 'SF'),
     p.currentUse,
