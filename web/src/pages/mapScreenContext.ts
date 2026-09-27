@@ -25,6 +25,8 @@ export interface MapScreenContext {
   /** What links between results and reports carry: the search plus the view (view=3d). */
   linkQuery: string
   features: MapFeatures | null
+  /** The 3D view is on */
+  view3d: boolean
 }
 
 export function useMapScreen() {

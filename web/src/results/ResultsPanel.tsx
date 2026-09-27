@@ -28,6 +28,8 @@ interface Props {
   layers: ReactNode
   /** Map layers shown, so the legend lists only what's drawn */
   showTransit: boolean
+  /** In the 3D view: back to the at-a-glance panel */
+  onGlance?: () => void
 }
 
 /** The left panel on the results screen (SearchMap.dc.html). */
@@ -170,6 +172,11 @@ export function ResultsPanel(props: Props) {
           showTransit={props.showTransit}
           showArea={filters.areas.length > 0}
         />
+        {props.onGlance && (
+          <button type="button" className="button-secondary" onClick={props.onGlance}>
+            At a glance
+          </button>
+        )}
         {props.layers}
       </div>
     </aside>

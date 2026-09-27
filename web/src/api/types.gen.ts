@@ -206,10 +206,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/search/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Search Summary
+         * @description The same search at a glance: lots per band, what holds them back, near misses.
+         */
+        post: operations["search_summary_api_search_summary_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AreaSummary
+         * @description The searched lots at a glance (the 3D view's panel). Counts and averages of the
+         *     engine's results for the lots the search returns; the API judges nothing here.
+         */
+        AreaSummary: {
+            /**
+             * Assemblies
+             * @description Groups of lots that work together
+             */
+            assemblies: number;
+            /**
+             * Bands
+             * @description Lots per band, as the search ranks them
+             */
+            bands: {
+                [key: string]: number;
+            };
+            /**
+             * Blockers
+             * @description Biggest total score cost first
+             */
+            blockers: components["schemas"]["Blocker"][];
+            /** Lots */
+            lots: number;
+            /**
+             * Near Misses
+             * @description Lots that fail exactly one filter
+             */
+            near_misses: number;
+            ranked_for?: components["schemas"]["ProductFilter"] | null;
+        };
         /** Assembly */
         Assembly: {
             /** Assembly Id */
@@ -235,6 +287,29 @@ export interface components {
             unit: string;
             /** Value */
             value: number;
+        };
+        /**
+         * Blocker
+         * @description One score driver across the searched lots, from each lot's `score_breakdown`.
+         */
+        Blocker: {
+            /**
+             * Avg Points
+             * @description Average points it costs those lots
+             */
+            avg_points: number;
+            /**
+             * Driver
+             * @description The flag id, or 'relief' for approvals needed
+             */
+            driver: string;
+            /** Label */
+            label: string;
+            /**
+             * Lots
+             * @description Lots whose score this driver lowers
+             */
+            lots: number;
         };
         /** Case */
         Case: {
@@ -1725,6 +1800,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ParseResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_summary_api_search_summary_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchFilters"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AreaSummary"];
                 };
             };
             /** @description Validation Error */

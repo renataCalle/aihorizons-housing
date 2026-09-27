@@ -20,6 +20,7 @@ import type {
 } from '../models/report'
 import { DEFAULT_FILTERS, type Filters } from '../models/filters'
 import type {
+  AreaSummary,
   Examples,
   FilterChip,
   LookupResult,
@@ -513,6 +514,27 @@ function toScored(p: S['ScoredProgram']): ScoredProgram {
     reliefTypes: p.relief_types,
     monthsToPermit: p.months_to_permit ? toEstimate(p.months_to_permit) : null,
     maxLandPrice: p.max_land_price ? toEstimate(p.max_land_price) : null,
+  }
+}
+
+export function toAreaSummary(data: unknown): AreaSummary {
+  const a = data as S['AreaSummary']
+  const bands: Record<Band, number> = { fast_track: 0, conditions: 0, high_risk: 0, unknown: 0 }
+  for (const [band, count] of Object.entries(a.bands)) bands[toBand(band)] += count ?? 0
+  return {
+    lots: a.lots,
+    rankedFor: a.ranked_for?.type
+      ? { type: a.ranked_for.type, units: a.ranked_for.units ?? null }
+      : null,
+    bands,
+    blockers: a.blockers.map((b) => ({
+      driver: b.driver,
+      label: b.label,
+      lots: b.lots,
+      avgPoints: b.avg_points,
+    })),
+    nearMisses: a.near_misses,
+    assemblies: a.assemblies,
   }
 }
 

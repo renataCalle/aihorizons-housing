@@ -1,8 +1,10 @@
-import { useRef } from 'react'
-import { fetchSiteReport } from '../api'
+import { useRef, useState } from 'react'
+import { fetchAreaSummary, fetchSiteReport } from '../api'
 import { removeChip } from '../api/adapters'
+import { encodeFilters } from '../lib/filterUrl'
 import { useAsync } from '../lib/useAsync'
 import { LeaderLine } from '../map/SearchOverlays'
+import { GlancePanel } from '../results/GlancePanel'
 import { InspectorCard } from '../results/InspectorCard'
 import { LayersMenu } from '../results/LayersMenu'
 import { ResultsPanel } from '../results/ResultsPanel'
@@ -22,9 +24,27 @@ export function ResultsView() {
   )
   const selected = known ?? (fetched.status === 'ready' ? fetched.data?.parcel : null) ?? null
 
+  // In 3D the left panel shows the searched lots at a glance; the ranked list is one click away.
+  const [showList, setShowList] = useState(false)
+  const glance = s.view3d && !showList
+  const summary = useAsync(glance && s.filters ? `glance:${encodeFilters(s.filters)}` : 'none', (signal) =>
+    glance && s.filters ? fetchAreaSummary(s.filters, signal) : Promise.resolve(null),
+  )
+  const layers = <LayersMenu transit={s.transit} onTransit={s.setTransit} />
+
   return (
     <>
-      {s.filters && (
+      {s.filters && glance && (
+        <GlancePanel
+          areas={s.filters.areas}
+          summary={summary.status === 'ready' ? summary.data : null}
+          loading={summary.status === 'loading'}
+          error={summary.status === 'error' ? summary.error.message : null}
+          onShowList={() => setShowList(true)}
+          layers={layers}
+        />
+      )}
+      {s.filters && !glance && (
         <ResultsPanel
           response={response}
           loading={s.searchStatus === 'loading'}
@@ -37,7 +57,8 @@ export function ResultsView() {
           onSelect={s.select}
           onHover={s.setHoveredId}
           onRetry={s.retry}
-          layers={<LayersMenu transit={s.transit} onTransit={s.setTransit} />}
+          layers={layers}
+          onGlance={s.view3d ? () => setShowList(false) : undefined}
           showTransit={s.transit}
         />
       )}

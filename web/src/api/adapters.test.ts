@@ -1,6 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { toBand, toEvidence, toParcelLayer, toSeverity, toSiteReport } from './adapters'
+import {
+  toAreaSummary,
+  toBand,
+  toEvidence,
+  toParcelLayer,
+  toSeverity,
+  toSiteReport,
+} from './adapters'
 
 const FIXTURES = new URL('../../../fixtures/', import.meta.url)
 
@@ -272,5 +279,26 @@ describe('toEvidence', () => {
       decided: '2025-11-03',
       sourceUrl: null,
     })
+  })
+})
+
+describe('toAreaSummary', () => {
+  it("maps the engine's bands to the UI's, with zero for bands not present", () => {
+    const summary = toAreaSummary({
+      lots: 3,
+      ranked_for: { type: 'townhome', units: null },
+      bands: { feasible_with_conditions: 1, high_risk: 1, not_scored: 1 },
+      blockers: [{ driver: 'steep_slope', label: 'Steep slope', lots: 2, avg_points: 9.3 }],
+      near_misses: 4,
+      assemblies: 0,
+    })
+    expect(summary.bands).toEqual({ fast_track: 0, conditions: 1, high_risk: 1, unknown: 1 })
+    expect(summary.blockers[0]).toEqual({
+      driver: 'steep_slope',
+      label: 'Steep slope',
+      lots: 2,
+      avgPoints: 9.3,
+    })
+    expect(summary.rankedFor).toEqual({ type: 'townhome', units: null })
   })
 })

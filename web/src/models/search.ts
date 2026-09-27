@@ -57,6 +57,29 @@ export interface SearchResult {
   betterFit: ScoredProgram | null
 }
 
+/** One score driver across the searched lots. */
+export interface Blocker {
+  driver: string
+  label: string
+  /** Lots whose score it lowers */
+  lots: number
+  /** Average points it costs those lots */
+  avgPoints: number
+}
+
+/** The searched lots at a glance: the 3D view's panel. */
+export interface AreaSummary {
+  lots: number
+  rankedFor: { type: string; units: number | null } | null
+  /** Lots per band, as the search ranks them */
+  bands: Record<Band, number>
+  /** Biggest total score cost first */
+  blockers: Blocker[]
+  /** Lots that fail exactly one filter */
+  nearMisses: number
+  assemblies: number
+}
+
 export interface SearchResponse {
   total: number
   filters: Filters

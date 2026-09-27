@@ -290,6 +290,27 @@ class Suggestion(Model):
     would_return: int
 
 
+class Blocker(Model):
+    """One score driver across the searched lots, from each lot's `score_breakdown`."""
+
+    driver: str = Field(description="The flag id, or 'relief' for approvals needed")
+    label: str
+    lots: int = Field(description="Lots whose score this driver lowers")
+    avg_points: float = Field(description="Average points it costs those lots")
+
+
+class AreaSummary(Model):
+    """The searched lots at a glance (the 3D view's panel). Counts and averages of the
+    engine's results for the lots the search returns; the API judges nothing here."""
+
+    lots: int
+    ranked_for: ProductFilter | None = None
+    bands: dict[Band, int] = Field(description="Lots per band, as the search ranks them")
+    blockers: list[Blocker] = Field(description="Biggest total score cost first")
+    near_misses: int = Field(description="Lots that fail exactly one filter")
+    assemblies: int = Field(description="Groups of lots that work together")
+
+
 class SearchResponse(Model):
     total: int
     filters: SearchFilters

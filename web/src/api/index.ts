@@ -4,6 +4,7 @@ import type { MapFeatures, ParcelLayer } from '../models/map'
 import type { Program, SiteReport } from '../models/report'
 import type { Filters } from '../models/filters'
 import type {
+  AreaSummary,
   Examples,
   LookupResult,
   Neighborhood,
@@ -11,6 +12,7 @@ import type {
   SearchResponse,
 } from '../models/search'
 import {
+  toAreaSummary,
   toEvidence,
   toExamples,
   toHealth,
@@ -75,6 +77,11 @@ export async function fetchLookup(text: string, signal?: AbortSignal): Promise<L
 
 export async function fetchSearch(filters: Filters, signal?: AbortSignal): Promise<SearchResponse> {
   return toSearchResponse(await postJson('/api/search', toApiFilters(filters), signal))
+}
+
+/** The same search at a glance (the 3D view's panel). */
+export async function fetchAreaSummary(filters: Filters, signal?: AbortSignal): Promise<AreaSummary> {
+  return toAreaSummary(await postJson('/api/search/summary', toApiFilters(filters), signal))
 }
 
 export async function fetchParse(

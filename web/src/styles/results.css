@@ -832,3 +832,122 @@ p.results-panel {
 .leader-line circle {
   fill: var(--cobalt);
 }
+
+/* The 3D view's "at a glance" panel (ScoreView3D.dc.html), in the results panel's frame */
+.glance {
+  bottom: auto;
+}
+
+.glance-kicker {
+  margin: 0;
+  color: var(--cobalt);
+}
+
+.glance-title {
+  margin: -6px 0 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.glance-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.glance-body section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.glance-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0;
+  color: var(--cobalt);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.glance-total {
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.glance-bands,
+.glance-blockers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.glance-bands li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.glance-blocker-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.glance-blocker-meta {
+  flex: none;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.glance-bar {
+  display: block;
+  height: 6px;
+  margin-top: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--cobalt-tint-2);
+}
+
+.glance-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--band-risk-soft-outline);
+}
+
+.glance-note {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.glance-stats div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-size: 13px;
+}
+
+.glance-stats b {
+  color: var(--cobalt);
+  font-size: 22px;
+  font-weight: 600;
+}

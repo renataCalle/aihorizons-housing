@@ -1,6 +1,69 @@
 {
   "components": {
     "schemas": {
+      "AreaSummary": {
+        "additionalProperties": false,
+        "description": "The searched lots at a glance (the 3D view's panel). Counts and averages of the\nengine's results for the lots the search returns; the API judges nothing here.",
+        "properties": {
+          "assemblies": {
+            "description": "Groups of lots that work together",
+            "title": "Assemblies",
+            "type": "integer"
+          },
+          "bands": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Lots per band, as the search ranks them",
+            "propertyNames": {
+              "enum": [
+                "fast_track",
+                "feasible_with_conditions",
+                "high_risk",
+                "not_scored"
+              ]
+            },
+            "title": "Bands",
+            "type": "object"
+          },
+          "blockers": {
+            "description": "Biggest total score cost first",
+            "items": {
+              "$ref": "#/components/schemas/Blocker"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "lots": {
+            "title": "Lots",
+            "type": "integer"
+          },
+          "near_misses": {
+            "description": "Lots that fail exactly one filter",
+            "title": "Near Misses",
+            "type": "integer"
+          },
+          "ranked_for": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductFilter"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "lots",
+          "bands",
+          "blockers",
+          "near_misses",
+          "assemblies"
+        ],
+        "title": "AreaSummary",
+        "type": "object"
+      },
       "Assembly": {
         "additionalProperties": false,
         "properties": {
@@ -84,6 +147,39 @@
           "max"
         ],
         "title": "Assumption",
+        "type": "object"
+      },
+      "Blocker": {
+        "additionalProperties": false,
+        "description": "One score driver across the searched lots, from each lot's `score_breakdown`.",
+        "properties": {
+          "avg_points": {
+            "description": "Average points it costs those lots",
+            "title": "Avg Points",
+            "type": "number"
+          },
+          "driver": {
+            "description": "The flag id, or 'relief' for approvals needed",
+            "title": "Driver",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "lots": {
+            "description": "Lots whose score this driver lowers",
+            "title": "Lots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "driver",
+          "label",
+          "lots",
+          "avg_points"
+        ],
+        "title": "Blocker",
         "type": "object"
       },
       "Case": {
@@ -4112,6 +4208,48 @@
           }
         },
         "summary": "Parse Text",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/api/search/summary": {
+      "post": {
+        "description": "The same search at a glance: lots per band, what holds them back, near misses.",
+        "operationId": "search_summary_api_search_summary_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchFilters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AreaSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search Summary",
         "tags": [
           "search"
         ]

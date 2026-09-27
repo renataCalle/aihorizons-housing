@@ -170,6 +170,7 @@ export function MapScreen() {
     searchQuery,
     linkQuery,
     features: featureData,
+    view3d,
   }
 
   // With a report open, clicking another parcel opens its report; otherwise it selects it.
