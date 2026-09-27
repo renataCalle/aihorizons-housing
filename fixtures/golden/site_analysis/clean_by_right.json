@@ -2,9 +2,9 @@
   "verdict": {
     "score": 62,
     "score_range": {
-      "p10": 60.55564078143342,
-      "p50": 62.08060387468956,
-      "p90": 63.468891385275036
+      "p10": 60.397348386202715,
+      "p50": 61.94510181006271,
+      "p90": 63.35492497799679
     },
     "band": "feasible_with_conditions",
     "headline": "Feasible with conditions: Combined sewershed (proxy for stormwater requirements).",
@@ -137,11 +137,11 @@
       "months": null,
       "evidence": [
         {
-          "source": "Pittsburgh Zoning Code",
-          "as_of": null,
+          "source": "Pittsburgh Zoning Code (Title Nine)",
+          "as_of": "2026-09-26",
           "layer": "rules",
           "code_section": "925.06.C",
-          "url": null
+          "url": "https://ecode360.com/PI6865"
         }
       ],
       "confidence": "medium",
@@ -183,9 +183,9 @@
         "p90": -94413.29699026229
       },
       "score": {
-        "p10": 60.55564078143342,
-        "p50": 62.08060387468956,
-        "p90": 63.468891385275036
+        "p10": 60.397348386202715,
+        "p50": 61.94510181006271,
+        "p90": 63.35492497799679
       },
       "revenue_basis": "for-sale: 198 resale comps $253-$376/sf + new-build premium",
       "entitlement_basis": [],
@@ -195,7 +195,10 @@
         "p10": 8957.20624617755,
         "p50": 15067.420472026577,
         "p90": 21308.97705407582
-      }
+      },
+      "resolution": null,
+      "resolved_by_step": null,
+      "similar_cases": null
     },
     {
       "label": "with_relief",
@@ -225,9 +228,9 @@
         "p90": -131164.06511343215
       },
       "score": {
-        "p10": 47.43255839478741,
-        "p50": 49.975319349897475,
-        "p90": 52.63767817687032
+        "p10": 47.35084246432278,
+        "p50": 49.91695096925366,
+        "p90": 52.57154377966375
       },
       "revenue_basis": "for-sale: 198 resale comps $253-$376/sf + new-build premium",
       "entitlement_basis": [
@@ -239,7 +242,10 @@
         "p10": 9087.241892103211,
         "p50": 15146.467363088661,
         "p90": 21285.778703254986
-      }
+      },
+      "resolution": "Needs a variance from the Zoning Board of Adjustment after a public hearing (922.09). Start with a zoning pre-application meeting with City Planning to confirm the path before design money is spent.",
+      "resolved_by_step": 1,
+      "similar_cases": null
     }
   ],
   "next_steps": [
@@ -299,7 +305,7 @@
   "score_breakdown": [
     {
       "component": "site_cost",
-      "points_lost": 1.1,
+      "points_lost": 1.3,
       "driver_flag_id": "combined_sewer"
     }
   ],
@@ -1845,6 +1851,97 @@
     "engine": "0.1.0",
     "ruleset": "rules drafts 2026-09-26",
     "schema": "0.1.0",
-    "data_as_of": "2018-07-27"
-  }
+    "data_as_of": "2018-07-27",
+    "ruleset_as_of": "2026-09-26"
+  },
+  "code_sections": [
+    {
+      "section": "925.06.C",
+      "title": "Contextual Side Setbacks",
+      "summary": "A side setback may match the adjacent lot's existing setback but not below 3 ft; houses on lots under 60 ft wide may use reduced side yards of 3-5 ft.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-12-27"
+    },
+    {
+      "section": "903.03",
+      "title": "Development Subdistricts",
+      "summary": "Sets residential lot size, setbacks and height by density level (VL, L, M, H, VH); contextual setbacks and heights may be used, and Chapter 915 environmental rules add limits.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "922.09",
+      "title": null,
+      "summary": "The procedures under which the Zoning Board of Adjustment considers variance requests; subsection 922.09.E lists considerations the Board weighs.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "911.02",
+      "title": "Use Table",
+      "summary": "The Use Table shows, for each district, whether a use is allowed by right (P), by Administrator Exception (A), Special Exception (S), Conditional Use (C), or not at all (blank).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2026-06-11"
+    },
+    {
+      "section": "903.03.C.2",
+      "title": "Site Development Standards",
+      "summary": "Moderate-Density (M): minimum lot 2,400 sf; front, rear and street side 30 ft (RM 25); interior 5 ft (RM 10); max 40 ft/3 stories (RM 55 ft/4 stories).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "906.05",
+      "title": "UM-O, Undermined Area Overlay District",
+      "summary": "Over mapped undermined land, the underlying zoning still applies, but builders must investigate mine conditions and may face limits or special construction techniques to reduce subsidence risk.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "906.02.F.2",
+      "title": "Elevation and Floodproofing Requirements",
+      "summary": "In AE and A flood zones, new or substantially improved buildings must raise the lowest floor, including basement, to the regulatory flood elevation; non-residential buildings may be floodproofed instead.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "906.02.E.2.a",
+      "title": "FP-O, Floodplain overlay district",
+      "summary": "In the floodway, no fill, new building or other encroachment is allowed unless engineering analysis shows no rise in base flood levels, and a DEP permit is required.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "914.02",
+      "title": "Off-Street Parking Schedules",
+      "summary": "Sets minimum and maximum off-street parking by use: 1 space per unit for most homes (0 for attached single-unit), up to 4 per unit for single-unit and 2 otherwise.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2024-02-27"
+    },
+    {
+      "section": "916.02",
+      "title": "Building Height and Setback Standards",
+      "summary": "Near R1D, R1A, R2, R3 or H lots, covered development needs larger setbacks (often 15 ft) and max 40 ft/3 stories within 50 ft, 50 ft/4 stories at 51-100 ft.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "915.02",
+      "title": "Environmental Standards",
+      "summary": "Sets grading, cut-and-fill, retaining wall, slope replanting, tree survey and tree replacement rules; the grading rules apply to all slopes.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2005-12-30"
+    }
+  ]
 }

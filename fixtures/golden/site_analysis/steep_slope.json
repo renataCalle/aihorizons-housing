@@ -1,10 +1,10 @@
 {
   "verdict": {
-    "score": 41,
+    "score": 40,
     "score_range": {
-      "p10": 34.12690882202034,
-      "p50": 41.2250178541816,
-      "p90": 48.46663487489282
+      "p10": 33.03249850942913,
+      "p50": 40.40818614197336,
+      "p90": 47.957229429293584
     },
     "band": "high_risk",
     "headline": "High risk: 84% of lot on 25%+ slope.",
@@ -20,7 +20,7 @@
       {
         "key": "site_cost",
         "label": "Site cost",
-        "points": 16,
+        "points": 15,
         "max_points": 35,
         "note": "84% of lot on 25%+ slope causes most of it"
       },
@@ -99,7 +99,7 @@
         }
       ],
       "confidence": "medium",
-      "resolution": "Geotechnical report; walls under 10 ft, cut/fill under 25% (915.02)",
+      "resolution": "Geotechnical report; walls up to 10 ft, cut/fill up to 25% (915.02)",
       "resolved_by_step": 3
     },
     {
@@ -163,9 +163,9 @@
         "p90": -213815.097943414
       },
       "score": {
-        "p10": 34.12690882202034,
-        "p50": 41.2250178541816,
-        "p90": 48.46663487489282
+        "p10": 33.03249850942913,
+        "p50": 40.40818614197336,
+        "p90": 47.957229429293584
       },
       "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
       "entitlement_basis": [],
@@ -175,7 +175,10 @@
         "p10": 64005.226811003035,
         "p50": 106736.21053678458,
         "p90": 151435.36956981264
-      }
+      },
+      "resolution": null,
+      "resolved_by_step": null,
+      "similar_cases": null
     },
     {
       "label": "with_relief",
@@ -206,9 +209,9 @@
         "p90": -321608.94395142014
       },
       "score": {
-        "p10": 33.71897312713727,
-        "p50": 38.69686006841296,
-        "p90": 43.41694204537634
+        "p10": 33.32948618601308,
+        "p50": 38.41396419104102,
+        "p90": 43.21870544464521
       },
       "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
       "entitlement_basis": [
@@ -221,7 +224,10 @@
         "p10": 65439.411209482765,
         "p50": 108561.08514246272,
         "p90": 152701.04029308178
-      }
+      },
+      "resolution": "Needs a special exception from the Zoning Board of Adjustment after a public hearing (922.07); a subdivision creating one lot per townhome, approved through City Planning. Start with a zoning pre-application meeting with City Planning to confirm the path before design money is spent.",
+      "resolved_by_step": 1,
+      "similar_cases": null
     }
   ],
   "next_steps": [
@@ -257,7 +263,7 @@
         3000,
         8000
       ],
-      "why": "Geotechnical report; walls under 10 ft, cut/fill under 25% (915.02)",
+      "why": "Geotechnical report; walls up to 10 ft, cut/fill up to 25% (915.02)",
       "flag_ids": [
         "steep_slope"
       ]
@@ -266,12 +272,12 @@
   "score_breakdown": [
     {
       "component": "site_cost",
-      "points_lost": 19.4,
+      "points_lost": 20.1,
       "driver_flag_id": "steep_slope"
     },
     {
       "component": "site_cost",
-      "points_lost": 1.6,
+      "points_lost": 1.7,
       "driver_flag_id": "combined_sewer"
     }
   ],
@@ -1777,6 +1783,97 @@
     "engine": "0.1.0",
     "ruleset": "rules drafts 2026-09-26",
     "schema": "0.1.0",
-    "data_as_of": "2018-07-27"
-  }
+    "data_as_of": "2018-07-27",
+    "ruleset_as_of": "2026-09-26"
+  },
+  "code_sections": [
+    {
+      "section": "915.02",
+      "title": "Environmental Standards",
+      "summary": "Sets grading, cut-and-fill, retaining wall, slope replanting, tree survey and tree replacement rules; the grading rules apply to all slopes.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2005-12-30"
+    },
+    {
+      "section": "911.04.A.69A",
+      "title": "Single-Unit Attached Residential",
+      "summary": "In R1D districts, attached single-unit homes are allowed by right on lots 35 ft wide or less; on wider lots they need a Special Exception under Section 922.07.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "911.02",
+      "title": "Use Table",
+      "summary": "The Use Table shows, for each district, whether a use is allowed by right (P), by Administrator Exception (A), Special Exception (S), Conditional Use (C), or not at all (blank).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2026-06-11"
+    },
+    {
+      "section": "922.07",
+      "title": null,
+      "summary": "The Special Exception review procedures under which the Zoning Board of Adjustment reviews and approves uses marked S in the Use Table.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "903.03.C.2",
+      "title": "Site Development Standards",
+      "summary": "Moderate-Density (M): minimum lot 2,400 sf; front, rear and street side 30 ft (RM 25); interior 5 ft (RM 10); max 40 ft/3 stories (RM 55 ft/4 stories).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "903.03",
+      "title": "Development Subdistricts",
+      "summary": "Sets residential lot size, setbacks and height by density level (VL, L, M, H, VH); contextual setbacks and heights may be used, and Chapter 915 environmental rules add limits.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "906.05",
+      "title": "UM-O, Undermined Area Overlay District",
+      "summary": "Over mapped undermined land, the underlying zoning still applies, but builders must investigate mine conditions and may face limits or special construction techniques to reduce subsidence risk.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "906.02.F.2",
+      "title": "Elevation and Floodproofing Requirements",
+      "summary": "In AE and A flood zones, new or substantially improved buildings must raise the lowest floor, including basement, to the regulatory flood elevation; non-residential buildings may be floodproofed instead.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "906.02.E.2.a",
+      "title": "FP-O, Floodplain overlay district",
+      "summary": "In the floodway, no fill, new building or other encroachment is allowed unless engineering analysis shows no rise in base flood levels, and a DEP permit is required.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "914.02",
+      "title": "Off-Street Parking Schedules",
+      "summary": "Sets minimum and maximum off-street parking by use: 1 space per unit for most homes (0 for attached single-unit), up to 4 per unit for single-unit and 2 otherwise.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2024-02-27"
+    },
+    {
+      "section": "916.02",
+      "title": "Building Height and Setback Standards",
+      "summary": "Near R1D, R1A, R2, R3 or H lots, covered development needs larger setbacks (often 15 ft) and max 40 ft/3 stories within 50 ft, 50 ft/4 stories at 51-100 ft.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    }
+  ]
 }

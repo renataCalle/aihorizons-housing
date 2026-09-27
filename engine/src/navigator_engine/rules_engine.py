@@ -3,10 +3,11 @@
 Input: a SiteContext-shaped dict and the rules tables in navigator_engine/config/rules/
 (drafted by sandbox/rules/extract.py from the zoning code). Pure computation.
 
-Pittsburgh's residential districts set no density or coverage limit (925.03), so capacity comes
-from the envelope: (lot width - side setbacks) x (lot depth - front and rear setbacks) x stories.
-Lot width and depth are read from the parcel's minimum rotated rectangle. Contextual setbacks
-(925.06) can only reduce required setbacks, so ignoring them is conservative.
+Pittsburgh's residential district tables (903.03) set a minimum lot size but no density or
+coverage limit, so capacity comes from the envelope: (lot width - side setbacks) x (lot depth -
+front and rear setbacks) x stories. Lot width and depth are read from the parcel's minimum
+rotated rectangle. Contextual setbacks (925.06) can only reduce required setbacks, so ignoring
+them is conservative.
 """
 
 import csv
@@ -452,7 +453,8 @@ def site_checks(ctx: dict) -> list[dict]:
             "status": "applies" if sfha > 0 else "clear",
             "note": None
             if not sfha
-            else f"{sfha:.0%} of the lot. Lowest floor 1.5 ft above flood elevation; no basement",
+            else f"{sfha:.0%} of the lot. Lowest floor, basement included, 1.5 ft above base "
+            "flood elevation",
         },
         {
             "check_id": "floodway",
@@ -501,7 +503,7 @@ def overlay_items(ctx: dict, units: int) -> list[dict]:
             {
                 "type": "design_requirement",
                 "section": "906.02.F.2.a",
-                "what": "FP-O: lowest floor >= BFE + 1.5 ft; no basement",
+                "what": "FP-O: lowest floor, basement included, >= BFE + 1.5 ft",
             }
         )
     return out

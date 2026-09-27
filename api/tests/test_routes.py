@@ -19,7 +19,7 @@ def test_health_reports_source_and_versions(client: TestClient) -> None:
     assert body["site_source"] == "mock"
     assert body["illustrative"] is True
     assert body["parcels"] > 200
-    assert set(body["versions"]) == {"engine", "ruleset", "schema", "data_as_of"}
+    assert set(body["versions"]) == {"engine", "ruleset", "schema", "data_as_of", "ruleset_as_of"}
 
 
 @pytest.mark.parametrize("parcel_id", [SAMPLE_LOT_A, "0000-X-00000-0000-00", "0000x00000000000"])

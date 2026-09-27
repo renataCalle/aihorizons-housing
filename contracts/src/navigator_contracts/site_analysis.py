@@ -113,6 +113,13 @@ class ProgramOption(Contract):
     revenue_basis: str  # comps or rent basis, in words
     entitlement_basis: list[str]  # where the approval odds come from
     site_cost_premium: Range | None = None  # USD, simulated sum of the priced site constraints
+    # How to get the approvals in `relief`, and the next step that starts that path.
+    # None when the option is by right.
+    resolution: str | None = None
+    resolved_by_step: int | None = None  # next_steps[].order
+    # Zoning board cases (SiteContext.zba_cases_nearby) the engine judges comparable to the
+    # approvals this option needs. None = no zoning board approval needed, or cases unavailable.
+    similar_cases: list[str] | None = None  # case_id values
 
 
 class Step(Contract):
@@ -160,6 +167,18 @@ class Versions(Contract):
     ruleset: str
     schema_: str = Field(alias="schema")
     data_as_of: date | None  # oldest source date among the inputs
+    ruleset_as_of: date | None = None  # date of the zoning code text the rules were read from
+
+
+class CodeSection(Contract):
+    """One zoning code section cited anywhere in the analysis, for the UI's code drawer."""
+
+    section: str  # as cited, e.g. "906.02.F.2.a"
+    title: str | None  # heading of the closest section the glossary has
+    summary: str | None  # one plain-language sentence; None when not written yet
+    url: str | None
+    as_of: date | None  # date of the code text (the downloaded copy)
+    effective: date | None  # latest amendment date of that section, when known
 
 
 class CheckResult(Contract):
@@ -230,3 +249,4 @@ class SiteAnalysis(Contract):
     assumptions: list[Assumption]
     rules: RulesSummary
     versions: Versions
+    code_sections: list[CodeSection] = Field(default_factory=list)  # every section cited above

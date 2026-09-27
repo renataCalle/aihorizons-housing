@@ -1,8 +1,11 @@
 # Contracts v0.1.0
 
-Latest additive changes: `ProgramOption.site_cost_premium` (range, USD);
-`SiteAnalysis.rule_checks` (rule-by-rule explanation); `Source.retrieved` / `retrieved_at` and
-`Title.recent_permits` (live data). No version bump; existing clients keep working.
+Latest additive changes: `ProgramOption.resolution` / `resolved_by_step` (how to get the
+approvals, and the step that starts it), `ProgramOption.similar_cases` (zoning board
+precedents), `SiteAnalysis.code_sections` (every cited code section: title, summary, link,
+dates) and `Versions.ruleset_as_of`; before that `ProgramOption.site_cost_premium`,
+`SiteAnalysis.rule_checks`, `Source.retrieved` / `retrieved_at`, `Title.recent_permits`. No
+version bump; existing clients keep working.
 
 Two Pydantic models are the whole interface between data, engine and UI:
 
@@ -35,7 +38,8 @@ duplex = analyze(ctx.model_dump(mode="json"), program={"product_type": "duplex"}
 ```
 
 - `overrides` keys are `SiteAnalysis.assumptions[].key` where `editable` is true, plus
-  `land_price` (the asking price; default is the assessed land value).
+  `land_price` (the asking price; default is the assessed land value, or the assessed total
+  value for a lot with a building).
 - `program` (`?product=&units=`): `{"product_type": ..., "units": int | None}` scores that
   building instead of the engine's pick; it becomes the only option. `units: None` = the
   largest the zoning rules allow. A building the rules rule out comes back `high_risk` with no
@@ -86,10 +90,13 @@ Answers to the checklist in `docs/04-contracts.md` (feat/web-api):
 | Flags | `flags[]` worst first: severity, title, cost/months, evidence (source, date, § section, URL), confidence, resolution, `resolved_by_step` | ✓ |
 | Cleared checks | `cleared[]` | labels only, no source yet |
 | Program options | `options[]` with `label` by_right / with_relief: product, units, unit_sqft, margin, months, relief with § sections | ✓ |
+| Approvals: how to get them | `options[].resolution` (who decides each approval and the review procedure) and `options[].resolved_by_step` (→ `next_steps[].order`, the zoning pre-application meeting); both `null` when by right | ✓ |
+| What the code requires | `code_sections[]`: every section cited anywhere in the analysis, with `title`, one-line `summary`, `url`, `as_of` (date of the code text) and `effective` (latest amendment). Look a flag's or rule's `§` up here by `section` | ✓ (summaries drafted from the code text, pending a person's review) |
+| Code-rule evidence dates | flags resting on a code rule have `evidence[].as_of` (the code text date) and `url`; `versions.ruleset_as_of` is the same date | ✓ |
 | Next steps | `next_steps[]`: order, action, who, cost_usd, why | no duration yet |
 | Assumptions | `assumptions[]`: key, label, value, min/max, unit, source, editable | ✓ |
-| Versions | `versions.{engine, ruleset, schema, data_as_of}` | ✓ (`data_as_of` = oldest input) |
-| Evidence drawer: precedents | — | blocked: needs zoning board decisions |
+| Versions | `versions.{engine, ruleset, schema, data_as_of, ruleset_as_of}` | ✓ (`data_as_of` = oldest input) |
+| Evidence drawer: precedents | `options[].similar_cases`: the `case_id`s in `zba_cases_nearby` that count as precedent (rule below); `null` when no zoning board approval is needed or cases are unavailable | ✓ logic; data blocked: `zba_cases_nearby` is `null` until zoning board decisions are available |
 | Rule by rule (why this score) | `rule_checks`: every building type tested, each rule `pass` / `needs_approval` / `rejected` / `not_applicable` with § section and required vs. provided; approval odds per building; site-wide overlay rules; rules not checked yet | ✓ (additive, optional) |
 
 **Names in your draft → names here**: Finding → `Flag` (detail ≈ title + resolution);
@@ -99,7 +106,20 @@ best_by_right / best_with_approvals → `options[]` by `label`; meta → `versio
 relief types. Tenure is in `revenue_basis` (for-sale or rental exit).
 
 **Placeholders**: every assumption whose `source` starts with `PLACEHOLDER` is a default,
-not a local benchmark. Hard cost drives most results; show the label.
+not a local benchmark. Hard cost drives most results; show the label. Approval odds for
+administrator exceptions, special exceptions, variances and subdivisions are also placeholder
+priors (`entitlement_basis` says so) until zoning board decisions are available; conditional
+uses and rezonings are measured from City Council votes.
+
+**Similar zoning board cases** (`navigator_engine.precedents`): same approval type (variance
+or special exception), same base district (R1D for R1D-M), within 0.5 mi, decided in the 5
+years before the newest case in the data. The API builds the precedent table (granted count,
+median months) from these `case_id`s only.
+
+**Code links**: the code is published on eCode360 (not Municode). Every section links to the
+code's home page `https://ecode360.com/PI6865` for now; deep links per chapter can be added in
+`engine/src/navigator_engine/config/rules/code_sections.csv` (`url` column) without code
+changes.
 
 ## Rule by rule: `rule_checks`
 
@@ -128,14 +148,14 @@ Reference rendering: `sandbox/report.py` (`rules_block`).
 
 ## Handoff: serving real data from the API
 
-Two sources of real data, for two jobs:
+Three sources of real data, for three jobs:
 
-| | Results bundle (`results/`) | Live pipeline |
-|---|---|---|
-| Covers | Hazelwood (3,617 parcels, 1,010 vacant lots scored) + the 8 golden parcels | Any parcel in the county |
-| Needs | Nothing: it is in git (8 MB) | The local data store (not in git, see below) |
-| Freshness | Snapshot; dates in `results/manifest.json` | Nightly refresh + live per-parcel lookups |
-| Use it for | The demo, the map, lists and search | Opening a parcel outside the bundle; the latest records |
+| | Results bundle (`results/`) | Stored scores (`data/scores/`) | Live pipeline |
+|---|---|---|---|
+| Covers | Hazelwood (3,617 parcels, 1,010 vacant lots scored) + the 8 golden parcels | Every city parcel (142,329), scored once | Any parcel in the county |
+| Needs | Nothing: it is in git (8 MB) | The files (~215 MB, not in git); rebuilt from the data store in ~35 min | The local data store (not in git, see below) |
+| Freshness | Snapshot; dates in `results/manifest.json` | Snapshot; dates in `data/scores/manifest.json` | Nightly refresh + live per-parcel lookups |
+| Use it for | The demo map, lists and search | Any city parcel ID, instantly (SQL or Python) | The latest records for the parcel a user opens |
 
 **1. Results bundle.** `navigator_pipeline.bundle.load()` reads and validates everything
 (every line against the contracts; CI checks the bundle on every push):
@@ -163,7 +183,36 @@ A `BundleSiteSource` is `MockSiteSource` with these inputs:
 right"); columns are in `results/README.md`. Regenerate the bundle with
 `uv run python -m navigator_pipeline.publish` after a refresh or an engine change.
 
-**2. Live pipeline (any parcel).** Needs the data store in `data/` (or `NAVIGATOR_DATA_DIR`).
+**2. Stored scores (every city parcel).** `uv run python -m navigator_pipeline.score_all`
+scores all 142,329 city parcels once (the same `analyze` the API calls, from the stored copy,
+no live traffic) and writes four Parquet tables sorted by parcel ID to `data/scores/`. A lookup
+reads one small row group: a few milliseconds, no engine run.
+
+```python
+from navigator_pipeline import scores
+s = scores.load()                          # data/scores/
+s.summary("55-A-225")                      # flat row: facts, score, band, ranges, status
+s.analysis("0055A00225000000")             # the full SiteAnalysis JSON, as the engine returned it
+s.context("0055A00225000000")              # SiteContext, to re-run with overrides or ?product=
+s.programs("0055A00225000000")             # one row per building type
+s.sql("SELECT neighborhood, count(*) FROM parcels WHERE band = 'fast_track' GROUP BY 1")
+```
+
+Or plain SQL from any DuckDB client:
+
+```sql
+SELECT analysis FROM 'data/scores/analyses.parquet' WHERE parcel_id = '0055A00225000000';
+SELECT parcel_id, score, band FROM 'data/scores/parcels.parquet'
+ WHERE neighborhood = 'Hazelwood' AND vacant ORDER BY score DESC LIMIT 20;
+```
+
+For the API, a source can serve `analysis(pid)` from `s.analysis(pid)` and fall back to the live
+pipeline when a user asks for fresh records. Parcels that could not be scored are kept with
+`status = 'error'` and the reason (83 have no county assessment record, 75 too few comparable
+sales to price); `not_scored` means
+zoning is not covered. Columns are listed in `pipeline/README.md`.
+
+**3. Live pipeline (any parcel).** Needs the data store in `data/` (or `NAVIGATOR_DATA_DIR`).
 It is no longer tracked in git. The copy committed earlier is still in history, so the fastest
 way to get one is to extract it, then refresh:
 

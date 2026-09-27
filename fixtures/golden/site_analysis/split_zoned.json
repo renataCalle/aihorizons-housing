@@ -1,10 +1,10 @@
 {
   "verdict": {
-    "score": 49,
+    "score": 48,
     "score_range": {
-      "p10": 45.3563787870796,
-      "p50": 49.09401349748691,
-      "p90": 52.81318986783582
+      "p10": 44.13439952990696,
+      "p50": 48.121602295050494,
+      "p90": 52.12867748159301
     },
     "band": "high_risk",
     "headline": "High risk: Existing structure to demolish.",
@@ -20,7 +20,7 @@
       {
         "key": "site_cost",
         "label": "Site cost",
-        "points": 23,
+        "points": 22,
         "max_points": 35,
         "note": "Existing structure to demolish causes most of it"
       },
@@ -54,8 +54,8 @@
       "p90": -108478.80322686433
     },
     "land_basis": {
-      "value": 41300.0,
-      "source": "county assessed land value (not a market price)"
+      "value": 163300.0,
+      "source": "county assessed total value, land + building (not a market price)"
     },
     "site_cost_premium": {
       "low": 23000,
@@ -67,8 +67,8 @@
       ]
     },
     "land_over_max": {
-      "low": 149778.80322686431,
-      "high": 270932.2122409104
+      "low": 271778.8032268643,
+      "high": 392932.2122409104
     },
     "comps": {
       "count": 57,
@@ -187,11 +187,11 @@
       "months": null,
       "evidence": [
         {
-          "source": "Pittsburgh Zoning Code",
-          "as_of": null,
+          "source": "Pittsburgh Zoning Code (Title Nine)",
+          "as_of": "2026-09-26",
           "layer": "rules",
           "code_section": "925.06.C",
-          "url": null
+          "url": "https://ecode360.com/PI6865"
         }
       ],
       "confidence": "medium",
@@ -213,9 +213,9 @@
       "units": 1,
       "relief": [],
       "margin": {
-        "p10": -0.3541026528242193,
-        "p50": -0.27924388503022696,
-        "p90": -0.19650140877739086
+        "p10": -0.46097148525528914,
+        "p50": -0.4088471248608996,
+        "p90": -0.35376568663027996
       },
       "months": {
         "p10": 4.353736351626294,
@@ -233,9 +233,9 @@
         "p90": -108478.80322686433
       },
       "score": {
-        "p10": 45.3563787870796,
-        "p50": 49.09401349748691,
-        "p90": 52.81318986783582
+        "p10": 44.13439952990696,
+        "p50": 48.121602295050494,
+        "p90": 52.12867748159301
       },
       "revenue_basis": "for-sale: 9 new-build comps $293-$311/sf",
       "entitlement_basis": [],
@@ -245,7 +245,10 @@
         "p10": 44381.15089524187,
         "p50": 64701.809542145726,
         "p90": 83815.31915461588
-      }
+      },
+      "resolution": null,
+      "resolved_by_step": null,
+      "similar_cases": null
     }
   ],
   "next_steps": [
@@ -305,17 +308,17 @@
   "score_breakdown": [
     {
       "component": "site_cost",
-      "points_lost": 5.5,
+      "points_lost": 5.9,
       "driver_flag_id": "demolition"
     },
     {
       "component": "site_cost",
-      "points_lost": 4.4,
+      "points_lost": 4.7,
       "driver_flag_id": "env_nearby"
     },
     {
       "component": "site_cost",
-      "points_lost": 2.2,
+      "points_lost": 2.4,
       "driver_flag_id": "combined_sewer"
     }
   ],
@@ -1794,9 +1797,9 @@
     {
       "key": "land_price",
       "label": "Land price",
-      "value": 41300.0,
+      "value": 163300.0,
       "unit": "$",
-      "source": "county assessed land value (not a market price)",
+      "source": "county assessed total value, land + building (not a market price)",
       "editable": true,
       "min": null,
       "max": null
@@ -1815,6 +1818,89 @@
     "engine": "0.1.0",
     "ruleset": "rules drafts 2026-09-26",
     "schema": "0.1.0",
-    "data_as_of": "2018-07-27"
-  }
+    "data_as_of": "2018-07-27",
+    "ruleset_as_of": "2026-09-26"
+  },
+  "code_sections": [
+    {
+      "section": "925.06.C",
+      "title": "Contextual Side Setbacks",
+      "summary": "A side setback may match the adjacent lot's existing setback but not below 3 ft; houses on lots under 60 ft wide may use reduced side yards of 3-5 ft.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-12-27"
+    },
+    {
+      "section": "911.02",
+      "title": "Use Table",
+      "summary": "The Use Table shows, for each district, whether a use is allowed by right (P), by Administrator Exception (A), Special Exception (S), Conditional Use (C), or not at all (blank).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2026-06-11"
+    },
+    {
+      "section": "903.03.E.2",
+      "title": "Site Development Standards",
+      "summary": "Very-High Density (VH): no minimum lot size listed; front/street side 5 ft, rear 15 ft (RM 25 each); interior 5 ft (RM 10); max 40 ft/3 stories (RM 180 ft).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "903.03",
+      "title": "Development Subdistricts",
+      "summary": "Sets residential lot size, setbacks and height by density level (VL, L, M, H, VH); contextual setbacks and heights may be used, and Chapter 915 environmental rules add limits.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "906.05",
+      "title": "UM-O, Undermined Area Overlay District",
+      "summary": "Over mapped undermined land, the underlying zoning still applies, but builders must investigate mine conditions and may face limits or special construction techniques to reduce subsidence risk.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "906.02.F.2",
+      "title": "Elevation and Floodproofing Requirements",
+      "summary": "In AE and A flood zones, new or substantially improved buildings must raise the lowest floor, including basement, to the regulatory flood elevation; non-residential buildings may be floodproofed instead.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "906.02.E.2.a",
+      "title": "FP-O, Floodplain overlay district",
+      "summary": "In the floodway, no fill, new building or other encroachment is allowed unless engineering analysis shows no rise in base flood levels, and a DEP permit is required.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "914.02",
+      "title": "Off-Street Parking Schedules",
+      "summary": "Sets minimum and maximum off-street parking by use: 1 space per unit for most homes (0 for attached single-unit), up to 4 per unit for single-unit and 2 otherwise.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2024-02-27"
+    },
+    {
+      "section": "916.02",
+      "title": "Building Height and Setback Standards",
+      "summary": "Near R1D, R1A, R2, R3 or H lots, covered development needs larger setbacks (often 15 ft) and max 40 ft/3 stories within 50 ft, 50 ft/4 stories at 51-100 ft.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "915.02",
+      "title": "Environmental Standards",
+      "summary": "Sets grading, cut-and-fill, retaining wall, slope replanting, tree survey and tree replacement rules; the grading rules apply to all slopes.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2005-12-30"
+    }
+  ]
 }

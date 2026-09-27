@@ -257,13 +257,16 @@ The score adds up three parts, so every point can be traced to one of them:
   start quickly. Points fall with lower odds of approval and with longer waits: a 6-month wait
   alone cuts the approval points by about 28%.
 - **Site cost (up to 35 points).** Full points when there are no costly site problems. Points
-  fall as those costs grow, reaching zero when they make up 30% of the total project cost.
+  fall as those costs grow, reaching zero when they make up 30% of the cost of building (land
+  left out, so a pricier lot never makes the same site problems look smaller).
 - **Land headroom (up to 30 points).** Full points when the maximum land price is at least 1.5
-  times the asking price (or the assessed value, if no asking price is given). Zero when the
-  project can't pay for its land.
+  times the asking price. Without an asking price, the assessed land value is used for a vacant
+  lot and the assessed total value (land and building) for a lot with a building, since the
+  building is bought with it; its demolition is priced as a site cost. Zero when the project
+  can't pay for its land.
 
-In formula form, with P the approval probability, M the months to a permit, π the share of cost
-from site problems and L\* the maximum land price:
+In formula form, with P the approval probability, M the months to a permit, π the site-problem
+costs as a share of all costs except land, and L\* the maximum land price:
 
 > score = 35 × P × e^(−M/18) + 35 × (1 − π/0.30) + 30 × L\* / (1.5 × land price), each part capped between 0 and its maximum
 
