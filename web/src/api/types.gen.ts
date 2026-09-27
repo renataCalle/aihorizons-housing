@@ -1049,6 +1049,42 @@ export interface components {
             points_lost: number;
         };
         /**
+         * ScoredProgram
+         * @description The building a lot is scored on in a search: the searched building type (the engine's
+         *     result for that type, from the results bundle's per-building rows) or the engine's pick.
+         */
+        ScoredProgram: {
+            /** Band */
+            band: ("fast_track" | "feasible_with_conditions" | "high_risk" | "not_scored") | null;
+            /**
+             * Basis
+             * @description pick = the engine's pick; exact = the searched unit count; up_to = the largest unit count the zoning rules allow for the searched type
+             * @enum {string}
+             */
+            basis: "pick" | "exact" | "up_to";
+            max_land_price: components["schemas"]["Range"] | null;
+            months_to_permit: components["schemas"]["Range"] | null;
+            /** Outcome */
+            outcome: ("by_right" | "needs_approval" | "rejected" | "not_covered") | null;
+            /**
+             * Product Type
+             * @description None = no building the engine tested fits the lot
+             */
+            product_type: ("single_family" | "duplex" | "triplex" | "townhome" | "walkup") | null;
+            /**
+             * Relief Types
+             * @description Approvals needed; empty = by right
+             */
+            relief_types: string[];
+            /**
+             * Score
+             * @description None = not scored (ruled out, or zoning not covered)
+             */
+            score: number | null;
+            /** Units */
+            units: number | null;
+        };
+        /**
          * SearchFilters
          * @description The single filter state shared by the manual controls, the chips and AI search.
          */
@@ -1146,6 +1182,8 @@ export interface components {
              * @description Filters the data can't answer yet; ignored
              */
             not_applied?: components["schemas"]["FilterChip"][];
+            /** @description The building type lots are ranked for; None = best fit */
+            ranked_for?: components["schemas"]["ProductFilter"] | null;
             /** Results */
             results: components["schemas"]["SearchResult"][];
             suggestion?: components["schemas"]["Suggestion"] | null;
@@ -1154,11 +1192,15 @@ export interface components {
         };
         /** SearchResult */
         SearchResult: {
+            /** @description The engine's pick, when a building type was searched and the pick is another type */
+            better_fit?: components["schemas"]["ScoredProgram"] | null;
             /** @description The program that matched the product filter */
             fit: components["schemas"]["ProgramFit"] | null;
             parcel: components["schemas"]["ParcelSummary"];
             /** Rank */
             rank: number;
+            /** @description What the lot is ranked on: the searched type, or the pick */
+            scored?: components["schemas"]["ScoredProgram"] | null;
         };
         /** SiteAnalysis */
         SiteAnalysis: {

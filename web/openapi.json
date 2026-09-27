@@ -2338,6 +2338,139 @@
         "title": "ScoreItem",
         "type": "object"
       },
+      "ScoredProgram": {
+        "additionalProperties": false,
+        "description": "The building a lot is scored on in a search: the searched building type (the engine's\nresult for that type, from the results bundle's per-building rows) or the engine's pick.",
+        "properties": {
+          "band": {
+            "anyOf": [
+              {
+                "enum": [
+                  "fast_track",
+                  "feasible_with_conditions",
+                  "high_risk",
+                  "not_scored"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Band"
+          },
+          "basis": {
+            "description": "pick = the engine's pick; exact = the searched unit count; up_to = the largest unit count the zoning rules allow for the searched type",
+            "enum": [
+              "pick",
+              "exact",
+              "up_to"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "max_land_price": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "months_to_permit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "enum": [
+                  "by_right",
+                  "needs_approval",
+                  "rejected",
+                  "not_covered"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "product_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "single_family",
+                  "duplex",
+                  "triplex",
+                  "townhome",
+                  "walkup"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = no building the engine tested fits the lot",
+            "title": "Product Type"
+          },
+          "relief_types": {
+            "description": "Approvals needed; empty = by right",
+            "items": {
+              "type": "string"
+            },
+            "title": "Relief Types",
+            "type": "array"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = not scored (ruled out, or zoning not covered)",
+            "title": "Score"
+          },
+          "units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Units"
+          }
+        },
+        "required": [
+          "product_type",
+          "units",
+          "basis",
+          "score",
+          "band",
+          "outcome",
+          "relief_types",
+          "months_to_permit",
+          "max_land_price"
+        ],
+        "title": "ScoredProgram",
+        "type": "object"
+      },
       "SearchFilters": {
         "additionalProperties": false,
         "description": "The single filter state shared by the manual controls, the chips and AI search.",
@@ -2603,6 +2736,17 @@
             "title": "Not Applied",
             "type": "array"
           },
+          "ranked_for": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductFilter"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The building type lots are ranked for; None = best fit"
+          },
           "results": {
             "items": {
               "$ref": "#/components/schemas/SearchResult"
@@ -2637,6 +2781,17 @@
       "SearchResult": {
         "additionalProperties": false,
         "properties": {
+          "better_fit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScoredProgram"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The engine's pick, when a building type was searched and the pick is another type"
+          },
           "fit": {
             "anyOf": [
               {
@@ -2654,6 +2809,17 @@
           "rank": {
             "title": "Rank",
             "type": "integer"
+          },
+          "scored": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScoredProgram"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "What the lot is ranked on: the searched type, or the pick"
           }
         },
         "required": [
