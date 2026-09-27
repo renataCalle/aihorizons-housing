@@ -1,4 +1,4 @@
-# web/ — Buildable PGH front end
+# web/ — Pencil It front end
 
 Read the root `CLAUDE.md` first: its contract invariants and boundary rules apply here too. This file adds what's specific to the web app.
 

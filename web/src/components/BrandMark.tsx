@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 
 export function BrandMark() {
   return (
-    <Link to="/" className="brand" aria-label="Buildable PGH home">
+    <Link to="/" className="brand" aria-label="Pencil It home">
       <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
         <circle
           cx="16"
@@ -18,7 +18,7 @@ export function BrandMark() {
           fill="var(--cobalt)"
         />
       </svg>
-      <span>Buildable PGH</span>
+      <span>Pencil It</span>
     </Link>
   )
 }

@@ -98,7 +98,7 @@ export function applyThemeVariables(theme: MapTheme, root: HTMLElement = documen
   }
 }
 
-const STORAGE_KEY = 'buildable-pgh.map-theme'
+const STORAGE_KEY = 'pencil-it.map-theme'
 
 /** The saved choice, or the default. Storage can be missing or blocked (private windows). */
 export function loadThemeId(): MapThemeId {

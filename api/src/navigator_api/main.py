@@ -20,7 +20,7 @@ def build_source(settings: Settings) -> SiteSource:
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings()
-    app = FastAPI(title="Buildable PGH API", version="0.1.0")
+    app = FastAPI(title="Pencil It API", version="0.1.0")
     app.state.source = build_source(settings)
     app.add_middleware(
         CORSMiddleware,
