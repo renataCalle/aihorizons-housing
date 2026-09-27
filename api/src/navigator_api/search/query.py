@@ -2,6 +2,9 @@
 
 Everything judged here was judged by the engine: which programs fit a lot, its score and band,
 its costs and months. This module only compares those to the user's filters.
+
+Score, band, months and max land price come from what the lot is scored on (search/programs.py):
+the searched building type when the filters name one, else the engine's pick.
 """
 
 import math
@@ -14,11 +17,13 @@ from navigator_api.models import (
     NearMiss,
     ParcelSummary,
     ProgramFit,
+    ScoredProgram,
     SearchFilters,
     SearchResponse,
     SearchResult,
     Suggestion,
 )
+from navigator_api.search.programs import better_fit, scored_for
 from navigator_api.search.vocabulary import chip_labels
 
 # Relief types the engine names, grouped into the approval paths users filter on.
@@ -93,10 +98,24 @@ def _known(value, test: Callable[[object], bool], unknown_ok: bool) -> bool:
 
 
 def build_checks(
-    f: SearchFilters, features: MapFeatureCollection
+    f: SearchFilters,
+    features: MapFeatureCollection,
+    scored: dict[str, ScoredProgram] | None = None,
 ) -> tuple[dict[str, Check], list[str]]:
-    """One named check per active chip, plus the chips the data can't answer yet."""
+    """One named check per active chip, plus the chips the data can't answer yet. Score, band
+    and months are read from `scored` (what each lot is ranked on) when given."""
     unk = f.include_unknowns
+    scored = scored or {}
+
+    def band(s: ParcelSummary):
+        return scored[s.parcel_id].band if s.parcel_id in scored else s.band
+
+    def score(s: ParcelSummary):
+        return scored[s.parcel_id].score if s.parcel_id in scored else s.score
+
+    def months(s: ParcelSummary):
+        return scored[s.parcel_id].months_to_permit if s.parcel_id in scored else s.months_to_permit
+
     checks: dict[str, Check] = {}
     not_applied: list[str] = []
 
@@ -154,9 +173,9 @@ def build_checks(
     for c in f.exclude_constraints:
         checks[f"constraint:{c}"] = lambda s, get=facts[c]: _known(get(s), lambda v: not v, unk)
     if f.bands:
-        checks["bands"] = lambda s: s.band in f.bands
+        checks["bands"] = lambda s: band(s) in f.bands
     if f.min_score is not None:
-        checks["min_score"] = lambda s: s.score is not None and s.score >= f.min_score
+        checks["min_score"] = lambda s: (v := score(s)) is not None and v >= f.min_score
     if f.min_margin_pct is not None:
         checks["min_margin_pct"] = lambda s: (
             bool(s.lead_option and s.lead_option.margin)
@@ -168,7 +187,7 @@ def build_checks(
         )
     if f.max_months_to_permit is not None:
         checks["max_months_to_permit"] = lambda s: _known(
-            s.months_to_permit, lambda v: v.p50 <= f.max_months_to_permit, unk
+            months(s), lambda v: v.p50 <= f.max_months_to_permit, unk
         )
     if f.lot_min_sqft is not None or f.lot_max_sqft is not None:
         lo, hi = f.lot_min_sqft or 0, f.lot_max_sqft or math.inf
@@ -180,44 +199,62 @@ def build_checks(
     if f.tax_delinquent_only:
         checks["tax_delinquent_only"] = lambda s: s.tax_lien_usd > 0
     if not f.include_unknowns:
-        checks["include_unknowns"] = lambda s: s.band not in (None, "not_scored")
+        checks["include_unknowns"] = lambda s: band(s) not in (None, "not_scored")
     return checks, not_applied
 
 
-def _sort_key(f: SearchFilters) -> Callable[[ParcelSummary], tuple]:
+def _sort_key(
+    f: SearchFilters, scored: dict[str, ScoredProgram]
+) -> Callable[[ParcelSummary], tuple]:
     def score(s: ParcelSummary) -> float:
-        return -(s.score if s.score is not None else -1)
+        value = scored[s.parcel_id].score
+        return -(value if value is not None else -1)
+
+    def land(s: ParcelSummary) -> float:
+        value = scored[s.parcel_id].max_land_price
+        return -(value.p50 - (s.assessed_land or 0)) if value else math.inf
+
+    def months(s: ParcelSummary) -> float:
+        value = scored[s.parcel_id].months_to_permit
+        return value.p50 if value else math.inf
 
     if f.sort == "headroom_desc":
-        return lambda s: (
-            -(s.max_land_price.p50 - (s.assessed_land or 0)) if s.max_land_price else math.inf,
-            score(s),
-        )
+        return lambda s: (land(s), score(s))
     if f.sort == "fastest":
-        return lambda s: (s.months_to_permit.p50 if s.months_to_permit else math.inf, score(s))
+        return lambda s: (months(s), score(s))
     if f.sort == "cheapest":
         return lambda s: (s.assessed_land if s.assessed_land is not None else math.inf, score(s))
     return lambda s: (score(s), s.display_name)
 
 
 def search(
-    summaries: list[ParcelSummary], f: SearchFilters, features: MapFeatureCollection
+    summaries: list[ParcelSummary],
+    f: SearchFilters,
+    features: MapFeatureCollection,
+    program_rows: Callable[[str], dict[str, ScoredProgram]] = lambda _: {},
 ) -> SearchResponse:
+    """`program_rows` gives the engine's result per building type for a lot; with a building
+    type in the filters, lots are ranked on that type's row instead of the engine's pick."""
     candidates = [s for s in summaries if s.candidate]
-    checks, not_applied_keys = build_checks(f, features)
+    by_type = f.product if f.product and f.product.type else None
+    scored = {s.parcel_id: scored_for(s, program_rows(s.parcel_id), by_type) for s in candidates}
+    checks, not_applied_keys = build_checks(f, features, scored)
     labels = dict(chip_labels(f))
 
     def failures(s: ParcelSummary) -> list[str]:
         return [key for key, check in checks.items() if not check(s)]
 
     failed = {s.parcel_id: failures(s) for s in candidates}
-    matches = sorted((s for s in candidates if not failed[s.parcel_id]), key=_sort_key(f))
+    key = _sort_key(f, scored)
+    matches = sorted((s for s in candidates if not failed[s.parcel_id]), key=key)
 
     results = [
         SearchResult(
             rank=i + 1,
             parcel=s,
             fit=next(iter(matching_programs(s, f)), None) if f.product else None,
+            scored=scored[s.parcel_id],
+            better_fit=better_fit(s, scored[s.parcel_id]) if by_type else None,
         )
         for i, s in enumerate(matches)
     ]
@@ -226,7 +263,7 @@ def search(
     if f.show_near_misses:
         near_misses = [
             NearMiss(parcel=s, failed=FilterChip(key=keys[0], label=labels.get(keys[0], keys[0])))
-            for s in sorted(candidates, key=_sort_key(f))
+            for s in sorted(candidates, key=key)
             if len(keys := failed[s.parcel_id]) == 1
         ]
 
@@ -253,6 +290,7 @@ def search(
     return SearchResponse(
         total=len(results),
         filters=f,
+        ranked_for=by_type,
         chips=[FilterChip(key=k, label=v) for k, v in chip_labels(f)],
         results=results,
         near_misses=near_misses,

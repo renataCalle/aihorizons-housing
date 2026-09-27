@@ -232,10 +232,38 @@ class ParseResult(Model):
     parser: Literal["ai", "rules"] = Field(description="rules = basic search (AI unavailable)")
 
 
+class ScoredProgram(Model):
+    """The building a lot is scored on in a search: the searched building type (the engine's
+    result for that type, from the results bundle's per-building rows) or the engine's pick."""
+
+    product_type: ProductType | None = Field(
+        description="None = no building the engine tested fits the lot"
+    )
+    units: int | None
+    basis: Literal["pick", "exact", "up_to"] = Field(
+        description="pick = the engine's pick; exact = the searched unit count; up_to = the "
+        "largest unit count the zoning rules allow for the searched type"
+    )
+    score: int | None = Field(description="None = not scored (ruled out, or zoning not covered)")
+    band: Band | None
+    outcome: Literal["by_right", "needs_approval", "rejected", "not_covered"] | None
+    relief_types: list[str] = Field(description="Approvals needed; empty = by right")
+    months_to_permit: Range | None
+    max_land_price: Range | None
+
+
 class SearchResult(Model):
     rank: int
     parcel: ParcelSummary
     fit: ProgramFit | None = Field(description="The program that matched the product filter")
+    scored: ScoredProgram | None = Field(
+        default=None, description="What the lot is ranked on: the searched type, or the pick"
+    )
+    better_fit: ScoredProgram | None = Field(
+        default=None,
+        description="The engine's pick, when a building type was searched and the pick is "
+        "another type",
+    )
 
 
 class NearMiss(Model):
@@ -260,6 +288,9 @@ class Suggestion(Model):
 class SearchResponse(Model):
     total: int
     filters: SearchFilters
+    ranked_for: ProductFilter | None = Field(
+        default=None, description="The building type lots are ranked for; None = best fit"
+    )
     chips: list[FilterChip]
     results: list[SearchResult]
     near_misses: list[NearMiss] = Field(default_factory=list)

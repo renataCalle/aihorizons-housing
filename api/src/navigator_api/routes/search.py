@@ -26,7 +26,7 @@ def lookup_parcels(source: Source, q: str = Query(max_length=200)) -> LookupResp
 @router.post("/search")
 def search_parcels(filters: SearchFilters, source: Source) -> SearchResponse:
     """Candidates that pass every filter, ranked; near misses and a suggestion when empty."""
-    return search(source.summaries(), filters, source.map_features())
+    return search(source.summaries(), filters, source.map_features(), source.program_rows)
 
 
 @router.post("/search/parse")

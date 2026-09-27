@@ -8,6 +8,7 @@ from navigator_api.models import (
     MapFeatureCollection,
     ParcelFeatureCollection,
     ParcelSummary,
+    ScoredProgram,
 )
 from navigator_contracts import SiteAnalysis, SiteContext
 from navigator_contracts.site_analysis import Versions
@@ -31,6 +32,8 @@ class SiteSource(Protocol):
     def analysis(self, parcel_id: str) -> SiteAnalysis | None: ...
 
     def context(self, parcel_id: str) -> SiteContext | None: ...
+
+    def program_rows(self, parcel_id: str) -> dict[str, ScoredProgram]: ...
 
     def parcels_geojson(self) -> ParcelFeatureCollection: ...
 
