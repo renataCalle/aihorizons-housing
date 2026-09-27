@@ -120,6 +120,55 @@ export interface Assumption {
   max: number | null
 }
 
+export type CheckStatus = 'pass' | 'needs_approval' | 'rejected' | 'not_applicable'
+
+/** One zoning rule applied to one building type. */
+export interface RuleCheck {
+  id: string
+  label: string
+  /** Zoning code section */
+  section: string | null
+  status: CheckStatus
+  /** What the rule requires and what the lot provides, in `unit` (sq ft or ft) */
+  required: number | null
+  provided: number | null
+  unit: string | null
+  /** The approval that fixes a failure; "use_variance" or "implausible" when none can */
+  relief: string | null
+  note: string | null
+}
+
+/** One building type the engine tested on the lot. */
+export interface ProgramEvaluation {
+  productType: string
+  units: number
+  outcome: 'by_right' | 'needs_approval' | 'rejected'
+  checks: RuleCheck[]
+  /** Null when the building is ruled out */
+  approvalProbability: Estimate | null
+  /** One column per building type in the table */
+  representative: boolean
+  /** Set when this building is one of the report's options */
+  chosenAs: OptionLabel | null
+}
+
+export interface RuleChecks {
+  district: string
+  scenario: 'strict' | 'contextual'
+  uncoveredDistricts: string[]
+  siteChecks: {
+    id: string
+    label: string
+    section: string
+    status: 'applies' | 'clear' | 'unknown'
+    note: string | null
+  }[]
+  notChecked: { label: string; section: string; reason: string }[]
+  programs: ProgramEvaluation[]
+  /** How the approval odds are computed, in words */
+  oddsNote: string
+}
+
 /** Everything the report panel renders from the engine. Arrays are rendered generically. */
 export interface Analysis {
   verdict: {
@@ -148,11 +197,28 @@ export interface Analysis {
   /** Free first, then the cheapest deal-killer */
   nextSteps: NextStep[]
   assumptions: Assumption[]
+  /** Every zoning rule tested, per building type. Null when zoning is not covered */
+  ruleChecks: RuleChecks | null
+  /** Contextual = side setbacks from the neighbours' actual setbacks (925.06.C) */
+  setbackScenario: 'strict' | 'contextual' | null
+  lotDimensionsFt: { width: number; depth: number } | null
   versions: Versions
+}
+
+/** Where the report's facts came from. */
+export interface Freshness {
+  parcelsAsOf: string | null
+  /** Layers looked up live for this report; everything else is the stored copy */
+  live: string[]
+  liveAt: string | null
+  /** Live lookups that failed, so the stored copy was used */
+  fellBack: string[]
 }
 
 export interface SiteReport {
   parcel: Parcel
   /** Null when the parcel is not a candidate */
   analysis: Analysis | null
+  /** Null when the facts behind the analysis are not stored */
+  freshness: Freshness | null
 }

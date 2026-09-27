@@ -7,7 +7,15 @@ import type { Estimate, Interval } from '../models/estimate'
 import type { Evidence } from '../models/evidence'
 import type { Health } from '../models/health'
 import type { MapBand, MapFeatureKind, MapFeatures, ParcelLayer } from '../models/map'
-import type { Analysis, Band, Parcel, Severity, SiteReport, Versions } from '../models/report'
+import type {
+  Analysis,
+  Band,
+  Parcel,
+  RuleChecks,
+  Severity,
+  SiteReport,
+  Versions,
+} from '../models/report'
 import { DEFAULT_FILTERS, type Filters } from '../models/filters'
 import type {
   Examples,
@@ -182,13 +190,59 @@ export function toAnalysis(a: S['SiteAnalysis']): Analysis {
       min: x.min,
       max: x.max,
     })),
+    ruleChecks: a.rule_checks ? toRuleChecks(a.rule_checks) : null,
+    setbackScenario: a.rules.scenario,
+    lotDimensionsFt: a.rules.lot_dimensions_ft,
     versions: toVersions(a.versions),
+  }
+}
+
+function toRuleChecks(rc: S['RuleChecks']): RuleChecks {
+  return {
+    district: rc.district,
+    scenario: rc.scenario,
+    uncoveredDistricts: rc.uncovered_districts,
+    siteChecks: rc.site_checks.map((c) => ({
+      id: c.check_id,
+      label: c.label,
+      section: c.section,
+      status: c.status,
+      note: c.note,
+    })),
+    notChecked: rc.not_checked,
+    programs: rc.programs.map((p) => ({
+      productType: p.product_type,
+      units: p.units,
+      outcome: p.outcome,
+      checks: p.checks.map((c) => ({
+        id: c.check_id,
+        label: c.label,
+        section: c.section,
+        status: c.status,
+        required: c.required,
+        provided: c.provided,
+        unit: c.unit,
+        relief: c.relief_type,
+        note: c.note,
+      })),
+      approvalProbability: p.approval_prob ? toEstimate(p.approval_prob) : null,
+      representative: p.representative,
+      chosenAs: p.chosen_as,
+    })),
+    oddsNote: rc.odds_note,
   }
 }
 
 export function toSiteReport(data: unknown): SiteReport {
   const r = data as S['ParcelReport']
-  return { parcel: toParcel(r.parcel), analysis: r.analysis ? toAnalysis(r.analysis) : null }
+  const f = r.freshness
+  return {
+    parcel: toParcel(r.parcel),
+    analysis: r.analysis ? toAnalysis(r.analysis) : null,
+    freshness: f
+      ? { parcelsAsOf: f.parcels_as_of, live: f.live, liveAt: f.live_at, fellBack: f.fell_back }
+      : null,
+  }
 }
 
 export function toParcelLayer(data: unknown): ParcelLayer {

@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
+  formatAssumption,
+  formatAssumptionRange,
   formatMaxLand,
   formatMoneyRange,
   formatMonthsRange,
   formatNumberRange,
+  formatPercentRange,
   formatSqft,
 } from './format'
 
@@ -36,5 +39,21 @@ describe('format', () => {
     expect(formatMaxLand({ low: -520_000, high: -254_000 })).toBe('None at target margin')
     expect(formatMaxLand({ low: -5_000, high: 41_000 })).toBe('Up to $41k')
     expect(formatMaxLand({ low: 24_000, high: 41_000 })).toBe('$24k–$41k')
+  })
+
+  it('formats margins as a percent range', () => {
+    expect(formatPercentRange({ low: -0.5157, high: -0.3236 })).toBe('-52% to -32%')
+    expect(formatPercentRange({ low: 0.15, high: 0.15 })).toBe('15%')
+  })
+
+  it('formats assumptions in their unit', () => {
+    expect(formatAssumption(250, '$/sf')).toBe('$250/sq ft')
+    expect(formatAssumption(0.065, 'rate')).toBe('6.5%')
+    expect(formatAssumption(0.09, 'rate/yr')).toBe('9%/yr')
+    expect(formatAssumption(12, 'months')).toBe('12 months')
+    expect(formatAssumption(1.5, 'ratio')).toBe('1.5 ratio')
+    expect(formatAssumptionRange(200, 320, '$/sf')).toBe('$200–$320/sq ft')
+    expect(formatAssumptionRange(9, 16, 'months')).toBe('9–16 months')
+    expect(formatAssumptionRange(0.15, 0.25, 'share')).toBe('15–25%')
   })
 })

@@ -12,6 +12,9 @@ describe('labels', () => {
     expect(approvalLabel([])).toBe('By-right')
     expect(approvalLabel(['subdivision', 'variance'])).toBe('Subdivision + Variance')
     expect(approvalLabel(['subdivision'])).toBe('Subdivision')
+    expect(approvalLabel(['administrator_exception', 'administrator_exception'])).toBe(
+      'Administrator exception ×2',
+    )
     expect(reliefType('special exception (911.04)')).toBe('special_exception')
   })
 })
