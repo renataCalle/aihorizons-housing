@@ -60,3 +60,21 @@ def test_numbered_streets_match_spelled_out() -> None:
     from navigator_api.search.lookup import _address_key
 
     assert _address_key("4800 Second Avenue") == _address_key("4800 2ND AVE")
+
+
+@pytest.mark.parametrize(
+    "q",
+    [
+        "123 Sample St, Hazelwood",
+        "123 Sample St, Hazel",
+        "123 Sample Street, Pittsburgh, PA 15207",
+        "123 Sample St, Hazelwood, Pittsburgh PA",
+    ],
+)
+def test_address_with_a_place_after_the_comma(client: TestClient, q: str) -> None:
+    assert ids(client.get("/api/lookup", params={"q": q}).json())[0] == SAMPLE_LOT_A
+
+
+def test_place_that_names_no_match_is_ignored(client: TestClient) -> None:
+    body = client.get("/api/lookup", params={"q": "123 Sample St, Squirrel Hill"}).json()
+    assert ids(body)[0] == SAMPLE_LOT_A

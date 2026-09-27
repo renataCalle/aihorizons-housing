@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { BAND_LABEL } from '../lib/labels'
 import { formatSqft } from '../lib/format'
 import type { LookupMatch } from '../models/search'
-import { detect, shouldLookUp } from './detect'
+import { detect, isStreetStart, shouldLookUp } from './detect'
 import { formatCountyId, splitMatch } from './highlight'
 import { useLookup } from './useLookup'
 
@@ -48,6 +48,9 @@ export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) 
     ? [...matches.map((match) => ({ type: 'parcel' as const, match })), { type: 'ai' }]
     : []
   const showList = open && options.length > 0
+  // A partial street name only suggests lots: Enter still searches ("Hazelwood").
+  const suggestOnly = isStreetStart(query)
+  const fallback = suggestOnly ? options[options.length - 1] : options[0]
 
   function choose(option: Option | undefined) {
     if (!option) return
@@ -60,9 +63,9 @@ export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) 
   useEffect(() => {
     if (pendingEnter.current === query && settled) {
       pendingEnter.current = null
-      choose(options[0])
+      choose(fallback)
     }
-    // `options` and `choose` follow from `query` and `settled`.
+    // `options`, `fallback` and `choose` follow from `query` and `settled`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, settled])
 
@@ -78,7 +81,7 @@ export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) 
       // Enter opens the highlighted row, else the best parcel match, else AI search.
       if (options[active]) choose(options[active])
       else if (!settled) pendingEnter.current = query
-      else choose(options[0])
+      else choose(fallback)
     } else if (e.key === 'Escape') {
       if (showList) setOpen(false)
       else setText('')
@@ -126,7 +129,7 @@ export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) 
         />
         {detection.kind !== 'empty' && (
           <span className="omnibox-detected" aria-live="polite">
-            {matches[0]?.matchedOn === 'address'
+            {matches[0]?.matchedOn === 'address' && !suggestOnly
               ? DETECTED_LABEL.address
               : DETECTED_LABEL[detection.kind]}
           </span>
@@ -150,7 +153,7 @@ export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) 
             className="omnibox-go"
             aria-label="Search"
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => choose(options[active] ?? options[0])}
+            onClick={() => choose(options[active] ?? fallback)}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h14M13 6l6 6-6 6" />
@@ -208,11 +211,6 @@ export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) 
             ),
           )}
         </ul>
-        <div className="omnibox-hints" aria-hidden="true">
-          <span>↵ {matches.length > 0 ? 'Open report' : 'Search'}</span>
-          <span>↑↓ Move</span>
-          <span>Esc Close</span>
-        </div>
       </div>
     </div>
   )
@@ -279,18 +277,16 @@ function ParcelRow({ id, match, query, active, onHover, onChoose }: RowProps) {
       <span className={`omnibox-row-score band-${p.band ?? 'none'}`}>
         {p.band ? (
           <>
-            <span className="omnibox-row-points">{p.score ?? '—'}</span>
+            <span className="omnibox-row-points">
+              {p.score ?? '—'}
+              {p.score !== null && <small>/100</small>}
+            </span>
             <span className="omnibox-row-band">{BAND_LABEL[p.band]}</span>
           </>
         ) : (
           <span className="omnibox-row-band">Not a candidate</span>
         )}
       </span>
-      {active && (
-        <span className="omnibox-row-enter" aria-hidden="true">
-          ↵
-        </span>
-      )}
     </li>
   )
 }

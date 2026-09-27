@@ -2,8 +2,8 @@
 
 Both sources are bundles; they differ only in where the files come from:
 - MockSiteSource (sources/mock.py): the golden parcels plus generated illustrative lots.
-- PipelineSiteSource (sources/pipeline.py): real parcels, built from the pipeline's store by
-  api/scripts/build_results_bundle.py into results/.
+- PipelineSiteSource (sources/pipeline.py): real parcels, from the pipeline's results bundle
+  in results/ (written by navigator_pipeline.publish).
 """
 
 import gzip
@@ -22,7 +22,7 @@ from navigator_api.models import (
     ParcelProperties,
     ParcelSummary,
 )
-from navigator_contracts import SiteAnalysis
+from navigator_contracts import SiteAnalysis, SiteContext
 from navigator_contracts.site_analysis import Versions
 
 SUMMARIES = TypeAdapter(list[ParcelSummary])
@@ -49,12 +49,14 @@ class SiteBundle:
         map_features: MapFeatureCollection,
         analyses: dict[str, SiteAnalysis],
         evidence: dict[str, EvidenceDetail] | None = None,
+        contexts: dict[str, SiteContext] | None = None,
     ) -> None:
         self._summaries = {s.parcel_id: s for s in summaries}
         self._geometry = geometry
         self._map_features = map_features
         self._analyses = analyses
         self._evidence = evidence or {}
+        self._contexts = contexts or {}
 
         missing = {pid for pid, s in self._summaries.items() if s.candidate} - set(analyses)
         if missing:
@@ -95,6 +97,10 @@ class SiteBundle:
 
     def analysis(self, parcel_id: str) -> SiteAnalysis | None:
         return self._analyses.get(parcel_id)
+
+    def context(self, parcel_id: str) -> SiteContext | None:
+        """The facts the analysis was built from, when the bundle stores them."""
+        return self._contexts.get(parcel_id)
 
     def parcels_geojson(self) -> ParcelFeatureCollection:
         return ParcelFeatureCollection(

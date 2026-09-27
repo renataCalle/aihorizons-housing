@@ -8,7 +8,7 @@ both owners agree (docs/proposals/). This is the module to change when that happ
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -97,11 +97,25 @@ class ParcelSummary(Model):
     tax_lien_usd: float = 0.0
 
 
+class Freshness(Model):
+    """Where the report's facts came from: the stored copy, or live lookups at report time."""
+
+    parcels_as_of: date | None = Field(description="As-of date of the parcel records")
+    live: list[str] = Field(description="Layers fetched live for this report")
+    live_at: datetime | None = Field(description="When the latest live lookup ran")
+    fell_back: list[str] = Field(
+        description="Layers whose live lookup failed, so the stored copy was used"
+    )
+
+
 class ParcelReport(Model):
     """Everything the report panel needs: the header and the engine's analysis."""
 
     parcel: ParcelSummary
     analysis: SiteAnalysis | None = Field(description="None when the lot is not a candidate")
+    freshness: Freshness | None = Field(
+        default=None, description="None when the facts behind the analysis are not stored"
+    )
 
 
 # ---------------------------------------------------------------------------

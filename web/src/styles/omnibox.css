@@ -152,7 +152,7 @@
 
 .omnibox-list {
   margin: 0;
-  padding: 14px 14px 10px;
+  padding: 14px;
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -293,6 +293,14 @@
   letter-spacing: -0.02em;
 }
 
+.omnibox-row-points small {
+  margin-left: 2px;
+  color: var(--ink-3);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
 .omnibox-row-band {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -316,33 +324,4 @@
 .band-unknown,
 .band-none {
   color: var(--ink-3);
-}
-
-.omnibox-row-enter {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--cobalt-line);
-  border-radius: 8px;
-  background: var(--white);
-  color: var(--cobalt);
-  font-size: 12px;
-}
-
-.omnibox-hints {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  height: 40px;
-  padding: 0 24px;
-  border-top: 1px solid #e3eaf7;
-  background: #f6f9ff;
-  color: var(--ink-4);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }

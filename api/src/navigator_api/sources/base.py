@@ -9,7 +9,7 @@ from navigator_api.models import (
     ParcelFeatureCollection,
     ParcelSummary,
 )
-from navigator_contracts import SiteAnalysis
+from navigator_contracts import SiteAnalysis, SiteContext
 from navigator_contracts.site_analysis import Versions
 
 
@@ -30,6 +30,8 @@ class SiteSource(Protocol):
     def summary(self, parcel_id: str) -> ParcelSummary | None: ...
 
     def analysis(self, parcel_id: str) -> SiteAnalysis | None: ...
+
+    def context(self, parcel_id: str) -> SiteContext | None: ...
 
     def parcels_geojson(self) -> ParcelFeatureCollection: ...
 

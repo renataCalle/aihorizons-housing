@@ -5,7 +5,11 @@ import { formatMoneyRange, formatNumberRange, formatSqft } from '../lib/format'
 import { BAND_LABEL } from '../lib/labels'
 import { useAsync } from '../lib/useAsync'
 import { spanOf } from '../models/estimate'
-import type { Analysis, Severity, SiteReport } from '../models/report'
+import type { Analysis, Flag, Severity, SiteReport } from '../models/report'
+import { BuildOptions } from '../report/BuildOptions'
+import { KeyNumbers } from '../report/KeyNumbers'
+import { AboutReport, ParcelFacts } from '../report/ParcelFacts'
+import { RuleTable } from '../report/RuleTable'
 import { formatCountyId } from '../search/highlight'
 import { useMapScreen } from './mapScreenContext'
 
@@ -122,6 +126,11 @@ function ReportBody({ report }: { report: SiteReport }) {
             : 'Not a development candidate, so it has no screening report.'}
         </p>
       )}
+      <section className="report-section">
+        <h2>Parcel and assumptions</h2>
+        <ParcelFacts parcel={parcel} analysis={analysis} />
+      </section>
+      {analysis && <AboutReport analysis={analysis} freshness={report.freshness} />}
     </>
   )
 }
@@ -132,7 +141,10 @@ function AnalysisSections({ analysis: a }: { analysis: Analysis }) {
     <>
       <section className="verdict-card" aria-label="Verdict">
         <div className="verdict-top">
-          <span className={`band-pill pill-${band}`}>{BAND_LABEL[band]}</span>
+          {/* The land risk ("High risk at the assessed value") outranks the band when set. */}
+          <span className={`band-pill pill-${a.verdict.landRisk ? 'high_risk' : band}`}>
+            {a.verdict.landRisk ?? BAND_LABEL[band]}
+          </span>
           <div className="verdict-score-block">
             <span className="verdict-big">
               {a.verdict.score ?? '—'}
@@ -140,7 +152,7 @@ function AnalysisSections({ analysis: a }: { analysis: Analysis }) {
             </span>
             {a.verdict.scoreRange && (
               <span className="label">
-                Development ease · range {formatNumberRange(spanOf(a.verdict.scoreRange))}
+                Development ease · likely {formatNumberRange(spanOf(a.verdict.scoreRange))}
               </span>
             )}
           </div>
@@ -169,6 +181,8 @@ function AnalysisSections({ analysis: a }: { analysis: Analysis }) {
         )}
       </section>
 
+      <KeyNumbers analysis={a} />
+
       <section className="report-section">
         <div className="report-section-head">
           <h2>What could kill this deal</h2>
@@ -178,48 +192,96 @@ function AnalysisSections({ analysis: a }: { analysis: Analysis }) {
         </div>
         <ul className="finding-list">
           {a.flags.map((f) => (
-            <li key={f.id} className="finding">
-              <span className={`severity-pill sev-${f.severity}`}>{SEVERITY_LABEL[f.severity]}</span>
-              <div>
-                <p className="finding-title">{f.title}</p>
-                <p className="finding-detail">{f.resolution}</p>
-                <p className="finding-meta">
-                  {f.cost && `Cost ${formatMoneyRange(f.cost)} · `}
-                  Confidence {f.confidence}
-                  {f.evidence[0] && ` · ${f.evidence[0].source}`}
-                </p>
-              </div>
-            </li>
+            <FlagRow key={f.id} flag={f} />
           ))}
         </ul>
         {a.cleared.length > 0 && (
           <p className="cleared">
-            <span className="label">Cleared</span> {a.cleared.join(' · ')}
+            <span className="cleared-mark">
+              <span aria-hidden="true">✓</span> Cleared
+            </span>{' '}
+            {a.cleared.join(' · ')}
           </p>
         )}
       </section>
 
-      {a.nextSteps.length > 0 && (
-        <section className="report-section">
-          <h2>What to check next</h2>
-          <ol className="step-list">
-            {a.nextSteps.map((step) => (
-              <li key={step.order}>
-                <p className="finding-title">{step.action}</p>
-                <p className="finding-detail">{step.why}</p>
-                <p className="finding-meta">
-                  {step.who} · {formatMoneyRange(step.cost)}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
+      <BuildOptions analysis={a} />
+      {a.ruleChecks && <RuleTable checks={a.ruleChecks} />}
 
-      <footer className="report-foot">
-        Screening estimate, not a zoning determination. Rules {a.versions.ruleset} · engine{' '}
-        {a.versions.engine} · data as of {a.versions.dataAsOf ?? 'unknown'}.
-      </footer>
+      {a.nextSteps.length > 0 && <NextSteps analysis={a} />}
     </>
+  )
+}
+
+function FlagRow({ flag: f }: { flag: Flag }) {
+  const ev = f.evidence[0]
+  const section = f.evidence.find((e) => e.codeSection)?.codeSection
+  const link = f.evidence.find((e) => e.url)?.url
+  return (
+    <li className="finding">
+      <span className={`severity-pill sev-${f.severity}`}>{SEVERITY_LABEL[f.severity]}</span>
+      <div className="finding-body">
+        <p className="finding-title">{f.title}</p>
+        <p className="finding-detail">{f.resolution}</p>
+        <p className="finding-meta">
+          {ev && (
+            <span className="tag">
+              {ev.source}
+              {ev.asOf && ` · ${ev.asOf.slice(0, 4)}`}
+            </span>
+          )}
+          {section && <span className="tag">§ {section}</span>}
+          <span>Confidence: {f.confidence}</span>
+        </p>
+      </div>
+      <div className="finding-side">
+        {f.cost ? (
+          <b>+{formatMoneyRange(f.cost)}</b>
+        ) : (
+          f.severity === 'deal_risk' && <b>Could end the deal</b>
+        )}
+        {f.months && (
+          <span>
+            +{f.months.low}–{f.months.high} months
+          </span>
+        )}
+        {link && (
+          <a href={link} target="_blank" rel="noopener noreferrer">
+            See source<span aria-hidden="true"> →</span>
+          </a>
+        )}
+      </div>
+    </li>
+  )
+}
+
+function NextSteps({ analysis: a }: { analysis: Analysis }) {
+  const free = a.nextSteps.filter((s) => s.cost.high === 0).length
+  return (
+    <section className="report-section">
+      <div className="report-section-head">
+        <h2>What to check next</h2>
+        {free > 0 && (
+          <span className="free-chip">
+            {free} free {free === 1 ? 'check' : 'checks'} first
+          </span>
+        )}
+      </div>
+      <ol className="step-list">
+        {a.nextSteps.map((step) => (
+          <li key={step.order}>
+            <span className="step-n" aria-hidden="true">
+              {step.order}
+            </span>
+            <div>
+              <p className="finding-title">{step.action}</p>
+              <p className="finding-detail">{step.why}</p>
+            </div>
+            <span className="step-who">{step.who}</span>
+            <b className="step-cost">{formatMoneyRange(step.cost)}</b>
+          </li>
+        ))}
+      </ol>
+    </section>
   )
 }

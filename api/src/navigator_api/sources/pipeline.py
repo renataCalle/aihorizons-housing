@@ -33,7 +33,7 @@ class PipelineSiteSource(SiteBundle):
     def __init__(self, results_dir: Path) -> None:
         published = SUMMARIES.validate_json(read_text(results_dir / "summaries.json"))
         _, geometry, features = self.load_files(results_dir, summaries=False)
-        self.contexts = {
+        contexts = {
             pid: SiteContext.model_validate(row["context"])
             for pid, row in _jsonl(results_dir / "site_context.jsonl").items()
         }
@@ -44,7 +44,7 @@ class PipelineSiteSource(SiteBundle):
         summaries: list[ParcelSummary] = []
         for s in published:
             name = tidy_name(s.display_name)
-            context, analysis = self.contexts.get(s.parcel_id), analyses.get(s.parcel_id)
+            context, analysis = contexts.get(s.parcel_id), analyses.get(s.parcel_id)
             if s.candidate and context and analysis:
                 s = summarize(
                     context,
@@ -58,4 +58,4 @@ class PipelineSiteSource(SiteBundle):
             else:
                 s = s.model_copy(update={"display_name": name})
             summaries.append(s)
-        super().__init__(summaries, geometry, features, analyses)
+        super().__init__(summaries, geometry, features, analyses, contexts=contexts)

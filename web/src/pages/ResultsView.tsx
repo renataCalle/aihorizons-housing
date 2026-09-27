@@ -38,6 +38,7 @@ export function ResultsView() {
           onHover={s.setHoveredId}
           onRetry={s.retry}
           layers={<LayersMenu transit={s.transit} onTransit={s.setTransit} />}
+          showTransit={s.transit}
         />
       )}
       {s.q && !s.filters && (

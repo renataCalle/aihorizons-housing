@@ -4,7 +4,8 @@ import type { Band } from '../models/report'
 /** Short band names for pills, list rows and legends. Sentence case (docs/01, copy rules). */
 export const BAND_LABEL: Record<Band, string> = {
   fast_track: 'Fast track',
-  conditions: 'Conditions',
+  // Not bare "Conditions": next to a score, "61 Conditions" reads as a count.
+  conditions: 'With conditions',
   high_risk: 'High risk',
   unknown: 'Not scored',
 }
@@ -22,6 +23,14 @@ const RELIEF_LABEL: Record<string, string> = {
   special_exception: 'Special exception',
   variance: 'Variance',
   use_variance: 'Use variance',
+  conditional_use: 'Conditional use',
+  rezoning: 'Rezoning',
+}
+
+/** Short approval names for table chips. */
+export function reliefShortLabel(type: string): string {
+  if (type === 'administrator_exception') return 'Admin. exception'
+  return RELIEF_LABEL[type] ?? type.replace(/_/g, ' ')
 }
 
 /** "3 townhomes", "Duplex", "6-unit walk-up" */
@@ -38,10 +47,17 @@ export function programLabel(productType: string, units: number): string {
   }
 }
 
-/** "By-right", or the approvals needed: "Subdivision + Variance". */
+/**
+ * "By-right", or the approvals needed: "Subdivision + Variance". The same approval for two
+ * rules reads "Administrator exception ×2".
+ */
 export function approvalLabel(reliefTypes: string[]): string {
-  const needed = reliefTypes.filter((r) => r in RELIEF_LABEL)
-  return needed.length ? needed.map((r) => RELIEF_LABEL[r]).join(' + ') : 'By-right'
+  const counts = new Map<string, number>()
+  for (const r of reliefTypes) if (r in RELIEF_LABEL) counts.set(r, (counts.get(r) ?? 0) + 1)
+  if (!counts.size) return 'By-right'
+  return [...counts]
+    .map(([r, n]) => (n > 1 ? `${RELIEF_LABEL[r]} ×${n}` : RELIEF_LABEL[r]))
+    .join(' + ')
 }
 
 /** Relief strings from the engine look like "variance (903.03)". */

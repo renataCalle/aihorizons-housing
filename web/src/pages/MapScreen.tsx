@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router'
 import { fetchHealth, fetchMapFeatures, fetchParcelLayer, fetchParse, fetchSearch } from '../api'
 import { TopBar } from '../components/TopBar'
-import { decodeFilters, encodeFilters } from '../lib/filterUrl'
+import { decodeFilters, encodeFilters, filterParam } from '../lib/filterUrl'
 import { useAsync } from '../lib/useAsync'
 import { DEFAULT_FILTERS, type Filters } from '../models/filters'
 import type { ParcelLayer } from '../models/map'
@@ -63,7 +63,8 @@ export function MapScreen() {
   const q = params.get('q') ?? ''
   const fromUrl = useMemo(() => decodeFilters(params.get('f')), [params])
   const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [transit, setTransit] = useState(true)
+  // Transit stops: a manual choice from the Layers menu, until the search changes (below).
+  const [transitChoice, setTransitChoice] = useState<{ auto: boolean; on: boolean } | null>(null)
   const [retryCount, setRetryCount] = useState(0)
 
   // Text without filters in the URL is parsed first; then the filters live in the URL.
@@ -72,6 +73,16 @@ export function MapScreen() {
   )
   const parsed = parse.status === 'ready' ? parse.data : null
   const filters: Filters | null = fromUrl ?? (q ? (parsed?.filters ?? null) : DEFAULT_FILTERS)
+
+  // Stops show only when the search is about transit ("near a bus stop"). A manual toggle
+  // holds until a search turns that condition on or off.
+  const transitAuto = !!filters?.near.some((n) => n.feature === 'transit_stop')
+  const transit =
+    transitChoice && transitChoice.auto === transitAuto ? transitChoice.on : transitAuto
+  const setTransit = useCallback(
+    (on: boolean) => setTransitChoice({ auto: transitAuto, on }),
+    [transitAuto],
+  )
 
   const search = useAsync(filters ? `${encodeFilters(filters)}#${retryCount}` : 'waiting', (s) =>
     filters ? fetchSearch(filters, s) : new Promise<never>(() => {}),
@@ -105,8 +116,8 @@ export function MapScreen() {
 
   const searchParams = new URLSearchParams()
   if (q) searchParams.set('q', q)
-  const encoded = filters ? encodeFilters(filters) : ''
-  if (encoded) searchParams.set('f', encoded)
+  const f = filters ? filterParam(filters, !!q) : null
+  if (f) searchParams.set('f', f)
   const searchQuery = searchParams.toString()
 
   // Stable callbacks: the results list is memoized and only re-renders rows that change.
@@ -127,8 +138,8 @@ export function MapScreen() {
   )
   const select = useCallback((id: string | null) => update({ selected: id }), [update])
   const setFilters = useCallback(
-    (next: Filters) => update({ f: encodeFilters(next) || null }),
-    [update],
+    (next: Filters) => update({ f: filterParam(next, !!q) }),
+    [update, q],
   )
 
   const context: MapScreenContext = {

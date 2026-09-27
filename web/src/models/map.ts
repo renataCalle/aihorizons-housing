@@ -8,7 +8,10 @@ export type MapBand = Band | 'none'
 export interface ParcelMapProps {
   id: string
   name: string
+  /** As drawn: during a search, lots that don't match are drawn as 'none' */
   band: MapBand
+  /** The lot's own band, whatever the search: the selected lot is always drawn with it */
+  ownBand: MapBand
   score: number | null
   rank: number | null
   assemblyId: string | null

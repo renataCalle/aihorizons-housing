@@ -674,6 +674,62 @@
         "title": "Flag",
         "type": "object"
       },
+      "Freshness": {
+        "additionalProperties": false,
+        "description": "Where the report's facts came from: the stored copy, or live lookups at report time.",
+        "properties": {
+          "fell_back": {
+            "description": "Layers whose live lookup failed, so the stored copy was used",
+            "items": {
+              "type": "string"
+            },
+            "title": "Fell Back",
+            "type": "array"
+          },
+          "live": {
+            "description": "Layers fetched live for this report",
+            "items": {
+              "type": "string"
+            },
+            "title": "Live",
+            "type": "array"
+          },
+          "live_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "When the latest live lookup ran",
+            "title": "Live At"
+          },
+          "parcels_as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "As-of date of the parcel records",
+            "title": "Parcels As Of"
+          }
+        },
+        "required": [
+          "parcels_as_of",
+          "live",
+          "live_at",
+          "fell_back"
+        ],
+        "title": "Freshness",
+        "type": "object"
+      },
       "Gap": {
         "additionalProperties": false,
         "properties": {
@@ -1291,6 +1347,17 @@
               }
             ],
             "description": "None when the lot is not a candidate"
+          },
+          "freshness": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Freshness"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None when the facts behind the analysis are not stored"
           },
           "parcel": {
             "$ref": "#/components/schemas/ParcelSummary"
@@ -3120,7 +3187,7 @@
     },
     "/api/parcels/{parcel_id}": {
       "get": {
-        "description": "Report header and the engine's analysis, by county parcel ID (compact or dashed).",
+        "description": "Report header, the engine's analysis, and where its facts came from, by county ID.",
         "operationId": "parcel_report_api_parcels__parcel_id__get",
         "parameters": [
           {

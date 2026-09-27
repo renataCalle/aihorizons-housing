@@ -235,6 +235,22 @@ p.results-panel {
   background: repeating-linear-gradient(45deg, var(--unknown) 0 1.5px, var(--unknown-tint) 1.5px 4px);
 }
 
+.swatch-stop {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--cobalt);
+  border-radius: 50%;
+  background: var(--white);
+}
+
+/* The searched neighbourhood's dashed outline on the map */
+.swatch-area {
+  width: 14px;
+  height: 0;
+  border-radius: 0;
+  border-top: 1.5px dashed var(--cobalt);
+}
+
 .result-main {
   flex: 1 1 auto;
   min-width: 0;
@@ -272,6 +288,14 @@ p.results-panel {
   font-size: 22px;
   font-weight: 600;
   line-height: 1;
+}
+
+.result-points small {
+  margin-left: 2px;
+  color: var(--ink-3);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .result-band {
@@ -312,7 +336,8 @@ p.results-panel {
 
 .legend {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 4px 10px;
   margin: 0;
   padding: 0;
   list-style: none;
