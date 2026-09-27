@@ -71,7 +71,7 @@ export function toParcel(p: S['ParcelSummary']): Parcel {
     blockLot: p.block_lot,
     name: p.display_name,
     address: p.address,
-    municipality: p.municipality,
+    municipality: p.municipality.trim(),
     neighborhood: p.neighborhood,
     zoning: p.zoning,
     lotAreaSqft: p.lot_area_sqft,

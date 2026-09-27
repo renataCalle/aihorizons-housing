@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, Outlet, useNavigate, useParams, useSearchParams } from 'react-router'
 import { fetchSiteReport } from '../api'
 import { formatMoneyRange, formatNumberRange, formatSqft } from '../lib/format'
@@ -33,7 +33,8 @@ export function ReportView() {
     : null
   const showPick = params.get('pick') === 'engine'
   const program = showPick ? null : searched
-  const report = useAsync(`${id}|${program?.productType}|${program?.units}`, (signal) =>
+  const [attempt, setAttempt] = useState(0)
+  const report = useAsync(`${id}|${program?.productType}|${program?.units}#${attempt}`, (signal) =>
     fetchSiteReport(id, signal, program),
   )
   const panelRef = useRef<HTMLElement>(null)
@@ -84,7 +85,7 @@ export function ReportView() {
             <button
               type="button"
               className="button-primary export-memo"
-              disabled={report.status !== 'ready'}
+              disabled={report.status !== 'ready' || !report.data.analysis}
               onClick={() => report.status === 'ready' && printMemo(report.data)}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
@@ -102,7 +103,16 @@ export function ReportView() {
 
         {report.status === 'loading' && <ReportLoading />}
         {report.status === 'error' && (
-          <p role="alert">Couldn't load this report: {report.error.message}</p>
+          <div className="report-none" role="alert">
+            <p>Couldn't load this report: {report.error.message}</p>
+            <button
+              type="button"
+              className="button-secondary"
+              onClick={() => setAttempt((n) => n + 1)}
+            >
+              Try again
+            </button>
+          </div>
         )}
         {report.status === 'ready' && (
           <ReportBody
@@ -188,7 +198,9 @@ function ProgramNote(props: { searched: Program; scored: Program | null; showPic
 
 function ReportBody({ report, programNote }: { report: SiteReport; programNote: ReactNode }) {
   const { parcel, analysis } = report
-  const title = parcel.neighborhood ? `${parcel.name}, ${parcel.neighborhood}` : parcel.name
+  // Outside the city there is no neighbourhood: name the municipality instead.
+  const place = parcel.neighborhood ?? parcel.municipality
+  const title = place ? `${parcel.name}, ${place}` : parcel.name
   const meta = [
     formatCountyId(parcel.id),
     formatSqft(parcel.lotAreaSqft).replace('sq ft', 'SF'),
@@ -213,7 +225,7 @@ function ReportBody({ report, programNote }: { report: SiteReport; programNote: 
         </p>
       )}
       <section className="report-section">
-        <h2>Parcel and assumptions</h2>
+        <h2>{analysis ? 'Parcel and assumptions' : 'Parcel'}</h2>
         <ParcelFacts parcel={parcel} analysis={analysis} />
       </section>
       {analysis && <AboutReport analysis={analysis} freshness={report.freshness} />}
