@@ -6,11 +6,11 @@ import {
   useMap,
   type MapLayerMouseEvent,
 } from '@vis.gl/react-maplibre'
-import type { StyleSpecification } from 'maplibre-gl'
+import type { Map as MapLibreMap, StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { MapFeatures, ParcelLayer } from '../models/map'
-import { applyBlueprintTheme, FALLBACK_STYLE } from './blueprintTheme'
+import { applyBlueprintTheme, basemapPaint, FALLBACK_STYLE, STANDARD } from './blueprintTheme'
 import { Crosshair } from './Crosshair'
 import { hatchPattern } from './hatch'
 import {
@@ -25,10 +25,8 @@ import {
   CAMERA_3D,
   LIGHT_3D,
   readPalette,
+  PARCELS_3D,
   skySpec,
-  TERRAIN,
-  TERRAIN_EXAGGERATION,
-  TERRAIN_TILES,
 } from './layers'
 import { ringCenter } from './readout'
 
@@ -117,7 +115,6 @@ export function BlueprintMap({
       attributionControl={{ compact: true }}
       interactiveLayerIds={INTERACTIVE_LAYERS}
       maxPitch={70}
-      terrain={view3d ? { source: TERRAIN, exaggeration: TERRAIN_EXAGGERATION } : undefined}
       sky={view3d ? sky : undefined}
       light={view3d ? LIGHT_3D : undefined}
       cursor={hovering ? 'pointer' : 'grab'}
@@ -164,19 +161,12 @@ export function BlueprintMap({
       )}
       {view3d && (
         <>
-          <Source
-            id={TERRAIN}
-            type="raster-dem"
-            tiles={[TERRAIN_TILES]}
-            encoding="terrarium"
-            tileSize={256}
-            maxzoom={15}
-          />
           <Layer {...buildings} />
         </>
       )}
       {children}
       <TiltCamera view3d={view3d} />
+      <Palette3D view3d={view3d} />
       {selectedCenter && (
         <Marker longitude={selectedCenter[0]} latitude={selectedCenter[1]} anchor="center">
           <Crosshair />
@@ -200,5 +190,43 @@ function TiltCamera({ view3d }: { view3d: boolean }) {
       duration: reduce ? 0 : 1200,
     })
   }, [map, view3d])
+  return null
+}
+
+/**
+ * The 3D view's colours: the basemap in the Standard palette and the parcels thinned out.
+ * Applied to the live map and undone on the way out, so the 2D blueprint look is untouched.
+ */
+type PaintKey = Parameters<MapLibreMap['getPaintProperty']>[1]
+type PaintValue = Parameters<MapLibreMap['setPaintProperty']>[2]
+
+function Palette3D({ view3d }: { view3d: boolean }) {
+  const { current: ref } = useMap()
+  useEffect(() => {
+    const map = ref?.getMap()
+    if (!map || !view3d) return
+    const before: [string, PaintKey, PaintValue][] = []
+    const apply = () => {
+      const changes = [...basemapPaint(map.getStyle().layers, STANDARD), ...PARCELS_3D]
+      for (const { layer, paint } of changes) {
+        if (!map.getLayer(layer)) continue
+        for (const [name, value] of Object.entries(paint)) {
+          const prop = name as PaintKey
+          before.push([layer, prop, map.getPaintProperty(layer, prop) as PaintValue])
+          map.setPaintProperty(layer, prop, value as PaintValue)
+        }
+      }
+    }
+    // Opened straight into 3D, the style and the parcels may still be loading.
+    const ready = map.isStyleLoaded() && !!map.getLayer('parcels-fill')
+    if (ready) apply()
+    else map.once('idle', apply)
+    return () => {
+      map.off('idle', apply)
+      for (const [layer, prop, value] of before) {
+        if (map.getLayer(layer)) map.setPaintProperty(layer, prop, value)
+      }
+    }
+  }, [ref, view3d])
   return null
 }

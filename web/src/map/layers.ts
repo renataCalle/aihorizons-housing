@@ -140,11 +140,6 @@ export function parcelLayers(
   return layers
 }
 
-/** Elevation tiles for the 3D view: Terrarium PNGs on AWS Open Data (no key). */
-export const TERRAIN = 'terrain-dem'
-export const TERRAIN_TILES = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
-/** Pittsburgh's hills read better slightly raised. */
-export const TERRAIN_EXAGGERATION = 1.3
 /** Camera for the 3D view; every camera move keeps it while the view is on. */
 export const CAMERA_3D = { pitch: 66, bearing: -25 }
 /** Soft light from the upper left, so building sides stay pale rather than grey. */
@@ -153,7 +148,8 @@ export const CAMERA_2D = { pitch: 0, bearing: 0 }
 
 /**
  * The 3D view's buildings: the basemap's building footprints raised to their mapped heights
- * (OpenMapTiles `render_height`), in the blueprint's pale blues.
+ * (OpenMapTiles `render_height`). Houses are warm cream and towers glassy blue, after the
+ * Standard palette of the 3D basemap (blueprintTheme.ts STANDARD).
  */
 export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': string } {
   return {
@@ -170,7 +166,9 @@ export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': stri
         ['coalesce', ['get', 'render_height'], 0],
         0,
         p.building,
-        60,
+        20,
+        p.building,
+        70,
         p.buildingTall,
       ],
       'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 0],
@@ -181,6 +179,18 @@ export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': stri
     },
   }
 }
+
+/**
+ * Paint changes to our own parcel layers in the 3D view: lots outside the search turn
+ * transparent and their outlines faint, so only the candidates stand out on the cream.
+ */
+export const PARCELS_3D: { layer: string; paint: Record<string, unknown> }[] = [
+  {
+    layer: 'parcels-fill',
+    paint: { 'fill-opacity': ['case', ['==', ['get', 'band'], 'none'], 0, 0.9] },
+  },
+  { layer: 'parcels-outline', paint: { 'line-opacity': 0.35 } },
+]
 
 /** Sky and horizon haze for the tilted view, in the design's paper and sky blues. */
 export function skySpec(p: MapPalette) {

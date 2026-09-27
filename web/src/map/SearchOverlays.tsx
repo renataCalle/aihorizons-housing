@@ -158,13 +158,24 @@ export function FitToAreas({
       map.easeTo({ center, zoom: 15.5, padding, duration: 1200, ...CAMERA_3D })
       return
     }
-    map.fitBounds(
-      [
-        [Math.min(...lons), Math.min(...lats)],
-        [Math.max(...lons), Math.max(...lats)],
-      ],
-      { padding, duration: 600, maxZoom: 17.5, ...CAMERA_2D },
-    )
+    const fit = () =>
+      map.fitBounds(
+        [
+          [Math.min(...lons), Math.min(...lats)],
+          [Math.max(...lons), Math.max(...lats)],
+        ],
+        { padding, duration: 600, maxZoom: 17.5, ...CAMERA_2D },
+      )
+    // Coming back from 3D: bounds can't be fitted while the camera is tilted, or with the
+    // padding the 3D move left on the map, so level out and clear it first.
+    if (map.getPitch() > 0) {
+      map.once('moveend', fit)
+      map.easeTo({ ...CAMERA_2D, padding: { top: 0, right: 0, bottom: 0, left: 0 }, duration: 500 })
+      return () => {
+        map.off('moveend', fit)
+      }
+    }
+    fit()
   }, [map, features, key, view3d])
   return null
 }

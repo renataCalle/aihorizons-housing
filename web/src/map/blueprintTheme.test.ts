@@ -1,6 +1,6 @@
 import type { LayerSpecification, StyleSpecification } from 'maplibre-gl'
 import { describe, expect, it } from 'vitest'
-import { applyBlueprintTheme, BLUEPRINT } from './blueprintTheme'
+import { applyBlueprintTheme, basemapPaint, BLUEPRINT, STANDARD } from './blueprintTheme'
 
 const layers = [
   { id: 'background', type: 'background', paint: { 'background-color': '#f8f4f0' } },
@@ -57,5 +57,28 @@ describe('applyBlueprintTheme', () => {
   it('leaves unknown layers alone and never mutates the input', () => {
     expect(layer(themed, 'mystery').paint['fill-color']).toBe('#123456')
     expect(layer(style, 'background').paint['background-color']).toBe('#f8f4f0')
+  })
+})
+
+describe('basemapPaint', () => {
+  const changes = basemapPaint(applyBlueprintTheme(style).layers, STANDARD)
+  const paintOf = (layerId: string) => changes.find((c) => c.layer === layerId)?.paint
+
+  it('recolours the same layers in the Standard palette', () => {
+    expect(paintOf('background')).toEqual({ 'background-color': STANDARD.land })
+    expect(paintOf('water')).toEqual({
+      'fill-color': STANDARD.water,
+      'fill-outline-color': STANDARD.waterLine,
+    })
+    expect(paintOf('highway_minor')?.['line-color']).toBe(STANDARD.road)
+  })
+
+  it('changes only paint the layer type has, and leaves unmatched layers alone', () => {
+    expect(paintOf('label_city')).toEqual({
+      'text-color': STANDARD.label,
+      'text-halo-color': STANDARD.land,
+    })
+    expect(paintOf('mystery')).toBeUndefined()
+    expect(paintOf('road_shield_us')).toBeUndefined()
   })
 })
