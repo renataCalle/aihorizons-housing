@@ -44,6 +44,24 @@ def test_golden_parcel_is_real_engine_output(client: TestClient) -> None:
     assert body["freshness"]["parcels_as_of"]
 
 
+def test_report_scores_the_requested_building(client: TestClient) -> None:
+    pick = client.get(f"/api/parcels/{GOLDEN_STEEP_SLOPE}").json()
+    assert pick["program"] is None
+    body = client.get(
+        f"/api/parcels/{GOLDEN_STEEP_SLOPE}", params={"product_type": "townhome", "units": 2}
+    ).json()
+    assert body["program"] == {"product_type": "townhome", "units": 2}
+    lead = body["analysis"]["options"]
+    assert not lead or any(o["product_type"] == "townhome" for o in lead)
+    # Without a building type the stored analysis is served unchanged.
+    assert pick["analysis"] == client.get(f"/api/parcels/{GOLDEN_STEEP_SLOPE}").json()["analysis"]
+
+
+def test_requested_building_needs_stored_facts(client: TestClient) -> None:
+    body = client.get(f"/api/parcels/{SAMPLE_LOT_A}", params={"product_type": "duplex"}).json()
+    assert body["program"] is None
+
+
 def test_generated_lot_has_no_stored_facts(client: TestClient) -> None:
     assert client.get(f"/api/parcels/{SAMPLE_LOT_A}").json()["freshness"] is None
 

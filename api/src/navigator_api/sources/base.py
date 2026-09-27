@@ -14,9 +14,8 @@ from navigator_contracts.site_analysis import Versions
 
 
 class SiteSource(Protocol):
-    """Analyses are precomputed by the engine for now (docs/06-mock-data.md, stage 2).
-
-    When the engine moves to navigator_engine, `analysis` can call it live on SiteContext.
+    """Analyses of the engine's pick are precomputed. `context` returns the stored facts, so
+    the API can run navigator_engine live for another building type (routes/parcels.py).
     """
 
     name: Literal["mock", "pipeline"]

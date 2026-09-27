@@ -108,11 +108,23 @@ class Freshness(Model):
     )
 
 
+class Program(Model):
+    """A building type to score, e.g. the one a search asked for."""
+
+    product_type: ProductType
+    units: int | None = Field(default=None, description="None = the largest the zoning rules allow")
+
+
 class ParcelReport(Model):
     """Everything the report panel needs: the header and the engine's analysis."""
 
     parcel: ParcelSummary
     analysis: SiteAnalysis | None = Field(description="None when the lot is not a candidate")
+    program: Program | None = Field(
+        default=None,
+        description="The building the analysis scores when one was requested and could be "
+        "scored; None = the engine's pick",
+    )
     freshness: Freshness | None = Field(
         default=None, description="None when the facts behind the analysis are not stored"
     )
