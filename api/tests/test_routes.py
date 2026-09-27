@@ -38,6 +38,14 @@ def test_golden_parcel_is_real_engine_output(client: TestClient) -> None:
     assert body["parcel"]["illustrative"] is False
     assert body["parcel"]["block_lot"] == "55-A-137"
     assert body["analysis"]["versions"]["schema"] == "0.1.0"
+    assert body["analysis"]["rule_checks"]["programs"]
+    # The golden context is a stored copy: no live lookups, parcels dated.
+    assert body["freshness"]["live"] == []
+    assert body["freshness"]["parcels_as_of"]
+
+
+def test_generated_lot_has_no_stored_facts(client: TestClient) -> None:
+    assert client.get(f"/api/parcels/{SAMPLE_LOT_A}").json()["freshness"] is None
 
 
 def test_non_candidate_has_no_analysis(client: TestClient) -> None:

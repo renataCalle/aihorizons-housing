@@ -21,13 +21,14 @@ class MockSiteSource(SiteBundle):
     def __init__(self, golden_dir: Path, generated_dir: Path, evidence_dir: Path) -> None:
         summaries, geometry, features = self.load_files(generated_dir)
         analyses: dict[str, SiteAnalysis] = {}
+        contexts: dict[str, SiteContext] = {}
         for path in sorted((golden_dir / "site_analysis").glob("*.json")):
             context = SiteContext.model_validate_json(
                 (golden_dir / "site_context" / path.name).read_bytes()
             )
-            analyses[context.parcels[0].parcel_id] = SiteAnalysis.model_validate_json(
-                path.read_bytes()
-            )
+            pid = context.parcels[0].parcel_id
+            contexts[pid] = context
+            analyses[pid] = SiteAnalysis.model_validate_json(path.read_bytes())
         for path in sorted((generated_dir / "site_analysis").glob("*.json")):
             analyses[path.stem] = SiteAnalysis.model_validate_json(path.read_bytes())
         evidence = {
@@ -37,7 +38,7 @@ class MockSiteSource(SiteBundle):
                 for p in sorted(evidence_dir.glob("*.evidence.json"))
             )
         }
-        super().__init__(summaries, geometry, features, analyses, evidence)
+        super().__init__(summaries, geometry, features, analyses, evidence, contexts)
 
     def examples(self) -> Examples:
         # The mockups' examples: Sample lot A and its address.
