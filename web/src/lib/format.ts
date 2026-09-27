@@ -71,6 +71,9 @@ function assumptionParts(value: number, unit: string): [string, string, string] 
       return ['', String(+(value * 100).toFixed(1)), '%/yr']
     case 'months':
       return ['', String(value), ' months']
+    case '$':
+    case 'USD':
+      return ['$', Math.round(value).toLocaleString('en-US'), '']
     default:
       return ['', String(value), ` ${unit}`]
   }

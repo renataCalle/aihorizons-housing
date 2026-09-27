@@ -51,6 +51,7 @@ describe('format', () => {
     expect(formatAssumption(0.065, 'rate')).toBe('6.5%')
     expect(formatAssumption(0.09, 'rate/yr')).toBe('9%/yr')
     expect(formatAssumption(12, 'months')).toBe('12 months')
+    expect(formatAssumption(10400, '$')).toBe('$10,400')
     expect(formatAssumption(1.5, 'ratio')).toBe('1.5 ratio')
     expect(formatAssumptionRange(200, 320, '$/sf')).toBe('$200–$320/sq ft')
     expect(formatAssumptionRange(9, 16, 'months')).toBe('9–16 months')

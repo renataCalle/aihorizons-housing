@@ -80,11 +80,24 @@ export function ReportView() {
           <span className="label report-kicker">
             Site report{rank && total ? ` · ${String(rank).padStart(2, '0')} / ${total}` : ''}
           </span>
-          <Link className="icon-button" to={back} aria-label="Close report">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </Link>
+          <div className="report-actions">
+            <button
+              type="button"
+              className="button-primary export-memo"
+              disabled={report.status !== 'ready'}
+              onClick={() => report.status === 'ready' && printMemo(report.data)}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+              </svg>
+              Export memo
+            </button>
+            <Link className="icon-button" to={back} aria-label="Close report">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </Link>
+          </div>
         </header>
 
         {report.status === 'loading' && <ReportLoading />}
@@ -110,6 +123,17 @@ export function ReportView() {
       <Outlet />
     </>
   )
+}
+
+/**
+ * "Export memo": the browser's print dialog over the report's print stylesheet (report.css,
+ * `@media print`), which also shows the sources appendix. The title names the saved PDF.
+ */
+function printMemo(report: SiteReport) {
+  const title = document.title
+  document.title = `Site memo - ${report.parcel.name}`
+  window.print()
+  document.title = title
 }
 
 function ReportLoading() {
@@ -193,6 +217,7 @@ function ReportBody({ report, programNote }: { report: SiteReport; programNote: 
         <ParcelFacts parcel={parcel} analysis={analysis} />
       </section>
       {analysis && <AboutReport analysis={analysis} freshness={report.freshness} />}
+      {analysis && <SourcesAppendix analysis={analysis} />}
     </>
   )
 }
@@ -343,6 +368,39 @@ function NextSteps({ analysis: a }: { analysis: Analysis }) {
             <b className="step-cost">{formatMoneyRange(step.cost)}</b>
           </li>
         ))}
+      </ol>
+    </section>
+  )
+}
+
+/** Printed memo only: every source the findings cite, once each. */
+function SourcesAppendix({ analysis: a }: { analysis: Analysis }) {
+  const seen = new Set<string>()
+  const sources = a.flags
+    .flatMap((f) => f.evidence)
+    .filter((e) => {
+      const key = `${e.source}|${e.codeSection}|${e.url}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+  return (
+    <section className="print-only sources-appendix">
+      <h2>Sources</h2>
+      <ol>
+        {sources.map((e) => (
+          <li key={`${e.source}|${e.codeSection}|${e.url}`}>
+            {e.source}
+            {e.codeSection && `, § ${e.codeSection}`}
+            {e.asOf && `, as of ${e.asOf}`}
+            {e.url && <span className="source-url">{e.url}</span>}
+          </li>
+        ))}
+        <li>
+          Zoning rules: {a.versions.ruleset}. Engine {a.versions.engine}, schema{' '}
+          {a.versions.schema}
+          {a.versions.dataAsOf && `, oldest data ${a.versions.dataAsOf}`}.
+        </li>
       </ol>
     </section>
   )
