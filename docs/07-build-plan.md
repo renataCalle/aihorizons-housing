@@ -44,6 +44,8 @@ Build in this order, on your own branch (`feat/web-api`), merging with normal me
 
 - Accessibility pass; shareable URLs; demo script (landing → AI search → results → report → evidence → 3D).
 - README: libraries, frameworks, APIs, public datasets, AI tools used, data sources and assumptions, team (all required by the hackathon packet).
+- README limitations section must include:
+  - Zoning board cases are listed by case number only, without a link to the decision: the decisions are public city documents but name applicants, so links are held back until that's settled (`api/src/navigator_api/evidence.py`, `_case`).
 - Secrets scan of the full history before the repo goes public.
 - **Done when:** the whole demo runs offline with the fallback parser.
 
