@@ -148,3 +148,35 @@ export function FitToAreas({ features, areas }: { features: MapFeatures; areas: 
   }, [map, features, key])
   return null
 }
+
+export interface Padding {
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
+
+/** Glide to the selected parcel, keeping it clear of the panels around the map. */
+export function FlyToSelection({
+  center,
+  padding,
+}: {
+  center: [number, number] | null
+  padding: Padding
+}) {
+  const map = useMap()[MAP_ID]
+  const key = center ? center.join(',') : ''
+  const pad = `${padding.top},${padding.right},${padding.bottom},${padding.left}`
+  useEffect(() => {
+    if (!map || !key) return
+    const [lon, lat] = key.split(',').map(Number)
+    const [top, right, bottom, left] = pad.split(',').map(Number)
+    map.easeTo({
+      center: [lon, lat],
+      zoom: Math.max(map.getZoom(), 17),
+      padding: { top, right, bottom, left },
+      duration: 700,
+    })
+  }, [map, key, pad])
+  return null
+}
