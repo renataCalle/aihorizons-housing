@@ -19,6 +19,8 @@ interface Props {
   onHover: (id: string | null) => void
   onRetry: () => void
   layers: ReactNode
+  /** Map layers shown, so the legend lists only what's drawn */
+  showTransit: boolean
 }
 
 /** The left panel on the results screen (SearchMap.dc.html). */
@@ -148,7 +150,7 @@ export function ResultsPanel(props: Props) {
       )}
 
       <div className="results-foot">
-        <Legend />
+        <Legend showTransit={props.showTransit} showArea={filters.areas.length > 0} />
         {props.layers}
       </div>
     </aside>
@@ -240,7 +242,7 @@ function Skeleton() {
   )
 }
 
-function Legend() {
+function Legend({ showTransit, showArea }: { showTransit: boolean; showArea: boolean }) {
   return (
     <ul className="legend" aria-label="Legend">
       <li>
@@ -259,6 +261,18 @@ function Legend() {
         <span className="swatch swatch-unknown" aria-hidden="true" />
         Unknown
       </li>
+      {showTransit && (
+        <li>
+          <span className="swatch swatch-stop" aria-hidden="true" />
+          Transit stop
+        </li>
+      )}
+      {showArea && (
+        <li>
+          <span className="swatch swatch-area" aria-hidden="true" />
+          Area searched
+        </li>
+      )}
     </ul>
   )
 }
