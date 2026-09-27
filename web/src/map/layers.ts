@@ -146,6 +146,8 @@ export const CAMERA_3D = { pitch: 66, bearing: -25 }
 export const LIGHT_3D = { anchor: 'viewport' as const, position: [1.5, 210, 30] as [number, number, number], intensity: 0.4, color: '#ffffff' }
 export const CAMERA_2D = { pitch: 0, bearing: 0 }
 
+export const BUILDINGS_3D = 'buildings-3d'
+
 /**
  * The 3D view's buildings: the basemap's building footprints raised to their mapped heights
  * (OpenMapTiles `render_height`). Houses are warm cream and towers glassy blue, after the
@@ -153,7 +155,7 @@ export const CAMERA_2D = { pitch: 0, bearing: 0 }
  */
 export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': string } {
   return {
-    id: 'buildings-3d',
+    id: BUILDINGS_3D,
     type: 'fill-extrusion',
     source: 'openmaptiles',
     'source-layer': 'building',
@@ -173,8 +175,9 @@ export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': stri
       ],
       'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 0],
       'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
-      // Heights arrive with the zoom 14 tiles: fade the buildings in as they do.
-      'fill-extrusion-opacity': ['interpolate', ['linear'], ['zoom'], 13.5, 0, 14.5, 0.9],
+      // Solid, so lots behind a building never show through. Heights arrive with the zoom 14
+      // tiles: fade the buildings in as they do.
+      'fill-extrusion-opacity': ['interpolate', ['linear'], ['zoom'], 13.5, 0, 14.5, 1],
       'fill-extrusion-vertical-gradient': true,
     },
   }

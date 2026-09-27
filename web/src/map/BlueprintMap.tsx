@@ -20,6 +20,7 @@ import {
   INTERACTIVE_LAYERS,
   PARCELS,
   parcelLayers,
+  BUILDINGS_3D,
   buildingExtrusion,
   CAMERA_2D,
   CAMERA_3D,
@@ -222,11 +223,23 @@ function Palette3D({ view3d }: { view3d: boolean }) {
         }
       }
     }
+    // Buildings stand on top of the lots: layers draw in the order they were added, and the
+    // lots (or a hatch or overlay) can be added after the buildings, e.g. when the page opens
+    // straight into 3D. Move the buildings back to the top whenever a layer is added.
+    const keepBuildingsOnTop = () => {
+      const order = map.getLayersOrder()
+      if (map.getLayer(BUILDINGS_3D) && order[order.length - 1] !== BUILDINGS_3D) {
+        map.moveLayer(BUILDINGS_3D)
+      }
+    }
+    map.on('styledata', keepBuildingsOnTop)
+    keepBuildingsOnTop()
     // Opened straight into 3D, the style and the parcels may still be loading.
     const ready = map.isStyleLoaded() && !!map.getLayer('parcels-fill')
     if (ready) apply()
     else map.once('idle', apply)
     return () => {
+      map.off('styledata', keepBuildingsOnTop)
       map.off('idle', apply)
       if (map.getLayer(grass.id)) map.removeLayer(grass.id)
       for (const [layer, prop, value] of before) {
