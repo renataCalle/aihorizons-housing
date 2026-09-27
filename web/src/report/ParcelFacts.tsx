@@ -26,7 +26,11 @@ export function ParcelFacts({ parcel, analysis }: { parcel: Parcel; analysis: An
     ['Assessed land', parcel.assessedLand === null ? '—' : formatDollars(parcel.assessedLand)],
   ]
   const lead = analysis?.options.find((o) => o.label === analysis.metrics?.option)
-  const editable = analysis?.assumptions.filter((x) => x.editable) ?? []
+  // The land price is the "Land" row above, with its source.
+  const editable =
+    analysis?.assumptions.filter(
+      (x) => x.editable && !(x.key === 'land_price' && analysis.metrics),
+    ) ?? []
   return (
     <div className="report-cards">
       <section className="report-card">

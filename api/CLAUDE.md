@@ -1,4 +1,4 @@
-# api/ — Buildable PGH API
+# api/ — Pencil It API
 
 Read the root `CLAUDE.md` first: its boundary rules, contract invariants and commands apply here. This file adds what's specific to the API.
 

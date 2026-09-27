@@ -1,6 +1,6 @@
 # web
 
-Buildable PGH: React + TypeScript + Vite, with MapLibre for the map. Rules: `CLAUDE.md` here and at the repo root.
+Pencil It: React + TypeScript + Vite, with MapLibre for the map. Rules: `CLAUDE.md` here and at the repo root.
 
 ```bash
 nvm use                 # Node 22, as in CI (.nvmrc at the repo root)

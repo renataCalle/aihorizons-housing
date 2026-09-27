@@ -4,6 +4,8 @@ The bundle is published by `navigator_pipeline.publish`. It holds a summary for 
 scope, and for each candidate its stored SiteContext and the engine's SiteAnalysis. Candidate
 summaries are rebuilt here from those two with `summarize`, so search gets every field it
 filters on (program fits, hazard shares, transit distance) whatever the publisher wrote.
+`summaries.csv` adds the engine's result for every building type, so a search for one building
+type ranks lots by that type (search/programs.py).
 """
 
 import json
@@ -12,13 +14,15 @@ from pathlib import Path
 from typing import Literal
 
 from navigator_api.models import ParcelSummary
-from navigator_api.sources.bundle import SUMMARIES, SiteBundle, read_text
+from navigator_api.search.programs import load_program_rows
+from navigator_api.sources.bundle import SUMMARIES, SiteBundle, exists, read_text
 from navigator_api.summaries import summarize
 from navigator_contracts import SiteAnalysis, SiteContext
 
 
 def tidy_name(name: str) -> str:
-    """ "2Nd Ave" -> "2nd Ave": title-casing capitalizes ordinal suffixes."""
+    """ "2Nd Ave" -> "2nd Ave": title-casing capitalizes ordinal suffixes. Fixed in
+    navigator_pipeline.publish; kept for bundles published before that fix."""
     return re.sub(r"\b(\d+)(St|Nd|Rd|Th)\b", lambda m: m.group(1) + m.group(2).lower(), name)
 
 
@@ -58,4 +62,8 @@ class PipelineSiteSource(SiteBundle):
             else:
                 s = s.model_copy(update={"display_name": name})
             summaries.append(s)
-        super().__init__(summaries, geometry, features, analyses, contexts=contexts)
+        rows_file = results_dir / "summaries.csv"
+        rows = load_program_rows(rows_file) if exists(rows_file) else {}
+        super().__init__(
+            summaries, geometry, features, analyses, contexts=contexts, program_rows=rows
+        )

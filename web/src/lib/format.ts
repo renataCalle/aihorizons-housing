@@ -71,6 +71,9 @@ function assumptionParts(value: number, unit: string): [string, string, string] 
       return ['', String(+(value * 100).toFixed(1)), '%/yr']
     case 'months':
       return ['', String(value), ' months']
+    case '$':
+    case 'USD':
+      return ['$', Math.round(value).toLocaleString('en-US'), '']
     default:
       return ['', String(value), ` ${unit}`]
   }
@@ -92,4 +95,12 @@ export function formatAssumptionRange(min: number, max: number, unit: string): s
 export function sentenceCase(text: string): string {
   const lower = text.toLowerCase()
   return lower.charAt(0).toUpperCase() + lower.slice(1)
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+/** "2026-09-23" -> "Sep 2026" (no time zone shift: the date is read as written). */
+export function formatMonthYear(isoDate: string): string {
+  const [year, month] = isoDate.split('-')
+  return `${MONTHS[Number(month) - 1] ?? ''} ${year}`.trim()
 }

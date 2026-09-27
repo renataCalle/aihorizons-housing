@@ -18,16 +18,23 @@
 .map-topbar {
   position: absolute;
   top: 20px;
-  left: 24px;
-  right: 24px;
+  left: 0;
+  right: 0;
+  /* Just as wide as its contents (brand, search, badges), centred on the page. */
+  width: fit-content;
+  max-width: calc(100% - 48px);
+  margin: 0 auto;
   z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   height: 60px;
-  padding: 0 12px 0 16px;
+  padding: 0 8px 0 16px;
   border-radius: 18px;
+}
+
+.map-topbar .brand {
+  flex: none;
 }
 
 .map-topbar .brand span {
@@ -36,6 +43,9 @@
 
 .map-topbar-end {
   display: flex;
+  flex: none;
+  white-space: nowrap;
+  justify-content: flex-end;
   align-items: center;
   gap: 10px;
 }
@@ -53,8 +63,15 @@
   font-size: 14px;
 }
 
+/* The search box narrows on small screens rather than the bar overflowing. */
 .map-topbar .omnibox-root {
-  width: min(560px, 45vw);
+  flex: 0 1 auto;
+  width: var(--topbar-search-width);
+  min-width: 0;
+}
+
+.map-topbar-end:empty {
+  display: none;
 }
 
 .map-controls {
@@ -101,6 +118,10 @@
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
+}
+
+.map-control-3d:hover:not(:disabled) {
+  background: var(--cobalt-deep);
 }
 
 .map-control-3d:disabled {

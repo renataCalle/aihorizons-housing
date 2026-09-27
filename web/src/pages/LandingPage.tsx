@@ -7,6 +7,7 @@ import { useAsync } from '../lib/useAsync'
 import { BlueprintMap, type MapView } from '../map/BlueprintMap'
 import { MapControls } from '../map/MapControls'
 import { Omnibox } from '../search/Omnibox'
+import { useMapTheme } from '../state/mapTheme'
 
 /** Hazelwood, Greenfield and Glen Hazel, where the mock lots are. */
 const LANDING_VIEW: MapView = { longitude: -79.936, latitude: 40.4115, zoom: 14.9 }
@@ -31,6 +32,8 @@ export function LandingPage() {
         ]
       : []
 
+  const theme = useMapTheme((state) => state.theme)
+
   return (
     <MapProvider>
       <main className="landing">
@@ -41,6 +44,7 @@ export function LandingPage() {
             selectedId={null}
             onSelect={(id) => id && navigate(`/parcel/${id}`)}
             initialView={LANDING_VIEW}
+            theme={theme}
           />
         </div>
         <div className="landing-fade" aria-hidden="true" />

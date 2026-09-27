@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query
 
 from navigator_api.models import (
+    AreaSummary,
     LookupResponse,
     Neighborhood,
     ParseRequest,
@@ -9,6 +10,7 @@ from navigator_api.models import (
     SearchResponse,
 )
 from navigator_api.routes.deps import Source
+from navigator_api.search.area import summarize_area, with_extras
 from navigator_api.search.lookup import lookup
 from navigator_api.search.parse import parse
 from navigator_api.search.query import search
@@ -26,7 +28,16 @@ def lookup_parcels(source: Source, q: str = Query(max_length=200)) -> LookupResp
 @router.post("/search")
 def search_parcels(filters: SearchFilters, source: Source) -> SearchResponse:
     """Candidates that pass every filter, ranked; near misses and a suggestion when empty."""
-    return search(source.summaries(), filters, source.map_features())
+    return search(source.summaries(), filters, source.map_features(), source.program_rows)
+
+
+@router.post("/search/summary")
+def search_summary(filters: SearchFilters, source: Source) -> AreaSummary:
+    """The same search at a glance: lots per band, what holds them back, near misses."""
+    response = search(
+        source.summaries(), with_extras(filters), source.map_features(), source.program_rows
+    )
+    return summarize_area(response, len(response.near_misses), source.analysis)
 
 
 @router.post("/search/parse")

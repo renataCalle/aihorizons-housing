@@ -34,6 +34,7 @@
   z-index: 3;
   width: min(720px, 100vw);
   padding: 28px 40px 40px;
+  overflow-x: hidden;
   overflow-y: auto;
   border-radius: 28px 0 0 0;
   background: var(--panel);
@@ -45,6 +46,35 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.report-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-memo {
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.export-memo:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.export-memo svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .report-kicker {
@@ -68,6 +98,21 @@
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.program-note {
+  margin: -12px 0 20px;
+  padding: 10px 14px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: var(--radius-control);
+  background: var(--cobalt-tint-2);
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.program-note a {
+  color: var(--cobalt);
+  font-weight: 500;
 }
 
 .report-none,
@@ -324,8 +369,14 @@
 }
 
 .sev-deal_risk {
-  background: var(--orange);
+  background: var(--band-high-risk);
   color: var(--white);
+}
+
+/* The report keeps the strong risk orange (the map and results use the soft one). */
+.report-panel .pill-high_risk {
+  border-color: var(--band-high-risk);
+  background: color-mix(in srgb, var(--band-high-risk) 14%, var(--white));
 }
 
 .sev-caution {
@@ -482,7 +533,10 @@
 }
 
 /* Rule by rule */
+/* Positioned, so the table's visually hidden labels stay inside its scroll area instead of
+   widening the report panel. */
 .rule-table-wrap {
+  position: relative;
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
@@ -671,6 +725,7 @@
   z-index: 5;
   width: min(580px, 100vw);
   padding: 32px 40px;
+  overflow-x: hidden;
   overflow-y: auto;
   border-radius: 28px 0 0 0;
   background: var(--white);
@@ -681,6 +736,316 @@
   position: absolute;
   top: 24px;
   right: 24px;
+}
+
+.evidence-drawer:focus {
+  outline: none;
+}
+
+.evidence-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding-right: 48px;
+}
+
+.kind-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--cobalt-tint);
+  color: var(--cobalt-deep);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.evidence-head {
+  margin: 14px 0 22px;
+}
+
+.evidence-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.evidence-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 8px 0 0;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+.evidence-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.evidence-label,
+.evidence-label-row .evidence-label {
+  margin: 0;
+  color: var(--cobalt);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.evidence-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.evidence-section p {
+  margin: 0;
+}
+
+.evidence-lead {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.evidence-muted {
+  color: var(--ink-3);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.evidence-kv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin: 0;
+}
+
+.evidence-kv dt {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
+.evidence-kv dd {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.evidence-source + .evidence-source {
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.evidence-source p + p {
+  margin-top: 6px;
+}
+
+.evidence-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.code-chip {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--unknown-tint);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.external-link svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.code-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.code-sections li p + p {
+  margin-top: 4px;
+}
+
+.evidence-rules {
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  list-style: none;
+}
+
+.evidence-rules li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.evidence-rules li + li {
+  border-top: 1px solid var(--line-soft);
+}
+
+.evidence-rule-side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.evidence-empty {
+  padding: 14px 16px;
+  border: 1px dashed var(--unknown);
+  border-radius: 14px;
+  background: var(--unknown-tint);
+  font-size: 13px;
+}
+
+.evidence-empty p + p {
+  margin-top: 4px;
+}
+
+.precedent-count {
+  font-size: 14px;
+}
+
+.precedent-count b {
+  color: var(--cobalt);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.case-table-wrap {
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.case-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.case-table th {
+  padding: 9px 14px;
+  background: var(--cleared-tint);
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.case-table td {
+  padding: 10px 14px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.case-table .num {
+  text-align: right;
+}
+
+.case-table .mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.outcome-pill {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.outcome-granted {
+  background: var(--cobalt);
+  color: var(--white);
+}
+
+.outcome-denied {
+  border: 1px solid var(--orange-line);
+  background: var(--orange-tint);
+  color: var(--orange-text);
+}
+
+.outcome-withdrawn,
+.outcome-pending,
+.outcome-unknown {
+  border: 1px dashed var(--unknown);
+  background: var(--unknown-tint);
+  color: var(--ink-2);
+}
+
+.resolve-step {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--cleared-tint);
+}
+
+.evidence-foot {
+  margin: 8px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
+.evidence-error {
+  margin-top: 48px;
+}
+
+.evidence-link {
+  display: inline-block;
+  padding: 6px 0;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* The report covers the right of the map: move the inspector-side controls left of it. */
@@ -697,6 +1062,10 @@
 }
 
 @media (max-width: 640px) {
+  .evidence-drawer {
+    padding: 24px 16px;
+  }
+
   .key-numbers {
     grid-template-columns: 1fr;
   }
@@ -725,4 +1094,183 @@
 .map-page.has-report .map-readout {
   left: 24px;
   transform: none;
+}
+
+/* Printed memo ("Export memo"): the report alone, on white, with a sources appendix. */
+.print-only {
+  display: none;
+}
+
+.source-url {
+  display: block;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+@media print {
+  @page {
+    margin: 14mm 12mm;
+  }
+
+  html,
+  body,
+  #root {
+    height: auto;
+    background: #fff;
+  }
+
+  body {
+    font-size: 11px;
+  }
+
+  .map-page {
+    position: static;
+    overflow: visible;
+    background: #fff;
+  }
+
+  .map-page > :not(.report-panel),
+  .report-actions,
+  .program-note a {
+    display: none !important;
+  }
+
+  .report-panel {
+    position: static;
+    width: auto;
+    padding: 0;
+    overflow: visible;
+    border-radius: 0;
+    background: #fff;
+    box-shadow: none;
+  }
+
+  .report-panel .report-title {
+    margin-top: 6px;
+    font-size: 24px;
+  }
+
+  .verdict-card {
+    padding: 16px 18px;
+  }
+
+  .verdict-big {
+    font-size: 44px;
+  }
+
+  .verdict-sentence {
+    margin: 12px 0;
+    font-size: 15px;
+  }
+
+  .report-section {
+    margin-top: 20px;
+  }
+
+  .report-section h2 {
+    font-size: 16px;
+    break-after: avoid;
+  }
+
+  .verdict-card,
+  .key-card,
+  .finding,
+  .option-card,
+  .report-card,
+  .step-list li,
+  .rule-table tr {
+    break-inside: avoid;
+  }
+
+  .key-numbers {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .finding,
+  .step-list li,
+  .key-card,
+  .report-card,
+  .option-card {
+    padding: 8px 12px;
+  }
+
+  .finding-list,
+  .step-list,
+  .key-numbers,
+  .option-grid,
+  .report-cards {
+    gap: 6px;
+  }
+
+  .finding-detail,
+  .step-who,
+  .key-note,
+  .option-size,
+  .score-part-note,
+  .fact-list > div,
+  .cleared {
+    font-size: 10.5px;
+  }
+
+  .finding-detail {
+    margin-bottom: 2px;
+  }
+
+  .key-value,
+  .option-name {
+    font-size: 15px;
+  }
+
+  .step-n {
+    font-size: 16px;
+  }
+
+  .fact-list > div {
+    padding: 3px 0;
+  }
+
+  .score-parts {
+    padding-top: 10px;
+  }
+
+  .verdict-top .verdict-big {
+    font-size: 36px;
+  }
+
+  .rule-table-wrap {
+    overflow: visible;
+  }
+
+  .rule-table {
+    min-width: 0;
+    font-size: 10px;
+  }
+
+  .rule-table th,
+  .rule-table td {
+    padding: 6px 8px;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  .sources-appendix {
+    margin-top: 16px;
+    break-inside: avoid;
+  }
+
+  .sources-appendix h2 {
+    font-size: 14px;
+  }
+
+  .sources-appendix ol {
+    padding-left: 18px;
+  }
+
+  .sources-appendix li {
+    margin-bottom: 6px;
+  }
 }

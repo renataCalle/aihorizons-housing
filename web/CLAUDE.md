@@ -1,16 +1,16 @@
-# web/ — Buildable PGH front end
+# web/ — Pencil It front end
 
 Read the root `CLAUDE.md` first: its contract invariants and boundary rules apply here too. This file adds what's specific to the web app.
 
 ## What to build
 
-The map-first app designed in `docs/design/`: landing with one smart search box, AI search preview, results on a blueprint map, report panel, evidence drawer, and a 3D score view. Full spec: `docs/01-product-spec.md`. Look and feel: `docs/02-design-system.md`. Mockups: `docs/design/screens/*.png`, exact markup and styles in `docs/design/source/*.dc.html`.
+The map-first app designed in `docs/design/`: landing with one smart search box, AI search preview, results on a blueprint map, report panel, evidence drawer, and a 3D view of the city. Full spec: `docs/01-product-spec.md`. Look and feel: `docs/02-design-system.md`. Mockups: `docs/design/screens/*.png`, exact markup and styles in `docs/design/source/*.dc.html`.
 
 ## Stack (already scaffolded, keep it)
 
 - React 19, Vite, TypeScript, oxlint (`npm run dev | build | lint`). CI runs `npm ci`, lint and build, so all three must pass.
 - MapLibre GL JS 6 (already in package.json), through `react-map-gl/maplibre` or a thin wrapper component.
-- deck.gl for the 3D score view only, through its MapLibre overlay (interleaved).
+- 3D view with MapLibre alone (`fill-extrusion` for buildings, sky and light); no deck.gl. Map themes (Blueprint, Standard) and every map colour live in `src/map/themes.ts`. See `docs/02-design-system.md`.
 - React Router for deep links (`/`, `/search`, `/parcel/:id`, `/parcel/:id/evidence/:evidenceId`).
 - State: one filters store (Zustand or React context) that the chips, the filter editor and AI search all read and write.
 - Plain CSS with design tokens in `src/styles/tokens.css`. Fonts: Sora and IBM Plex Mono (Google Fonts).

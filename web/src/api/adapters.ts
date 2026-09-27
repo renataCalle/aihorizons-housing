@@ -10,7 +10,9 @@ import type { MapBand, MapFeatureKind, MapFeatures, ParcelLayer } from '../model
 import type {
   Analysis,
   Band,
+  NextStep,
   Parcel,
+  RuleCheck,
   RuleChecks,
   Severity,
   SiteReport,
@@ -18,12 +20,14 @@ import type {
 } from '../models/report'
 import { DEFAULT_FILTERS, type Filters } from '../models/filters'
 import type {
+  AreaSummary,
   Examples,
   FilterChip,
   LookupResult,
   Neighborhood,
   ParseResult,
   ProgramFit,
+  ScoredProgram,
   SearchResponse,
 } from '../models/search'
 import type { components } from './types.gen'
@@ -62,7 +66,13 @@ function toInterval(pair: [number, number] | null): Interval | null {
 }
 
 function toVersions(v: S['Versions']): Versions {
-  return { engine: v.engine, ruleset: v.ruleset, schema: v.schema, dataAsOf: v.data_as_of }
+  return {
+    engine: v.engine,
+    ruleset: v.ruleset,
+    schema: v.schema,
+    dataAsOf: v.data_as_of,
+    rulesetAsOf: v.ruleset_as_of ?? null,
+  }
 }
 
 export function toParcel(p: S['ParcelSummary']): Parcel {
@@ -71,7 +81,7 @@ export function toParcel(p: S['ParcelSummary']): Parcel {
     blockLot: p.block_lot,
     name: p.display_name,
     address: p.address,
-    municipality: p.municipality,
+    municipality: p.municipality.trim(),
     neighborhood: p.neighborhood,
     zoning: p.zoning,
     lotAreaSqft: p.lot_area_sqft,
@@ -171,14 +181,7 @@ export function toAnalysis(a: S['SiteAnalysis']): Analysis {
       revenueBasis: o.revenue_basis,
       entitlementBasis: o.entitlement_basis,
     })),
-    nextSteps: a.next_steps.map((s) => ({
-      order: s.order,
-      action: s.action,
-      who: s.who,
-      cost: { low: s.cost_usd[0], high: s.cost_usd[1] },
-      why: s.why,
-      flagIds: s.flag_ids,
-    })),
+    nextSteps: a.next_steps.map(toStep),
     assumptions: a.assumptions.map((x) => ({
       key: x.key,
       label: x.label,
@@ -194,6 +197,31 @@ export function toAnalysis(a: S['SiteAnalysis']): Analysis {
     setbackScenario: a.rules.scenario,
     lotDimensionsFt: a.rules.lot_dimensions_ft,
     versions: toVersions(a.versions),
+  }
+}
+
+function toStep(s: S['Step']): NextStep {
+  return {
+    order: s.order,
+    action: s.action,
+    who: s.who,
+    cost: { low: s.cost_usd[0], high: s.cost_usd[1] },
+    why: s.why,
+    flagIds: s.flag_ids,
+  }
+}
+
+function toCheck(c: S['CheckResult']): RuleCheck {
+  return {
+    id: c.check_id,
+    label: c.label,
+    section: c.section,
+    status: c.status,
+    required: c.required,
+    provided: c.provided,
+    unit: c.unit,
+    relief: c.relief_type,
+    note: c.note,
   }
 }
 
@@ -214,17 +242,7 @@ function toRuleChecks(rc: S['RuleChecks']): RuleChecks {
       productType: p.product_type,
       units: p.units,
       outcome: p.outcome,
-      checks: p.checks.map((c) => ({
-        id: c.check_id,
-        label: c.label,
-        section: c.section,
-        status: c.status,
-        required: c.required,
-        provided: c.provided,
-        unit: c.unit,
-        relief: c.relief_type,
-        note: c.note,
-      })),
+      checks: p.checks.map(toCheck),
       approvalProbability: p.approval_prob ? toEstimate(p.approval_prob) : null,
       representative: p.representative,
       chosenAs: p.chosen_as,
@@ -241,6 +259,9 @@ export function toSiteReport(data: unknown): SiteReport {
     analysis: r.analysis ? toAnalysis(r.analysis) : null,
     freshness: f
       ? { parcelsAsOf: f.parcels_as_of, live: f.live, liveAt: f.live_at, fellBack: f.fell_back }
+      : null,
+    program: r.program
+      ? { productType: r.program.product_type, units: r.program.units ?? null }
       : null,
   }
 }
@@ -284,36 +305,68 @@ export function toMapFeatures(data: unknown): MapFeatures {
 
 export function toEvidence(data: unknown): Evidence {
   const e = data as S['EvidenceDetail']
+  const p = e.precedent
   return {
     id: e.id,
     kind: e.kind,
     title: e.title,
-    appliesTo: e.applies_to,
-    code: e.code
+    program:
+      e.product_type && e.units != null ? { productType: e.product_type, units: e.units } : null,
+    category: e.category,
+    severity: e.severity ? toSeverity(e.severity) : null,
+    confidence: e.confidence ?? null,
+    cost: toInterval(e.cost_usd ?? null),
+    months: toInterval(e.months ?? null),
+    monthsToPermitReady: e.months_to_permit ? toEstimate(e.months_to_permit) : null,
+    approvalProbability: e.approval_prob ? toEstimate(e.approval_prob) : null,
+    approvalMonths: e.approval_months ? toEstimate(e.approval_months) : null,
+    relief: e.relief ?? [],
+    entitlementBasis: e.entitlement_basis ?? [],
+    oddsNote: e.odds_note ?? null,
+    ruleChecks: (e.rule_checks ?? []).map(toCheck),
+    sources: (e.sources ?? []).map((s) => ({
+      source: s.source,
+      asOf: s.as_of,
+      asOfFromLayer: s.as_of_from_provenance ?? false,
+      codeSection: s.code_section,
+      url: s.url,
+    })),
+    codeSections: (e.code_sections ?? []).map((c) => ({
+      section: c.section,
+      title: c.title,
+      summary: c.summary,
+      url: c.url,
+      asOf: c.as_of,
+      effective: c.effective,
+    })),
+    howToResolve: e.how_to_resolve,
+    resolvedBy: e.resolved_by ? toStep(e.resolved_by) : null,
+    precedent: p
       ? {
-          section: e.code.section,
-          asOf: e.code.as_of,
-          summary: e.code.summary,
-          url: e.code.url ?? null,
+          status: p.status,
+          note: p.note ?? null,
+          rule: p.rule ?? null,
+          source: p.source ?? null,
+          asOf: p.as_of ?? null,
+          nearby: p.nearby ?? null,
+          granted: p.granted ?? null,
+          total: p.total ?? null,
+          medianMonths: p.median_months ?? null,
+          cases: (p.cases ?? []).map((c) => ({
+            id: c.case_id,
+            area: c.area ?? null,
+            request: c.request ?? null,
+            reliefTypes: c.relief_types ?? [],
+            decided: c.decided ?? null,
+            outcome: c.outcome,
+            monthsToDecision: c.months_to_decision ?? null,
+            sourceUrl: c.source_url ?? null,
+          })),
+          aiExtracted: p.ai_extracted ?? false,
         }
       : null,
-    precedent:
-      e.precedent_granted != null && e.precedent_total != null
-        ? { granted: e.precedent_granted, total: e.precedent_total }
-        : null,
-    medianMonths: e.median_months ?? null,
-    cases: (e.cases ?? []).map((c) => ({
-      id: c.case_id,
-      neighborhood: c.neighborhood,
-      request: c.request,
-      outcome: c.outcome,
-      monthsToDecision: c.months_to_decision ?? null,
-      sourceUrl: c.source_url ?? null,
-    })),
-    aiExtracted: e.ai_extracted ?? false,
-    confidence: e.confidence,
-    confidenceNote: e.confidence_note,
-    howToResolve: e.how_to_resolve,
+    illustrative: e.illustrative,
+    versions: toVersions(e.versions),
   }
 }
 
@@ -424,6 +477,8 @@ const CHIP_FIELDS: Record<string, (keyof Filters)[]> = {
 export function removeChip(f: Filters, key: string): Filters {
   const [kind, value] = key.split(/:(.*)/s)
   if (kind === 'area') return { ...f, areas: f.areas.filter((a) => a !== value) }
+  // Several areas are one filter ("in any of these"); removing it clears them all.
+  if (key === 'areas') return { ...f, areas: [] }
   if (kind === 'near') return { ...f, near: f.near.filter((n) => n.feature !== value) }
   if (kind === 'constraint') {
     return { ...f, excludeConstraints: f.excludeConstraints.filter((c) => c !== value) }
@@ -448,16 +503,56 @@ function toFit(p: S['ProgramFit']): ProgramFit {
   }
 }
 
+function toScored(p: S['ScoredProgram']): ScoredProgram {
+  return {
+    productType: p.product_type,
+    units: p.units,
+    basis: p.basis,
+    score: p.score,
+    band: p.band ? toBand(p.band) : null,
+    outcome: p.outcome,
+    reliefTypes: p.relief_types,
+    monthsToPermit: p.months_to_permit ? toEstimate(p.months_to_permit) : null,
+    maxLandPrice: p.max_land_price ? toEstimate(p.max_land_price) : null,
+  }
+}
+
+export function toAreaSummary(data: unknown): AreaSummary {
+  const a = data as S['AreaSummary']
+  const bands: Record<Band, number> = { fast_track: 0, conditions: 0, high_risk: 0, unknown: 0 }
+  for (const [band, count] of Object.entries(a.bands)) bands[toBand(band)] += count ?? 0
+  return {
+    lots: a.lots,
+    rankedFor: a.ranked_for?.type
+      ? { type: a.ranked_for.type, units: a.ranked_for.units ?? null }
+      : null,
+    bands,
+    blockers: a.blockers.map((b) => ({
+      driver: b.driver,
+      label: b.label,
+      lots: b.lots,
+      avgPoints: b.avg_points,
+    })),
+    nearMisses: a.near_misses,
+    assemblies: a.assemblies,
+  }
+}
+
 export function toSearchResponse(data: unknown): SearchResponse {
   const r = data as S['SearchResponse']
   return {
     total: r.total,
     filters: toFilters(r.filters),
+    rankedFor: r.ranked_for?.type
+      ? { type: r.ranked_for.type, units: r.ranked_for.units ?? null }
+      : null,
     chips: r.chips.map(toChip),
     results: r.results.map((x) => ({
       rank: x.rank,
       parcel: toParcel(x.parcel),
       fit: x.fit ? toFit(x.fit) : null,
+      scored: x.scored ? toScored(x.scored) : null,
+      betterFit: x.better_fit ? toScored(x.better_fit) : null,
     })),
     nearMisses: (r.near_misses ?? []).map((n) => ({
       parcel: toParcel(n.parcel),

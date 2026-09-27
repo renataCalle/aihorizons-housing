@@ -1,12 +1,15 @@
 import { formatDollars, formatMonthsRange, formatPercentRange } from '../lib/format'
+import { Link } from 'react-router'
 import { approvalLabel, programLabel, reliefType } from '../lib/labels'
 import { spanOf } from '../models/estimate'
 import type { Analysis } from '../models/report'
+import { useEvidenceLink } from './evidenceLink'
 
 /** "What you can build": the best by-right and best with-approvals programs. */
 export function BuildOptions({ analysis: a }: { analysis: Analysis }) {
   const lead = a.metrics?.option
   const scenario = a.setbackScenario
+  const evidenceLink = useEvidenceLink()
   return (
     <section className="report-section">
       <div className="report-section-head">
@@ -54,6 +57,12 @@ export function BuildOptions({ analysis: a }: { analysis: Analysis }) {
                     ? o.entitlementBasis.join('; ')
                     : `By right under ${a.versions.ruleset}`}
                 </p>
+                {o.label === 'with_relief' && (
+                  <Link className="evidence-link" to={evidenceLink('option.with_relief')}>
+                    Evidence<span className="visually-hidden"> for the approvals</span>
+                    <span aria-hidden="true"> →</span>
+                  </Link>
+                )}
               </section>
             )
           })}

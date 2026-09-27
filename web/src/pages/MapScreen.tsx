@@ -20,6 +20,7 @@ import {
   RankTags,
   type Padding,
 } from '../map/SearchOverlays'
+import { useMapTheme } from '../state/mapTheme'
 
 /** Hazelwood, where the mock candidates cluster. */
 const INITIAL_VIEW: MapView = { longitude: -79.943, latitude: 40.405, zoom: 16.4 }
@@ -32,6 +33,8 @@ const REPORT_PADDING: Padding = { top: 180, bottom: 90, left: 40, right: 760 }
 function matchLayer(parcels: ParcelLayer, response: SearchResponse | null): ParcelLayer {
   if (!response) return parcels
   const ranks = new Map(response.results.map((r) => [r.parcel.id, r.rank]))
+  // Colour by what each lot is ranked on: the searched building type, or the engine's pick.
+  const bands = new Map(response.results.map((r) => [r.parcel.id, r.scored?.band]))
   const showAssemblies = response.filters.showAssemblies
   return {
     ...parcels,
@@ -41,7 +44,7 @@ function matchLayer(parcels: ParcelLayer, response: SearchResponse | null): Parc
         ...f,
         properties: {
           ...f.properties,
-          band: rank ? f.properties.band : 'none',
+          band: rank ? (bands.get(f.properties.id) ?? f.properties.band) : 'none',
           rank: rank ?? null,
           assemblyId: showAssemblies ? f.properties.assemblyId : null,
         },
@@ -66,6 +69,7 @@ export function MapScreen() {
   // Transit stops: a manual choice from the Layers menu, until the search changes (below).
   const [transitChoice, setTransitChoice] = useState<{ auto: boolean; on: boolean } | null>(null)
   const [retryCount, setRetryCount] = useState(0)
+  const mapTheme = useMapTheme()
 
   // Text without filters in the URL is parsed first; then the filters live in the URL.
   const parse = useAsync(fromUrl || !q ? 'none' : `parse:${q}`, (signal) =>
@@ -100,6 +104,8 @@ export function MapScreen() {
   )
 
   const selectedId = reportId ?? params.get('selected')
+  // 3D view: the city's buildings and hills in 3D, lots coloured on the ground.
+  const view3d = params.get('view') === '3d'
   const selectedCenter = useMemo(() => {
     if (!selectedId) return null
     const hit =
@@ -119,6 +125,9 @@ export function MapScreen() {
   const f = filters ? filterParam(filters, !!q) : null
   if (f) searchParams.set('f', f)
   const searchQuery = searchParams.toString()
+  // The 3D view stays on while moving between results, reports and evidence.
+  if (view3d) searchParams.set('view', '3d')
+  const linkQuery = searchParams.toString()
 
   // Stable callbacks: the results list is memoized and only re-renders rows that change.
   const update = useCallback(
@@ -159,13 +168,15 @@ export function MapScreen() {
     setTransit,
     retry: () => setRetryCount((n) => n + 1),
     searchQuery,
+    linkQuery,
     features: featureData,
+    view3d,
   }
 
   // With a report open, clicking another parcel opens its report; otherwise it selects it.
   const onMapSelect = (id: string | null) => {
     if (!reportId) return context.select(id)
-    if (id && id !== reportId) navigate(`/parcel/${id}${searchQuery ? `?${searchQuery}` : ''}`)
+    if (id && id !== reportId) navigate(`/parcel/${id}${linkQuery ? `?${linkQuery}` : ''}`)
   }
 
   return (
@@ -180,29 +191,41 @@ export function MapScreen() {
           hoveredId={hoveredId}
           onHover={setHoveredId}
           showTransit={transit}
+          view3d={view3d}
+          theme={mapTheme.theme}
+          reportId={reportId}
         >
           {featureData && filters && (
             <>
               <AreaOverlay features={featureData} areas={filters.areas} />
-              {!selectedId && <FitToAreas features={featureData} areas={filters.areas} />}
+              {!selectedId && (
+                <FitToAreas features={featureData} areas={filters.areas} view3d={view3d} />
+              )}
             </>
           )}
-          {response && <RankTags results={response.results} />}
+          {response && (
+            <RankTags results={response.results} onSelect={onMapSelect} onHover={setHoveredId} />
+          )}
           <FlyToSelection
             center={selectedCenter}
             padding={reportId ? REPORT_PADDING : RESULTS_PADDING}
+            view3d={view3d}
           />
         </BlueprintMap>
 
         <TopBar
           illustrative={health.status === 'ready' && health.data.illustrative}
           query={q}
-          basicSearch={parsed?.parser === 'rules'}
         />
 
         <Outlet context={context} />
 
-        <MapControls />
+        <MapControls
+          view3d={view3d}
+          onToggle3d={() => update({ view: view3d ? null : '3d' })}
+          themeId={mapTheme.theme.id}
+          onTheme={mapTheme.setTheme}
+        />
         <MapReadout initial={INITIAL_VIEW} />
       </main>
     </MapProvider>

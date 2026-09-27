@@ -1,9 +1,10 @@
 import type { Evidence } from '../models/evidence'
 import type { Health } from '../models/health'
 import type { MapFeatures, ParcelLayer } from '../models/map'
-import type { SiteReport } from '../models/report'
+import type { Program, SiteReport } from '../models/report'
 import type { Filters } from '../models/filters'
 import type {
+  AreaSummary,
   Examples,
   LookupResult,
   Neighborhood,
@@ -11,6 +12,7 @@ import type {
   SearchResponse,
 } from '../models/search'
 import {
+  toAreaSummary,
   toEvidence,
   toExamples,
   toHealth,
@@ -31,12 +33,34 @@ export async function fetchHealth(signal?: AbortSignal): Promise<Health> {
   return toHealth(await getJson('/api/health', signal))
 }
 
-export async function fetchSiteReport(parcelId: string, signal?: AbortSignal): Promise<SiteReport> {
-  return toSiteReport(await getJson(`/api/parcels/${encodeURIComponent(parcelId)}`, signal))
+/** The report; with `program`, the engine scores that building instead of its own pick. */
+export async function fetchSiteReport(
+  parcelId: string,
+  signal?: AbortSignal,
+  program?: Program | null,
+): Promise<SiteReport> {
+  const path = `/api/parcels/${encodeURIComponent(parcelId)}${programQuery(program)}`
+  return toSiteReport(await getJson(path, signal))
 }
 
-export async function fetchEvidence(evidenceId: string, signal?: AbortSignal): Promise<Evidence> {
-  return toEvidence(await getJson(`/api/evidence/${encodeURIComponent(evidenceId)}`, signal))
+function programQuery(program?: Program | null): string {
+  const query = new URLSearchParams()
+  if (program) {
+    query.set('product_type', program.productType)
+    if (program.units !== null) query.set('units', String(program.units))
+  }
+  return query.size ? `?${query}` : ''
+}
+
+/** One finding or the approvals option of the report for the same `program`. */
+export async function fetchEvidence(
+  parcelId: string,
+  evidenceId: string,
+  signal?: AbortSignal,
+  program?: Program | null,
+): Promise<Evidence> {
+  const path = `/api/parcels/${encodeURIComponent(parcelId)}/evidence/${encodeURIComponent(evidenceId)}`
+  return toEvidence(await getJson(`${path}${programQuery(program)}`, signal))
 }
 
 export async function fetchParcelLayer(signal?: AbortSignal): Promise<ParcelLayer> {
@@ -53,6 +77,11 @@ export async function fetchLookup(text: string, signal?: AbortSignal): Promise<L
 
 export async function fetchSearch(filters: Filters, signal?: AbortSignal): Promise<SearchResponse> {
   return toSearchResponse(await postJson('/api/search', toApiFilters(filters), signal))
+}
+
+/** The same search at a glance (the 3D view's panel). */
+export async function fetchAreaSummary(filters: Filters, signal?: AbortSignal): Promise<AreaSummary> {
+  return toAreaSummary(await postJson('/api/search/summary', toApiFilters(filters), signal))
 }
 
 export async function fetchParse(

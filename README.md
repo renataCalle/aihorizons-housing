@@ -28,15 +28,59 @@ lockfile. The web app is a separate npm project.
 - `contracts` depends on nothing else in the workspace.
 - `research` is never a dependency of `engine`, `pipeline`, or `api`.
 
-## Getting started
+## Run the app locally
+
+The app (Pencil It) is two processes: the API on port 8000 and the web app on port 5173.
+
+**You need:** Python 3.12 with [uv](https://docs.astral.sh/uv/), and Node 22 with npm.
+
+**1. Install** (once, from the repo root):
 
 ```bash
-uv sync                      # Python workspace (add --extra notebooks for JupyterLab)
-uv run pytest                # tests
-uv run ruff check .          # lint
-uv run lint-imports          # boundary rules
+uv sync
+cd web && npm install && cd ..
+```
 
-cd web && npm install && npm run dev
+**2. Optional: AI search.** Copy `.env.example` to `.env` and set `ANTHROPIC_API_KEY`.
+Without a key, search still works with the built-in rule-based parser.
+
+```bash
+cp .env.example .env
+```
+
+**3. Start the API** (terminal 1, repo root):
+
+```bash
+uv run uvicorn navigator_api.main:app --reload
+```
+
+It serves the committed Hazelwood results in `results/` (`SITE_SOURCE=pipeline`, the
+default). For the illustrative mock lots instead, start it with `SITE_SOURCE=mock`. Check it
+at http://localhost:8000/api/health.
+
+**4. Start the web app** (terminal 2):
+
+```bash
+cd web && npm run dev
+```
+
+Open http://localhost:5173. The dev server forwards `/api` to the API on port 8000.
+
+**Things to try:** search "2 townhomes in Hazelwood"; type a parcel ID such as `52-H-93` and
+open its report; in a report, "Evidence →" on a finding or on the "Best with approvals" card;
+the "3D" button and the map style switch (palette button, or Layers).
+
+**If something looks off:** restart the API after `results/` changes (it loads the data at
+startup). If port 8000 is taken, run the API with `--port 8010` and the web app with
+`API_URL=http://127.0.0.1:8010 npm run dev`.
+
+## Checks (what CI runs)
+
+```bash
+uv run pytest
+uv run ruff check . && uv run ruff format --check .
+uv run lint-imports
+cd web && npm run lint && npm test && npm run build
 ```
 
 ## Working agreements

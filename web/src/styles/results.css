@@ -218,21 +218,27 @@ p.results-panel {
   border-radius: 3px;
 }
 
+/* Legend and list dots: the map's colours (soft risk, as the map draws it in results). */
 .swatch-fast_track {
-  background: var(--cobalt);
+  background: var(--band-fast-track);
 }
 
 .swatch-conditions {
-  background: var(--sky);
+  background: var(--band-conditions);
 }
 
 .swatch-high_risk {
-  background: var(--orange);
+  border: 1.5px solid var(--band-risk-soft-outline);
+  background: var(--band-risk-soft-fill);
 }
 
 .swatch-unknown {
-  border: 1px solid var(--unknown);
-  background: repeating-linear-gradient(45deg, var(--unknown) 0 1.5px, var(--unknown-tint) 1.5px 4px);
+  border: 1px solid var(--band-unknown);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--band-unknown) 0 1.5px,
+    var(--band-unknown-tint) 1.5px 4px
+  );
 }
 
 .swatch-stop {
@@ -278,6 +284,7 @@ p.results-panel {
 }
 
 .result-score {
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -299,6 +306,7 @@ p.results-panel {
 }
 
 .result-band {
+  white-space: nowrap;
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.1em;
@@ -351,8 +359,50 @@ p.results-panel {
   gap: 5px;
 }
 
+.legend .legend-title {
+  flex-basis: 100%;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
 .layers {
   position: relative;
+}
+
+/* "Blueprint | Standard", at the top of the Layers menu */
+.style-switch {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 6px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--white);
+}
+
+.style-switch-option {
+  flex: 1;
+  min-height: 36px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.style-switch-option:hover {
+  background: var(--cobalt-tint-2);
+}
+
+.style-switch-option[aria-pressed='true'] {
+  background: var(--cobalt);
+  color: var(--white);
 }
 
 .layers-menu {
@@ -590,26 +640,39 @@ p.results-panel {
   text-transform: uppercase;
 }
 
+/* Band pills in the map's colours. Tints keep the text at 4.5:1 or better on either theme. */
 .pill-fast_track {
-  background: var(--cobalt);
+  background: var(--band-fast-track);
   color: var(--white);
 }
 
 .pill-conditions {
-  background: var(--cobalt-tint);
+  border: 1px solid var(--band-conditions);
+  background: color-mix(in srgb, var(--band-conditions) 22%, var(--white));
   color: var(--cobalt-deep);
 }
 
+/* Soft risk, as on the map; the report's pill keeps the strong orange (report.css). */
 .pill-high_risk {
-  background: var(--orange-tint);
-  border: 1px solid var(--orange-line);
+  border: 1.5px solid var(--band-risk-soft-outline);
+  background: color-mix(in srgb, var(--band-risk-soft-fill) 50%, var(--white));
   color: var(--orange-text);
 }
 
 .pill-unknown {
-  background: var(--unknown-tint);
-  border: 1px dashed var(--unknown);
+  background: var(--band-unknown-tint);
+  border: 1px dashed var(--band-unknown);
   color: var(--ink-2);
+}
+
+.inspector-better {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: var(--radius-control);
+  background: var(--cobalt-tint-2);
+  color: var(--cobalt-deep);
+  font-size: 13px;
 }
 
 .inspector-none {
@@ -661,7 +724,7 @@ p.results-panel {
 }
 
 .risk-deal_risk {
-  background: var(--orange);
+  background: var(--band-high-risk);
 }
 
 .risk-caution {
@@ -685,22 +748,54 @@ p.results-panel {
 }
 
 /* Map overlays */
+/* Rank tags: navy circles with a white ring (no score band uses navy); the best in cobalt. */
 .rank-tag {
-  display: inline-block;
-  padding: 1px 7px;
-  border: 1px solid var(--cobalt);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: 2px solid var(--white);
   border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--cobalt);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  pointer-events: none;
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(11, 27, 63, 0.3);
+  cursor: pointer;
+}
+
+.rank-tag:hover {
+  background: var(--ink-2);
 }
 
 .rank-tag.is-first {
   background: var(--cobalt);
-  color: var(--white);
+}
+
+.rank-tag.is-first:hover {
+  background: var(--cobalt-deep);
+}
+
+/* Tags that would overlap share one navy pill; each number inside is still its own button. */
+.rank-group {
+  display: inline-flex;
+  gap: 2px;
+  padding: 0;
+  border: 2px solid var(--white);
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  box-shadow: 0 2px 8px rgba(11, 27, 63, 0.3);
+}
+
+.rank-group .rank-tag {
+  height: 24px;
+  min-width: 26px;
+  border: none;
+  box-shadow: none;
 }
 
 .area-label {
@@ -738,13 +833,121 @@ p.results-panel {
   fill: var(--cobalt);
 }
 
-.basic-search {
-  padding: 4px 10px;
-  border: 1px dashed var(--unknown);
-  border-radius: var(--radius-pill);
-  color: var(--ink-2);
+/* The 3D view's "at a glance" panel (ScoreView3D.dc.html), in the results panel's frame */
+.glance {
+  bottom: auto;
+}
+
+.glance-kicker {
+  margin: 0;
+  color: var(--cobalt);
+}
+
+.glance-title {
+  margin: -6px 0 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.glance-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.glance-body section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.glance-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0;
+  color: var(--cobalt);
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.12em;
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+}
+
+.glance-total {
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.glance-bands,
+.glance-blockers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.glance-bands li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.glance-blocker-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.glance-blocker-meta {
+  flex: none;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.glance-bar {
+  display: block;
+  height: 6px;
+  margin-top: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--cobalt-tint-2);
+}
+
+.glance-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--band-risk-soft-outline);
+}
+
+.glance-note {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.glance-stats div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-size: 13px;
+}
+
+.glance-stats b {
+  color: var(--cobalt);
+  font-size: 22px;
+  font-weight: 600;
 }

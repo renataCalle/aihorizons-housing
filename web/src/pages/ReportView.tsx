@@ -1,15 +1,16 @@
-import { useEffect, useRef } from 'react'
-import { Link, Outlet, useNavigate, useParams } from 'react-router'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Link, Outlet, useNavigate, useParams, useSearchParams } from 'react-router'
 import { fetchSiteReport } from '../api'
 import { formatMoneyRange, formatNumberRange, formatSqft } from '../lib/format'
-import { BAND_LABEL } from '../lib/labels'
+import { BAND_LABEL, programLabel } from '../lib/labels'
 import { useAsync } from '../lib/useAsync'
 import { spanOf } from '../models/estimate'
-import type { Analysis, Flag, Severity, SiteReport } from '../models/report'
+import type { Analysis, Flag, Parcel, Program, Severity, SiteReport } from '../models/report'
 import { BuildOptions } from '../report/BuildOptions'
 import { KeyNumbers } from '../report/KeyNumbers'
 import { AboutReport, ParcelFacts } from '../report/ParcelFacts'
 import { RuleTable } from '../report/RuleTable'
+import { useEvidenceLink } from '../report/evidenceLink'
 import { formatCountyId } from '../search/highlight'
 import { useMapScreen } from './mapScreenContext'
 
@@ -25,11 +26,22 @@ export function ReportView() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const s = useMapScreen()
-  const report = useAsync(id, (signal) => fetchSiteReport(id, signal))
+  const [params] = useSearchParams()
+  // The building the search asked for, unless the viewer switched to the engine's pick.
+  const product = s.filters?.product
+  const searched: Program | null = product?.type
+    ? { productType: product.type, units: product.units }
+    : null
+  const showPick = params.get('pick') === 'engine'
+  const program = showPick ? null : searched
+  const [attempt, setAttempt] = useState(0)
+  const report = useAsync(`${id}|${program?.productType}|${program?.units}#${attempt}`, (signal) =>
+    fetchSiteReport(id, signal, program),
+  )
   const panelRef = useRef<HTMLElement>(null)
 
   const back = `/search?${new URLSearchParams([
-    ...new URLSearchParams(s.searchQuery),
+    ...new URLSearchParams(s.linkQuery),
     ['selected', id],
   ]).toString()}`
   const total = s.response?.total
@@ -56,7 +68,7 @@ export function ReportView() {
         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M19 12H5M11 6l-6 6 6 6" />
         </svg>
-        {total !== undefined && s.searchQuery ? `Back to ${total} sites` : 'Back to map'}
+        {total !== undefined && s.searchQuery ? `Back to ${total} lots` : 'Back to map'}
       </Link>
 
       <article
@@ -70,23 +82,70 @@ export function ReportView() {
           <span className="label report-kicker">
             Site report{rank && total ? ` · ${String(rank).padStart(2, '0')} / ${total}` : ''}
           </span>
-          <Link className="icon-button" to={back} aria-label="Close report">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </Link>
+          <div className="report-actions">
+            <button
+              type="button"
+              className="button-primary export-memo"
+              disabled={report.status !== 'ready' || !report.data.analysis}
+              onClick={() => report.status === 'ready' && printMemo(report.data)}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+              </svg>
+              Export memo
+            </button>
+            <Link className="icon-button" to={back} aria-label="Close report">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </Link>
+          </div>
         </header>
 
         {report.status === 'loading' && <ReportLoading />}
         {report.status === 'error' && (
-          <p role="alert">Couldn't load this report: {report.error.message}</p>
+          <div className="report-none" role="alert">
+            <p>Couldn't load this report: {report.error.message}</p>
+            <button
+              type="button"
+              className="button-secondary"
+              onClick={() => setAttempt((n) => n + 1)}
+            >
+              Try again
+            </button>
+          </div>
         )}
-        {report.status === 'ready' && <ReportBody report={report.data} />}
+        {report.status === 'ready' && (
+          <ReportBody
+            report={report.data}
+            programNote={
+              searched && (
+                <ProgramNote
+                  searched={searched}
+                  scored={report.data.program}
+                  showPick={showPick}
+                  pick={report.data.parcel}
+                />
+              )
+            }
+          />
+        )}
       </article>
 
-      <Outlet />
+      <Outlet context={program} />
     </>
   )
+}
+
+/**
+ * "Export memo": the browser's print dialog over the report's print stylesheet (report.css,
+ * `@media print`), which also shows the sources appendix. The title names the saved PDF.
+ */
+function printMemo(report: SiteReport) {
+  const title = document.title
+  document.title = `Site memo - ${report.parcel.name}`
+  window.print()
+  document.title = title
 }
 
 function ReportLoading() {
@@ -101,9 +160,63 @@ function ReportLoading() {
   )
 }
 
-function ReportBody({ report }: { report: SiteReport }) {
+/** Which building the report scores: the one searched for, or the engine's pick. */
+function ProgramNote(props: {
+  searched: Program
+  scored: Program | null
+  showPick: boolean
+  /** The lot's summary: its engine pick and that pick's score */
+  pick: Parcel
+}) {
+  const [params] = useSearchParams()
+  const label = programLabel(props.searched.productType, props.searched.units).toLowerCase()
+  const toggle = (pick: boolean) => {
+    const next = new URLSearchParams(params)
+    if (pick) next.set('pick', 'engine')
+    else next.delete('pick')
+    return `?${next}`
+  }
+  if (props.showPick) {
+    return (
+      <p className="program-note">
+        Showing the engine’s best pick for this lot.{' '}
+        <Link to={toggle(false)} replace>
+          Score {label} instead
+        </Link>
+      </p>
+    )
+  }
+  if (!props.scored) {
+    return (
+      <p className="program-note">
+        This lot’s facts aren’t stored, so it can’t be scored for {label}: showing the engine’s
+        pick.
+      </p>
+    )
+  }
+  const lead = props.pick.leadOption
+  const better = lead && lead.productType !== props.scored.productType ? lead : null
+  return (
+    <p className="program-note">
+      Scored for {label}, as searched.{' '}
+      {better && (
+        <>
+          Better fit on this lot: {programLabel(better.productType, better.units)}
+          {props.pick.score !== null && ` · ${props.pick.score}`}.{' '}
+        </>
+      )}
+      <Link to={toggle(true)} replace>
+        {better ? 'See it' : 'See the engine’s best pick'}
+      </Link>
+    </p>
+  )
+}
+
+function ReportBody({ report, programNote }: { report: SiteReport; programNote: ReactNode }) {
   const { parcel, analysis } = report
-  const title = parcel.neighborhood ? `${parcel.name}, ${parcel.neighborhood}` : parcel.name
+  // Outside the city there is no neighbourhood: name the municipality instead.
+  const place = parcel.neighborhood ?? parcel.municipality
+  const title = place ? `${parcel.name}, ${place}` : parcel.name
   const meta = [
     formatCountyId(parcel.id),
     formatSqft(parcel.lotAreaSqft).replace('sq ft', 'SF'),
@@ -117,6 +230,7 @@ function ReportBody({ report }: { report: SiteReport }) {
         <span className="mono">{meta.join(' · ')}</span>
         {parcel.illustrative && <span className="badge-illustrative">Illustrative data</span>}
       </p>
+      {analysis && programNote}
       {analysis ? (
         <AnalysisSections analysis={analysis} />
       ) : (
@@ -127,10 +241,11 @@ function ReportBody({ report }: { report: SiteReport }) {
         </p>
       )}
       <section className="report-section">
-        <h2>Parcel and assumptions</h2>
+        <h2>{analysis ? 'Parcel and assumptions' : 'Parcel'}</h2>
         <ParcelFacts parcel={parcel} analysis={analysis} />
       </section>
       {analysis && <AboutReport analysis={analysis} freshness={report.freshness} />}
+      {analysis && <SourcesAppendix analysis={analysis} />}
     </>
   )
 }
@@ -214,6 +329,7 @@ function AnalysisSections({ analysis: a }: { analysis: Analysis }) {
 }
 
 function FlagRow({ flag: f }: { flag: Flag }) {
+  const evidenceLink = useEvidenceLink()
   const ev = f.evidence[0]
   const section = f.evidence.find((e) => e.codeSection)?.codeSection
   const link = f.evidence.find((e) => e.url)?.url
@@ -250,6 +366,10 @@ function FlagRow({ flag: f }: { flag: Flag }) {
             See source<span aria-hidden="true"> →</span>
           </a>
         )}
+        <Link className="evidence-link" to={evidenceLink(`flag.${f.id}`)}>
+          Evidence<span className="visually-hidden"> for {f.title}</span>
+          <span aria-hidden="true"> →</span>
+        </Link>
       </div>
     </li>
   )
@@ -281,6 +401,39 @@ function NextSteps({ analysis: a }: { analysis: Analysis }) {
             <b className="step-cost">{formatMoneyRange(step.cost)}</b>
           </li>
         ))}
+      </ol>
+    </section>
+  )
+}
+
+/** Printed memo only: every source the findings cite, once each. */
+function SourcesAppendix({ analysis: a }: { analysis: Analysis }) {
+  const seen = new Set<string>()
+  const sources = a.flags
+    .flatMap((f) => f.evidence)
+    .filter((e) => {
+      const key = `${e.source}|${e.codeSection}|${e.url}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+  return (
+    <section className="print-only sources-appendix">
+      <h2>Sources</h2>
+      <ol>
+        {sources.map((e) => (
+          <li key={`${e.source}|${e.codeSection}|${e.url}`}>
+            {e.source}
+            {e.codeSection && `, § ${e.codeSection}`}
+            {e.asOf && `, as of ${e.asOf}`}
+            {e.url && <span className="source-url">{e.url}</span>}
+          </li>
+        ))}
+        <li>
+          Zoning rules: {a.versions.ruleset}. Engine {a.versions.engine}, schema{' '}
+          {a.versions.schema}
+          {a.versions.dataAsOf && `, oldest data ${a.versions.dataAsOf}`}.
+        </li>
       </ol>
     </section>
   )

@@ -1,6 +1,69 @@
 {
   "components": {
     "schemas": {
+      "AreaSummary": {
+        "additionalProperties": false,
+        "description": "The searched lots at a glance (the 3D view's panel). Counts and averages of the\nengine's results for the lots the search returns; the API judges nothing here.",
+        "properties": {
+          "assemblies": {
+            "description": "Groups of lots that work together",
+            "title": "Assemblies",
+            "type": "integer"
+          },
+          "bands": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Lots per band, as the search ranks them",
+            "propertyNames": {
+              "enum": [
+                "fast_track",
+                "feasible_with_conditions",
+                "high_risk",
+                "not_scored"
+              ]
+            },
+            "title": "Bands",
+            "type": "object"
+          },
+          "blockers": {
+            "description": "Biggest total score cost first",
+            "items": {
+              "$ref": "#/components/schemas/Blocker"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "lots": {
+            "title": "Lots",
+            "type": "integer"
+          },
+          "near_misses": {
+            "description": "Lots that fail exactly one filter",
+            "title": "Near Misses",
+            "type": "integer"
+          },
+          "ranked_for": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductFilter"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "lots",
+          "bands",
+          "blockers",
+          "near_misses",
+          "assemblies"
+        ],
+        "title": "AreaSummary",
+        "type": "object"
+      },
       "Assembly": {
         "additionalProperties": false,
         "properties": {
@@ -86,17 +149,74 @@
         "title": "Assumption",
         "type": "object"
       },
+      "Blocker": {
+        "additionalProperties": false,
+        "description": "One score driver across the searched lots, from each lot's `score_breakdown`.",
+        "properties": {
+          "avg_points": {
+            "description": "Average points it costs those lots",
+            "title": "Avg Points",
+            "type": "number"
+          },
+          "driver": {
+            "description": "The flag id, or 'relief' for approvals needed",
+            "title": "Driver",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "lots": {
+            "description": "Lots whose score this driver lowers",
+            "title": "Lots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "driver",
+          "label",
+          "lots",
+          "avg_points"
+        ],
+        "title": "Blocker",
+        "type": "object"
+      },
       "Case": {
         "additionalProperties": false,
         "properties": {
+          "area": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Neighborhood or zoning district",
+            "title": "Area"
+          },
           "case_id": {
             "title": "Case Id",
             "type": "string"
           },
+          "decided": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided"
+          },
           "months_to_decision": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
@@ -104,23 +224,36 @@
             ],
             "title": "Months To Decision"
           },
-          "neighborhood": {
-            "title": "Neighborhood",
-            "type": "string"
-          },
           "outcome": {
             "enum": [
               "granted",
               "denied",
               "withdrawn",
-              "pending"
+              "pending",
+              "unknown"
             ],
             "title": "Outcome",
             "type": "string"
           },
+          "relief_types": {
+            "description": "Approval types asked for, e.g. variance",
+            "items": {
+              "type": "string"
+            },
+            "title": "Relief Types",
+            "type": "array"
+          },
           "request": {
-            "title": "Request",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "What was asked, in words (mock cases)",
+            "title": "Request"
           },
           "source_url": {
             "anyOf": [
@@ -131,13 +264,12 @@
                 "type": "null"
               }
             ],
+            "description": "Link to the decision. Not served for now: the decisions name applicants",
             "title": "Source Url"
           }
         },
         "required": [
           "case_id",
-          "neighborhood",
-          "request",
           "outcome"
         ],
         "title": "Case",
@@ -246,21 +378,59 @@
         "title": "CheckResult",
         "type": "object"
       },
-      "CodeReference": {
+      "CodeSection": {
         "additionalProperties": false,
+        "description": "One zoning code section cited anywhere in the analysis, for the UI's code drawer.",
         "properties": {
           "as_of": {
-            "format": "date",
-            "title": "As Of",
-            "type": "string"
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "effective": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective"
           },
           "section": {
             "title": "Section",
             "type": "string"
           },
           "summary": {
-            "title": "Summary",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
           },
           "url": {
             "anyOf": [
@@ -276,10 +446,13 @@
         },
         "required": [
           "section",
+          "title",
+          "summary",
+          "url",
           "as_of",
-          "summary"
+          "effective"
         ],
-        "title": "CodeReference",
+        "title": "CodeSection",
         "type": "object"
       },
       "Comps": {
@@ -398,112 +571,356 @@
       },
       "EvidenceDetail": {
         "additionalProperties": false,
+        "description": "What the engine and the stored facts say about one finding (`flag.<id>`) or the\napprovals option (`option.with_relief`) of one lot's report.",
         "properties": {
-          "ai_extracted": {
-            "default": false,
-            "title": "Ai Extracted",
-            "type": "boolean"
-          },
-          "applies_to": {
-            "title": "Applies To",
-            "type": "string"
-          },
-          "cases": {
-            "items": {
-              "$ref": "#/components/schemas/Case"
-            },
-            "title": "Cases",
-            "type": "array"
-          },
-          "code": {
+          "approval_months": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CodeReference"
+                "$ref": "#/components/schemas/Range"
               },
               {
                 "type": "null"
               }
             ]
           },
-          "confidence": {
+          "approval_prob": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category": {
             "enum": [
-              "high",
-              "medium",
-              "low"
+              "zoning",
+              "physical",
+              "environmental",
+              "infrastructure",
+              "market"
             ],
-            "title": "Confidence",
+            "title": "Category",
             "type": "string"
           },
-          "confidence_note": {
-            "title": "Confidence Note",
-            "type": "string"
+          "code_sections": {
+            "description": "The code sections this evidence cites, explained",
+            "items": {
+              "$ref": "#/components/schemas/CodeSection"
+            },
+            "title": "Code Sections",
+            "type": "array"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Findings only",
+            "title": "Confidence"
+          },
+          "cost_usd": {
+            "anyOf": [
+              {
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Usd"
+          },
+          "entitlement_basis": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Entitlement Basis",
+            "type": "array"
           },
           "how_to_resolve": {
-            "title": "How To Resolve",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "How To Resolve"
           },
           "id": {
+            "description": "flag.<flag id> or option.with_relief",
             "title": "Id",
             "type": "string"
           },
+          "illustrative": {
+            "title": "Illustrative",
+            "type": "boolean"
+          },
           "kind": {
             "enum": [
-              "zoning_relief",
-              "physical",
-              "infrastructure",
-              "market"
+              "finding",
+              "approvals"
             ],
             "title": "Kind",
             "type": "string"
           },
-          "median_months": {
+          "months": {
             "anyOf": [
               {
-                "type": "number"
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Median Months"
+            "title": "Months"
           },
-          "precedent_granted": {
+          "months_to_permit": {
             "anyOf": [
               {
-                "type": "integer"
+                "$ref": "#/components/schemas/Range"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Precedent Granted"
+            "description": "Approvals option only"
           },
-          "precedent_total": {
+          "odds_note": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "string"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Precedent Total"
+            "title": "Odds Note"
+          },
+          "parcel_id": {
+            "title": "Parcel Id",
+            "type": "string"
+          },
+          "precedent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Precedent"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Zoning board decisions (approvals option only)"
+          },
+          "product_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "single_family",
+                  "duplex",
+                  "triplex",
+                  "townhome",
+                  "walkup"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Approvals option only",
+            "title": "Product Type"
+          },
+          "relief": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Relief",
+            "type": "array"
+          },
+          "resolved_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Step"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The next step that resolves the finding"
+          },
+          "rule_checks": {
+            "description": "The rules the building fails (approvals option)",
+            "items": {
+              "$ref": "#/components/schemas/CheckResult"
+            },
+            "title": "Rule Checks",
+            "type": "array"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Findings only",
+            "title": "Severity"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceSource"
+            },
+            "title": "Sources",
+            "type": "array"
           },
           "title": {
-            "title": "Title",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The flag's title; None for the approvals option",
+            "title": "Title"
+          },
+          "units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Units"
+          },
+          "versions": {
+            "$ref": "#/components/schemas/Versions"
           }
         },
         "required": [
           "id",
           "kind",
+          "parcel_id",
           "title",
-          "applies_to",
-          "confidence",
-          "confidence_note",
-          "how_to_resolve"
+          "category",
+          "how_to_resolve",
+          "resolved_by",
+          "illustrative",
+          "versions"
         ],
         "title": "EvidenceDetail",
+        "type": "object"
+      },
+      "EvidenceSource": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "as_of_from_provenance": {
+            "default": false,
+            "description": "The flag had no date; this is the layer's as-of date",
+            "title": "As Of From Provenance",
+            "type": "boolean"
+          },
+          "code_section": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code Section"
+          },
+          "layer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "source",
+          "as_of",
+          "layer",
+          "code_section",
+          "url"
+        ],
+        "title": "EvidenceSource",
         "type": "object"
       },
       "Examples": {
@@ -1361,6 +1778,17 @@
           },
           "parcel": {
             "$ref": "#/components/schemas/ParcelSummary"
+          },
+          "program": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Program"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The building the analysis scores when one was requested and could be scored; None = the engine's pick"
           }
         },
         "required": [
@@ -1778,6 +2206,132 @@
         "title": "ParseResult",
         "type": "object"
       },
+      "Precedent": {
+        "additionalProperties": false,
+        "description": "Zoning board decisions near the lot: the ones the engine judged similar to the\napprovals the option needs. Generated lots carry the mockups' cases, marked illustrative.",
+        "properties": {
+          "ai_extracted": {
+            "default": false,
+            "title": "Ai Extracted",
+            "type": "boolean"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Latest decision in the data",
+            "title": "As Of"
+          },
+          "cases": {
+            "items": {
+              "$ref": "#/components/schemas/Case"
+            },
+            "title": "Cases",
+            "type": "array"
+          },
+          "granted": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Granted"
+          },
+          "median_months": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Months"
+          },
+          "nearby": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Decided cases near the lot, similar or not",
+            "title": "Nearby"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Why decisions are unavailable",
+            "title": "Note"
+          },
+          "rule": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "What the engine counts as similar",
+            "title": "Rule"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Where the decisions come from",
+            "title": "Source"
+          },
+          "status": {
+            "enum": [
+              "available",
+              "unavailable",
+              "illustrative"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "Precedent",
+        "type": "object"
+      },
       "ProductFilter": {
         "additionalProperties": false,
         "properties": {
@@ -1816,6 +2370,40 @@
           }
         },
         "title": "ProductFilter",
+        "type": "object"
+      },
+      "Program": {
+        "additionalProperties": false,
+        "description": "A building type to score, e.g. the one a search asked for.",
+        "properties": {
+          "product_type": {
+            "enum": [
+              "single_family",
+              "duplex",
+              "triplex",
+              "townhome",
+              "walkup"
+            ],
+            "title": "Product Type",
+            "type": "string"
+          },
+          "units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = the largest the zoning rules allow",
+            "title": "Units"
+          }
+        },
+        "required": [
+          "product_type"
+        ],
+        "title": "Program",
         "type": "object"
       },
       "ProgramEvaluation": {
@@ -2008,12 +2596,48 @@
             "title": "Relief",
             "type": "array"
           },
+          "resolution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolution"
+          },
+          "resolved_by_step": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolved By Step"
+          },
           "revenue_basis": {
             "title": "Revenue Basis",
             "type": "string"
           },
           "score": {
             "$ref": "#/components/schemas/Range"
+          },
+          "similar_cases": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Similar Cases"
           },
           "site_cost_premium": {
             "anyOf": [
@@ -2293,6 +2917,139 @@
         "title": "ScoreItem",
         "type": "object"
       },
+      "ScoredProgram": {
+        "additionalProperties": false,
+        "description": "The building a lot is scored on in a search: the searched building type (the engine's\nresult for that type, from the results bundle's per-building rows) or the engine's pick.",
+        "properties": {
+          "band": {
+            "anyOf": [
+              {
+                "enum": [
+                  "fast_track",
+                  "feasible_with_conditions",
+                  "high_risk",
+                  "not_scored"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Band"
+          },
+          "basis": {
+            "description": "pick = the engine's pick; exact = the searched unit count; up_to = the largest unit count the zoning rules allow for the searched type",
+            "enum": [
+              "pick",
+              "exact",
+              "up_to"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "max_land_price": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "months_to_permit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "enum": [
+                  "by_right",
+                  "needs_approval",
+                  "rejected",
+                  "not_covered"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "product_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "single_family",
+                  "duplex",
+                  "triplex",
+                  "townhome",
+                  "walkup"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = no building the engine tested fits the lot",
+            "title": "Product Type"
+          },
+          "relief_types": {
+            "description": "Approvals needed; empty = by right",
+            "items": {
+              "type": "string"
+            },
+            "title": "Relief Types",
+            "type": "array"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = not scored (ruled out, or zoning not covered)",
+            "title": "Score"
+          },
+          "units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Units"
+          }
+        },
+        "required": [
+          "product_type",
+          "units",
+          "basis",
+          "score",
+          "band",
+          "outcome",
+          "relief_types",
+          "months_to_permit",
+          "max_land_price"
+        ],
+        "title": "ScoredProgram",
+        "type": "object"
+      },
       "SearchFilters": {
         "additionalProperties": false,
         "description": "The single filter state shared by the manual controls, the chips and AI search.",
@@ -2558,6 +3315,17 @@
             "title": "Not Applied",
             "type": "array"
           },
+          "ranked_for": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductFilter"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The building type lots are ranked for; None = best fit"
+          },
           "results": {
             "items": {
               "$ref": "#/components/schemas/SearchResult"
@@ -2592,6 +3360,17 @@
       "SearchResult": {
         "additionalProperties": false,
         "properties": {
+          "better_fit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScoredProgram"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The engine's pick, when a building type was searched and the pick is another type"
+          },
           "fit": {
             "anyOf": [
               {
@@ -2609,6 +3388,17 @@
           "rank": {
             "title": "Rank",
             "type": "integer"
+          },
+          "scored": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScoredProgram"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "What the lot is ranked on: the searched type, or the pick"
           }
         },
         "required": [
@@ -2634,6 +3424,13 @@
               "type": "string"
             },
             "title": "Cleared",
+            "type": "array"
+          },
+          "code_sections": {
+            "items": {
+              "$ref": "#/components/schemas/CodeSection"
+            },
+            "title": "Code Sections",
             "type": "array"
           },
           "flags": {
@@ -2964,6 +3761,18 @@
             "title": "Ruleset",
             "type": "string"
           },
+          "ruleset_as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ruleset As Of"
+          },
           "schema": {
             "title": "Schema",
             "type": "string"
@@ -2981,53 +3790,11 @@
     }
   },
   "info": {
-    "title": "Buildable PGH API",
+    "title": "Pencil It API",
     "version": "0.1.0"
   },
   "openapi": "3.1.0",
   "paths": {
-    "/api/evidence/{evidence_id}": {
-      "get": {
-        "operationId": "evidence_api_evidence__evidence_id__get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "evidence_id",
-            "required": true,
-            "schema": {
-              "title": "Evidence Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EvidenceDetail"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Evidence",
-        "tags": [
-          "evidence"
-        ]
-      }
-    },
     "/api/examples": {
       "get": {
         "description": "Example searches for the landing page, from the data being served.",
@@ -3187,7 +3954,7 @@
     },
     "/api/parcels/{parcel_id}": {
       "get": {
-        "description": "Report header, the engine's analysis, and where its facts came from, by county ID.",
+        "description": "Report header, the engine's analysis, and where its facts came from, by county ID.\n\nWith `product_type` (and optionally `units`), the engine scores that building instead of\nits own pick, from the lot's stored facts. Lots without stored facts keep the stored pick,\nand `program` comes back empty.",
         "operationId": "parcel_report_api_parcels__parcel_id__get",
         "parameters": [
           {
@@ -3197,6 +3964,47 @@
             "schema": {
               "title": "Parcel Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "single_family",
+                    "duplex",
+                    "triplex",
+                    "townhome",
+                    "walkup"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "units",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 50,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Units"
             }
           }
         ],
@@ -3225,6 +4033,99 @@
         "summary": "Parcel Report",
         "tags": [
           "parcels"
+        ]
+      }
+    },
+    "/api/parcels/{parcel_id}/evidence/{evidence_id}": {
+      "get": {
+        "description": "One finding (`flag.<flag id>`) or the approvals option (`option.with_relief`) of the\nlot's report, for the same building type as the report (`product_type`, `units`).",
+        "operationId": "evidence_api_parcels__parcel_id__evidence__evidence_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parcel_id",
+            "required": true,
+            "schema": {
+              "title": "Parcel Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "evidence_id",
+            "required": true,
+            "schema": {
+              "title": "Evidence Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "single_family",
+                    "duplex",
+                    "triplex",
+                    "townhome",
+                    "walkup"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "units",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 50,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Units"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Evidence",
+        "tags": [
+          "evidence"
         ]
       }
     },
@@ -3307,6 +4208,48 @@
           }
         },
         "summary": "Parse Text",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/api/search/summary": {
+      "post": {
+        "description": "The same search at a glance: lots per band, what holds them back, near misses.",
+        "operationId": "search_summary_api_search_summary_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchFilters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AreaSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search Summary",
         "tags": [
           "search"
         ]

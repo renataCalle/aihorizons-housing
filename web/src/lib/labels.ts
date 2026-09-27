@@ -33,13 +33,13 @@ export function reliefShortLabel(type: string): string {
   return RELIEF_LABEL[type] ?? type.replace(/_/g, ' ')
 }
 
-/** "3 townhomes", "Duplex", "6-unit walk-up" */
-export function programLabel(productType: string, units: number): string {
+/** "3 townhomes", "Duplex", "6-unit walk-up"; without a unit count: "Townhomes", "Walk-up". */
+export function programLabel(productType: string, units: number | null): string {
   switch (productType) {
     case 'townhome':
-      return `${units} townhome${units === 1 ? '' : 's'}`
+      return units === null ? 'Townhomes' : `${units} townhome${units === 1 ? '' : 's'}`
     case 'walkup':
-      return `${units}-unit walk-up`
+      return units === null ? 'Walk-up' : `${units}-unit walk-up`
     case 'single_family':
       return 'Single-family home'
     default:
@@ -63,4 +63,43 @@ export function approvalLabel(reliefTypes: string[]): string {
 /** Relief strings from the engine look like "variance (903.03)". */
 export function reliefType(relief: string): string {
   return relief.split(' (')[0].trim().toLowerCase().replace(/ /g, '_')
+}
+
+const PRODUCT_NOUN: Record<string, [singular: string, plural: string]> = {
+  single_family: ['Single-family', 'single-family homes'],
+  duplex: ['Duplex', 'duplexes'],
+  triplex: ['Triplex', 'triplexes'],
+  townhome: ['Townhome', 'townhomes'],
+  walkup: ['Walk-up', 'walk-ups'],
+}
+
+/** List header: "ranked for townhomes", "ranked for 3 townhomes". */
+export function rankedForLabel(productType: string, units: number | null): string {
+  return units === null
+    ? (PRODUCT_NOUN[productType]?.[1] ?? productType)
+    : programLabel(productType, units).toLowerCase()
+}
+
+/** Legend title in a building-type search: "Townhome feasibility". */
+export function feasibilityLabel(productType: string): string {
+  return `${PRODUCT_NOUN[productType]?.[0] ?? productType} feasibility`
+}
+
+/** Types whose unit count is fixed: "up to" only makes sense for townhomes and walk-ups. */
+const FIXED_UNITS = new Set(['single_family', 'duplex', 'triplex'])
+
+/**
+ * The building a score is for: "Single-family home", "2 townhomes", or "Up to 2 townhomes"
+ * when the lot was scored at the most the rules allow rather than the count searched.
+ */
+export function scoredLabel(p: {
+  productType: string | null
+  units: number | null
+  basis: 'pick' | 'exact' | 'up_to'
+}): string {
+  if (!p.productType) return 'No building fits'
+  const label = programLabel(p.productType, p.units)
+  return p.basis === 'up_to' && !FIXED_UNITS.has(p.productType) && p.units !== null
+    ? `Up to ${label.toLowerCase()}`
+    : label
 }

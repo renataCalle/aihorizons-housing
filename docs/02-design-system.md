@@ -92,32 +92,50 @@ Use these sparingly; they carry the style:
 
 ## Map style
 
-Base (MapLibre GL JS 6, already in `web/package.json`): **OpenFreeMap Positron** (`https://tiles.openfreemap.org/styles/positron`), recolored at load time. Write one function, `applyBlueprintTheme(style)`, that walks the style's layers and overrides paint properties:
+Base (MapLibre GL JS 6, already in `web/package.json`): **OpenFreeMap Positron** (`https://tiles.openfreemap.org/styles/positron`), recolored at load time by `applyMapTheme(style, palette)` in `web/src/map/blueprintTheme.ts`, which walks the style's layers and overrides paint properties.
 
-| Layer group | Paint |
-|---|---|
-| background, landuse, park | `#EEF4FB` (parks one step lighter, no green) |
-| water | `#D3E3F7`, outline `#B4CCEC` |
-| buildings | fill `#E3ECF8`, outline `#C5D7EF` |
-| roads (minor) | `#FFFFFF` |
-| roads (major) | `#FFFFFF`, casing `#D5E2F4` |
-| rail, paths | `#C9D9F0`, dashed |
-| labels | Plex Mono–like letter-spaced uppercase in `#6A84B8` for places; hide POI icons |
+**Two map themes (Sep 2026): Blueprint (default) and Standard.** Viewers switch with "Blueprint | Standard" at the top of the Layers menu or the style button in the map controls; the choice is saved in `localStorage`. Switching recolours the live map (no reload: data layers, selection and camera stay). Every colour lives in `web/src/map/themes.ts`, the one source: the map reads it directly, and the UI reads the band colours as CSS variables set on the root with `data-map-theme` (`tokens.css` repeats Blueprint's as the first-paint default; a test keeps them equal).
+
+| Layer group | Blueprint (default) | Standard (sampled from Mapbox "Standard" day, softened 20% toward the ground) |
+|---|---|---|
+| background, landuse | `#F1F4F8` | `#F0ECE2` |
+| parks, grass | `#E3EAF0` (grass layer added: Positron has none) | `#C8E9BC` |
+| woods | `#E3EAF0` | `#C0E2B3` |
+| water | `#CFDCEA`, outline `#B8CADF` | `#B6DEF5`, outline `#A9D5F0` |
+| buildings | fill `#E6ECF3`, outline `#D3DCE8` | fill `#E6E2D9`, outline `#DDD9D0` |
+| roads | `#FFFFFF`, casing `#C9D3E0` | `#D1D3DA`, casing `#BDC2D0` |
+| lot lines (not candidates) | `#C9D3E0` | `#D6D0C4` |
+| labels | `#6A84B8`, letter-spaced uppercase for places; hide POI icons | same style in `#56657E` |
+| 3D buildings (solid) | `#D9DFE8` → `#D5DEEB` by height, light 0.3 | `#D9D6CE`, light 0.4 |
+
+**Score bands** (fill opacity 0.85, thin white line between adjacent lots):
+
+| Band | Blueprint | Standard |
+|---|---|---|
+| Fast track | `#1B3FD1` | `#1E3A8A` |
+| With conditions | `#6E9BF2` | `#4F86E8` |
+| High risk, strong (the report, and the lot whose report is open) | `#E8590C` | `#E8590C` |
+| High risk, soft (the map and search results) | fill `#F9BE8C`, 1.5px outline `#D9480F` | same |
+| Unknown | hatched `#8C9BB5` on `#F1F4F9` | same |
+
+Pills keep text at 4.5:1 or better: fast track is white on the band colour; with conditions and soft risk use tints of their band with the band colour as border.
 
 Add a technical grid feel with a faint 48px grid as a CSS background behind a slightly transparent basemap, or skip it if it hurts performance.
 
 **Data layers** (from `GET /api/map/parcels`):
-1. `parcels-fill`: fill by `band` using the band colors; unknown uses a hatch pattern image (`map.addImage` of a 6px diagonal pattern).
-2. `parcels-outline`: `#C5D7EF`, 0.8px; selected parcel `#0B1B3F`, 2.5px.
+1. `parcels-fill`: fill by `band` using the theme's band colours at 0.85 opacity; unknown uses a hatch pattern image (`map.addImage` of a 6px diagonal pattern). Lots that aren't candidates have no fill, outline only.
+2. `parcels-outline`: white 0.75px between scored lots, the soft risk outline on high-risk lots, the theme's lot line for the rest; selected parcel `#0B1B3F`, 2.5px.
 3. `area-dim`: a polygon of the world minus the searched neighborhoods, fill `#F5F8FD` at 0.66 opacity.
 4. `area-boundary`: dashed cobalt line, 1.5px, with a mono label chip.
 5. `rank-tags`: symbol layer with rank numbers for the top results (or HTML markers).
 6. `transit-stops`: white circles with a cobalt stroke (Layers toggle).
 7. Crosshair: an HTML marker on the selected parcel's centroid.
 
-**Terrain (stretch):** hillshade from AWS Terrain Tiles (Terrarium encoding), tinted blue, low opacity, so Pittsburgh's slopes read on the map.
+**Terrain:** tried in 3D (AWS Terrain Tiles, Terrarium) and dropped: lots draped over hillsides read poorly.
 
-**3D score view:** deck.gl rendered interleaved with MapLibre through deck.gl's MapLibre overlay (check the deck.gl "Using with MapLibre" page for the current package name and MapLibre 6 support; in React, mount it with react-map-gl's `useControl`). A `PolygonLayer` with `extruded: true`, elevation = score scaled, fill by band, pitch about 55°, bearing about −30°. Glow: a `ScatterplotLayer` with large radius and low alpha under fast-track parcels.
+**3D view (built, replaces the score view below):** the "3D" control (`view=3d` in the URL) tilts the camera to 66° at street level and raises the basemap's buildings to their mapped heights (OpenMapTiles `render_height`, MapLibre `fill-extrusion`) in the theme's colours (table above), solid and always drawn above the lots. Roof colours keep a contrast of at least 1.15 with the ground (a test enforces it), or buildings lose their shape. Light: anchored to the viewport, white, at the theme's strength. Lots stay flat; the selected lot is raised 3 m in its band colour (strong risk orange for high risk) with its `#0B1B3F` outline at the base. Sky and horizon haze via MapLibre's sky.
+
+*Original plan, not built:* deck.gl extruded parcels, elevation = score scaled, fill by band, pitch about 55°, bearing about −30°, with a glow under fast-track parcels.
 
 ## Icons
 

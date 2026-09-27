@@ -1,6 +1,11 @@
 import { useId, useState } from 'react'
+import { MapStyleSwitch } from '../map/MapStyleSwitch'
+import { useMapTheme } from '../state/mapTheme'
 
-/** Map overlays. Steep slope, undermining and flood layers need the pipeline's geometry. */
+/**
+ * The map style, then overlays. Steep slope, undermining and flood layers need the pipeline's
+ * geometry.
+ */
 export function LayersMenu({
   transit,
   onTransit,
@@ -9,6 +14,7 @@ export function LayersMenu({
   onTransit: (on: boolean) => void
 }) {
   const [open, setOpen] = useState(false)
+  const { theme, setTheme } = useMapTheme()
   const menuId = useId()
   return (
     <div className="layers">
@@ -27,6 +33,7 @@ export function LayersMenu({
       </button>
       {open && (
         <div id={menuId} className="layers-menu glass">
+          <MapStyleSwitch themeId={theme.id} onTheme={setTheme} />
           <label className="check">
             <input type="checkbox" checked={transit} onChange={(e) => onTransit(e.target.checked)} />
             Transit stops

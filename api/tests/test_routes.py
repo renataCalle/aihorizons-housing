@@ -44,6 +44,24 @@ def test_golden_parcel_is_real_engine_output(client: TestClient) -> None:
     assert body["freshness"]["parcels_as_of"]
 
 
+def test_report_scores_the_requested_building(client: TestClient) -> None:
+    pick = client.get(f"/api/parcels/{GOLDEN_STEEP_SLOPE}").json()
+    assert pick["program"] is None
+    body = client.get(
+        f"/api/parcels/{GOLDEN_STEEP_SLOPE}", params={"product_type": "townhome", "units": 2}
+    ).json()
+    assert body["program"] == {"product_type": "townhome", "units": 2}
+    lead = body["analysis"]["options"]
+    assert not lead or any(o["product_type"] == "townhome" for o in lead)
+    # Without a building type the stored analysis is served unchanged.
+    assert pick["analysis"] == client.get(f"/api/parcels/{GOLDEN_STEEP_SLOPE}").json()["analysis"]
+
+
+def test_requested_building_needs_stored_facts(client: TestClient) -> None:
+    body = client.get(f"/api/parcels/{SAMPLE_LOT_A}", params={"product_type": "duplex"}).json()
+    assert body["program"] is None
+
+
 def test_generated_lot_has_no_stored_facts(client: TestClient) -> None:
     assert client.get(f"/api/parcels/{SAMPLE_LOT_A}").json()["freshness"] is None
 
@@ -79,9 +97,19 @@ def test_map_features_include_transit_and_neighborhoods(client: TestClient) -> N
     assert {"transit_stop", "park", "neighborhood"} <= kinds
 
 
-def test_evidence_is_served(client: TestClient) -> None:
-    assert client.get("/api/evidence/ev-variance-4-townhomes").status_code == 200
-    assert client.get("/api/evidence/nope").status_code == 404
+def test_generated_lot_gets_the_illustrative_cases(client: TestClient) -> None:
+    body = client.get("/api/parcels/0000X00012000000/evidence/option.with_relief").json()
+    assert body["illustrative"] is True
+    assert body["precedent"]["status"] == "illustrative"
+    assert body["precedent"]["cases"]
+
+
+def test_golden_lot_never_gets_the_illustrative_cases(client: TestClient) -> None:
+    # A real parcel served by the mock source: its decisions are unavailable, not mocked.
+    body = client.get(f"/api/parcels/{GOLDEN_STEEP_SLOPE}/evidence/option.with_relief").json()
+    assert body["illustrative"] is False
+    assert body["precedent"]["status"] == "unavailable"
+    assert body["precedent"]["cases"] == []
 
 
 def test_cors_allows_the_web_dev_server(client: TestClient) -> None:

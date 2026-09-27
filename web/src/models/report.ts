@@ -13,6 +13,8 @@ export interface Versions {
   schema: string
   /** ISO date of the oldest input, when known */
   dataAsOf: string | null
+  /** ISO date of the zoning code text the rules were read from */
+  rulesetAsOf: string | null
 }
 
 export interface LeadOption {
@@ -221,4 +223,12 @@ export interface SiteReport {
   analysis: Analysis | null
   /** Null when the facts behind the analysis are not stored */
   freshness: Freshness | null
+  /** The building the analysis scores when one was asked for; null = the engine's pick */
+  program: Program | null
+}
+
+/** A building type to score. `units` null = the largest the zoning rules allow. */
+export interface Program {
+  productType: string
+  units: number | null
 }

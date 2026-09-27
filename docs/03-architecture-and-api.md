@@ -62,7 +62,7 @@ Prefix `/api`. Request and response models come from `navigator_contracts` (exis
 | POST | `/search/parse` | `ParseResult` (filters, readings, not_understood, detected) |
 | POST | `/search` | `SearchResponse` (total, filters, ranked summaries) |
 | GET | `/parcels/{id}` | `ParcelReport`: the report header (`ParcelSummary`) and the engine's `SiteAnalysis` (null when the lot is not a candidate). `?product=&units=` once the engine supports them |
-| GET | `/evidence/{evidenceId}` | evidence for a flag (zoning board cases etc.) |
+| GET | `/parcels/{id}/evidence/{evidenceId}` | one finding (`flag.<flag id>`) or the approvals option (`option.with_relief`) of the report, same `product_type`/`units` params; zoning board cases when available |
 | GET | `/map/parcels` | GeoJSON FeatureCollection in EPSG:4326; properties: `parcel_id, display_name, candidate, band, score, assembly_id`. Ranks come from `/search` and are joined in the client |
 | GET | `/map/features` | Transit stops, parks, schools and neighborhood outlines, EPSG:4326 |
 | GET | `/neighborhoods` | canonical neighborhood names |

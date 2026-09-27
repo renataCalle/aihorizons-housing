@@ -14,18 +14,22 @@ from typing import Literal
 from pydantic import TypeAdapter
 
 from navigator_api.models import (
-    EvidenceDetail,
     Examples,
     MapFeatureCollection,
     ParcelFeature,
     ParcelFeatureCollection,
     ParcelProperties,
     ParcelSummary,
+    Precedent,
+    ScoredProgram,
 )
 from navigator_contracts import SiteAnalysis, SiteContext
 from navigator_contracts.site_analysis import Versions
 
 SUMMARIES = TypeAdapter(list[ParcelSummary])
+
+# lot -> building type -> the engine's result for that type (search/programs.py)
+ProgramRows = dict[str, dict[str, ScoredProgram]]
 
 
 def read_text(path: Path) -> str:
@@ -48,15 +52,17 @@ class SiteBundle:
         geometry: dict[str, dict],
         map_features: MapFeatureCollection,
         analyses: dict[str, SiteAnalysis],
-        evidence: dict[str, EvidenceDetail] | None = None,
+        mock_precedent: Precedent | None = None,
         contexts: dict[str, SiteContext] | None = None,
+        program_rows: ProgramRows | None = None,
     ) -> None:
         self._summaries = {s.parcel_id: s for s in summaries}
         self._geometry = geometry
         self._map_features = map_features
         self._analyses = analyses
-        self._evidence = evidence or {}
+        self._mock_precedent = mock_precedent
         self._contexts = contexts or {}
+        self._program_rows = program_rows or {}
 
         missing = {pid for pid, s in self._summaries.items() if s.candidate} - set(analyses)
         if missing:
@@ -102,6 +108,10 @@ class SiteBundle:
         """The facts the analysis was built from, when the bundle stores them."""
         return self._contexts.get(parcel_id)
 
+    def program_rows(self, parcel_id: str) -> dict[str, ScoredProgram]:
+        """The engine's result per building type for the lot (empty when not published)."""
+        return self._program_rows.get(parcel_id, {})
+
     def parcels_geojson(self) -> ParcelFeatureCollection:
         return ParcelFeatureCollection(
             features=[
@@ -123,8 +133,8 @@ class SiteBundle:
     def map_features(self) -> MapFeatureCollection:
         return self._map_features
 
-    def evidence(self, evidence_id: str) -> EvidenceDetail | None:
-        return self._evidence.get(evidence_id)
+    def mock_precedent(self) -> Precedent | None:
+        return self._mock_precedent
 
     def examples(self) -> Examples:
         """The best-scoring candidate's ID, a real candidate address, and the busiest area."""

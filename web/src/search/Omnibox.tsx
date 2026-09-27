@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
-import { useNavigate } from 'react-router'
-import { BAND_LABEL } from '../lib/labels'
+import { useNavigate, useSearchParams } from 'react-router'
+import { BAND_LABEL, programLabel } from '../lib/labels'
 import { formatSqft } from '../lib/format'
 import type { LookupMatch } from '../models/search'
 import { detect, isStreetStart, shouldLookUp } from './detect'
@@ -27,6 +27,8 @@ interface Props {
 /** One search box for parcel IDs, addresses and plain-language descriptions (docs/01, §2). */
 export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) {
   const navigate = useNavigate()
+  const [params] = useSearchParams()
+  const viewParam = params.get('view') === '3d' ? '3d' : null
   const listId = useId()
   const inputRef = useRef<HTMLInputElement>(null)
   const [text, setText] = useState(initialText)
@@ -55,8 +57,10 @@ export function Omnibox({ variant, initialText = '', autoOpen = false }: Props) 
   function choose(option: Option | undefined) {
     if (!option) return
     setOpen(false)
-    if (option.type === 'parcel') navigate(`/parcel/${option.match.parcel.id}`)
-    else navigate(`/search?q=${encodeURIComponent(query)}`)
+    // A new search or lot from the map keeps the 3D view if it's on.
+    const view = viewParam ? `view=${viewParam}` : ''
+    if (option.type === 'parcel') navigate(`/parcel/${option.match.parcel.id}${view && `?${view}`}`)
+    else navigate(`/search?q=${encodeURIComponent(query)}${view && `&${view}`}`)
   }
 
   // Enter pressed before the lookup answered: act as soon as it does.
@@ -238,7 +242,10 @@ function ParcelRow({ id, match, query, active, onHover, onChoose }: RowProps) {
         ? (p.blockLot ?? p.id)
         : formatCountyId(p.id)
   const [hit, rest] = splitMatch(primary, query)
+  // The score is the engine's pick: name the building it is for.
+  const lead = p.leadOption
   const meta = [
+    lead && programLabel(lead.productType, lead.units),
     p.zoning.join(', '),
     formatSqft(p.lotAreaSqft).replace('sq ft', 'SF'),
     p.currentUse,

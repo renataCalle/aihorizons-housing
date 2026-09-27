@@ -20,7 +20,7 @@ The mockups for every screen are in `docs/design/screens/`, and the exact markup
 | 3 | Results | `SearchMap.dc.html` (uses `MapBase.dc.html`) | `/search?q=…` |
 | 4 | Report open | `ReportOpen.dc.html` (uses `ReportPanel.dc.html`) | `/parcel/:id` |
 | 5 | Evidence drawer | `EvidenceOpen.dc.html` | `/parcel/:id/evidence/:evidenceId` |
-| — | 3D score view | `ScoreView3D.dc.html` | `/search?q=…&view=3d` |
+| — | 3D view | `ScoreView3D.dc.html` (original concept) | any map route with `view=3d` |
 
 Routes are deep-linkable so a developer can share a report or a search.
 
@@ -72,17 +72,19 @@ Opens as a 720px panel on the right. The map shifts so the selected parcel stays
 
 ### 5 · Evidence drawer
 
-A 580px drawer over the report. For zoning relief it shows: what the code requires (section, date, plain-language summary, link to Municode), similar cases nearby (granted count, median months, table of the closest cases with outcome pills), a note that an AI model extracted the cases from decision PDFs with a link per case, a confidence note, and "How to resolve".
+A 580px drawer over the report. For zoning relief it shows: what the code requires (section, date, plain-language summary, link to the code on eCode360), similar cases nearby (granted count, median months, table of the closest cases with outcome pills), a note that an AI model extracted the cases from decision PDFs with a link per case, a confidence note, and "How to resolve".
 
-### 3D score view (wow layer)
+### 3D view (wow layer)
 
-Opened from the "3D" map control. Isometric view of the searched neighborhood with candidate parcels extruded by score and colored by band, a soft glow under fast-track parcels, and a tooltip on the selected parcel. Left panel: "Hazelwood at a glance" with counts per band, "What holds sites back" bars, and a near-misses card. A "2D map / 3D score" toggle returns to the map.
+Opened from the "3D" map control (`view=3d`, kept while moving between results, reports and evidence). The camera tilts over the searched area at street level and the basemap's buildings rise to their mapped heights, solid, in the active map theme's colours (Blueprint or Standard, switched from the Layers menu or the style button). Lots stay flat and coloured by band; the selected lot is raised 3 m in its band colour. The same button reads "2D" and returns to the flat map.
+
+*Changed from the original concept* (`ScoreView3D.dc.html`: lots extruded by score, glow under fast-track lots): a 3D city read better than score blocks, and Hazelwood has no fast-track lots to glow. Built but switched off for now: in 3D the left panel can show the searched lots at a glance: lots per band, "What holds sites back" (points each constraint costs, from the engine's score breakdown), and near misses; the ranked list is one click away.
 
 ## States every screen needs
 
 - **Loading:** skeleton rows in the list; a short checklist of checks in the report panel while it loads.
 - **Empty:** "No sites match. Try removing [the most restrictive filter]." with a one-click remove.
-- **Error:** plain message plus retry. AI search failure falls back to the rule-based parser silently and shows a small "basic search" tag.
+- **Error:** plain message plus retry. AI search failure falls back to the rule-based parser silently (no tag is shown).
 - **Outside city:** partial report with the coverage label.
 - **Unknown data:** unknown findings and hatched parcels, never hidden.
 

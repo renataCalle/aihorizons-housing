@@ -1,9 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from typing import Annotated, NamedTuple
 
-from navigator_api.models import Freshness, ParcelReport
+from fastapi import APIRouter, HTTPException, Query
+
+from navigator_api.models import Freshness, ParcelReport, ParcelSummary, Program
 from navigator_api.parcel_ids import normalize_county_id
 from navigator_api.routes.deps import Source
-from navigator_contracts import SiteContext
+from navigator_api.sources.base import SiteSource
+from navigator_contracts import SiteAnalysis, SiteContext
+from navigator_contracts.site_analysis import ProductType
+from navigator_engine import analyze
 
 router = APIRouter(tags=["parcels"])
 
@@ -22,8 +27,42 @@ def freshness(context: SiteContext) -> Freshness:
 
 
 @router.get("/parcels/{parcel_id}")
-def parcel_report(parcel_id: str, source: Source) -> ParcelReport:
-    """Report header, the engine's analysis, and where its facts came from, by county ID."""
+def parcel_report(
+    parcel_id: str,
+    source: Source,
+    product_type: ProductType | None = None,
+    units: Annotated[int | None, Query(ge=1, le=50)] = None,
+) -> ParcelReport:
+    """Report header, the engine's analysis, and where its facts came from, by county ID.
+
+    With `product_type` (and optionally `units`), the engine scores that building instead of
+    its own pick, from the lot's stored facts. Lots without stored facts keep the stored pick,
+    and `program` comes back empty.
+    """
+    r = scored_report(parcel_id, source, product_type, units)
+    return ParcelReport(
+        parcel=r.summary,
+        analysis=r.analysis,
+        program=r.program,
+        freshness=freshness(r.context) if r.context else None,
+    )
+
+
+class Scored(NamedTuple):
+    summary: ParcelSummary
+    context: SiteContext | None
+    analysis: SiteAnalysis | None
+    program: Program | None
+
+
+def scored_report(
+    parcel_id: str,
+    source: SiteSource,
+    product_type: ProductType | None,
+    units: int | None,
+) -> Scored:
+    """The lot and the analysis its report shows: the stored pick, or `product_type` scored
+    live by the engine from the stored facts. Shared with the evidence drawer."""
     county_id = normalize_county_id(parcel_id)
     if county_id is None:
         raise HTTPException(422, f"Not a county parcel ID: {parcel_id!r}")
@@ -31,8 +70,10 @@ def parcel_report(parcel_id: str, source: Source) -> ParcelReport:
     if summary is None:
         raise HTTPException(404, f"No parcel {county_id}")
     context = source.context(county_id)
-    return ParcelReport(
-        parcel=summary,
-        analysis=source.analysis(county_id),
-        freshness=freshness(context) if context else None,
-    )
+    analysis = source.analysis(county_id)
+    program = None
+    if product_type and context and analysis:
+        program = Program(product_type=product_type, units=units)
+        facts = context.model_dump(mode="json", by_alias=True)
+        analysis = SiteAnalysis.model_validate(analyze(facts, None, program.model_dump()))
+    return Scored(summary, context, analysis, program)

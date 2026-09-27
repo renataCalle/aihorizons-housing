@@ -119,3 +119,18 @@ def test_neighborhoods_lists_all_90_with_candidate_counts(client: TestClient) ->
     body = client.get("/api/neighborhoods").json()
     assert len(body) == 90
     assert next(n for n in body if n["name"] == "Hazelwood")["candidates"] > 0
+
+
+def test_several_areas_match_lots_in_any_of_them(client: TestClient) -> None:
+    def total(areas: list[str]) -> int:
+        body = client.post("/api/search", json={"areas": areas}).json()
+        return body["total"]
+
+    hazelwood, greenfield = total(["Hazelwood"]), total(["Greenfield"])
+    assert hazelwood > 0 and greenfield > 0
+    assert total(["Hazelwood", "Greenfield"]) == hazelwood + greenfield
+
+
+def test_several_areas_are_suggested_for_removal_together() -> None:
+    f = SearchFilters.model_validate({"areas": ["Hazelwood", "Greenfield"]})
+    assert without(f, "areas").areas == []
