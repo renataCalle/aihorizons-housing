@@ -903,6 +903,7 @@ export interface components {
             /** Revenue Basis */
             revenue_basis: string;
             score: components["schemas"]["Range"];
+            site_cost_premium?: components["schemas"]["Range"] | null;
             /** Unit Sqft */
             unit_sqft: number;
             /** Units */

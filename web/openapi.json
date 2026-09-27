@@ -1948,6 +1948,16 @@
           "score": {
             "$ref": "#/components/schemas/Range"
           },
+          "site_cost_premium": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Range"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "unit_sqft": {
             "title": "Unit Sqft",
             "type": "integer"
