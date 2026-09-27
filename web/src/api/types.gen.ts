@@ -147,7 +147,7 @@ export interface paths {
         };
         /**
          * Parcel Report
-         * @description Report header and the engine's analysis, by county parcel ID (compact or dashed).
+         * @description Report header, the engine's analysis, and where its facts came from, by county ID.
          */
         get: operations["parcel_report_api_parcels__parcel_id__get"];
         put?: never;
@@ -422,6 +422,32 @@ export interface components {
             /** Title */
             title: string;
         };
+        /**
+         * Freshness
+         * @description Where the report's facts came from: the stored copy, or live lookups at report time.
+         */
+        Freshness: {
+            /**
+             * Fell Back
+             * @description Layers whose live lookup failed, so the stored copy was used
+             */
+            fell_back: string[];
+            /**
+             * Live
+             * @description Layers fetched live for this report
+             */
+            live: string[];
+            /**
+             * Live At
+             * @description When the latest live lookup ran
+             */
+            live_at: string | null;
+            /**
+             * Parcels As Of
+             * @description As-of date of the parcel records
+             */
+            parcels_as_of: string | null;
+        };
         /** Gap */
         Gap: {
             /** High */
@@ -676,6 +702,8 @@ export interface components {
         ParcelReport: {
             /** @description None when the lot is not a candidate */
             analysis: components["schemas"]["SiteAnalysis"] | null;
+            /** @description None when the facts behind the analysis are not stored */
+            freshness?: components["schemas"]["Freshness"] | null;
             parcel: components["schemas"]["ParcelSummary"];
         };
         /**
