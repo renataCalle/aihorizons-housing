@@ -106,7 +106,7 @@ Base (MapLibre GL JS 6, already in `web/package.json`): **OpenFreeMap Positron**
 | roads | `#FFFFFF`, casing `#C9D3E0` | `#D1D3DA`, casing `#BDC2D0` |
 | lot lines (not candidates) | `#C9D3E0` | `#D6D0C4` |
 | labels | `#6A84B8`, letter-spaced uppercase for places; hide POI icons | same style in `#56657E` |
-| 3D buildings | hidden | raised to mapped heights |
+| 3D buildings (solid) | `#D9DFE8` → `#D5DEEB` by height, light 0.3 | `#D9D6CE`, light 0.4 |
 
 **Score bands** (fill opacity 0.85, thin white line between adjacent lots):
 
@@ -133,7 +133,7 @@ Add a technical grid feel with a faint 48px grid as a CSS background behind a sl
 
 **Terrain:** tried in 3D (AWS Terrain Tiles, Terrarium) and dropped: lots draped over hillsides read poorly.
 
-**3D view (built, replaces the score view below):** the "3D" control (`view=3d` in the URL) tilts the camera to 66° at street level and raises the basemap's buildings to their mapped heights in the Standard theme (OpenMapTiles `render_height`, MapLibre `fill-extrusion`): roofs `#DDD8CE` for houses (darker than the `#F0ECE2` ground, so the shape reads; walls come out darker still), glassy blue `#9EB7CD` for towers, solid and always drawn above the lots. Blueprint shows no buildings in 3D. Lots stay coloured by band on the ground. Sky and horizon haze via MapLibre's sky.
+**3D view (built, replaces the score view below):** the "3D" control (`view=3d` in the URL) tilts the camera to 66° at street level and raises the basemap's buildings to their mapped heights (OpenMapTiles `render_height`, MapLibre `fill-extrusion`) in the theme's colours (table above), solid and always drawn above the lots. Roof colours keep a contrast of at least 1.15 with the ground (a test enforces it), or buildings lose their shape. Light: anchored to the viewport, white, at the theme's strength. Lots stay flat; the selected lot is raised 3 m in its band colour (strong risk orange for high risk) with its `#0B1B3F` outline at the base. Sky and horizon haze via MapLibre's sky.
 
 *Original plan, not built:* deck.gl extruded parcels, elevation = score scaled, fill by band, pitch about 55°, bearing about −30°, with a glow under fast-track parcels.
 

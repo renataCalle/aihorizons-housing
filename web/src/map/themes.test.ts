@@ -10,6 +10,19 @@ import {
 } from './themes'
 
 const HEX = /^#[0-9a-f]{6}$/i
+
+function luminance(hex: string): number {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = Number.parseInt(hex.slice(i, i + 2), 16) / 255
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+function contrast(a: string, b: string): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x)
+  return (hi + 0.05) / (lo + 0.05)
+}
 const BAND_KEYS: (keyof BandColors)[] = [
   'fast',
   'conditions',
@@ -42,15 +55,16 @@ describe('map themes', () => {
     }
   })
 
-  it('only the Standard theme raises buildings in 3D', () => {
-    expect(THEMES.blueprint.buildings).toBeNull()
-    expect(THEMES.standard.buildings?.roof).toMatch(HEX)
-    expect(THEMES.standard.buildings?.tall).toMatch(HEX)
-  })
-
-  it('draws roofs in a different colour from the ground, so buildings keep their shape', () => {
-    const roof = THEMES.standard.buildings?.roof.toLowerCase()
-    expect(roof).not.toBe(THEMES.standard.basemap.land.toLowerCase())
+  // Contrast of a roof (drawn at full light) with the ground. 1.07 is the roof that lost its
+  // shape on the cream ground; 1.15 keeps buildings readable.
+  it.each(Object.values(THEMES))('$label buildings stand apart from the ground', (theme) => {
+    const b = theme.buildings
+    expect(b).not.toBeNull()
+    for (const colour of [b!.low, b!.high]) {
+      expect(colour).toMatch(HEX)
+      expect(contrast(colour, theme.basemap.land), colour).toBeGreaterThanOrEqual(1.15)
+    }
+    expect(b!.light).toBeGreaterThan(0)
   })
 
   it('falls back to the default theme when storage is unavailable', () => {

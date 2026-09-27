@@ -1,5 +1,5 @@
 /**
- * Map themes: the basemap's colours, whether the 3D view raises buildings, and the score band
+ * Map themes: the basemap's colours, the 3D view's buildings and light, and the score band
  * colours. The one source for these colours: the map layers read them from here, and the UI
  * (legend, list dots, pills, report) reads the same values as CSS variables set on the root
  * (applyThemeVariables). tokens.css repeats Blueprint's values as the first-paint default.
@@ -22,14 +22,17 @@ export interface BandColors {
 }
 
 /**
- * 3D buildings. The roof is drawn in `roof` at full light, so it must differ from the ground
- * (the basemap's land) or the building's shape is lost; the walls come out darker.
+ * 3D buildings, drawn solid. A roof is drawn in its colour at full light, so both colours must
+ * stand clearly apart from the ground (the basemap's land) or buildings lose their shape; the
+ * walls come out darker. A test holds them to a minimum contrast with the ground.
  */
 export interface BuildingColors {
   /** Houses and low buildings, up to 20 m */
-  roof: string
-  /** Towers, from 70 m (blended in between) */
-  tall: string
+  low: string
+  /** Tall buildings, from 70 m (blended in between) */
+  high: string
+  /** Strength of the 3D view's light (anchored to the viewport, white) */
+  light: number
 }
 
 export interface MapTheme {
@@ -63,7 +66,7 @@ export const THEMES: Record<MapThemeId, MapTheme> = {
       roadCasing: '#C9D3E0',
     },
     lotLine: '#C9D3E0',
-    buildings: null,
+    buildings: { low: '#D9DFE8', high: '#D5DEEB', light: 0.3 },
     bands: {
       fast: '#1B3FD1',
       conditions: '#6E9BF2',
@@ -77,7 +80,7 @@ export const THEMES: Record<MapThemeId, MapTheme> = {
     label: 'Standard',
     basemap: STANDARD,
     lotLine: '#D6D0C4',
-    buildings: { roof: '#DDD8CE', tall: '#9EB7CD' },
+    buildings: { low: '#D9D6CE', high: '#D9D6CE', light: 0.4 },
     bands: {
       fast: '#1E3A8A',
       conditions: '#4F86E8',

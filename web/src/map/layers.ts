@@ -41,6 +41,8 @@ export interface ParcelStyle {
   reportId?: string | null
   /** The hatch image for unknown lots has been added */
   hatch: boolean
+  /** 3D view: the selected lot is raised SELECTED_LOT_HEIGHT_M in its band colour */
+  view3d?: boolean
 }
 
 /** Parcel layers, bottom to top: fills by band, unknown hatch, outlines, selection. */
@@ -133,6 +135,30 @@ export function parcelLayers(p: MapPalette, s: ParcelStyle): Layer[] {
       paint: { 'line-color': p.ink, 'line-width': 2.5 },
     },
   ]
+  if (s.view3d && selectedId) {
+    // Before the selection outline, so the outline stays on top at the block's base.
+    layers.splice(layers.length - 1, 0, {
+      id: 'parcels-selected-3d',
+      type: 'fill-extrusion',
+      source: PARCELS,
+      filter: ['all', ['==', ['get', 'id'], selectedId], ['!=', band, 'none']],
+      paint: {
+        'fill-extrusion-color': [
+          'match',
+          band,
+          'fast_track',
+          bands.fast,
+          'conditions',
+          bands.conditions,
+          'high_risk',
+          bands.risk,
+          bands.unknownLine,
+        ],
+        'fill-extrusion-height': SELECTED_LOT_HEIGHT_M,
+        'fill-extrusion-opacity': 1,
+      },
+    })
+  }
   if (hatch) {
     // After the outline in the list, so the outline exists when the hatch is added under it.
     layers.splice(2, 0, {
@@ -151,15 +177,26 @@ export function parcelLayers(p: MapPalette, s: ParcelStyle): Layer[] {
 /** Camera for the 3D view; every camera move keeps it while the view is on. */
 export const CAMERA_3D = { pitch: 66, bearing: -25 }
 /** Soft light from the upper left, so building sides stay pale rather than grey. */
-export const LIGHT_3D = { anchor: 'viewport' as const, position: [1.5, 210, 30] as [number, number, number], intensity: 0.4, color: '#ffffff' }
+/** The 3D view's light: white, from the upper left of the viewport, at the theme's strength. */
+export function light3d(intensity: number) {
+  return {
+    anchor: 'viewport' as const,
+    position: [1.5, 210, 30] as [number, number, number],
+    color: '#FFFFFF',
+    intensity,
+  }
+}
+
+/** The selected lot's height in the 3D view, in metres. Other lots stay flat. */
+export const SELECTED_LOT_HEIGHT_M = 3
 export const CAMERA_2D = { pitch: 0, bearing: 0 }
 
 export const BUILDINGS_3D = 'buildings-3d'
 
 /**
  * The 3D view's buildings: the basemap's building footprints raised to their mapped heights
- * (OpenMapTiles `render_height`), in the theme's colours: houses in the roof colour, towers
- * blending to the tall colour.
+ * (OpenMapTiles `render_height`), in the theme's colours: low buildings in `low`, blending
+ * to `high` for tall ones. Solid, so lots behind a building never show through.
  */
 export function buildingExtrusion(c: BuildingColors): Layer & { 'source-layer': string } {
   return {
@@ -175,16 +212,15 @@ export function buildingExtrusion(c: BuildingColors): Layer & { 'source-layer': 
         ['linear'],
         ['coalesce', ['get', 'render_height'], 0],
         0,
-        c.roof,
+        c.low,
         20,
-        c.roof,
+        c.low,
         70,
-        c.tall,
+        c.high,
       ],
       'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 0],
       'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
-      // Solid, so lots behind a building never show through. Heights arrive with the zoom 14
-      // tiles: fade the buildings in as they do.
+      // Heights arrive with the zoom 14 tiles: fade the buildings in as they do.
       'fill-extrusion-opacity': ['interpolate', ['linear'], ['zoom'], 13.5, 0, 14.5, 1],
       'fill-extrusion-vertical-gradient': true,
     },

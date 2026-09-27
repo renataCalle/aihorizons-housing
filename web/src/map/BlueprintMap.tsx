@@ -24,7 +24,7 @@ import {
   buildingExtrusion,
   CAMERA_2D,
   CAMERA_3D,
-  LIGHT_3D,
+  light3d,
   readPalette,
   skySpec,
 } from './layers'
@@ -114,8 +114,9 @@ export function BlueprintMap({
         hoveredId,
         reportId,
         hatch: hatchReady,
+        view3d,
       }),
-    [palette, theme, selectedId, hoveredId, reportId, hatchReady],
+    [palette, theme, selectedId, hoveredId, reportId, hatchReady, view3d],
   )
   const overlays = useMemo(() => featureLayers(palette), [palette])
   const buildings = useMemo(
@@ -138,7 +139,7 @@ export function BlueprintMap({
       interactiveLayerIds={INTERACTIVE_LAYERS}
       maxPitch={70}
       sky={view3d ? sky : undefined}
-      light={view3d ? LIGHT_3D : undefined}
+      light={view3d && theme.buildings ? light3d(theme.buildings.light) : undefined}
       cursor={hovering ? 'pointer' : 'grab'}
       onLoad={(e) => {
         const map = e.target
