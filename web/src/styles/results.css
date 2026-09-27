@@ -800,14 +800,3 @@ p.results-panel {
 .leader-line circle {
   fill: var(--cobalt);
 }
-
-.basic-search {
-  padding: 4px 10px;
-  border: 1px dashed var(--unknown);
-  border-radius: var(--radius-pill);
-  color: var(--ink-2);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}

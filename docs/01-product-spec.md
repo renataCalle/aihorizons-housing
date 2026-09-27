@@ -82,7 +82,7 @@ Opened from the "3D" map control. Isometric view of the searched neighborhood wi
 
 - **Loading:** skeleton rows in the list; a short checklist of checks in the report panel while it loads.
 - **Empty:** "No sites match. Try removing [the most restrictive filter]." with a one-click remove.
-- **Error:** plain message plus retry. AI search failure falls back to the rule-based parser silently and shows a small "basic search" tag.
+- **Error:** plain message plus retry. AI search failure falls back to the rule-based parser silently (no tag is shown).
 - **Outside city:** partial report with the coverage label.
 - **Unknown data:** unknown findings and hatched parcels, never hidden.
 

@@ -213,7 +213,6 @@ export function MapScreen() {
         <TopBar
           illustrative={health.status === 'ready' && health.data.illustrative}
           query={q}
-          basicSearch={parsed?.parser === 'rules'}
         />
 
         <Outlet context={context} />
