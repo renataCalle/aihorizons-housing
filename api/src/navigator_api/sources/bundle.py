@@ -14,13 +14,13 @@ from typing import Literal
 from pydantic import TypeAdapter
 
 from navigator_api.models import (
-    EvidenceDetail,
     Examples,
     MapFeatureCollection,
     ParcelFeature,
     ParcelFeatureCollection,
     ParcelProperties,
     ParcelSummary,
+    Precedent,
     ScoredProgram,
 )
 from navigator_contracts import SiteAnalysis, SiteContext
@@ -52,7 +52,7 @@ class SiteBundle:
         geometry: dict[str, dict],
         map_features: MapFeatureCollection,
         analyses: dict[str, SiteAnalysis],
-        evidence: dict[str, EvidenceDetail] | None = None,
+        mock_precedent: Precedent | None = None,
         contexts: dict[str, SiteContext] | None = None,
         program_rows: ProgramRows | None = None,
     ) -> None:
@@ -60,7 +60,7 @@ class SiteBundle:
         self._geometry = geometry
         self._map_features = map_features
         self._analyses = analyses
-        self._evidence = evidence or {}
+        self._mock_precedent = mock_precedent
         self._contexts = contexts or {}
         self._program_rows = program_rows or {}
 
@@ -133,8 +133,8 @@ class SiteBundle:
     def map_features(self) -> MapFeatureCollection:
         return self._map_features
 
-    def evidence(self, evidence_id: str) -> EvidenceDetail | None:
-        return self._evidence.get(evidence_id)
+    def mock_precedent(self) -> Precedent | None:
+        return self._mock_precedent
 
     def examples(self) -> Examples:
         """The best-scoring candidate's ID, a real candidate address, and the busiest area."""

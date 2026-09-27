@@ -3,11 +3,11 @@
 from typing import Literal, Protocol
 
 from navigator_api.models import (
-    EvidenceDetail,
     Examples,
     MapFeatureCollection,
     ParcelFeatureCollection,
     ParcelSummary,
+    Precedent,
     ScoredProgram,
 )
 from navigator_contracts import SiteAnalysis, SiteContext
@@ -39,6 +39,8 @@ class SiteSource(Protocol):
 
     def map_features(self) -> MapFeatureCollection: ...
 
-    def evidence(self, evidence_id: str) -> EvidenceDetail | None: ...
+    def mock_precedent(self) -> Precedent | None:
+        """Illustrative zoning board cases for generated lots; None for real data."""
+        ...
 
     def examples(self) -> Examples: ...

@@ -14,12 +14,16 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from navigator_contracts import Range, SiteAnalysis
+from navigator_contracts.common import Confidence, Interval
 from navigator_contracts.site_analysis import (
     Band,
+    Category,
+    CheckResult,
     CostRange,
     OptionLabel,
     ProductType,
     Severity,
+    Step,
     Versions,
 )
 from navigator_contracts.site_context import OwnerType
@@ -344,43 +348,79 @@ class MapFeatureCollection(Model):
 
 
 # ---------------------------------------------------------------------------
-# Evidence drawer (illustrative until zoning board decisions are available)
+# Evidence drawer: one finding or the approvals option, formatted from SiteAnalysis and
+# SiteContext (navigator_api/evidence.py)
 # ---------------------------------------------------------------------------
 
-Confidence = Literal["high", "medium", "low"]
-Outcome = Literal["granted", "denied", "withdrawn", "pending"]
+Outcome = Literal["granted", "denied", "withdrawn", "pending", "unknown"]
 
 
 class Case(Model):
     case_id: str
-    neighborhood: str
-    request: str
+    area: str | None = Field(default=None, description="Neighborhood or zoning district")
+    request: str | None = None
     outcome: Outcome
-    months_to_decision: int | None = None
+    months_to_decision: float | None = None
     source_url: str | None = None
 
 
-class CodeReference(Model):
-    section: str
-    as_of: date
-    summary: str
-    url: str | None = None
+class Precedent(Model):
+    """Zoning board decisions near the lot. Real lots have none until decisions are
+    available; generated lots carry the mockups' cases, marked illustrative."""
 
-
-class EvidenceDetail(Model):
-    id: str
-    kind: Literal["zoning_relief", "physical", "infrastructure", "market"]
-    title: str
-    applies_to: str
-    code: CodeReference | None = None
-    precedent_granted: int | None = None
-    precedent_total: int | None = None
+    status: Literal["available", "unavailable", "illustrative"]
+    note: str | None = Field(default=None, description="Why decisions are unavailable")
+    granted: int | None = None
+    total: int | None = None
     median_months: float | None = None
     cases: list[Case] = Field(default_factory=list)
     ai_extracted: bool = False
-    confidence: Confidence
-    confidence_note: str
-    how_to_resolve: str
+
+
+class EvidenceSource(Model):
+    source: str
+    as_of: date | None
+    as_of_from_provenance: bool = Field(
+        default=False, description="The flag had no date; this is the layer's as-of date"
+    )
+    layer: str | None
+    code_section: str | None
+    url: str | None
+
+
+class EvidenceDetail(Model):
+    """What the engine and the stored facts say about one finding (`flag.<id>`) or the
+    approvals option (`option.with_relief`) of one lot's report."""
+
+    id: str = Field(description="flag.<flag id> or option.with_relief")
+    kind: Literal["finding", "approvals"]
+    parcel_id: str
+    title: str | None = Field(description="The flag's title; None for the approvals option")
+    product_type: ProductType | None = Field(default=None, description="Approvals option only")
+    units: int | None = None
+    category: Category
+    severity: Severity | None = Field(default=None, description="Findings only")
+    confidence: Confidence | None = Field(default=None, description="Findings only")
+    cost_usd: Interval | None = None
+    months: Interval | None = None
+    months_to_permit: Range | None = Field(default=None, description="Approvals option only")
+    approval_prob: Range | None = None
+    approval_months: Range | None = None
+    relief: list[str] = Field(default_factory=list)
+    entitlement_basis: list[str] = Field(default_factory=list)
+    odds_note: str | None = None
+    rule_checks: list[CheckResult] = Field(
+        default_factory=list, description="The rules the building fails (approvals option)"
+    )
+    sources: list[EvidenceSource] = Field(default_factory=list)
+    code_url: str | None = Field(description="The zoning code online, when a section is cited")
+    how_to_resolve: str | None
+    resolved_by: Step | None = Field(description="The next step that resolves the finding")
+    precedent: Precedent | None = Field(
+        default=None, description="Zoning board decisions (approvals option only)"
+    )
+    illustrative: bool
+    versions: Versions
 
 
 # ---------------------------------------------------------------------------

@@ -97,9 +97,19 @@ def test_map_features_include_transit_and_neighborhoods(client: TestClient) -> N
     assert {"transit_stop", "park", "neighborhood"} <= kinds
 
 
-def test_evidence_is_served(client: TestClient) -> None:
-    assert client.get("/api/evidence/ev-variance-4-townhomes").status_code == 200
-    assert client.get("/api/evidence/nope").status_code == 404
+def test_generated_lot_gets_the_illustrative_cases(client: TestClient) -> None:
+    body = client.get("/api/parcels/0000X00012000000/evidence/option.with_relief").json()
+    assert body["illustrative"] is True
+    assert body["precedent"]["status"] == "illustrative"
+    assert body["precedent"]["cases"]
+
+
+def test_golden_lot_never_gets_the_illustrative_cases(client: TestClient) -> None:
+    # A real parcel served by the mock source: its decisions are unavailable, not mocked.
+    body = client.get(f"/api/parcels/{GOLDEN_STEEP_SLOPE}/evidence/option.with_relief").json()
+    assert body["illustrative"] is False
+    assert body["precedent"]["status"] == "unavailable"
+    assert body["precedent"]["cases"] == []
 
 
 def test_cors_allows_the_web_dev_server(client: TestClient) -> None:
