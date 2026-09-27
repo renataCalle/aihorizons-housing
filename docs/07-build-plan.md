@@ -38,10 +38,10 @@ Build in this order, on your own branch (`feat/web-api`), merging with normal me
 ## M5 · 3D view
 
 - **Built:** "3D / 2D" toggle kept in the URL (`view=3d`); tilted camera; the basemap's buildings raised to their heights with MapLibre `fill-extrusion` (no deck.gl), solid and above the lots; selected lot raised 3 m; Blueprint and Standard map themes; toggling back keeps the selection. Replaces the original deck.gl score blocks (see `docs/01-product-spec.md`, 3D view).
-- **Built, switched off for now** (`SHOW_GLANCE` in `web/src/pages/ResultsView.tsx`): **"at a glance" panel** on the left in 3D (`POST /api/search/summary`, `web/src/results/GlancePanel.tsx`), for the current search, with the ranked list one click away:
+- **Built, as the Area view** (was switched off; now a "Lots / Area view" switch at the top of the left panel, in 2D and 3D, `panel=area` in the URL; `POST /api/search/summary`, `web/src/results/GlancePanel.tsx`), for the current search:
   - lots per band, as the search ranks them;
-  - "What holds sites back": for each score driver, how many lots it costs points and how many points on average, added up from each lot's `score_breakdown` (the engine's own counterfactuals; the API only counts and averages). Stands in for the planned `attribute_bottlenecks`: confirm with the engine owner;
-  - near misses and assemblies.
+  - "What holds sites back": for each score driver, how many lots it costs points and how many points on average, added up from each lot's `score_breakdown` (the engine's own counterfactuals), plus the land-headroom shortfall from each lot's score components ("Sale value doesn't cover costs and land"). The API only counts and averages. Stands in for the planned `attribute_bottlenecks`: confirm with the engine owner;
+  - near misses ("See them" opens the list with near misses shown) and assemblies.
 - **Dropped for lack of data:** the glow under fast-track lots (Hazelwood has none in the current results) and a score tooltip (the inspector card already shows score and band).
 
 ## M6 · Polish and submission

@@ -39,3 +39,5 @@
 {"id": 39, "text": "everything in Hazelwood", "expected": {"areas": ["Hazelwood"], "include_unknowns": true}}
 {"id": 40, "text": "lots where the land is worth less than 10k and I can build 2 homes by right", "expected": {"max_land_price": 10000, "product": {"units": 2}, "approval_paths": ["by_right"]}}
 {"id": 41, "text": "16-E-25", "expected": {}, "expected_detected": "parcel_id", "notes": "City block-lot format; handled by the ID lookup"}
+{"id": 42, "text": "starter homes in Hazelwood", "expected": {"product": {"type": "single_family"}, "areas": ["Hazelwood"]}, "notes": "Planner persona: starter homes map to the single house"}
+{"id": 43, "text": "flat lots for starter homes near a bus stop", "expected": {"product": {"type": "single_family"}, "max_steep_slope_pct": 5, "near": [{"feature": "transit_stop", "within_ft": 1320}]}}

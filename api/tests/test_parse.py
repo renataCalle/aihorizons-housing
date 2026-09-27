@@ -71,3 +71,12 @@ def test_parse_endpoint() -> None:
     body = client.post("/api/search/parse", json={"text": "duplex lots in greenfield"}).json()
     assert body["filters"]["product"]["type"] == "duplex"
     assert body["chips"][0]["label"] == "Duplex"
+
+
+def test_starter_homes_are_single_family() -> None:
+    assert filters_of("starter homes in Hazelwood") == {
+        "product": {"type": "single_family"},
+        "areas": ["Hazelwood"],
+    }
+    # A named type still wins: starter townhomes are townhomes.
+    assert filters_of("starter townhomes")["product"]["type"] == "townhome"

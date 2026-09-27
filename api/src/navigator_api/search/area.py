@@ -1,8 +1,10 @@
-"""The searched lots at a glance: the 3D view's panel.
+"""The searched lots at a glance: the area view's panel.
 
 Counting only. Bands are the ones the search ranks on; "what holds sites back" adds up each
-lot's `score_breakdown` (the engine's counterfactual points lost per driver) by driver. Each
-breakdown belongs to the lot's stored analysis, the engine's best fit for that lot.
+lot's `score_breakdown` (the engine's counterfactual points lost per driver) by driver, plus
+the points its land headroom component falls short of its maximum (the breakdown covers only
+site cost and approvals, so nothing is counted twice). Each analysis is the lot's stored one,
+the engine's best fit for that lot.
 """
 
 from collections import defaultdict
@@ -25,6 +27,7 @@ DRIVER_LABEL = {
     "split_zoned": "Split zoning",
     "contextual_setbacks": "Relies on contextual setbacks",
     "relief": "Approvals needed",
+    "land_headroom": "Sale value doesn't cover costs and land",
 }
 
 MAX_BLOCKERS = 5
@@ -49,6 +52,9 @@ def summarize_area(
         per_driver: dict[str, float] = defaultdict(float)
         for item in a.score_breakdown if a else []:
             per_driver[driver_of(item.driver_flag_id)] += item.points_lost
+        for c in a.verdict.components if a else []:
+            if c.key == "land_headroom":
+                per_driver["land_headroom"] += c.max_points - c.points
         for driver, points in per_driver.items():
             if points > 0:
                 lost[driver].append(points)

@@ -1182,6 +1182,12 @@
       "Health": {
         "additionalProperties": false,
         "properties": {
+          "ai_search": {
+            "default": false,
+            "description": "True when search text goes to the AI parser (a key is set)",
+            "title": "Ai Search",
+            "type": "boolean"
+          },
           "illustrative": {
             "description": "True when any served parcel is mock data",
             "title": "Illustrative",

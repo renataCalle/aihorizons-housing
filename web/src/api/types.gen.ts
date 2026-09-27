@@ -635,6 +635,12 @@ export interface components {
         /** Health */
         Health: {
             /**
+             * Ai Search
+             * @description True when search text goes to the AI parser (a key is set)
+             * @default false
+             */
+            ai_search: boolean;
+            /**
              * Illustrative
              * @description True when any served parcel is mock data
              */

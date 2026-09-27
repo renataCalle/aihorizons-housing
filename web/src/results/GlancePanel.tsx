@@ -11,19 +11,25 @@ interface Props {
   summary: AreaSummary | null
   loading: boolean
   error: string | null
-  onShowList: () => void
+  /** Lots / Area view switch */
+  tabs: ReactNode
+  /** Open the ranked list with the near misses shown */
+  onShowNearMisses: () => void
   layers: ReactNode
 }
 
 /**
- * The 3D view's left panel (ScoreView3D.dc.html): the searched lots at a glance. Every figure
+ * The area view (ScoreView3D.dc.html's side panel, in 2D and 3D): the searched lots at a
+ * glance, for a planner asking where housing works and what holds the rest back. Every figure
  * comes from the API (POST /api/search/summary); the panel only lays them out.
  */
-export function GlancePanel({ areas, summary: s, loading, error, onShowList, layers }: Props) {
+export function GlancePanel(props: Props) {
+  const { areas, summary: s, loading, error, tabs, layers } = props
   const place = areas.length === 1 ? areas[0] : areas.length ? 'These areas' : 'Your search'
   const most = Math.max(1, ...(s?.blockers.map((b) => b.lots * b.avgPoints) ?? []))
   return (
     <aside className="results-panel glass glance" aria-label={`${place} at a glance`}>
+      {tabs}
       <p className="label glance-kicker">
         {areas.length === 1 ? 'Neighborhood view' : 'Area view'}
         {s?.rankedFor && ` · ${rankedForLabel(s.rankedFor.type, s.rankedFor.units)}`}
@@ -69,8 +75,8 @@ export function GlancePanel({ areas, summary: s, loading, error, onShowList, lay
                 ))}
               </ul>
               <p className="glance-note">
-                Points each constraint takes off the score of the lot's best-fit building, from
-                the engine's score breakdown.
+                Points each barrier takes off the score of each lot's best-fit building, from the
+                engine's score breakdown. Longest bar: the most points lost across the area.
               </p>
             </section>
           )}
@@ -78,7 +84,14 @@ export function GlancePanel({ areas, summary: s, loading, error, onShowList, lay
           <section className="glance-stats">
             <div>
               <b>{s.nearMisses}</b>
-              <span>Near misses: lots that fail just one filter</span>
+              <span>
+                Near misses: lots that fail just one filter.{' '}
+                {s.nearMisses > 0 && (
+                  <button type="button" className="link-button" onClick={props.onShowNearMisses}>
+                    See them
+                  </button>
+                )}
+              </span>
             </div>
             {s.assemblies > 0 && (
               <div>
@@ -91,9 +104,7 @@ export function GlancePanel({ areas, summary: s, loading, error, onShowList, lay
       )}
 
       <div className="results-foot">
-        <button type="button" className="button-secondary" onClick={onShowList}>
-          Show the ranked list
-        </button>
+        <p className="glance-note">Click a lot on the map for its score and top risk.</p>
         {layers}
       </div>
     </aside>

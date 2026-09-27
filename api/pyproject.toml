@@ -10,6 +10,7 @@ dependencies = [
     "uvicorn[standard]>=0.32",
     "pydantic-settings>=2.15.0",
     "rapidfuzz>=3.14.6",
+    "anthropic>=1.8.0",
 ]
 
 [build-system]

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { fetchAreaSummary, fetchSiteReport } from '../api'
 import { removeChip } from '../api/adapters'
 import { encodeFilters } from '../lib/filterUrl'
@@ -7,13 +7,11 @@ import { LeaderLine } from '../map/SearchOverlays'
 import { GlancePanel } from '../results/GlancePanel'
 import { InspectorCard } from '../results/InspectorCard'
 import { LayersMenu } from '../results/LayersMenu'
+import { PanelTabs } from '../results/PanelTabs'
 import { ResultsPanel } from '../results/ResultsPanel'
 import { useMapScreen } from './mapScreenContext'
 
-/** The 3D view's at-a-glance panel (GlancePanel). Off for now; true brings it back. */
-const SHOW_GLANCE = false
-
-/** /search: the results panel and the inspector card over the map (docs/01, §3). */
+/** /search: the results panel (or the area view) and the inspector card over the map (docs/01, §3). */
 export function ResultsView() {
   const s = useMapScreen()
   const cardRef = useRef<HTMLElement>(null)
@@ -27,27 +25,31 @@ export function ResultsView() {
   )
   const selected = known ?? (fetched.status === 'ready' ? fetched.data?.parcel : null) ?? null
 
-  // In 3D the left panel shows the searched lots at a glance; the ranked list is one click away.
-  const [showList, setShowList] = useState(false)
-  const glance = SHOW_GLANCE && s.view3d && !showList
-  const summary = useAsync(glance && s.filters ? `glance:${encodeFilters(s.filters)}` : 'none', (signal) =>
-    glance && s.filters ? fetchAreaSummary(s.filters, signal) : Promise.resolve(null),
+  // The area view sums up the searched lots; the ranked list is the other tab.
+  const areaView = s.areaView
+  const summary = useAsync(
+    areaView && s.filters ? `glance:${encodeFilters(s.filters)}` : 'none',
+    (signal) => (areaView && s.filters ? fetchAreaSummary(s.filters, signal) : Promise.resolve(null)),
   )
   const layers = <LayersMenu transit={s.transit} onTransit={s.setTransit} />
+  const tabs = <PanelTabs areaView={areaView} onAreaView={s.setAreaView} />
 
   return (
     <>
-      {s.filters && glance && (
+      {s.filters && areaView && (
         <GlancePanel
           areas={s.filters.areas}
           summary={summary.status === 'ready' ? summary.data : null}
           loading={summary.status === 'loading'}
           error={summary.status === 'error' ? summary.error.message : null}
-          onShowList={() => setShowList(true)}
+          tabs={tabs}
+          onShowNearMisses={() =>
+            s.filters && s.setAreaView(false, { ...s.filters, showNearMisses: true })
+          }
           layers={layers}
         />
       )}
-      {s.filters && !glance && (
+      {s.filters && !areaView && (
         <ResultsPanel
           response={response}
           loading={s.searchStatus === 'loading'}
@@ -61,7 +63,8 @@ export function ResultsView() {
           onHover={s.setHoveredId}
           onRetry={s.retry}
           layers={layers}
-          onGlance={SHOW_GLANCE && s.view3d ? () => setShowList(false) : undefined}
+          tabs={tabs}
+          basicSearch={s.parser === 'rules'}
           showTransit={s.transit}
         />
       )}

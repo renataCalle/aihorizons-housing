@@ -56,7 +56,8 @@ function matchLayer(parcels: ParcelLayer, response: SearchResponse | null): Parc
 /**
  * The map screen: one map that stays mounted while panels change over it (results at
  * /search, the report at /parcel/:id, the evidence drawer over the report). The URL holds
- * the query (q), the filters (f) and, on /search, the selection.
+ * the query (q), the filters (f), the view (view=3d, panel=area) and, on /search, the
+ * selection.
  */
 export function MapScreen() {
   const navigate = useNavigate()
@@ -106,6 +107,8 @@ export function MapScreen() {
   const selectedId = reportId ?? params.get('selected')
   // 3D view: the city's buildings and hills in 3D, lots coloured on the ground.
   const view3d = params.get('view') === '3d'
+  // Area view: the left panel sums up the searched lots (for planners) instead of listing them.
+  const areaView = params.get('panel') === 'area'
   const selectedCenter = useMemo(() => {
     if (!selectedId) return null
     const hit =
@@ -127,6 +130,7 @@ export function MapScreen() {
   const searchQuery = searchParams.toString()
   // The 3D view stays on while moving between results, reports and evidence.
   if (view3d) searchParams.set('view', '3d')
+  if (areaView) searchParams.set('panel', 'area')
   const linkQuery = searchParams.toString()
 
   // Stable callbacks: the results list is memoized and only re-renders rows that change.
@@ -146,6 +150,11 @@ export function MapScreen() {
     [setParams],
   )
   const select = useCallback((id: string | null) => update({ selected: id }), [update])
+  const setAreaView = useCallback(
+    (on: boolean, next?: Filters) =>
+      update({ panel: on ? 'area' : null, ...(next ? { f: filterParam(next, !!q) } : {}) }),
+    [update, q],
+  )
   const setFilters = useCallback(
     (next: Filters) => update({ f: filterParam(next, !!q) }),
     [update, q],
@@ -159,6 +168,7 @@ export function MapScreen() {
     searchError: search.status === 'error' ? search.error.message : null,
     parsing: parse.status === 'loading' ? 'loading' : parse.status === 'error' ? 'error' : 'done',
     parseError: parse.status === 'error' ? parse.error.message : null,
+    parser: !fromUrl && parsed ? parsed.parser : null,
     setFilters,
     select,
     selectedId,
@@ -171,6 +181,8 @@ export function MapScreen() {
     linkQuery,
     features: featureData,
     view3d,
+    areaView,
+    setAreaView,
   }
 
   // With a report open, clicking another parcel opens its report; otherwise it selects it.
