@@ -18,12 +18,15 @@
 .map-topbar {
   position: absolute;
   top: 20px;
-  left: 24px;
-  right: 24px;
+  left: 0;
+  right: 0;
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
   z-index: 2;
-  display: flex;
+  /* Brand | search | badges: equal side columns keep the search box centered. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   height: 60px;
   padding: 0 12px 0 16px;
@@ -36,6 +39,7 @@
 
 .map-topbar-end {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 10px;
 }

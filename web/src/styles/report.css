@@ -3,7 +3,8 @@
 .back-pill {
   position: absolute;
   top: 100px;
-  left: 24px;
+  /* Lined up with the top bar's left edge (map.css .map-topbar). */
+  left: max(24px, calc((100% - 1120px) / 2));
   z-index: 2;
   display: inline-flex;
   align-items: center;
