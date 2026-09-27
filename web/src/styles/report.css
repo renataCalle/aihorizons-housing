@@ -34,6 +34,7 @@
   z-index: 3;
   width: min(720px, 100vw);
   padding: 28px 40px 40px;
+  overflow-x: hidden;
   overflow-y: auto;
   border-radius: 28px 0 0 0;
   background: var(--panel);
@@ -526,7 +527,10 @@
 }
 
 /* Rule by rule */
+/* Positioned, so the table's visually hidden labels stay inside its scroll area instead of
+   widening the report panel. */
 .rule-table-wrap {
+  position: relative;
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
@@ -715,6 +719,7 @@
   z-index: 5;
   width: min(580px, 100vw);
   padding: 32px 40px;
+  overflow-x: hidden;
   overflow-y: auto;
   border-radius: 28px 0 0 0;
   background: var(--white);
@@ -925,6 +930,7 @@
 }
 
 .case-table-wrap {
+  position: relative;
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: 14px;
