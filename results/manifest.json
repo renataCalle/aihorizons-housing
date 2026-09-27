@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-09-27T00:24:36+00:00",
+  "script": "api/scripts/build_results_bundle.py",
+  "scope": {
+    "neighborhoods": [
+      "Hazelwood",
+      "Greenfield",
+      "Glen Hazel"
+    ],
+    "candidates": "vacant land, 1,500-20,000 sq ft, plus the golden parcels"
+  },
+  "versions": {
+    "engine": "sandbox-v0.1",
+    "ruleset": "sandbox rules drafts 2026-09-26",
+    "schema": "0.1.0",
+    "data_as_of": "2018-07-27"
+  },
+  "counts": {
+    "parcels": 7273,
+    "candidates_scored": 981,
+    "failed_to_build": 0,
+    "bands": {
+      "feasible_with_conditions": 259,
+      "high_risk": 721,
+      "not_scored": 1
+    },
+    "map_features": 249
+  },
+  "failed": {},
+  "source_as_of": {
+    "address_points": "2026-09-23T06:55:37.782704",
+    "assessments": "2026-09-07T01:42:02.893599",
+    "assessments_dictionary": "2025-05-09T17:37:02.923086",
+    "city_owned": "2026-09-26T00:31:44.719771",
+    "city_steps": "2022-12-19T15:25:40.055990",
+    "city_street_centerlines": "2026-09-23T08:57:19.861094",
+    "combined_sewershed": "2018-07-27T14:26:32.748741",
+    "condemned": "2026-09-26T03:48:08.103717",
+    "council_zoning_matters": "2026-09-25T21:33:49.483",
+    "dep_aml_polygons": "2026-09-26T18:03:59+00:00",
+    "dep_aml_sites": "2026-09-26T18:03:50+00:00",
+    "dep_digitized_mined_area": "2026-09-26T18:10:31+00:00",
+    "dep_land_recycling": "2026-09-26T17:58:56+00:00",
+    "dep_storage_tanks_active": "2026-09-26T17:59:05+00:00",
+    "dep_storage_tanks_inactive": "2026-09-26T18:03:43+00:00",
+    "fema_flood_zones": "2026-09-26T18:02:53+00:00",
+    "greenways": "2026-09-23T08:20:44.356794",
+    "gtfs": "2026-08-28T07:07:18.417756",
+    "height_overlay": "2026-09-23T08:58:59.725874",
+    "historic_districts": "2026-09-23T08:08:17.415538",
+    "historic_sites": "2026-09-23T08:30:26.655696",
+    "hud_dda": "2025-09-30T14:51:32.906000+00:00",
+    "hud_fmr_metro": "2025-09-30T23:49:22.016000+00:00",
+    "hud_qct": "2025-09-30T14:51:02.931000+00:00",
+    "hud_safmr": "2024-11-05T23:46:40.480000+00:00",
+    "landslide_prone": "2026-09-23T08:05:08.796792",
+    "landslides_observed": "2018-07-05T16:30:16.391000",
+    "market_value_analysis": "2025-07-08T01:38:08.645660",
+    "municipalities": "2026-08-30T13:15:12.599232",
+    "neighborhoods": "2026-09-23T08:45:53.288993",
+    "opportunity_zones": "2026-06-02T12:05:58.629000+00:00",
+    "parcels": "2026-09-23T06:55:20.647415",
+    "parking_reduction_overlay": "2024-07-12T16:53:02.360114",
+    "parks": "2026-09-23T08:10:37.425142",
+    "pli_permits": "2026-09-26T03:22:05.014160",
+    "riverfront_overlay": "2024-06-07T20:06:29.737507",
+    "sales": "2026-09-26T07:07:00.825307",
+    "steep_slope": "2026-09-23T08:43:39.218835",
+    "street_centerlines": "2026-09-23T06:55:55.682414",
+    "tax_liens": "2026-09-07T02:52:32.787778",
+    "transit_stops": "2026-09-22T15:35:04.172613",
+    "undermined": "2026-09-23T08:40:33.994603",
+    "uptown_ipod": "2024-02-07T08:01:08.079313",
+    "water_providers_by_parcel": "2025-09-23T15:26:16.358742",
+    "zoning": "2026-09-23T08:27:32.185089"
+  }
+}
