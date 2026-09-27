@@ -10,7 +10,8 @@ export default defineConfig({
   optimizeDeps: { exclude: ['maplibre-gl'] },
   server: {
     // The API runs on :8000 (`uv run uvicorn navigator_api.main:app --reload`).
-    proxy: { '/api': 'http://127.0.0.1:8000' },
+    // API_URL points the dev server at another API, e.g. one running SITE_SOURCE=pipeline.
+    proxy: { '/api': process.env.API_URL ?? 'http://127.0.0.1:8000' },
   },
   test: {
     include: ['src/**/*.test.ts'],
