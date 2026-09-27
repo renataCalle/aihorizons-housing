@@ -13,11 +13,13 @@ interface Props {
   fit: ProgramFit | null
   rank: number | null
   total: number
+  /** The report link, carrying the search so "Back to N sites" returns to it. */
+  reportHref: string
   onClose: () => void
 }
 
 /** The selected parcel, top right (SearchMap.dc.html). Every value is an engine or data field. */
-export function InspectorCard({ ref, parcel, fit, rank, total, onClose }: Props) {
+export function InspectorCard({ ref, parcel, fit, rank, total, reportHref, onClose }: Props) {
   const band = parcel.band
   const path = fit
     ? `${approvalLabel(fit.outcome === 'by_right' ? [] : fit.reliefTypes)} · ${programLabel(fit.productType, fit.units)}`
@@ -88,7 +90,7 @@ export function InspectorCard({ ref, parcel, fit, rank, total, onClose }: Props)
         </div>
       </dl>
 
-      <Link className="button-primary inspector-open" to={`/parcel/${parcel.id}`}>
+      <Link className="button-primary inspector-open" to={reportHref}>
         Open full report
         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 12h14M13 6l6 6-6 6" />

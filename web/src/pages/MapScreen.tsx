@@ -1,0 +1,193 @@
+import { MapProvider } from '@vis.gl/react-maplibre'
+import { useMemo, useState } from 'react'
+import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router'
+import { fetchHealth, fetchMapFeatures, fetchParcelLayer, fetchParse, fetchSearch } from '../api'
+import { TopBar } from '../components/TopBar'
+import { decodeFilters, encodeFilters } from '../lib/filterUrl'
+import { useAsync } from '../lib/useAsync'
+import { DEFAULT_FILTERS, type Filters } from '../models/filters'
+import type { ParcelLayer } from '../models/map'
+import type { SearchResponse } from '../models/search'
+import { BlueprintMap, type MapView } from '../map/BlueprintMap'
+import { MapControls } from '../map/MapControls'
+import { MapReadout } from '../map/MapReadout'
+import type { MapScreenContext } from './mapScreenContext'
+import { ringCenter } from '../map/readout'
+import {
+  AreaOverlay,
+  FitToAreas,
+  FlyToSelection,
+  RankTags,
+  type Padding,
+} from '../map/SearchOverlays'
+
+/** Hazelwood, where the mock candidates cluster. */
+const INITIAL_VIEW: MapView = { longitude: -79.943, latitude: 40.405, zoom: 16.4 }
+
+/** Room the panels take on each side, so the selected parcel stays in view. */
+const RESULTS_PADDING: Padding = { top: 110, bottom: 90, left: 420, right: 360 }
+const REPORT_PADDING: Padding = { top: 180, bottom: 90, left: 40, right: 760 }
+
+/** Color only the matches; every other parcel is drawn as an outline (docs/01, §3). */
+function matchLayer(parcels: ParcelLayer, response: SearchResponse | null): ParcelLayer {
+  if (!response) return parcels
+  const ranks = new Map(response.results.map((r) => [r.parcel.id, r.rank]))
+  const showAssemblies = response.filters.showAssemblies
+  return {
+    ...parcels,
+    features: parcels.features.map((f) => {
+      const rank = ranks.get(f.properties.id)
+      return {
+        ...f,
+        properties: {
+          ...f.properties,
+          band: rank ? f.properties.band : 'none',
+          rank: rank ?? null,
+          assemblyId: showAssemblies ? f.properties.assemblyId : null,
+        },
+      }
+    }),
+  }
+}
+
+/**
+ * The map screen: one map that stays mounted while panels change over it (results at
+ * /search, the report at /parcel/:id, the evidence drawer over the report). The URL holds
+ * the query (q), the filters (f) and, on /search, the selection.
+ */
+export function MapScreen() {
+  const navigate = useNavigate()
+  const [params, setParams] = useSearchParams()
+  const report = useMatch('/parcel/:id/*')
+  const reportId = report?.params.id ?? null
+  const q = params.get('q') ?? ''
+  const fromUrl = useMemo(() => decodeFilters(params.get('f')), [params])
+  const [view, setView] = useState(INITIAL_VIEW)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [transit, setTransit] = useState(true)
+  const [retryCount, setRetryCount] = useState(0)
+
+  // Text without filters in the URL is parsed first; then the filters live in the URL.
+  const parse = useAsync(fromUrl || !q ? 'none' : `parse:${q}`, (signal) =>
+    fromUrl || !q ? Promise.resolve(null) : fetchParse(q, null, signal),
+  )
+  const parsed = parse.status === 'ready' ? parse.data : null
+  const filters: Filters | null = fromUrl ?? (q ? (parsed?.filters ?? null) : DEFAULT_FILTERS)
+
+  const search = useAsync(filters ? `${encodeFilters(filters)}#${retryCount}` : 'waiting', (s) =>
+    filters ? fetchSearch(filters, s) : new Promise<never>(() => {}),
+  )
+  const response = search.status === 'ready' ? search.data : search.stale
+
+  const parcels = useAsync('parcels', fetchParcelLayer)
+  const features = useAsync('features', fetchMapFeatures)
+  const health = useAsync('health', fetchHealth)
+  const featureData = features.status === 'ready' ? features.data : null
+
+  const layer = useMemo(
+    () => (parcels.status === 'ready' ? matchLayer(parcels.data, response) : null),
+    [parcels, response],
+  )
+
+  const selectedId = reportId ?? params.get('selected')
+  const selectedCenter = useMemo(() => {
+    if (!selectedId) return null
+    const hit =
+      response?.results.find((r) => r.parcel.id === selectedId) ??
+      response?.nearMisses.find((n) => n.parcel.id === selectedId)
+    if (hit) return hit.parcel.centroid
+    // Not among the results (e.g. opened from the search box): use its shape on the map.
+    const feature =
+      parcels.status === 'ready'
+        ? parcels.data.features.find((f) => f.properties.id === selectedId)
+        : undefined
+    return feature ? ringCenter(feature.geometry) : null
+  }, [response, selectedId, parcels])
+
+  const searchParams = new URLSearchParams()
+  if (q) searchParams.set('q', q)
+  const encoded = filters ? encodeFilters(filters) : ''
+  if (encoded) searchParams.set('f', encoded)
+  const searchQuery = searchParams.toString()
+
+  function update(patch: Record<string, string | null>) {
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        for (const [key, value] of Object.entries(patch)) {
+          if (value) next.set(key, value)
+          else next.delete(key)
+        }
+        return next
+      },
+      { replace: true },
+    )
+  }
+
+  const context: MapScreenContext = {
+    q,
+    filters,
+    response,
+    searchStatus: search.status,
+    searchError: search.status === 'error' ? search.error.message : null,
+    parsing: parse.status === 'loading' ? 'loading' : parse.status === 'error' ? 'error' : 'done',
+    parseError: parse.status === 'error' ? parse.error.message : null,
+    setFilters: (next) => update({ f: encodeFilters(next) || null }),
+    select: (id) => update({ selected: id }),
+    selectedId,
+    hoveredId,
+    setHoveredId,
+    transit,
+    setTransit,
+    retry: () => setRetryCount((n) => n + 1),
+    searchQuery,
+    features: featureData,
+  }
+
+  // With a report open, clicking another parcel opens its report; otherwise it selects it.
+  const onMapSelect = (id: string | null) => {
+    if (!reportId) return context.select(id)
+    if (id && id !== reportId) navigate(`/parcel/${id}${searchQuery ? `?${searchQuery}` : ''}`)
+  }
+
+  return (
+    <MapProvider>
+      <main className={reportId ? 'map-page has-report' : 'map-page'}>
+        <BlueprintMap
+          parcels={layer}
+          features={featureData}
+          selectedId={selectedId}
+          onSelect={onMapSelect}
+          initialView={INITIAL_VIEW}
+          onViewChange={setView}
+          hoveredId={hoveredId}
+          onHover={setHoveredId}
+          showTransit={transit}
+        >
+          {featureData && filters && (
+            <>
+              <AreaOverlay features={featureData} areas={filters.areas} />
+              {!selectedId && <FitToAreas features={featureData} areas={filters.areas} />}
+            </>
+          )}
+          {response && <RankTags results={response.results} />}
+          <FlyToSelection
+            center={selectedCenter}
+            padding={reportId ? REPORT_PADDING : RESULTS_PADDING}
+          />
+        </BlueprintMap>
+
+        <TopBar
+          illustrative={health.status === 'ready' && health.data.illustrative}
+          query={q}
+          basicSearch={parsed?.parser === 'rules'}
+        />
+
+        <Outlet context={context} />
+
+        <MapControls />
+        <MapReadout view={view} />
+      </main>
+    </MapProvider>
+  )
+}
