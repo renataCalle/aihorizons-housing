@@ -951,3 +951,41 @@ p.results-panel {
   font-size: 22px;
   font-weight: 600;
 }
+
+/* Lots / Area view: two views of one search at the top of the left panel */
+.panel-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  flex: none;
+  padding: 4px;
+  border-radius: var(--radius-control);
+  background: var(--cobalt-tint-2);
+}
+
+.panel-tabs button {
+  min-height: 36px;
+  border: 0;
+  border-radius: calc(var(--radius-control) - 4px);
+  background: transparent;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.panel-tabs button[aria-pressed='true'] {
+  background: var(--white);
+  color: var(--cobalt);
+  box-shadow: 0 1px 3px rgba(11, 27, 63, 0.12);
+}
+
+.panel-tabs button:focus-visible {
+  outline: 2px solid var(--cobalt);
+  outline-offset: 1px;
+}
+
+.glance .results-foot .glance-note {
+  flex: 1 1 160px;
+}

@@ -41,8 +41,9 @@ def test_blockers_add_up_the_engines_breakdown(client: TestClient) -> None:
     assert 0 < len(blockers) <= MAX_BLOCKERS
     totals = [b["lots"] * b["avg_points"] for b in blockers]
     assert totals == sorted(totals, reverse=True)
-    # Recount the top driver from each result's stored analysis.
-    top = blockers[0]
+    # Recount the top breakdown driver from each result's stored analysis (land headroom is
+    # checked in its own test).
+    top = next(b for b in blockers if b["driver"] != "land_headroom")
     source = client.app.state.source
     ids = [r["parcel"]["parcel_id"] for r in post(client, "/api/search", filters)["results"]]
     hit = [
@@ -60,3 +61,20 @@ def test_blockers_add_up_the_engines_breakdown(client: TestClient) -> None:
 def test_no_results_means_empty_counts(client: TestClient) -> None:
     summary = post(client, "/api/search/summary", {"areas": ["Hazelwood"], "min_score": 99})
     assert (summary["lots"], summary["bands"], summary["blockers"]) == (0, {}, [])
+
+
+def test_land_headroom_counts_the_component_shortfall(client: TestClient) -> None:
+    filters = {"areas": ["Hazelwood"]}
+    summary = post(client, "/api/search/summary", filters)
+    source = client.app.state.source
+    ids = [r["parcel"]["parcel_id"] for r in post(client, "/api/search", filters)["results"]]
+    lost = [
+        c.max_points - c.points
+        for pid in ids
+        if (a := source.analysis(pid))
+        for c in a.verdict.components
+        if c.key == "land_headroom" and c.points < c.max_points
+    ]
+    land = next(b for b in summary["blockers"] if b["driver"] == "land_headroom")
+    assert land["lots"] == len(lost)
+    assert land["avg_points"] == round(sum(lost) / len(lost), 1)

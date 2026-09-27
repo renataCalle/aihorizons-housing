@@ -22,11 +22,15 @@ export interface MapScreenContext {
   retry: () => void
   /** The search part of the URL (q, f). Empty when the page wasn't opened from a search. */
   searchQuery: string
-  /** What links between results and reports carry: the search plus the view (view=3d). */
+  /** What links between results and reports carry: the search plus the view (view=3d, panel=area). */
   linkQuery: string
   features: MapFeatures | null
   /** The 3D view is on */
   view3d: boolean
+  /** The left panel shows the area view (the searched lots at a glance) instead of the list */
+  areaView: boolean
+  /** Switch the panel view, optionally changing the filters in the same URL update */
+  setAreaView: (on: boolean, filters?: Filters) => void
 }
 
 export function useMapScreen() {

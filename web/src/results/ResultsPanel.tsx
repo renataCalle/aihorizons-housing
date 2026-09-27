@@ -28,8 +28,8 @@ interface Props {
   layers: ReactNode
   /** Map layers shown, so the legend lists only what's drawn */
   showTransit: boolean
-  /** In the 3D view: back to the at-a-glance panel */
-  onGlance?: () => void
+  /** Lots / Area view switch */
+  tabs: ReactNode
 }
 
 /** The left panel on the results screen (SearchMap.dc.html). */
@@ -53,6 +53,7 @@ export function ResultsPanel(props: Props) {
 
   return (
     <aside className="results-panel glass" aria-label="Search results">
+      {props.tabs}
       <div className="results-head">
         <h2 className="label results-count" aria-live="polite">
           {loading && !response
@@ -172,11 +173,6 @@ export function ResultsPanel(props: Props) {
           showTransit={props.showTransit}
           showArea={filters.areas.length > 0}
         />
-        {props.onGlance && (
-          <button type="button" className="button-secondary" onClick={props.onGlance}>
-            At a glance
-          </button>
-        )}
         {props.layers}
       </div>
     </aside>

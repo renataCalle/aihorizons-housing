@@ -31,7 +31,15 @@ PRODUCT_WORDS = {
     "duplex": ["duplexes", "duplex", "two-family", "two family"],
     "triplex": ["triplexes", "triplex", "three-family", "three family"],
     "walkup": ["walk-ups", "walk-up", "walkups", "walkup", "apartment building", "apartments"],
-    "single_family": ["single-family", "single family", "houses", "house"],
+    # Starter homes: small for-sale homes; the single house is the engine's closest type.
+    "single_family": [
+        "single-family",
+        "single family",
+        "starter homes",
+        "starter home",
+        "houses",
+        "house",
+    ],
 }
 GENERIC_HOMES = r"homes|units|houses"
 
