@@ -20,18 +20,21 @@
   top: 20px;
   left: 0;
   right: 0;
-  width: min(var(--topbar-width), calc(100% - 48px));
+  /* Just as wide as its contents (brand, search, badges), centred on the page. */
+  width: fit-content;
+  max-width: calc(100% - 48px);
   margin: 0 auto;
   z-index: 2;
-  /* Brand | search | badges: equal side columns keep the search box centered. When the badges
-     need more room than a side column has, the search box narrows instead of them wrapping. */
-  display: grid;
-  grid-template-columns: minmax(max-content, 1fr) minmax(240px, 560px) minmax(max-content, 1fr);
+  display: flex;
   align-items: center;
   gap: 16px;
   height: 60px;
-  padding: 0 12px 0 16px;
+  padding: 0 8px 0 16px;
   border-radius: 18px;
+}
+
+.map-topbar .brand {
+  flex: none;
 }
 
 .map-topbar .brand span {
@@ -40,6 +43,7 @@
 
 .map-topbar-end {
   display: flex;
+  flex: none;
   white-space: nowrap;
   justify-content: flex-end;
   align-items: center;
@@ -59,8 +63,15 @@
   font-size: 14px;
 }
 
+/* The search box narrows on small screens rather than the bar overflowing. */
 .map-topbar .omnibox-root {
-  width: 100%;
+  flex: 0 1 auto;
+  width: var(--topbar-search-width);
+  min-width: 0;
+}
+
+.map-topbar-end:empty {
+  display: none;
 }
 
 .map-controls {
