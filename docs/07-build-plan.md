@@ -38,12 +38,11 @@ Build in this order, on your own branch (`feat/web-api`), merging with normal me
 ## M5 · 3D view
 
 - **Built:** "3D / 2D" toggle kept in the URL (`view=3d`); tilted camera; the basemap's buildings raised to their heights with MapLibre `fill-extrusion` (no deck.gl), solid and above the lots; selected lot raised 3 m; Blueprint and Standard map themes; toggling back keeps the selection. Replaces the original deck.gl score blocks (see `docs/01-product-spec.md`, 3D view).
-- **Still to build: "Hazelwood at a glance" panel**, on the left in 3D, for the searched area:
-  - lots per band (from the parcel summaries);
-  - "What holds sites back": for each score driver, how many lots it costs points and how many points on average, summed from each lot's `score_breakdown` (the engine's own counterfactuals; the API only adds them up). Confirm with the engine owner that this can stand in for the planned `attribute_bottlenecks`;
-  - near misses (from `/api/search` with `show_near_misses`).
-- **Dropped for lack of data:** the glow under fast-track lots (Hazelwood has none in the current results).
-- **Done when:** the panel shows for the searched area in 3D, and toggling back keeps the selection.
+- **Built: "at a glance" panel** on the left in 3D (`POST /api/search/summary`, `web/src/results/GlancePanel.tsx`), for the current search, with the ranked list one click away:
+  - lots per band, as the search ranks them;
+  - "What holds sites back": for each score driver, how many lots it costs points and how many points on average, added up from each lot's `score_breakdown` (the engine's own counterfactuals; the API only counts and averages). Stands in for the planned `attribute_bottlenecks`: confirm with the engine owner;
+  - near misses and assemblies.
+- **Dropped for lack of data:** the glow under fast-track lots (Hazelwood has none in the current results) and a score tooltip (the inspector card already shows score and band).
 
 ## M6 · Polish and submission
 
