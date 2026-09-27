@@ -24,13 +24,28 @@ _SUFFIXES = {
 }
 
 
+# Numbered streets are written both ways: "Second Ave" and "2nd Ave".
+_ORDINALS = {
+    "first": "1st",
+    "second": "2nd",
+    "third": "3rd",
+    "fourth": "4th",
+    "fifth": "5th",
+    "sixth": "6th",
+    "seventh": "7th",
+    "eighth": "8th",
+    "ninth": "9th",
+    "tenth": "10th",
+}
+
+
 def _compact_id(text: str) -> str:
     return text.replace("-", "").strip().upper()
 
 
 def _address_key(text: str) -> str:
     words = re.sub(r"[^\w\s]", " ", text.lower()).split()
-    return " ".join(_SUFFIXES.get(w, w) for w in words)
+    return " ".join(_SUFFIXES.get(w, _ORDINALS.get(w, w)) for w in words)
 
 
 def lookup(summaries: list[ParcelSummary], text: str) -> LookupResponse:

@@ -54,3 +54,9 @@ def test_text_starting_with_a_house_number_is_looked_up_as_an_address(client: Te
     assert body["kind"] == "description"
     assert ids(body)[0] == SAMPLE_LOT_A
     assert body["matches"][0]["matched_on"] == "address"
+
+
+def test_numbered_streets_match_spelled_out() -> None:
+    from navigator_api.search.lookup import _address_key
+
+    assert _address_key("4800 Second Avenue") == _address_key("4800 2ND AVE")
