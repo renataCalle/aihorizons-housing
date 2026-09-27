@@ -118,7 +118,10 @@ export function BlueprintMap({
     [palette, theme, selectedId, hoveredId, reportId, hatchReady],
   )
   const overlays = useMemo(() => featureLayers(palette), [palette])
-  const buildings = useMemo(() => buildingExtrusion(palette), [palette])
+  const buildings = useMemo(
+    () => (theme.buildings ? buildingExtrusion(theme.buildings) : null),
+    [theme.buildings],
+  )
   const sky = useMemo(() => skySpec(palette), [palette])
 
   if (!style) return <div className="map-canvas map-loading" aria-hidden="true" />
@@ -179,11 +182,11 @@ export function BlueprintMap({
           ))}
         </Source>
       )}
-      {view3d && theme.buildings3d && <Layer {...buildings} />}
+      {view3d && buildings && <Layer {...buildings} />}
       {children}
       <ThemeBasemap theme={theme} />
       <TiltCamera view3d={view3d} />
-      <BuildingsOnTop active={view3d && theme.buildings3d} />
+      <BuildingsOnTop active={view3d && !!buildings} />
       {selectedCenter && (
         <Marker longitude={selectedCenter[0]} latitude={selectedCenter[1]} anchor="center">
           <Crosshair />

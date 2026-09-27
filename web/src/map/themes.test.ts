@@ -43,8 +43,14 @@ describe('map themes', () => {
   })
 
   it('only the Standard theme raises buildings in 3D', () => {
-    expect(THEMES.blueprint.buildings3d).toBe(false)
-    expect(THEMES.standard.buildings3d).toBe(true)
+    expect(THEMES.blueprint.buildings).toBeNull()
+    expect(THEMES.standard.buildings?.roof).toMatch(HEX)
+    expect(THEMES.standard.buildings?.tall).toMatch(HEX)
+  })
+
+  it('draws roofs in a different colour from the ground, so buildings keep their shape', () => {
+    const roof = THEMES.standard.buildings?.roof.toLowerCase()
+    expect(roof).not.toBe(THEMES.standard.basemap.land.toLowerCase())
   })
 
   it('falls back to the default theme when storage is unavailable', () => {

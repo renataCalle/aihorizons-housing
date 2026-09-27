@@ -21,14 +21,25 @@ export interface BandColors {
   unknownTint: string
 }
 
+/**
+ * 3D buildings. The roof is drawn in `roof` at full light, so it must differ from the ground
+ * (the basemap's land) or the building's shape is lost; the walls come out darker.
+ */
+export interface BuildingColors {
+  /** Houses and low buildings, up to 20 m */
+  roof: string
+  /** Towers, from 70 m (blended in between) */
+  tall: string
+}
+
 export interface MapTheme {
   id: MapThemeId
   label: string
   basemap: BasemapPalette
   /** Lot lines between lots that aren't candidates */
   lotLine: string
-  /** The 3D view raises the basemap's buildings */
-  buildings3d: boolean
+  /** The 3D view raises the basemap's buildings in these colours; null = no buildings */
+  buildings: BuildingColors | null
   bands: BandColors
 }
 
@@ -52,7 +63,7 @@ export const THEMES: Record<MapThemeId, MapTheme> = {
       roadCasing: '#C9D3E0',
     },
     lotLine: '#C9D3E0',
-    buildings3d: false,
+    buildings: null,
     bands: {
       fast: '#1B3FD1',
       conditions: '#6E9BF2',
@@ -66,7 +77,7 @@ export const THEMES: Record<MapThemeId, MapTheme> = {
     label: 'Standard',
     basemap: STANDARD,
     lotLine: '#D6D0C4',
-    buildings3d: true,
+    buildings: { roof: '#DDD8CE', tall: '#9EB7CD' },
     bands: {
       fast: '#1E3A8A',
       conditions: '#4F86E8',

@@ -1,5 +1,5 @@
 import type { ExpressionSpecification, LayerSpecification } from 'maplibre-gl'
-import type { BandColors } from './themes'
+import type { BandColors, BuildingColors } from './themes'
 
 export const PARCELS = 'parcels'
 export const FEATURES = 'map-features'
@@ -12,8 +12,6 @@ export interface MapPalette {
   cobalt: string
   ink: string
   assemblyTint: string
-  building: string
-  buildingTall: string
   skyTop: string
   paper: string
 }
@@ -25,8 +23,6 @@ export function readPalette(root: Element = document.documentElement): MapPalett
     cobalt: token('--cobalt'),
     ink: token('--ink'),
     assemblyTint: token('--assembly-tint'),
-    building: token('--building-3d'),
-    buildingTall: token('--building-3d-tall'),
     skyTop: token('--sky-3d'),
     paper: token('--paper'),
   }
@@ -162,10 +158,10 @@ export const BUILDINGS_3D = 'buildings-3d'
 
 /**
  * The 3D view's buildings: the basemap's building footprints raised to their mapped heights
- * (OpenMapTiles `render_height`). Houses are warm cream and towers glassy blue, after the
- * Standard palette of the 3D basemap (blueprintTheme.ts STANDARD).
+ * (OpenMapTiles `render_height`), in the theme's colours: houses in the roof colour, towers
+ * blending to the tall colour.
  */
-export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': string } {
+export function buildingExtrusion(c: BuildingColors): Layer & { 'source-layer': string } {
   return {
     id: BUILDINGS_3D,
     type: 'fill-extrusion',
@@ -179,11 +175,11 @@ export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': stri
         ['linear'],
         ['coalesce', ['get', 'render_height'], 0],
         0,
-        p.building,
+        c.roof,
         20,
-        p.building,
+        c.roof,
         70,
-        p.buildingTall,
+        c.tall,
       ],
       'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 0],
       'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],

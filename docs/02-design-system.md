@@ -133,7 +133,7 @@ Add a technical grid feel with a faint 48px grid as a CSS background behind a sl
 
 **Terrain:** tried in 3D (AWS Terrain Tiles, Terrarium) and dropped: lots draped over hillsides read poorly.
 
-**3D view (built, replaces the score view below):** the "3D" control (`view=3d` in the URL) tilts the camera to 66° at street level and raises the basemap's buildings to their mapped heights in the Standard theme (OpenMapTiles `render_height`, MapLibre `fill-extrusion`): cream `#E9E5DC` for houses, glassy blue `#9EB7CD` for towers, solid and always drawn above the lots. Blueprint shows no buildings in 3D. Lots stay coloured by band on the ground. Sky and horizon haze via MapLibre's sky.
+**3D view (built, replaces the score view below):** the "3D" control (`view=3d` in the URL) tilts the camera to 66° at street level and raises the basemap's buildings to their mapped heights in the Standard theme (OpenMapTiles `render_height`, MapLibre `fill-extrusion`): roofs `#DDD8CE` for houses (darker than the `#F0ECE2` ground, so the shape reads; walls come out darker still), glassy blue `#9EB7CD` for towers, solid and always drawn above the lots. Blueprint shows no buildings in 3D. Lots stay coloured by band on the ground. Sky and horizon haze via MapLibre's sky.
 
 *Original plan, not built:* deck.gl extruded parcels, elevation = score scaled, fill by band, pitch about 55°, bearing about −30°, with a glow under fast-track parcels.
 
