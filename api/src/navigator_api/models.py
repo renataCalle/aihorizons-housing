@@ -478,4 +478,7 @@ class Health(Model):
     site_source: Literal["mock", "pipeline"]
     illustrative: bool = Field(description="True when any served parcel is mock data")
     parcels: int
+    ai_search: bool = Field(
+        default=False, description="True when search text goes to the AI parser (a key is set)"
+    )
     versions: Versions

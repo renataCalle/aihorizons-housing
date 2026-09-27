@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from navigator_api.routes import evidence, health, maps, parcels, search
+from navigator_api.search.parse_ai import AIParser
 from navigator_api.settings import Settings
 from navigator_api.sources.base import SiteSource
 from navigator_api.sources.mock import MockSiteSource
@@ -22,6 +23,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings()
     app = FastAPI(title="Pencil It API", version="0.1.0")
     app.state.source = build_source(settings)
+    # AI search needs a key; without one, the rule-based parser answers every search.
+    key = settings.anthropic_api_key
+    app.state.ai_parser = AIParser(key, settings.ai_search_model) if key else None
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,

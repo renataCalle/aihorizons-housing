@@ -9,7 +9,7 @@ from navigator_api.models import (
     SearchFilters,
     SearchResponse,
 )
-from navigator_api.routes.deps import Source
+from navigator_api.routes.deps import AI, Source
 from navigator_api.search.area import summarize_area, with_extras
 from navigator_api.search.lookup import lookup
 from navigator_api.search.parse import parse
@@ -41,9 +41,9 @@ def search_summary(filters: SearchFilters, source: Source) -> AreaSummary:
 
 
 @router.post("/search/parse")
-def parse_text(request: ParseRequest) -> ParseResult:
+def parse_text(request: ParseRequest, ai: AI) -> ParseResult:
     """Plain-language description to search filters. It never searches, scores or ranks."""
-    return parse(request.text, request.current_filters)
+    return parse(request.text, request.current_filters, ai)
 
 
 @router.get("/neighborhoods")
