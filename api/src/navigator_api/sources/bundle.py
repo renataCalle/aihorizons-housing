@@ -63,8 +63,13 @@ class SiteBundle:
             raise ValueError("The summaries and the parcel shapes list different parcels")
 
     @staticmethod
-    def load_files(directory: Path) -> tuple[list[ParcelSummary], dict, MapFeatureCollection]:
-        summaries = SUMMARIES.validate_json(read_text(directory / "summaries.json"))
+    def load_files(
+        directory: Path, summaries: bool = True
+    ) -> tuple[list[ParcelSummary], dict, MapFeatureCollection]:
+        """summaries.json, parcels.geojson and map_features.geojson (each may be gzipped)."""
+        parsed = (
+            SUMMARIES.validate_json(read_text(directory / "summaries.json")) if summaries else []
+        )
         geometry = {
             f["properties"]["parcel_id"]: f["geometry"]
             for f in json.loads(read_text(directory / "parcels.geojson"))["features"]
@@ -72,7 +77,7 @@ class SiteBundle:
         features = MapFeatureCollection.model_validate_json(
             read_text(directory / "map_features.geojson")
         )
-        return summaries, geometry, features
+        return parsed, geometry, features
 
     def versions(self) -> Versions:
         # Every analysis is stamped by the engine; serve the oldest data date among them.
