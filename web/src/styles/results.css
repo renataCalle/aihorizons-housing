@@ -139,6 +139,13 @@ p.results-panel {
   transition: opacity 120ms;
 }
 
+/* With ~1,000 results only a dozen rows are on screen: skip rendering the rest until
+   they scroll into view (58px rows + 6px gap). */
+.results-list > li {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 58px;
+}
+
 .results-list.is-stale {
   opacity: 0.55;
 }

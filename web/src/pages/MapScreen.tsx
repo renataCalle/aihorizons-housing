@@ -1,5 +1,5 @@
 import { MapProvider } from '@vis.gl/react-maplibre'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router'
 import { fetchHealth, fetchMapFeatures, fetchParcelLayer, fetchParse, fetchSearch } from '../api'
 import { TopBar } from '../components/TopBar'
@@ -62,7 +62,6 @@ export function MapScreen() {
   const reportId = report?.params.id ?? null
   const q = params.get('q') ?? ''
   const fromUrl = useMemo(() => decodeFilters(params.get('f')), [params])
-  const [view, setView] = useState(INITIAL_VIEW)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [transit, setTransit] = useState(true)
   const [retryCount, setRetryCount] = useState(0)
@@ -110,19 +109,27 @@ export function MapScreen() {
   if (encoded) searchParams.set('f', encoded)
   const searchQuery = searchParams.toString()
 
-  function update(patch: Record<string, string | null>) {
-    setParams(
-      (prev) => {
-        const next = new URLSearchParams(prev)
-        for (const [key, value] of Object.entries(patch)) {
-          if (value) next.set(key, value)
-          else next.delete(key)
-        }
-        return next
-      },
-      { replace: true },
-    )
-  }
+  // Stable callbacks: the results list is memoized and only re-renders rows that change.
+  const update = useCallback(
+    (patch: Record<string, string | null>) =>
+      setParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          for (const [key, value] of Object.entries(patch)) {
+            if (value) next.set(key, value)
+            else next.delete(key)
+          }
+          return next
+        },
+        { replace: true },
+      ),
+    [setParams],
+  )
+  const select = useCallback((id: string | null) => update({ selected: id }), [update])
+  const setFilters = useCallback(
+    (next: Filters) => update({ f: encodeFilters(next) || null }),
+    [update],
+  )
 
   const context: MapScreenContext = {
     q,
@@ -132,8 +139,8 @@ export function MapScreen() {
     searchError: search.status === 'error' ? search.error.message : null,
     parsing: parse.status === 'loading' ? 'loading' : parse.status === 'error' ? 'error' : 'done',
     parseError: parse.status === 'error' ? parse.error.message : null,
-    setFilters: (next) => update({ f: encodeFilters(next) || null }),
-    select: (id) => update({ selected: id }),
+    setFilters,
+    select,
     selectedId,
     hoveredId,
     setHoveredId,
@@ -159,7 +166,6 @@ export function MapScreen() {
           selectedId={selectedId}
           onSelect={onMapSelect}
           initialView={INITIAL_VIEW}
-          onViewChange={setView}
           hoveredId={hoveredId}
           onHover={setHoveredId}
           showTransit={transit}
@@ -186,7 +192,7 @@ export function MapScreen() {
         <Outlet context={context} />
 
         <MapControls />
-        <MapReadout view={view} />
+        <MapReadout initial={INITIAL_VIEW} />
       </main>
     </MapProvider>
   )

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { memo, useEffect, useRef, useState, type ReactNode } from 'react'
 import { BAND_LABEL, SORT_LABEL } from '../lib/labels'
 import { formatSqft } from '../lib/format'
 import type { Filters, SortKey } from '../models/filters'
@@ -182,7 +182,20 @@ interface RowProps {
   onHover: (id: string | null) => void
 }
 
-function Row({ ref, rank, parcel, note, selected, hovered, onSelect, onHover }: RowProps) {
+/**
+ * One result. Memoized: with ~1,000 results, a hover or selection change re-renders only the
+ * rows whose `selected` or `hovered` changed (the callbacks from MapScreen are stable).
+ */
+const Row = memo(function Row({
+  ref,
+  rank,
+  parcel,
+  note,
+  selected,
+  hovered,
+  onSelect,
+  onHover,
+}: RowProps) {
   const band = parcel.band ?? 'unknown'
   const classes = ['result-row', selected && 'is-selected', hovered && 'is-hovered']
   return (
@@ -215,7 +228,7 @@ function Row({ ref, rank, parcel, note, selected, hovered, onSelect, onHover }: 
       </button>
     </li>
   )
-}
+})
 
 function Skeleton() {
   return (

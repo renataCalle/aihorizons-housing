@@ -4,7 +4,6 @@ import {
   Marker,
   Source,
   type MapLayerMouseEvent,
-  type ViewStateChangeEvent,
 } from '@vis.gl/react-maplibre'
 import type { StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -40,7 +39,6 @@ interface Props {
   selectedId: string | null
   onSelect: (parcelId: string | null) => void
   initialView: MapView
-  onViewChange?: (view: MapView) => void
   hoveredId?: string | null
   onHover?: (parcelId: string | null) => void
   /** Show transit stops (the Layers menu). */
@@ -71,7 +69,6 @@ export function BlueprintMap({
   selectedId,
   onSelect,
   initialView,
-  onViewChange,
   hoveredId = null,
   onHover,
   showTransit = true,
@@ -87,8 +84,11 @@ export function BlueprintMap({
     return feature ? ringCenter(feature.geometry) : null
   }, [parcels, selectedId])
 
-  const layers = parcelLayers(palette, selectedId, hatchReady, hoveredId)
-  const overlays = featureLayers(palette)
+  const layers = useMemo(
+    () => parcelLayers(palette, selectedId, hatchReady, hoveredId),
+    [palette, selectedId, hatchReady, hoveredId],
+  )
+  const overlays = useMemo(() => featureLayers(palette), [palette])
 
   if (!style) return <div className="map-canvas map-loading" aria-hidden="true" />
 
@@ -125,13 +125,6 @@ export function BlueprintMap({
         const id = e.features?.[0]?.properties?.id
         onSelect(typeof id === 'string' ? id : null)
       }}
-      onMove={(e: ViewStateChangeEvent) =>
-        onViewChange?.({
-          longitude: e.viewState.longitude,
-          latitude: e.viewState.latitude,
-          zoom: e.viewState.zoom,
-        })
-      }
     >
       {parcels && (
         <Source id={PARCELS} type="geojson" data={parcels}>
