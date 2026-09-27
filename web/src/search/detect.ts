@@ -26,6 +26,8 @@ const MIN_ID_CHARS = 6
 const HOUSE_NUMBER = /^\d+[A-Z]?\s+[A-Z]/i
 // A street without a house number ("Kentucky Ave"): look it up for the lots on that street.
 const STREET_NAME = new RegExp(`^([A-Z][\\w'.-]*\\s+){1,3}(${STREET_SUFFIXES})\\.?$`, 'i')
+// Up to three words that could be the start of a street name ("Kentuc"): suggest streets.
+const STREET_START = /^[A-Z][A-Z'.-]{2,}(\s+[A-Z][\w'.-]*){0,2}$/i
 
 export function detect(text: string): Detection {
   const value = text.trim()
@@ -39,11 +41,23 @@ export function detect(text: string): Detection {
 }
 
 /**
- * IDs and addresses are looked up; so is ambiguous text: a house number first, or a street
- * name alone.
+ * IDs and addresses are looked up; so is ambiguous text: a house number first, a street name
+ * alone, or up to three words that could start one.
  */
 export function shouldLookUp(text: string, detection: Detection): boolean {
   if (detection.kind === 'parcel_id' || detection.kind === 'address') return true
   const value = text.trim()
-  return detection.kind === 'description' && (HOUSE_NUMBER.test(value) || STREET_NAME.test(value))
+  return (
+    detection.kind === 'description' &&
+    (HOUSE_NUMBER.test(value) || STREET_NAME.test(value) || STREET_START.test(value))
+  )
+}
+
+/**
+ * Words that may start a street name, but no house number or suffix ("Hazelwood"): its matches
+ * are suggestions, so Enter still runs the search rather than opening the first one.
+ */
+export function isStreetStart(text: string): boolean {
+  const value = text.trim()
+  return STREET_START.test(value) && !STREET_NAME.test(value)
 }

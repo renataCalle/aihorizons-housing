@@ -75,7 +75,7 @@ def _address_matches(summaries: list[ParcelSummary], text: str) -> list[ParcelSu
         key = _address_key(s.address or "")
         if key.startswith(query):
             scored.append((0 if key == query else 1, s))
-        elif query in key:
+        elif f" {query}" in f" {key}":  # at a word start: "kentuc" finds "12 Kentucky Ave"
             scored.append((2, s))
     place = _place_key(rest)
     if place:

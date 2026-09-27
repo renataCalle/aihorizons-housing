@@ -90,6 +90,29 @@
       "look_up": true
     },
     {
+      "text": "Kentucky",
+      "kind": "description",
+      "look_up": true,
+      "note": "the start of a street name: suggest streets as the user types"
+    },
+    {
+      "text": "kentucky av",
+      "kind": "description",
+      "look_up": true
+    },
+    {
+      "text": "Ke",
+      "kind": "description",
+      "look_up": false,
+      "note": "too short to suggest streets"
+    },
+    {
+      "text": "townhomes near transit in Hazelwood",
+      "kind": "description",
+      "look_up": false,
+      "note": "more than three words: a description"
+    },
+    {
       "text": "Kentucky Ave",
       "kind": "description",
       "look_up": true
