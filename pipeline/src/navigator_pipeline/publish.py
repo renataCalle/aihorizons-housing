@@ -222,7 +222,7 @@ def map_features(area: str) -> dict:
     return {"type": "FeatureCollection", "features": feats}
 
 
-def _data_as_of() -> dict:
+def data_as_of() -> dict:
     keys = sorted({k for v in site_context.PROVENANCE.values() for k in v})
     keys += sorted(set(site_context.LIVE_RECORDS.values()) - set(keys))
     out = {}
@@ -324,7 +324,7 @@ def publish(area: str, out: Path, golden: bool = True) -> dict:
             "csv_rows": len(rows),
             "bands": {k: int(v) for k, v in bands.items()},
         },
-        "data_as_of": _data_as_of(),
+        "data_as_of": data_as_of(),
         "files": {},
     }
     _write_readme(out, manifest)

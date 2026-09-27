@@ -11,12 +11,16 @@ import math
 
 import numpy as np
 
-from navigator_engine import constraints, entitlement
+from navigator_engine import code, constraints, entitlement
 from navigator_engine.assumptions import resolve
+from navigator_engine.precedents import similar_cases
 from navigator_engine.rules_engine import NOT_CHECKED, TEMPLATES, site_checks
 from navigator_engine.rules_engine import analyze as rules_analyze
 
 N = 2_000
+# A lot with a building is bought with the building: its default acquisition cost is the
+# assessed total value (demolition is priced separately by the `demolition` flag).
+TOTAL_VALUE_SOURCE = "county assessed total value"
 ENGINE_VERSION = "0.1.0"
 RESIDENTIAL = {"RESIDENTIAL"}
 
@@ -137,7 +141,9 @@ def proforma(ctx, program, flag_list, relief, A, land_price, rng) -> dict:
         "margin": margin,
         "max_land": max_land,
         "premium": premium,
-        "premium_share": premium / total,
+        # share of the cost of building, land excluded: a pricier lot must not make the same
+        # site problems look smaller (land is scored by its own component)
+        "premium_share": premium / nonland,
         "p": ent["p"],
         "months": months_permit,
         "rev_basis": rev_basis,
@@ -194,6 +200,45 @@ RELIEF_NAMES = {
     "rezoning": "a rezoning",
     "subdivision": "a subdivision",
 }
+# How each approval is obtained: who decides, and the review procedure the code names for it
+# (913.02-913.04, 906.02.I.1, 922.05). Chapter 922 is cited, not modelled.
+APPROVAL_ROUTES = {
+    "administrator_exception": "an administrator exception, decided by the Zoning Administrator "
+    "(review procedure 922.08)",
+    "special_exception": "a special exception from the Zoning Board of Adjustment after a public "
+    "hearing (922.07)",
+    "variance": "a variance from the Zoning Board of Adjustment after a public hearing (922.09)",
+    "conditional_use": "a conditional use, reviewed by the Planning Commission and decided by "
+    "City Council (922.06)",
+    "rezoning": "a zoning map amendment decided by City Council (922.05)",
+    "subdivision": "a subdivision creating one lot per townhome, approved through City Planning",
+}
+PRE_APPLICATION = "Zoning pre-application meeting"
+
+
+def resolution(relief: list[dict]) -> str | None:
+    """How to get a program's approvals, in words; None when it is by right."""
+    kinds = list(dict.fromkeys(i["type"] for i in relief))
+    if not kinds:
+        return None
+    routes = [APPROVAL_ROUTES.get(k, k.replace("_", " ")) for k in kinds]
+    return (
+        "Needs " + "; ".join(routes) + ". Start with a zoning pre-application meeting with City "
+        "Planning to confirm the path before design money is spent."
+    )
+
+
+def cited_sections(result: dict) -> list[str]:
+    """Every code section the analysis cites, in the order a reader meets them."""
+    texts = [e["code_section"] for f in result["flags"] for e in f["evidence"]]
+    for o in result["options"]:
+        texts += o["relief"] + [o.get("resolution")]
+    rc = result.get("rule_checks") or {}
+    for prog in rc.get("programs", []):
+        texts += [c["section"] for c in prog["checks"]]
+    texts += [c["section"] for c in rc.get("site_checks", [])]
+    texts += [c["section"] for c in rc.get("not_checked", [])]
+    return [s for t in texts for s in code.sections_in(t)]
 
 
 def _k(x: float) -> str:
@@ -224,7 +269,13 @@ def explain(head, flag_list, land: float, land_src: str, margin: float):
     )
     site_why = f"{priced[0]['title']} causes most of it" if priced else "No priced site constraints"
     ml10, ml50, ml90 = np.nanpercentile(pf["max_land"], [10, 50, 90])
-    basis = "asking" if land_src == "user input" else "assessed land value"
+    basis = (
+        "asking"
+        if land_src == "user input"
+        else "assessed value"
+        if land_src.startswith(TOTAL_VALUE_SOURCE)
+        else "assessed land value"
+    )
     if ml50 <= 0:
         land_why = "Build cost exceeds value: no room to pay for land"
     elif ml50 < land:
@@ -273,8 +324,7 @@ def explain(head, flag_list, land: float, land_src: str, margin: float):
         why = f", but {top_cost} leaves" if top_cost else ", leaving"
         tail = (
             f"{why} room to pay only {_k(max(ml10, 0))}–{_k(ml90)} for the land. "
-            f"The {'asking price' if basis == 'asking' else 'assessed land value'} "
-            f"is {_k(land)}."
+            f"The {'asking price' if basis == 'asking' else basis} is {_k(land)}."
         )
     return components, land_risk, lead + tail
 
@@ -436,20 +486,26 @@ def analyze(ctx: dict, overrides: dict | None = None, program: dict | None = Non
     """SiteContext (dict) -> SiteAnalysis (dict).
 
     `overrides` keys are the editable `assumptions[].key` values, including `land_price`
-    (default: assessed land value). `program` = {"product_type": ..., "units": ... | None}
-    scores that building instead of the engine's pick (units None = the largest the rules
-    allow); a building the rules reject comes back high risk, with the reason.
+    (default: the assessed land value; for a lot with a building, the assessed total value,
+    since buying it means buying the building too).
+
+    `program` = {"product_type": ..., "units": ... | None} scores that building instead of the
+    engine's pick (units None = the largest the rules allow); a building the rules reject comes
+    back high risk, with the reason.
     """
     overrides = dict(overrides or {})
     land_price = overrides.pop("land_price", None)
     A = resolve(overrides)
     parcel = ctx["parcels"][0]
-    land = land_price if land_price is not None else (parcel.get("assessed_land") or 0)
-    land_src = (
-        "user input"
-        if land_price is not None
-        else "county assessed land value (not a market price)"
-    )
+    built = bool(parcel.get("has_structure")) and bool(parcel.get("assessed_total"))
+    if land_price is not None:
+        land, land_src = land_price, "user input"
+    elif built:
+        land = parcel["assessed_total"]
+        land_src = f"{TOTAL_VALUE_SOURCE}, land + building (not a market price)"
+    else:
+        land = parcel.get("assessed_land") or 0
+        land_src = "county assessed land value (not a market price)"
 
     rules = rules_analyze(ctx)
     options, scenario, requested = _options(rules, program)
@@ -464,15 +520,7 @@ def analyze(ctx: dict, overrides: dict | None = None, program: dict | None = Non
                 "Program relies on contextual side setbacks (925.06.C)",
                 None,
                 None,
-                [
-                    {
-                        "source": "Pittsburgh Zoning Code",
-                        "as_of": None,
-                        "layer": "rules",
-                        "code_section": "925.06.C",
-                        "url": None,
-                    }
-                ],
+                [code.evidence("925.06.C")],
                 "medium",
                 "Survey the neighbours' actual side setbacks (must be 3 ft or less)",
                 ("Boundary survey showing adjacent setbacks", "surveyor", (1_500, 3_500)),
@@ -580,7 +628,7 @@ def analyze(ctx: dict, overrides: dict | None = None, program: dict | None = Non
     if needs_relief or not rules.get("covered"):
         steps.append(
             (
-                "Zoning pre-application meeting",
+                PRE_APPLICATION,
                 "City Planning",
                 (0, 0),
                 "Confirms the approval path before design money is spent",
@@ -608,6 +656,13 @@ def analyze(ctx: dict, overrides: dict | None = None, program: dict | None = Non
         for i, (a, w, c, y, ids, _) in enumerate(steps)
     ]
 
+    pre_application = next(
+        (st["order"] for st in next_steps if st["action"] == PRE_APPLICATION), None
+    )
+    primary_district = next(
+        (r["district"] for r in rules.get("readings", []) if r.get("covered")), None
+    )
+
     def opt_out(res):
         o, pf, sc = res
         return {
@@ -625,6 +680,9 @@ def analyze(ctx: dict, overrides: dict | None = None, program: dict | None = Non
             "gfa_sqft": pf["gfa"],
             "unit_sqft": TEMPLATES[o["product"]]["unit_sqft"],
             "site_cost_premium": _range(pf["premium"]),
+            "resolution": resolution(o["relief"]),
+            "resolved_by_step": pre_application if o["relief"] else None,
+            "similar_cases": similar_cases(ctx, [i["type"] for i in o["relief"]], primary_district),
         }
 
     assumptions = [
@@ -656,7 +714,7 @@ def analyze(ctx: dict, overrides: dict | None = None, program: dict | None = Non
     components, land_risk, summary = explain(
         head, flag_list, land, land_src, A["target_margin"].value
     )
-    return {
+    result = {
         "verdict": {
             "score": None if score is None else round(score),
             "score_range": None if head is None else _range(head[2]["total"]),
@@ -713,5 +771,8 @@ def analyze(ctx: dict, overrides: dict | None = None, program: dict | None = Non
                 (v["as_of"] for v in (ctx.get("provenance") or {}).values() if v.get("as_of")),
                 default=None,
             ),
+            "ruleset_as_of": code.CODE_AS_OF.isoformat(),
         },
     }
+    result["code_sections"] = code.glossary(cited_sections(result))
+    return result

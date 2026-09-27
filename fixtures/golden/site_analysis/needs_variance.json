@@ -2,9 +2,9 @@
   "verdict": {
     "score": 56,
     "score_range": {
-      "p10": 53.71839905174549,
-      "p50": 55.9831573493387,
-      "p90": 58.67290995312376
+      "p10": 53.710800928725256,
+      "p50": 55.97824730074416,
+      "p90": 58.669121155277296
     },
     "band": "feasible_with_conditions",
     "headline": "Feasible with conditions: needs administrator exception.",
@@ -139,9 +139,9 @@
         "p90": -13814.109992571362
       },
       "score": {
-        "p10": 53.71839905174549,
-        "p50": 55.9831573493387,
-        "p90": 58.67290995312376
+        "p10": 53.710800928725256,
+        "p50": 55.97824730074416,
+        "p90": 58.669121155277296
       },
       "revenue_basis": "for-sale: 5 new-build comps $301-$373/sf",
       "entitlement_basis": [
@@ -153,7 +153,10 @@
         "p10": 6555.451607338295,
         "p50": 12478.42413611346,
         "p90": 18445.888811035406
-      }
+      },
+      "resolution": "Needs an administrator exception, decided by the Zoning Administrator (review procedure 922.08). Start with a zoning pre-application meeting with City Planning to confirm the path before design money is spent.",
+      "resolved_by_step": 1,
+      "similar_cases": null
     }
   ],
   "next_steps": [
@@ -1688,6 +1691,97 @@
     "engine": "0.1.0",
     "ruleset": "rules drafts 2026-09-26",
     "schema": "0.1.0",
-    "data_as_of": "2018-07-27"
-  }
+    "data_as_of": "2018-07-27",
+    "ruleset_as_of": "2026-09-26"
+  },
+  "code_sections": [
+    {
+      "section": "925.01.C.2",
+      "title": "Single-Unit Dwelling Exemptions",
+      "summary": "A single house on a recorded lot smaller than the Chapter 903 or 905 minimum may be approved as an Administrator's Exception under Section 922.08.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2002-12-03"
+    },
+    {
+      "section": "922.08",
+      "title": null,
+      "summary": "The Zoning Administrator Exception review procedures under which uses marked A in the Use Table are reviewed and approved.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "911.02",
+      "title": "Use Table",
+      "summary": "The Use Table shows, for each district, whether a use is allowed by right (P), by Administrator Exception (A), Special Exception (S), Conditional Use (C), or not at all (blank).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2026-06-11"
+    },
+    {
+      "section": "903.03",
+      "title": "Development Subdistricts",
+      "summary": "Sets residential lot size, setbacks and height by density level (VL, L, M, H, VH); contextual setbacks and heights may be used, and Chapter 915 environmental rules add limits.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "903.03.B.2",
+      "title": "Site Development Standards",
+      "summary": "Low-Density (L): minimum lot 3,000 sf; front and rear 30 ft (RM 25 ft); street side 30 ft; interior sides 5 ft (RM 25 ft); max 40 ft/3 stories.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "906.05",
+      "title": "UM-O, Undermined Area Overlay District",
+      "summary": "Over mapped undermined land, the underlying zoning still applies, but builders must investigate mine conditions and may face limits or special construction techniques to reduce subsidence risk.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "906.02.F.2",
+      "title": "Elevation and Floodproofing Requirements",
+      "summary": "In AE and A flood zones, new or substantially improved buildings must raise the lowest floor, including basement, to the regulatory flood elevation; non-residential buildings may be floodproofed instead.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "906.02.E.2.a",
+      "title": "FP-O, Floodplain overlay district",
+      "summary": "In the floodway, no fill, new building or other encroachment is allowed unless engineering analysis shows no rise in base flood levels, and a DEP permit is required.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "914.02",
+      "title": "Off-Street Parking Schedules",
+      "summary": "Sets minimum and maximum off-street parking by use: 1 space per unit for most homes (0 for attached single-unit), up to 4 per unit for single-unit and 2 otherwise.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2024-02-27"
+    },
+    {
+      "section": "916.02",
+      "title": "Building Height and Setback Standards",
+      "summary": "Near R1D, R1A, R2, R3 or H lots, covered development needs larger setbacks (often 15 ft) and max 40 ft/3 stories within 50 ft, 50 ft/4 stories at 51-100 ft.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "915.02",
+      "title": "Environmental Standards",
+      "summary": "Sets grading, cut-and-fill, retaining wall, slope replanting, tree survey and tree replacement rules; the grading rules apply to all slopes.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2005-12-30"
+    }
+  ]
 }

@@ -283,7 +283,7 @@ def render(payload: dict) -> str:
         if m.get("land_over_max"):
             lo_over, hi_over = m["land_over_max"]["low"], m["land_over_max"]["high"]
             over = (
-                f'<span class="down">↓ {"Asking" if is_asking else "Assessed land"} '
+                f'<span class="down">↓ {"Asking" if is_asking else "Assessed value" if "total" in m["land_basis"]["source"] else "Assessed land"} '
                 f"{money(land)} is {rng(lo_over, hi_over)} over</span>"
             )
         n_sales = len(ctx["market"]["sales"])

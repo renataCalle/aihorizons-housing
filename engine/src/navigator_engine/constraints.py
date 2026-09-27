@@ -6,6 +6,8 @@ fallback) and are listed in the output's assumptions. A missing fact yields an `
 flag, never a clean check.
 """
 
+from navigator_engine import code
+
 PLACEHOLDER = "PLACEHOLDER cost/threshold"
 
 # severity -> probability the check kills the deal (for cost-to-kill ordering); placeholder
@@ -109,7 +111,7 @@ def flags(ctx: dict, rules: dict, units: int) -> tuple[list[dict], list[str]]:
                 (1, 4),
                 _ev(ctx, "steep_slope", "915.02"),
                 "medium",
-                "Geotechnical report; walls under 10 ft, cut/fill under 25% (915.02)",
+                "Geotechnical report; walls up to 10 ft, cut/fill up to 25% (915.02)",
                 (
                     "Geotechnical and grading feasibility study",
                     "geotechnical engineer",
@@ -249,7 +251,8 @@ def flags(ctx: dict, rules: dict, units: int) -> tuple[list[dict], list[str]]:
                 (0.5, 2),
                 _ev(ctx, "flood", "906.02.F.2"),
                 "high",
-                "Lowest floor at base flood elevation + 1.5 ft, no basement; flood insurance",
+                "Lowest floor, basement included, at base flood elevation + 1.5 ft; "
+                "flood insurance",
                 (
                     "Elevation certificate / survey of base flood elevation",
                     "surveyor",
@@ -405,15 +408,7 @@ def flags(ctx: dict, rules: dict, units: int) -> tuple[list[dict], list[str]]:
                 o["what"],
                 None,
                 (1, 3),
-                [
-                    {
-                        "source": "Pittsburgh Zoning Code",
-                        "as_of": None,
-                        "layer": "rules",
-                        "code_section": o["section"],
-                        "url": None,
-                    }
-                ],
+                [code.evidence(o["section"])],
                 "high",
                 o["what"],
                 None,

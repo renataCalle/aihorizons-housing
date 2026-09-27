@@ -1,10 +1,10 @@
 {
   "verdict": {
-    "score": 49,
+    "score": 48,
     "score_range": {
-      "p10": 43.83779816922127,
-      "p50": 49.20388644364776,
-      "p90": 54.39596459208653
+      "p10": 42.660863733084,
+      "p50": 48.39486625840874,
+      "p90": 53.85950767979241
     },
     "band": "high_risk",
     "headline": "High risk: 51% of lot in the 1% annual-chance floodplain.",
@@ -20,7 +20,7 @@
       {
         "key": "site_cost",
         "label": "Site cost",
-        "points": 22,
+        "points": 21,
         "max_points": 35,
         "note": "51% of lot in the 1% annual-chance floodplain causes most of it"
       },
@@ -100,7 +100,7 @@
         }
       ],
       "confidence": "high",
-      "resolution": "Lowest floor at base flood elevation + 1.5 ft, no basement; flood insurance",
+      "resolution": "Lowest floor, basement included, at base flood elevation + 1.5 ft; flood insurance",
       "resolved_by_step": 1
     },
     {
@@ -189,9 +189,9 @@
         "p90": -29289.276684993984
       },
       "score": {
-        "p10": 43.83779816922127,
-        "p50": 49.20388644364776,
-        "p90": 54.39596459208653
+        "p10": 42.660863733084,
+        "p50": 48.39486625840874,
+        "p90": 53.85950767979241
       },
       "revenue_basis": "for-sale: 28 new-build comps $299-$415/sf",
       "entitlement_basis": [],
@@ -201,7 +201,10 @@
         "p10": 42413.93870831519,
         "p50": 70297.88511966154,
         "p90": 98254.68782492964
-      }
+      },
+      "resolution": null,
+      "resolved_by_step": null,
+      "similar_cases": null
     }
   ],
   "next_steps": [
@@ -213,7 +216,7 @@
         500,
         1500
       ],
-      "why": "Lowest floor at base flood elevation + 1.5 ft, no basement; flood insurance",
+      "why": "Lowest floor, basement included, at base flood elevation + 1.5 ft; flood insurance",
       "flag_ids": [
         "flood_zone"
       ]
@@ -248,12 +251,12 @@
   "score_breakdown": [
     {
       "component": "site_cost",
-      "points_lost": 11.2,
+      "points_lost": 11.8,
       "driver_flag_id": "flood_zone"
     },
     {
       "component": "site_cost",
-      "points_lost": 1.9,
+      "points_lost": 2.0,
       "driver_flag_id": "combined_sewer"
     }
   ],
@@ -274,7 +277,7 @@
         "label": "Floodplain overlay (FP-O)",
         "section": "906.02.F.2",
         "status": "applies",
-        "note": "51% of the lot. Lowest floor 1.5 ft above flood elevation; no basement"
+        "note": "51% of the lot. Lowest floor, basement included, 1.5 ft above base flood elevation"
       },
       {
         "check_id": "floodway",
@@ -1751,6 +1754,81 @@
     "engine": "0.1.0",
     "ruleset": "rules drafts 2026-09-26",
     "schema": "0.1.0",
-    "data_as_of": "2018-07-27"
-  }
+    "data_as_of": "2018-07-27",
+    "ruleset_as_of": "2026-09-26"
+  },
+  "code_sections": [
+    {
+      "section": "906.02.F.2",
+      "title": "Elevation and Floodproofing Requirements",
+      "summary": "In AE and A flood zones, new or substantially improved buildings must raise the lowest floor, including basement, to the regulatory flood elevation; non-residential buildings may be floodproofed instead.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "911.02",
+      "title": "Use Table",
+      "summary": "The Use Table shows, for each district, whether a use is allowed by right (P), by Administrator Exception (A), Special Exception (S), Conditional Use (C), or not at all (blank).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2026-06-11"
+    },
+    {
+      "section": "903.03.E.2",
+      "title": "Site Development Standards",
+      "summary": "Very-High Density (VH): no minimum lot size listed; front/street side 5 ft, rear 15 ft (RM 25 each); interior 5 ft (RM 10); max 40 ft/3 stories (RM 180 ft).",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "903.03",
+      "title": "Development Subdistricts",
+      "summary": "Sets residential lot size, setbacks and height by density level (VL, L, M, H, VH); contextual setbacks and heights may be used, and Chapter 915 environmental rules add limits.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2025-05-07"
+    },
+    {
+      "section": "906.05",
+      "title": "UM-O, Undermined Area Overlay District",
+      "summary": "Over mapped undermined land, the underlying zoning still applies, but builders must investigate mine conditions and may face limits or special construction techniques to reduce subsidence risk.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "906.02.E.2.a",
+      "title": "FP-O, Floodplain overlay district",
+      "summary": "In the floodway, no fill, new building or other encroachment is allowed unless engineering analysis shows no rise in base flood levels, and a DEP permit is required.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2021-10-11"
+    },
+    {
+      "section": "914.02",
+      "title": "Off-Street Parking Schedules",
+      "summary": "Sets minimum and maximum off-street parking by use: 1 space per unit for most homes (0 for attached single-unit), up to 4 per unit for single-unit and 2 otherwise.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2024-02-27"
+    },
+    {
+      "section": "916.02",
+      "title": "Building Height and Setback Standards",
+      "summary": "Near R1D, R1A, R2, R3 or H lots, covered development needs larger setbacks (often 15 ft) and max 40 ft/3 stories within 50 ft, 50 ft/4 stories at 51-100 ft.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": null
+    },
+    {
+      "section": "915.02",
+      "title": "Environmental Standards",
+      "summary": "Sets grading, cut-and-fill, retaining wall, slope replanting, tree survey and tree replacement rules; the grading rules apply to all slopes.",
+      "url": "https://ecode360.com/PI6865",
+      "as_of": "2026-09-26",
+      "effective": "2005-12-30"
+    }
+  ]
 }

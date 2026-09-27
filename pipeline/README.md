@@ -44,6 +44,33 @@ EPSG:4326 geometry. About 90 s for Hazelwood; fails if the bundle exceeds 20 MB.
 `navigator_pipeline.bundle.load()`; `pipeline/tests/test_results_bundle.py` checks it in CI.
 Files and columns: `results/README.md`.
 
+## Score every city parcel (stored results)
+
+```bash
+uv run python -m navigator_pipeline.score_all               # all 142,329 city parcels -> data/scores/
+uv run python -m navigator_pipeline.score_all --resume      # continue an interrupted run
+uv run python -m navigator_pipeline.score_all --ids 55-A-225 --out /tmp/scores
+```
+
+Runs the engine once per parcel so lookups never re-run it: about 35 minutes with 16 workers
+(about 1 GB of memory each; the final merge is capped at 3 GB), about 215 MB
+of zstd Parquet in `data/scores/` (not in git). Contexts come from the stored copy (no live
+lookups: reproducible, and no traffic to the sources). Rerun after a refresh or an engine
+change. Read with `navigator_pipeline.scores` or any DuckDB client:
+
+| Table | One row per | Key columns |
+|---|---|---|
+| `parcels` | parcel | facts (address, zoning, lot, use, owner type, assessed values), `land_price` and its source, `status` (scored / not_scored / error) and `error`, `score` and `score_p10/p50/p90`, `band`, `headline`, `lead_product`, `lead_units`, `approval_path`, `approval_prob_p50`, `months_*`, `cost_premium_*`, `max_land_*`, `top_flag`, `high_flags`, `unknown_flags`, `data_as_of`, `lon`, `lat` |
+| `programs` | parcel and building type | the `results/summaries.csv` columns |
+| `analyses` | parcel | `analysis`: the SiteAnalysis JSON |
+| `contexts` | parcel | `context`: the SiteContext JSON |
+
+`manifest.json` records versions, data dates, counts by status and band, and the run time. Status is
+`scored`, `not_scored` (zoning not covered: 5 slivers outside every district) or `error` with
+the reason: 83 parcels have no county assessment record and 75 have too few comparable sales
+to price (fewer than 5 within 0.5 mi in 3 years, mostly in Hays). Comparable sales are the last
+3 years from the run date, so a rerun on a later day can shift a few prices.
+
 ## Keep the store fresh
 
 ```bash
@@ -99,4 +126,4 @@ decisions, zoning code) and WPRDC's SQL endpoint.
 `catalog` (sources and cadences) · `http` (the one client) · `fetch` (download + manifest) ·
 `build` (clean tables) · `features` (per-parcel facts) · `site_context` (assembly) · `live`
 (per-parcel lookups) · `refresh` (scheduled updates) · `publish` / `bundle` (results bundle) ·
-`settings` (data location).
+`score_all` / `scores` (every city parcel, stored) · `settings` (data location).

@@ -166,6 +166,83 @@
       "title": "CheckResult",
       "type": "object"
     },
+    "CodeSection": {
+      "additionalProperties": false,
+      "description": "One zoning code section cited anywhere in the analysis, for the UI's code drawer.",
+      "properties": {
+        "section": {
+          "title": "Section",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Title"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Summary"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Url"
+        },
+        "as_of": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "As Of"
+        },
+        "effective": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Effective"
+        }
+      },
+      "required": [
+        "section",
+        "title",
+        "summary",
+        "url",
+        "as_of",
+        "effective"
+      ],
+      "title": "CodeSection",
+      "type": "object"
+    },
     "Comps": {
       "additionalProperties": false,
       "properties": {
@@ -726,6 +803,45 @@
             }
           ],
           "default": null
+        },
+        "resolution": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resolution"
+        },
+        "resolved_by_step": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resolved By Step"
+        },
+        "similar_cases": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Similar Cases"
         }
       },
       "required": [
@@ -1162,6 +1278,19 @@
             }
           ],
           "title": "Data As Of"
+        },
+        "ruleset_as_of": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ruleset As Of"
         }
       },
       "required": [
@@ -1250,6 +1379,13 @@
     },
     "versions": {
       "$ref": "#/$defs/Versions"
+    },
+    "code_sections": {
+      "items": {
+        "$ref": "#/$defs/CodeSection"
+      },
+      "title": "Code Sections",
+      "type": "array"
     }
   },
   "required": [

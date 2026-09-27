@@ -1,6 +1,6 @@
 {
   "area": "Hazelwood",
-  "generated_at": "2026-09-27T00:20:29+00:00",
+  "generated_at": "2026-09-27T14:54:56+00:00",
   "command": "uv run python -m navigator_pipeline.publish",
   "versions": {
     "engine": "0.1.0",
@@ -147,19 +147,19 @@
     },
     "summaries.json": {
       "bytes": 2415530,
-      "sha256": "451a0611ce7347209aee6e86c759d98a373319b8533afe2d96e871423b3af502"
+      "sha256": "ecf9886e081fba6985dc9191f1bc837c97709f3a07c35668c68a63d81fd93235"
     },
     "summaries.csv": {
       "bytes": 913381,
-      "sha256": "a5a1fc1959f3d0e8321c53ef4a255b5f03d5192e46ca3c57d79719420d1d176c"
+      "sha256": "329532f22fc8b4c0db5d6ee1932883f502a0f8f517b67819492f0284df85616d"
     },
     "site_analysis.jsonl.gz": {
-      "bytes": 2817525,
-      "sha256": "1cfdbfbaec3eaa108bc59556edcf98339952da11d238f0ff993a7d6c8cb7aec1"
+      "bytes": 4527586,
+      "sha256": "4f9b01d2fe33487dc11cd9ecf2df2c5cd22c314415592f8afec4f3b27571376b"
     },
     "site_context.jsonl.gz": {
-      "bytes": 711083,
-      "sha256": "99546295aaa3e10af5850bbfbddd6894a7d914ad15b565cc4abcbdb282a6342a"
+      "bytes": 711073,
+      "sha256": "9d3d409cb18540739d825df6c6096337e2dd9b0b498dc317e18cef108ec61541"
     },
     "parcels.geojson": {
       "bytes": 947023,

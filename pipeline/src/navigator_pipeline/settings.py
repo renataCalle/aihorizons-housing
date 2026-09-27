@@ -6,6 +6,7 @@
     clean/<table>.parquet   cleaned tables, EPSG:2272
     features/            per-parcel facts
     manual/              inputs that cannot be fetched automatically (zoning code PDFs)
+    scores/              every city parcel scored once (navigator_pipeline.score_all)
 """
 
 import os
@@ -17,3 +18,4 @@ RAW = DATA_DIR / "raw"
 CLEAN = DATA_DIR / "clean"
 FEATURES = DATA_DIR / "features"
 MANUAL = DATA_DIR / "manual"
+SCORES = DATA_DIR / "scores"
