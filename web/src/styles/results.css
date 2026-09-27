@@ -758,12 +758,21 @@ p.results-panel {
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
-  pointer-events: none;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.rank-tag:hover {
+  background: var(--cobalt-tint);
 }
 
 .rank-tag.is-first {
   background: var(--cobalt);
   color: var(--white);
+}
+
+.rank-tag.is-first:hover {
+  background: var(--cobalt-deep);
 }
 
 .area-label {

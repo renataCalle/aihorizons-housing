@@ -69,8 +69,14 @@ export function AreaOverlay({ features, areas }: { features: MapFeatures; areas:
 
 const MAX_TAGS = 9
 
-/** "01", "02" … on the top results. */
-export function RankTags({ results }: { results: SearchResult[] }) {
+/** "01", "02" … on the top results. Clicking one selects its lot, like clicking the lot. */
+export function RankTags({
+  results,
+  onSelect,
+}: {
+  results: SearchResult[]
+  onSelect: (parcelId: string) => void
+}) {
   return results.slice(0, MAX_TAGS).map((r) => (
     <Marker
       key={r.parcel.id}
@@ -79,9 +85,20 @@ export function RankTags({ results }: { results: SearchResult[] }) {
       anchor="bottom-left"
       offset={[6, -6]}
     >
-      <span className={r.rank === 1 ? 'rank-tag is-first' : 'rank-tag'}>
+      <button
+        type="button"
+        className={r.rank === 1 ? 'rank-tag is-first' : 'rank-tag'}
+        aria-label={`Rank ${r.rank}: ${r.parcel.name}`}
+        // The map also hears clicks on its markers: keep it from reading this one as a click
+        // on empty map (which clears the selection).
+        onMouseDown={(e) => e.nativeEvent.stopImmediatePropagation()}
+        onClick={(e) => {
+          e.stopPropagation()
+          onSelect(r.parcel.id)
+        }}
+      >
         {String(r.rank).padStart(2, '0')}
-      </span>
+      </button>
     </Marker>
   ))
 }

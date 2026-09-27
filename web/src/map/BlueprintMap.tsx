@@ -189,7 +189,13 @@ export function BlueprintMap({
       <TiltCamera view3d={view3d} />
       <BuildingsOnTop active={view3d && !!buildings} />
       {selectedCenter && (
-        <Marker longitude={selectedCenter[0]} latitude={selectedCenter[1]} anchor="center">
+        // Decoration only: clicks pass through to the lot and the rank tags under it.
+        <Marker
+          longitude={selectedCenter[0]}
+          latitude={selectedCenter[1]}
+          anchor="center"
+          style={{ pointerEvents: 'none' }}
+        >
           <Crosshair />
         </Marker>
       )}
