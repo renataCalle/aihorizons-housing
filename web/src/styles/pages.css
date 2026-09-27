@@ -1,20 +1,4 @@
 /* Placeholder page styles for M0. Real screens replace these from M1 on. */
-.page {
-  min-height: 100%;
-  padding: 88px 24px 24px;
-}
-
-.topbar {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  height: 56px;
-  padding: 0 16px;
-}
-
 .brand {
   display: inline-flex;
   align-items: center;
@@ -72,45 +56,6 @@
 .report-title {
   font-size: 28px;
   font-weight: 600;
-}
-
-.report-id {
-  margin: 4px 0 12px;
-  color: var(--ink-3);
-  font-size: 12px;
-}
-
-.verdict {
-  margin: 20px 0;
-  padding: 20px;
-  border: 1px solid var(--cobalt-line);
-  border-radius: var(--radius-card);
-  background: var(--cobalt-tint-2);
-}
-
-.verdict-headline {
-  margin: 0 0 12px;
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-
-.verdict-score {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin: 0;
-  color: var(--cobalt);
-  font-size: 56px;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.verdict-range {
-  color: var(--ink-3);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 400;
 }
 
 /* Landing (Landing.dc.html): the map, faded, behind one search box. */

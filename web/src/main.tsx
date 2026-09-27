@@ -7,6 +7,7 @@ import './styles/pages.css'
 import './styles/map.css'
 import './styles/omnibox.css'
 import './styles/results.css'
+import './styles/report.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

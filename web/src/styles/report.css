@@ -1,0 +1,337 @@
+/* Site report over the map (ReportOpen.dc.html, ReportPanel.dc.html) and the evidence drawer. */
+
+.back-pill {
+  position: absolute;
+  top: 100px;
+  left: 24px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  color: var(--cobalt);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.back-pill svg,
+.report-panel .icon-button svg,
+.evidence-close svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.report-panel {
+  position: absolute;
+  top: 92px;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  width: min(720px, 100vw);
+  padding: 28px 40px 40px;
+  overflow-y: auto;
+  border-radius: 28px 0 0 0;
+  background: var(--panel);
+  box-shadow: -24px 0 60px rgba(11, 27, 63, 0.12);
+  outline: none;
+}
+
+.report-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.report-kicker {
+  color: var(--cobalt);
+}
+
+.report-panel .report-title {
+  margin: 14px 0 8px;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.report-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 24px;
+  color: var(--ink-2);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.report-none,
+.report-checklist {
+  color: var(--ink-2);
+}
+
+.report-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 24px 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.verdict-card {
+  padding: 28px 28px 24px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: 24px;
+  background: var(--cobalt-tint-2);
+}
+
+.verdict-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.verdict-score-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.verdict-big {
+  color: var(--cobalt);
+  font-size: 64px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.verdict-big small {
+  margin-left: 4px;
+  color: var(--ink-3);
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.verdict-sentence {
+  margin: 22px 0;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.score-parts {
+  padding-top: 18px;
+  border-top: 1px solid var(--cobalt-line);
+}
+
+.score-parts-title {
+  margin: 0 0 12px;
+  color: var(--cobalt);
+  font-weight: 400;
+}
+
+.score-parts ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.score-parts li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.score-part-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.score-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--cobalt-line);
+  overflow: hidden;
+}
+
+.score-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--cobalt);
+}
+
+.score-part-note {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.report-section {
+  margin-top: 36px;
+}
+
+.report-section h2 {
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.report-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.finding-list,
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.finding,
+.step-list li {
+  display: flex;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--white);
+}
+
+.step-list li {
+  flex-direction: column;
+  gap: 0;
+}
+
+.finding-title {
+  margin: 0 0 4px;
+  font-weight: 500;
+}
+
+.finding-detail {
+  margin: 0 0 6px;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
+.finding-meta {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
+.severity-pill {
+  flex: none;
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sev-deal_risk {
+  background: var(--orange);
+  color: var(--white);
+}
+
+.sev-caution {
+  border: 1px solid var(--orange-line);
+  background: var(--orange-tint);
+  color: var(--orange-text);
+}
+
+.sev-minor {
+  border: 1px solid var(--cobalt-line);
+  background: var(--cobalt-tint-2);
+  color: var(--cobalt-deep);
+}
+
+.sev-unknown {
+  border: 1px dashed var(--unknown);
+  background: var(--unknown-tint);
+  color: var(--ink-2);
+}
+
+.cleared {
+  margin: 14px 0 0;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.report-foot {
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
+/* Evidence drawer over the report */
+.drawer-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  background: rgba(11, 27, 63, 0.28);
+}
+
+.evidence-drawer {
+  position: absolute;
+  top: 92px;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  width: min(580px, 100vw);
+  padding: 32px 40px;
+  overflow-y: auto;
+  border-radius: 28px 0 0 0;
+  background: var(--white);
+  box-shadow: -24px 0 60px rgba(11, 27, 63, 0.18);
+}
+
+.evidence-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+/* The report covers the right of the map: move the inspector-side controls left of it. */
+.map-page.has-report .map-controls {
+  right: calc(min(720px, 100vw) + 24px);
+}
+
+@media (max-width: 900px) {
+  .report-panel {
+    top: 80px;
+    padding: 20px;
+    border-radius: 20px 20px 0 0;
+  }
+}
+
+.map-page.has-report .map-readout {
+  left: 24px;
+  transform: none;
+}
