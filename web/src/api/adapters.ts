@@ -471,6 +471,8 @@ const CHIP_FIELDS: Record<string, (keyof Filters)[]> = {
 export function removeChip(f: Filters, key: string): Filters {
   const [kind, value] = key.split(/:(.*)/s)
   if (kind === 'area') return { ...f, areas: f.areas.filter((a) => a !== value) }
+  // Several areas are one filter ("in any of these"); removing it clears them all.
+  if (key === 'areas') return { ...f, areas: [] }
   if (kind === 'near') return { ...f, near: f.near.filter((n) => n.feature !== value) }
   if (kind === 'constraint') {
     return { ...f, excludeConstraints: f.excludeConstraints.filter((c) => c !== value) }

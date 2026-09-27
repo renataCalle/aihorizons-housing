@@ -138,8 +138,11 @@ def build_checks(
 
             checks[key] = lead_path
 
-    for area in f.areas:
-        checks[f"area:{area}"] = lambda s, area=area: s.neighborhood == area
+    if f.areas:
+        # Areas are alternatives: a lot is in one neighborhood, so it matches if it's in any.
+        # One area keeps its own chip key; several are one check, removed together.
+        area_key = f"area:{f.areas[0]}" if len(f.areas) == 1 else "areas"
+        checks[area_key] = lambda s: s.neighborhood in f.areas
     if f.max_land_price is not None:
         # Land price = assessed land value until listing prices exist.
         checks["max_land_price"] = lambda s: _known(
@@ -240,6 +243,7 @@ def search(
     scored = {s.parcel_id: scored_for(s, program_rows(s.parcel_id), by_type) for s in candidates}
     checks, not_applied_keys = build_checks(f, features, scored)
     labels = dict(chip_labels(f))
+    labels["areas"] = "Areas: " + ", ".join(f.areas)
 
     def failures(s: ParcelSummary) -> list[str]:
         return [key for key, check in checks.items() if not check(s)]
