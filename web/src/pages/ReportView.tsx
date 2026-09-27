@@ -41,7 +41,7 @@ export function ReportView() {
   const panelRef = useRef<HTMLElement>(null)
 
   const back = `/search?${new URLSearchParams([
-    ...new URLSearchParams(s.searchQuery),
+    ...new URLSearchParams(s.linkQuery),
     ['selected', id],
   ]).toString()}`
   const total = s.response?.total

@@ -123,6 +123,9 @@ export function MapScreen() {
   const f = filters ? filterParam(filters, !!q) : null
   if (f) searchParams.set('f', f)
   const searchQuery = searchParams.toString()
+  // The 3D view stays on while moving between results, reports and evidence.
+  if (view3d) searchParams.set('view', '3d')
+  const linkQuery = searchParams.toString()
 
   // Stable callbacks: the results list is memoized and only re-renders rows that change.
   const update = useCallback(
@@ -163,13 +166,14 @@ export function MapScreen() {
     setTransit,
     retry: () => setRetryCount((n) => n + 1),
     searchQuery,
+    linkQuery,
     features: featureData,
   }
 
   // With a report open, clicking another parcel opens its report; otherwise it selects it.
   const onMapSelect = (id: string | null) => {
     if (!reportId) return context.select(id)
-    if (id && id !== reportId) navigate(`/parcel/${id}${searchQuery ? `?${searchQuery}` : ''}`)
+    if (id && id !== reportId) navigate(`/parcel/${id}${linkQuery ? `?${linkQuery}` : ''}`)
   }
 
   return (

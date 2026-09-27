@@ -20,8 +20,10 @@ export interface MapScreenContext {
   transit: boolean
   setTransit: (on: boolean) => void
   retry: () => void
-  /** The search part of the URL (q, f), to carry between results and reports. */
+  /** The search part of the URL (q, f). Empty when the page wasn't opened from a search. */
   searchQuery: string
+  /** What links between results and reports carry: the search plus the view (view=3d). */
+  linkQuery: string
   features: MapFeatures | null
 }
 

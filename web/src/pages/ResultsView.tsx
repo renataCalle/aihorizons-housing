@@ -56,7 +56,7 @@ export function ResultsView() {
             betterFit={result?.betterFit ?? null}
             rank={result?.rank ?? null}
             total={response?.total ?? 0}
-            reportHref={`/parcel/${selected.id}${s.searchQuery ? `?${s.searchQuery}` : ''}`}
+            reportHref={`/parcel/${selected.id}${s.linkQuery ? `?${s.linkQuery}` : ''}`}
             onClose={() => s.select(null)}
           />
           <LeaderLine at={selected.centroid} cardRef={cardRef} />
