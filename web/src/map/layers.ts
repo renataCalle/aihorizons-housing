@@ -118,7 +118,8 @@ export function parcelLayers(
     },
   ]
   if (hatch) {
-    layers.splice(1, 0, {
+    // After the outline in the list, so the outline exists when the hatch is added under it.
+    layers.splice(2, 0, {
       id: 'parcels-hatch',
       type: 'fill',
       source: PARCELS,
