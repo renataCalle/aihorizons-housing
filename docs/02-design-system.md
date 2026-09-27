@@ -96,14 +96,14 @@ Base (MapLibre GL JS 6, already in `web/package.json`): **OpenFreeMap Positron**
 
 **Two map themes (Sep 2026): Blueprint (default) and Standard.** Viewers switch with "Blueprint | Standard" at the top of the Layers menu or the style button in the map controls; the choice is saved in `localStorage`. Switching recolours the live map (no reload: data layers, selection and camera stay). Every colour lives in `web/src/map/themes.ts`, the one source: the map reads it directly, and the UI reads the band colours as CSS variables set on the root with `data-map-theme` (`tokens.css` repeats Blueprint's as the first-paint default; a test keeps them equal).
 
-| Layer group | Blueprint (default) | Standard (sampled from Mapbox "Standard" day) |
+| Layer group | Blueprint (default) | Standard (sampled from Mapbox "Standard" day, softened 20% toward the ground) |
 |---|---|---|
 | background, landuse | `#F1F4F8` | `#F0ECE2` |
-| parks, grass | `#E3EAF0` (grass layer added: Positron has none) | `#BEE8B2` |
-| woods | `#E3EAF0` | `#B4E0A7` |
-| water | `#CFDCEA`, outline `#B8CADF` | `#A7DAFA`, outline `#97CFF3` |
-| buildings | fill `#E6ECF3`, outline `#D3DCE8` | fill `#E4E0D7`, outline `#D8D4CC` |
-| roads | `#FFFFFF`, casing `#C9D3E0` | `#BFC5D6`, casing `#B0B7CB` |
+| parks, grass | `#E3EAF0` (grass layer added: Positron has none) | `#C8E9BC` |
+| woods | `#E3EAF0` | `#C0E2B3` |
+| water | `#CFDCEA`, outline `#B8CADF` | `#B6DEF5`, outline `#A9D5F0` |
+| buildings | fill `#E6ECF3`, outline `#D3DCE8` | fill `#E6E2D9`, outline `#DDD9D0` |
+| roads | `#FFFFFF`, casing `#C9D3E0` | `#D1D3DA`, casing `#BDC2D0` |
 | lot lines (not candidates) | `#C9D3E0` | `#D6D0C4` |
 | labels | `#6A84B8`, letter-spaced uppercase for places; hide POI icons | same style in `#56657E` |
 | 3D buildings | hidden | raised to mapped heights |

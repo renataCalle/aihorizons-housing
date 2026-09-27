@@ -16,21 +16,21 @@ export const BLUEPRINT = {
 } as const
 
 /**
- * The map's palette, in 2D and 3D: Mapbox's "Standard" day palette, sampled from its
- * rendering (cream ground, green parks and woods, sky-blue water, lavender-grey roads). It
- * gives the band colours more contrast than the blueprint.
+ * The Standard theme's basemap: Mapbox's "Standard" day palette, sampled from its rendering
+ * (cream ground, green parks and woods, sky-blue water, lavender-grey roads), then softened by
+ * blending each colour 20% toward the ground. Labels keep full strength for 4.5:1 contrast.
  */
 export const STANDARD: BasemapPalette = {
   land: '#F0ECE2',
-  park: '#BEE8B2',
-  wood: '#B4E0A7',
-  water: '#A7DAFA',
-  waterLine: '#97CFF3',
-  building: '#E4E0D7',
-  buildingLine: '#D8D4CC',
-  road: '#BFC5D6',
-  roadCasing: '#B0B7CB',
-  rail: '#C9CDD8',
+  park: '#C8E9BC',
+  wood: '#C0E2B3',
+  water: '#B6DEF5',
+  waterLine: '#A9D5F0',
+  building: '#E6E2D9',
+  buildingLine: '#DDD9D0',
+  road: '#C9CDD8',
+  roadCasing: '#BDC2D0',
+  rail: '#D1D3DA',
   label: '#56657E',
 }
 
