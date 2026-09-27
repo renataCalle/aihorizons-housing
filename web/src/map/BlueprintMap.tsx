@@ -71,7 +71,7 @@ export function BlueprintMap({
   initialView,
   hoveredId = null,
   onHover,
-  showTransit = true,
+  showTransit = false,
   children,
 }: Props) {
   const style = useBlueprintStyle()
