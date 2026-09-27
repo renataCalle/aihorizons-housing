@@ -506,6 +506,32 @@
         "title": "EvidenceDetail",
         "type": "object"
       },
+      "Examples": {
+        "additionalProperties": false,
+        "description": "Example searches for the landing page, taken from the data being served.",
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          },
+          "parcel_id": {
+            "description": "A partial county ID, dashed",
+            "title": "Parcel Id",
+            "type": "string"
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parcel_id",
+          "address",
+          "prompt"
+        ],
+        "title": "Examples",
+        "type": "object"
+      },
       "FilterChip": {
         "additionalProperties": false,
         "description": "One active filter as the UI shows it. `key` says what removing the chip resets.",
@@ -2922,6 +2948,28 @@
         "summary": "Evidence",
         "tags": [
           "evidence"
+        ]
+      }
+    },
+    "/api/examples": {
+      "get": {
+        "description": "Example searches for the landing page, from the data being served.",
+        "operationId": "examples_api_examples_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Examples"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Examples",
+        "tags": [
+          "health"
         ]
       }
     },

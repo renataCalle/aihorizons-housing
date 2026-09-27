@@ -331,6 +331,14 @@ class EvidenceDetail(Model):
 # ---------------------------------------------------------------------------
 
 
+class Examples(Model):
+    """Example searches for the landing page, taken from the data being served."""
+
+    parcel_id: str = Field(description="A partial county ID, dashed")
+    address: str
+    prompt: str
+
+
 class Health(Model):
     status: Literal["ok"] = "ok"
     site_source: Literal["mock", "pipeline"]

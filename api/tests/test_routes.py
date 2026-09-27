@@ -79,3 +79,11 @@ def test_evidence_is_served(client: TestClient) -> None:
 def test_cors_allows_the_web_dev_server(client: TestClient) -> None:
     response = client.get("/api/health", headers={"Origin": "http://localhost:5173"})
     assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
+
+
+def test_mock_examples_are_the_mockups(client: TestClient) -> None:
+    assert client.get("/api/examples").json() == {
+        "parcel_id": "0000-X-00000",
+        "address": "123 Sample St",
+        "prompt": "3 townhomes in Hazelwood under $25k",
+    }

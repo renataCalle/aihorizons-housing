@@ -44,3 +44,11 @@ def test_parcel_shapes_are_wgs84(source: PipelineSiteSource) -> None:
 def test_no_owner_names() -> None:
     text = read_text(RESULTS / "summaries.json")
     assert not re.search(r'"owner(_name)?":', text), "owner type only, never owner names"
+
+
+def test_examples_come_from_the_data(source: PipelineSiteSource) -> None:
+    from navigator_api.search.lookup import lookup
+
+    examples = source.examples()
+    assert lookup(source.summaries(), examples.parcel_id).matches
+    assert lookup(source.summaries(), examples.address).matches

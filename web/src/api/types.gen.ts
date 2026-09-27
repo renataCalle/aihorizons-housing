@@ -21,6 +21,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/examples": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Examples
+         * @description Example searches for the landing page, from the data being served.
+         */
+        get: operations["examples_api_examples_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -335,6 +355,21 @@ export interface components {
             precedent_total?: number | null;
             /** Title */
             title: string;
+        };
+        /**
+         * Examples
+         * @description Example searches for the landing page, taken from the data being served.
+         */
+        Examples: {
+            /** Address */
+            address: string;
+            /**
+             * Parcel Id
+             * @description A partial county ID, dashed
+             */
+            parcel_id: string;
+            /** Prompt */
+            prompt: string;
         };
         /**
          * FilterChip
@@ -1218,6 +1253,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    examples_api_examples_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Examples"];
                 };
             };
         };

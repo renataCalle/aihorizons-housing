@@ -15,6 +15,7 @@ from pydantic import TypeAdapter
 
 from navigator_api.models import (
     EvidenceDetail,
+    Examples,
     MapFeatureCollection,
     ParcelFeature,
     ParcelFeatureCollection,
@@ -113,3 +114,23 @@ class SiteBundle:
 
     def evidence(self, evidence_id: str) -> EvidenceDetail | None:
         return self._evidence.get(evidence_id)
+
+    def examples(self) -> Examples:
+        """The best-scoring candidate's ID, a real candidate address, and the busiest area."""
+        scored = sorted(
+            (s for s in self._summaries.values() if s.candidate and s.score is not None),
+            key=lambda s: (-(s.score or 0), s.parcel_id),
+        )
+        best = scored[0]
+        with_number = next((s for s in scored if s.address and s.address[:1].isdigit()), best)
+        counts: dict[str, int] = {}
+        for s in scored:
+            if s.neighborhood:
+                counts[s.neighborhood] = counts.get(s.neighborhood, 0) + 1
+        area = max(counts, key=lambda n: counts[n]) if counts else "Hazelwood"
+        pid = best.parcel_id
+        return Examples(
+            parcel_id=f"{pid[:4]}-{pid[4]}-{pid[5:10]}",
+            address=with_number.display_name,
+            prompt=f"3 townhomes in {area} under $25k",
+        )

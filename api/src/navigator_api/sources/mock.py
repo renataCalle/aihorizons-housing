@@ -10,7 +10,7 @@
 from pathlib import Path
 from typing import Literal
 
-from navigator_api.models import EvidenceDetail
+from navigator_api.models import EvidenceDetail, Examples
 from navigator_api.sources.bundle import SiteBundle
 from navigator_contracts import SiteAnalysis, SiteContext
 
@@ -38,3 +38,11 @@ class MockSiteSource(SiteBundle):
             )
         }
         super().__init__(summaries, geometry, features, analyses, evidence)
+
+    def examples(self) -> Examples:
+        # The mockups' examples: Sample lot A and its address.
+        return Examples(
+            parcel_id="0000-X-00000",
+            address="123 Sample St",
+            prompt="3 townhomes in Hazelwood under $25k",
+        )
