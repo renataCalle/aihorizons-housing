@@ -34,12 +34,15 @@
   --illustrative-line: #9ab0d8;
 
   /* Bands (map fills and swatches) */
-  --band-fast-track: var(--cobalt);
-  --band-conditions: var(--sky);
-  --band-high-risk: var(--orange);
-  --band-unknown: var(--unknown);
-  --band-none-outline: #d6d0c4; /* warm grey lot lines on the cream map */
-  --lot-fill: transparent; /* parcels that are not candidates: outline only */
+  /* Score bands: the active map theme's colours (web/src/map/themes.ts sets them on the root,
+     with data-map-theme). These defaults are the Blueprint theme's, for first paint. */
+  --band-fast-track: #1b3fd1;
+  --band-conditions: #6e9bf2;
+  --band-high-risk: #e8590c; /* strong: the report */
+  --band-risk-soft-fill: #f9be8c; /* soft: the map and search results */
+  --band-risk-soft-outline: #d9480f;
+  --band-unknown: #8c9bb5;
+  --band-unknown-tint: #f1f4f9;
   --assembly-tint: #dce6ff;
 
   /* 3D view (Standard-like palette): cream houses, glassy blue towers, sky above the horizon */

@@ -370,8 +370,14 @@
 }
 
 .sev-deal_risk {
-  background: var(--orange);
+  background: var(--band-high-risk);
   color: var(--white);
+}
+
+/* The report keeps the strong risk orange (the map and results use the soft one). */
+.report-panel .pill-high_risk {
+  border-color: var(--band-high-risk);
+  background: color-mix(in srgb, var(--band-high-risk) 14%, var(--white));
 }
 
 .sev-caution {

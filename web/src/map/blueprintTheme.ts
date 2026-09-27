@@ -59,6 +59,7 @@ const rules = (c: BasemapPalette): Rule[] => [
   { match: id(/^background$/), paint: { 'background-color': c.land } },
   { match: id(/^park$/), paint: { 'fill-color': c.park } },
   { match: id(/^landcover_wood$/), paint: { 'fill-color': c.wood } },
+  { match: id(/^landcover-grass$/), paint: { 'fill-color': c.park } },
   { match: id(/^(landuse|landcover|aeroway-area)/), paint: { 'fill-color': c.land } },
   {
     match: id(/^water$/),
@@ -120,6 +121,23 @@ export function applyMapTheme(
     themed.layers.splice(building, 0, grassLayer(palette.park))
   }
   return themed
+}
+
+/**
+ * The paint changes that switch a themed map to `palette`, layer by layer: how a theme switch
+ * recolours the live map without reloading it (the data layers and the selection stay put).
+ */
+export function basemapPaint(
+  layers: LayerSpecification[],
+  palette: BasemapPalette,
+): { layer: string; paint: Paint }[] {
+  const RULES = rules(palette)
+  return layers.flatMap((layer) => {
+    const rule = RULES.find((r) => r.match(layer))
+    if (!rule?.paint || !('paint' in layer)) return []
+    const paint = kept(layer, rule.paint)
+    return Object.keys(paint).length ? [{ layer: layer.id, paint }] : []
+  })
 }
 
 /** Only set paint properties that belong to the layer's type (fill-* on fills, etc.). */

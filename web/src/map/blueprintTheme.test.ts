@@ -1,6 +1,6 @@
 import type { LayerSpecification, StyleSpecification } from 'maplibre-gl'
 import { describe, expect, it } from 'vitest'
-import { applyMapTheme, BLUEPRINT, STANDARD } from './blueprintTheme'
+import { applyMapTheme, basemapPaint, BLUEPRINT, STANDARD } from './blueprintTheme'
 
 const layers = [
   { id: 'background', type: 'background', paint: { 'background-color': '#f8f4f0' } },
@@ -74,5 +74,26 @@ describe('applyMapTheme extras', () => {
   it('still themes in the blueprint palette on request', () => {
     const blueprint = applyMapTheme(style, BLUEPRINT)
     expect(layer(blueprint, 'background').paint['background-color']).toBe(BLUEPRINT.land)
+  })
+})
+
+describe('basemapPaint', () => {
+  // A map themed in Standard, switched to Blueprint without reloading.
+  const changes = basemapPaint(applyMapTheme(style).layers, BLUEPRINT)
+  const paintOf = (layerId: string) => changes.find((c) => c.layer === layerId)?.paint
+
+  it('recolours every themed layer, the added grass included', () => {
+    expect(paintOf('background')).toEqual({ 'background-color': BLUEPRINT.land })
+    expect(paintOf('landcover-grass')).toEqual({ 'fill-color': BLUEPRINT.park })
+    expect(paintOf('highway_minor')?.['line-color']).toBe(BLUEPRINT.road)
+  })
+
+  it('sets only paint the layer type has, and leaves unmatched layers alone', () => {
+    expect(paintOf('label_city')).toEqual({
+      'text-color': BLUEPRINT.label,
+      'text-halo-color': BLUEPRINT.land,
+    })
+    expect(paintOf('mystery')).toBeUndefined()
+    expect(paintOf('road_shield_us')).toBeUndefined()
   })
 })

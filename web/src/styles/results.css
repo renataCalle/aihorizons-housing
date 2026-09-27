@@ -218,21 +218,27 @@ p.results-panel {
   border-radius: 3px;
 }
 
+/* Legend and list dots: the map's colours (soft risk, as the map draws it in results). */
 .swatch-fast_track {
-  background: var(--cobalt);
+  background: var(--band-fast-track);
 }
 
 .swatch-conditions {
-  background: var(--sky);
+  background: var(--band-conditions);
 }
 
 .swatch-high_risk {
-  background: var(--orange);
+  border: 1.5px solid var(--band-risk-soft-outline);
+  background: var(--band-risk-soft-fill);
 }
 
 .swatch-unknown {
-  border: 1px solid var(--unknown);
-  background: repeating-linear-gradient(45deg, var(--unknown) 0 1.5px, var(--unknown-tint) 1.5px 4px);
+  border: 1px solid var(--band-unknown);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--band-unknown) 0 1.5px,
+    var(--band-unknown-tint) 1.5px 4px
+  );
 }
 
 .swatch-stop {
@@ -364,6 +370,39 @@ p.results-panel {
 
 .layers {
   position: relative;
+}
+
+/* "Blueprint | Standard", at the top of the Layers menu */
+.style-switch {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 6px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--white);
+}
+
+.style-switch-option {
+  flex: 1;
+  min-height: 36px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.style-switch-option:hover {
+  background: var(--cobalt-tint-2);
+}
+
+.style-switch-option[aria-pressed='true'] {
+  background: var(--cobalt);
+  color: var(--white);
 }
 
 .layers-menu {
@@ -601,25 +640,28 @@ p.results-panel {
   text-transform: uppercase;
 }
 
+/* Band pills in the map's colours. Tints keep the text at 4.5:1 or better on either theme. */
 .pill-fast_track {
-  background: var(--cobalt);
+  background: var(--band-fast-track);
   color: var(--white);
 }
 
 .pill-conditions {
-  background: var(--cobalt-tint);
+  border: 1px solid var(--band-conditions);
+  background: color-mix(in srgb, var(--band-conditions) 22%, var(--white));
   color: var(--cobalt-deep);
 }
 
+/* Soft risk, as on the map; the report's pill keeps the strong orange (report.css). */
 .pill-high_risk {
-  background: var(--orange-tint);
-  border: 1px solid var(--orange-line);
+  border: 1.5px solid var(--band-risk-soft-outline);
+  background: color-mix(in srgb, var(--band-risk-soft-fill) 50%, var(--white));
   color: var(--orange-text);
 }
 
 .pill-unknown {
-  background: var(--unknown-tint);
-  border: 1px dashed var(--unknown);
+  background: var(--band-unknown-tint);
+  border: 1px dashed var(--band-unknown);
   color: var(--ink-2);
 }
 
@@ -682,7 +724,7 @@ p.results-panel {
 }
 
 .risk-deal_risk {
-  background: var(--orange);
+  background: var(--band-high-risk);
 }
 
 .risk-caution {

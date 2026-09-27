@@ -10,7 +10,7 @@ import type { Map as MapLibreMap, StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { MapFeatures, ParcelLayer } from '../models/map'
-import { applyMapTheme, FALLBACK_STYLE } from './blueprintTheme'
+import { applyMapTheme, basemapPaint, FALLBACK_STYLE } from './blueprintTheme'
 import { Crosshair } from './Crosshair'
 import { hatchPattern } from './hatch'
 import {
@@ -26,10 +26,10 @@ import {
   CAMERA_3D,
   LIGHT_3D,
   readPalette,
-  PARCELS_3D,
   skySpec,
 } from './layers'
 import { ringCenter } from './readout'
+import type { MapTheme } from './themes'
 
 const BASEMAP_URL = 'https://tiles.openfreemap.org/styles/positron'
 
@@ -51,25 +51,33 @@ interface Props {
   onHover?: (parcelId: string | null) => void
   /** Show transit stops (the Layers menu). */
   showTransit?: boolean
-  /** 3D view: real buildings and terrain, camera tilted; lots stay coloured on the ground */
+  /** 3D view: camera tilted, and the theme's buildings raised; lots stay on the ground */
   view3d?: boolean
+  /** Basemap and band colours; switching recolours the live map without reloading it */
+  theme: MapTheme
+  /** The lot whose report is open: drawn in the strong risk colour */
+  reportId?: string | null
   /** Extra sources, layers and markers drawn over the parcels. */
   children?: ReactNode
 }
 
-/** Load the basemap once and recolor it; fall back to plain paper when it can't load. */
-function useBlueprintStyle(): StyleSpecification | null {
+/**
+ * Load the basemap once, themed in `theme` as it is on first render; fall back to plain paper
+ * when it can't load. Later theme switches recolour the live map (ThemeBasemap).
+ */
+function useBlueprintStyle(theme: MapTheme): StyleSpecification | null {
   const [style, setStyle] = useState<StyleSpecification | null>(null)
+  const [initial] = useState(theme)
   useEffect(() => {
     const controller = new AbortController()
     fetch(BASEMAP_URL, { signal: controller.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.statusText))))
-      .then((raw: StyleSpecification) => setStyle(applyMapTheme(raw)))
+      .then((raw: StyleSpecification) => setStyle(applyMapTheme(raw, initial.basemap)))
       .catch(() => {
         if (!controller.signal.aborted) setStyle(FALLBACK_STYLE)
       })
     return () => controller.abort()
-  }, [])
+  }, [initial])
   return style
 }
 
@@ -83,9 +91,11 @@ export function BlueprintMap({
   onHover,
   showTransit = false,
   view3d = false,
+  theme,
+  reportId = null,
   children,
 }: Props) {
-  const style = useBlueprintStyle()
+  const style = useBlueprintStyle(theme)
   const palette = useMemo(() => readPalette(), [])
   const [hatchReady, setHatchReady] = useState(false)
   const [hovering, setHovering] = useState(false)
@@ -96,8 +106,16 @@ export function BlueprintMap({
   }, [parcels, selectedId])
 
   const layers = useMemo(
-    () => parcelLayers(palette, selectedId, hatchReady, hoveredId),
-    [palette, selectedId, hatchReady, hoveredId],
+    () =>
+      parcelLayers(palette, {
+        bands: theme.bands,
+        lotLine: theme.lotLine,
+        selectedId,
+        hoveredId,
+        reportId,
+        hatch: hatchReady,
+      }),
+    [palette, theme, selectedId, hoveredId, reportId, hatchReady],
   )
   const overlays = useMemo(() => featureLayers(palette), [palette])
   const buildings = useMemo(() => buildingExtrusion(palette), [palette])
@@ -122,7 +140,8 @@ export function BlueprintMap({
       onLoad={(e) => {
         const map = e.target
         if (!map.hasImage(HATCH_IMAGE)) {
-          map.addImage(HATCH_IMAGE, hatchPattern(palette.unknown, palette.unknownTint))
+          const { unknownLine, unknownTint } = theme.bands
+          map.addImage(HATCH_IMAGE, hatchPattern(unknownLine, unknownTint))
         }
         setHatchReady(true)
       }}
@@ -160,14 +179,11 @@ export function BlueprintMap({
           ))}
         </Source>
       )}
-      {view3d && (
-        <>
-          <Layer {...buildings} />
-        </>
-      )}
+      {view3d && theme.buildings3d && <Layer {...buildings} />}
       {children}
+      <ThemeBasemap theme={theme} />
       <TiltCamera view3d={view3d} />
-      <Layers3D view3d={view3d} />
+      <BuildingsOnTop active={view3d && theme.buildings3d} />
       {selectedCenter && (
         <Marker longitude={selectedCenter[0]} latitude={selectedCenter[1]} anchor="center">
           <Crosshair />
@@ -194,51 +210,59 @@ function TiltCamera({ view3d }: { view3d: boolean }) {
   return null
 }
 
-/**
- * The 3D view's layers: buildings kept above the lots, and lots outside the search thinned
- * out. Applied to the live map and undone on the way out.
- */
-type PaintKey = Parameters<MapLibreMap['getPaintProperty']>[1]
+type PaintKey = Parameters<MapLibreMap['setPaintProperty']>[1]
 type PaintValue = Parameters<MapLibreMap['setPaintProperty']>[2]
 
-function Layers3D({ view3d }: { view3d: boolean }) {
+/**
+ * Recolour the live basemap when the theme changes, without reloading the style: the data
+ * layers, the selection and the camera stay as they are. The unknown hatch follows too.
+ */
+function ThemeBasemap({ theme }: { theme: MapTheme }) {
   const { current: ref } = useMap()
   useEffect(() => {
     const map = ref?.getMap()
-    if (!map || !view3d) return
-    const before: [string, PaintKey, PaintValue][] = []
+    if (!map) return
     const apply = () => {
-      for (const { layer, paint } of PARCELS_3D) {
-        if (!map.getLayer(layer)) continue
-        for (const [name, value] of Object.entries(paint)) {
-          const prop = name as PaintKey
-          before.push([layer, prop, map.getPaintProperty(layer, prop) as PaintValue])
-          map.setPaintProperty(layer, prop, value as PaintValue)
+      for (const { layer, paint } of basemapPaint(map.getStyle().layers, theme.basemap)) {
+        for (const [prop, value] of Object.entries(paint)) {
+          map.setPaintProperty(layer, prop as PaintKey, value as PaintValue)
         }
       }
+      const { unknownLine, unknownTint } = theme.bands
+      if (map.hasImage(HATCH_IMAGE)) {
+        map.updateImage(HATCH_IMAGE, hatchPattern(unknownLine, unknownTint))
+      }
     }
-    // Buildings stand on top of the lots: layers draw in the order they were added, and the
-    // lots (or a hatch or overlay) can be added after the buildings, e.g. when the page opens
-    // straight into 3D. Move the buildings back to the top whenever a layer is added.
-    const keepBuildingsOnTop = () => {
+    if (map.isStyleLoaded()) apply()
+    else map.once('idle', apply)
+    return () => {
+      map.off('idle', apply)
+    }
+  }, [ref, theme])
+  return null
+}
+
+/**
+ * In the 3D view, keep the buildings above the lots: layers draw in the order they were added,
+ * and the lots (or a hatch or overlay) can be added after the buildings, e.g. when the page
+ * opens straight into 3D. Move the buildings back to the top whenever a layer is added.
+ */
+function BuildingsOnTop({ active }: { active: boolean }) {
+  const { current: ref } = useMap()
+  useEffect(() => {
+    const map = ref?.getMap()
+    if (!map || !active) return
+    const keepOnTop = () => {
       const order = map.getLayersOrder()
       if (map.getLayer(BUILDINGS_3D) && order[order.length - 1] !== BUILDINGS_3D) {
         map.moveLayer(BUILDINGS_3D)
       }
     }
-    map.on('styledata', keepBuildingsOnTop)
-    keepBuildingsOnTop()
-    // Opened straight into 3D, the style and the parcels may still be loading.
-    const ready = map.isStyleLoaded() && !!map.getLayer('parcels-fill')
-    if (ready) apply()
-    else map.once('idle', apply)
+    map.on('styledata', keepOnTop)
+    keepOnTop()
     return () => {
-      map.off('styledata', keepBuildingsOnTop)
-      map.off('idle', apply)
-      for (const [layer, prop, value] of before) {
-        if (map.getLayer(layer)) map.setPaintProperty(layer, prop, value)
-      }
+      map.off('styledata', keepOnTop)
     }
-  }, [ref, view3d])
+  }, [ref, active])
   return null
 }

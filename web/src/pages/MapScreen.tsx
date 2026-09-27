@@ -20,6 +20,7 @@ import {
   RankTags,
   type Padding,
 } from '../map/SearchOverlays'
+import { useMapTheme } from '../state/mapTheme'
 
 /** Hazelwood, where the mock candidates cluster. */
 const INITIAL_VIEW: MapView = { longitude: -79.943, latitude: 40.405, zoom: 16.4 }
@@ -68,6 +69,7 @@ export function MapScreen() {
   // Transit stops: a manual choice from the Layers menu, until the search changes (below).
   const [transitChoice, setTransitChoice] = useState<{ auto: boolean; on: boolean } | null>(null)
   const [retryCount, setRetryCount] = useState(0)
+  const mapTheme = useMapTheme()
 
   // Text without filters in the URL is parsed first; then the filters live in the URL.
   const parse = useAsync(fromUrl || !q ? 'none' : `parse:${q}`, (signal) =>
@@ -189,6 +191,8 @@ export function MapScreen() {
           onHover={setHoveredId}
           showTransit={transit}
           view3d={view3d}
+          theme={mapTheme.theme}
+          reportId={reportId}
         >
           {featureData && filters && (
             <>
@@ -217,6 +221,8 @@ export function MapScreen() {
         <MapControls
           view3d={view3d}
           onToggle3d={() => update({ view: view3d ? null : '3d' })}
+          themeId={mapTheme.theme.id}
+          onTheme={mapTheme.setTheme}
         />
         <MapReadout initial={INITIAL_VIEW} />
       </main>

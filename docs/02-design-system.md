@@ -94,24 +94,37 @@ Use these sparingly; they carry the style:
 
 Base (MapLibre GL JS 6, already in `web/package.json`): **OpenFreeMap Positron** (`https://tiles.openfreemap.org/styles/positron`), recolored at load time by `applyMapTheme(style, palette)` in `web/src/map/blueprintTheme.ts`, which walks the style's layers and overrides paint properties.
 
-**Current palette (Sep 2026): Standard.** The map (2D and 3D) now uses colours sampled from Mapbox's "Standard" day style, chosen for contrast with the band colours. The panels keep the blueprint look. The original blueprint palette is still in the code (`BLUEPRINT`) and in the right-hand column below.
+**Two map themes (Sep 2026): Blueprint (default) and Standard.** Viewers switch with "Blueprint | Standard" at the top of the Layers menu or the style button in the map controls; the choice is saved in `localStorage`. Switching recolours the live map (no reload: data layers, selection and camera stay). Every colour lives in `web/src/map/themes.ts`, the one source: the map reads it directly, and the UI reads the band colours as CSS variables set on the root with `data-map-theme` (`tokens.css` repeats Blueprint's as the first-paint default; a test keeps them equal).
 
-| Layer group | Standard (in use) | Blueprint (original) |
+| Layer group | Blueprint (default) | Standard (sampled from Mapbox "Standard" day) |
 |---|---|---|
-| background, landuse | `#F0ECE2` | `#EEF4FB` |
-| parks, grass | `#BEE8B2` (grass layer added: Positron has none) | one step lighter than land, no green |
-| woods | `#B4E0A7` | as land |
-| water | `#A7DAFA`, outline `#97CFF3` | `#D3E3F7`, outline `#B4CCEC` |
-| buildings | fill `#E4E0D7`, outline `#D8D4CC` | fill `#E3ECF8`, outline `#C5D7EF` |
-| roads | `#BFC5D6`, casing `#B0B7CB` | `#FFFFFF`, casing `#D5E2F4` |
-| rail, paths | `#C9CDD8`, dashed | `#C9D9F0`, dashed |
-| labels | `#56657E`, letter-spaced uppercase for places; hide POI icons | same style in `#6A84B8` |
+| background, landuse | `#F1F4F8` | `#F0ECE2` |
+| parks, grass | `#E3EAF0` (grass layer added: Positron has none) | `#BEE8B2` |
+| woods | `#E3EAF0` | `#B4E0A7` |
+| water | `#CFDCEA`, outline `#B8CADF` | `#A7DAFA`, outline `#97CFF3` |
+| buildings | fill `#E6ECF3`, outline `#D3DCE8` | fill `#E4E0D7`, outline `#D8D4CC` |
+| roads | `#FFFFFF`, casing `#C9D3E0` | `#BFC5D6`, casing `#B0B7CB` |
+| lot lines (not candidates) | `#C9D3E0` | `#D6D0C4` |
+| labels | `#6A84B8`, letter-spaced uppercase for places; hide POI icons | same style in `#56657E` |
+| 3D buildings | hidden | raised to mapped heights |
+
+**Score bands** (fill opacity 0.85, thin white line between adjacent lots):
+
+| Band | Blueprint | Standard |
+|---|---|---|
+| Fast track | `#1B3FD1` | `#1E3A8A` |
+| With conditions | `#6E9BF2` | `#4F86E8` |
+| High risk, strong (the report, and the lot whose report is open) | `#E8590C` | `#E8590C` |
+| High risk, soft (the map and search results) | fill `#F9BE8C`, 1.5px outline `#D9480F` | same |
+| Unknown | hatched `#8C9BB5` on `#F1F4F9` | same |
+
+Pills keep text at 4.5:1 or better: fast track is white on the band colour; with conditions and soft risk use tints of their band with the band colour as border.
 
 Add a technical grid feel with a faint 48px grid as a CSS background behind a slightly transparent basemap, or skip it if it hurts performance.
 
 **Data layers** (from `GET /api/map/parcels`):
-1. `parcels-fill`: fill by `band` using the band colors; unknown uses a hatch pattern image (`map.addImage` of a 6px diagonal pattern).
-2. `parcels-outline`: `#D6D0C4` (was `#C5D7EF`), 0.8px; selected parcel `#0B1B3F`, 2.5px. Lots that aren't candidates have no fill, outline only.
+1. `parcels-fill`: fill by `band` using the theme's band colours at 0.85 opacity; unknown uses a hatch pattern image (`map.addImage` of a 6px diagonal pattern). Lots that aren't candidates have no fill, outline only.
+2. `parcels-outline`: white 0.75px between scored lots, the soft risk outline on high-risk lots, the theme's lot line for the rest; selected parcel `#0B1B3F`, 2.5px.
 3. `area-dim`: a polygon of the world minus the searched neighborhoods, fill `#F5F8FD` at 0.66 opacity.
 4. `area-boundary`: dashed cobalt line, 1.5px, with a mono label chip.
 5. `rank-tags`: symbol layer with rank numbers for the top results (or HTML markers).
@@ -120,7 +133,7 @@ Add a technical grid feel with a faint 48px grid as a CSS background behind a sl
 
 **Terrain:** tried in 3D (AWS Terrain Tiles, Terrarium) and dropped: lots draped over hillsides read poorly.
 
-**3D view (built, replaces the score view below):** the "3D" control (`view=3d` in the URL) tilts the camera to 66° at street level and raises the basemap's buildings to their mapped heights (OpenMapTiles `render_height`, MapLibre `fill-extrusion`): cream `#E9E5DC` for houses, glassy blue `#9EB7CD` for towers, solid and always drawn above the lots. Lots stay coloured by band on the ground. Sky and horizon haze via MapLibre's sky.
+**3D view (built, replaces the score view below):** the "3D" control (`view=3d` in the URL) tilts the camera to 66° at street level and raises the basemap's buildings to their mapped heights in the Standard theme (OpenMapTiles `render_height`, MapLibre `fill-extrusion`): cream `#E9E5DC` for houses, glassy blue `#9EB7CD` for towers, solid and always drawn above the lots. Blueprint shows no buildings in 3D. Lots stay coloured by band on the ground. Sky and horizon haze via MapLibre's sky.
 
 *Original plan, not built:* deck.gl extruded parcels, elevation = score scaled, fill by band, pitch about 55°, bearing about −30°, with a glow under fast-track parcels.
 

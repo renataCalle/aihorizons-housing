@@ -1,4 +1,5 @@
 import type { ExpressionSpecification, LayerSpecification } from 'maplibre-gl'
+import type { BandColors } from './themes'
 
 export const PARCELS = 'parcels'
 export const FEATURES = 'map-features'
@@ -6,16 +7,10 @@ export const HATCH_IMAGE = 'hatch'
 /** Layers that respond to clicks and hover. */
 export const INTERACTIVE_LAYERS = ['parcels-fill']
 
-/** Colors the map layers need, read from the design tokens in tokens.css. */
+/** Colours the map layers need beyond the theme's (themes.ts), read from tokens.css. */
 export interface MapPalette {
   cobalt: string
-  sky: string
-  orange: string
-  unknown: string
-  unknownTint: string
   ink: string
-  lotFill: string
-  lotLine: string
   assemblyTint: string
   building: string
   buildingTall: string
@@ -28,13 +23,7 @@ export function readPalette(root: Element = document.documentElement): MapPalett
   const token = (name: string) => css.getPropertyValue(name).trim()
   return {
     cobalt: token('--cobalt'),
-    sky: token('--sky'),
-    orange: token('--orange'),
-    unknown: token('--unknown'),
-    unknownTint: token('--unknown-tint'),
     ink: token('--ink'),
-    lotFill: token('--lot-fill'),
-    lotLine: token('--band-none-outline'),
     assemblyTint: token('--assembly-tint'),
     building: token('--building-3d'),
     buildingTall: token('--building-3d-tall'),
@@ -45,13 +34,22 @@ export function readPalette(root: Element = document.documentElement): MapPalett
 
 type Layer = LayerSpecification & { source: string; beforeId?: string }
 
+/** What the parcel layers draw: the theme's colours and which lots stand out. */
+export interface ParcelStyle {
+  bands: BandColors
+  /** Lines between lots that aren't candidates */
+  lotLine: string
+  selectedId: string | null
+  hoveredId?: string | null
+  /** The lot whose report is open: drawn in the strong risk colour, not the soft one */
+  reportId?: string | null
+  /** The hatch image for unknown lots has been added */
+  hatch: boolean
+}
+
 /** Parcel layers, bottom to top: fills by band, unknown hatch, outlines, selection. */
-export function parcelLayers(
-  p: MapPalette,
-  selectedId: string | null,
-  hatch: boolean,
-  hoveredId: string | null = null,
-): Layer[] {
+export function parcelLayers(p: MapPalette, s: ParcelStyle): Layer[] {
+  const { bands, selectedId, hoveredId = null, reportId = null, hatch } = s
   // The selected lot shows its own band when it doesn't match the search (a match is drawn by
   // what the search ranks it on).
   const band: ExpressionSpecification = [
@@ -60,6 +58,8 @@ export function parcelLayers(
     ['get', 'ownBand'],
     ['get', 'band'],
   ]
+  // High-risk lots are soft on the map; the one whose report is open keeps the strong colour.
+  const strongRisk: ExpressionSpecification = ['==', ['get', 'id'], reportId ?? '']
   const layers: Layer[] = [
     {
       id: 'parcels-fill',
@@ -74,16 +74,17 @@ export function parcelLayers(
             'match',
             band,
             'fast_track',
-            p.cobalt,
+            bands.fast,
             'conditions',
-            p.sky,
+            bands.conditions,
             'high_risk',
-            p.orange,
+            ['case', strongRisk, bands.risk, bands.riskSoftFill],
             'unknown',
-            p.unknownTint,
-            p.lotFill,
+            bands.unknownTint,
+            'transparent',
           ],
         ],
+        'fill-opacity': 0.85,
       },
     },
     {
@@ -91,16 +92,27 @@ export function parcelLayers(
       type: 'line',
       source: PARCELS,
       paint: {
+        // A thin white line between adjacent scored lots; soft risk lots get their own outline.
         'line-color': [
           'match',
           band,
           'none',
-          p.lotLine,
+          s.lotLine,
           'unknown',
-          p.unknown,
+          bands.unknownLine,
+          'high_risk',
+          ['case', strongRisk, '#ffffff', bands.riskSoftOutline],
           '#ffffff',
         ],
-        'line-width': ['match', band, 'none', 0.8, 1],
+        'line-width': [
+          'match',
+          band,
+          'none',
+          0.8,
+          'high_risk',
+          ['case', strongRisk, 0.75, 1.5],
+          0.75,
+        ],
       },
     },
     {
@@ -182,14 +194,6 @@ export function buildingExtrusion(p: MapPalette): Layer & { 'source-layer': stri
     },
   }
 }
-
-/**
- * Paint changes to our own parcel layers in the 3D view: lot outlines turn faint, so the
- * candidates and the buildings stand out.
- */
-export const PARCELS_3D: { layer: string; paint: Record<string, unknown> }[] = [
-  { layer: 'parcels-outline', paint: { 'line-opacity': 0.35 } },
-]
 
 /** Sky and horizon haze for the tilted view, in the design's paper and sky blues. */
 export function skySpec(p: MapPalette) {
