@@ -1361,6 +1361,17 @@
           },
           "parcel": {
             "$ref": "#/components/schemas/ParcelSummary"
+          },
+          "program": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Program"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The building the analysis scores when one was requested and could be scored; None = the engine's pick"
           }
         },
         "required": [
@@ -1816,6 +1827,40 @@
           }
         },
         "title": "ProductFilter",
+        "type": "object"
+      },
+      "Program": {
+        "additionalProperties": false,
+        "description": "A building type to score, e.g. the one a search asked for.",
+        "properties": {
+          "product_type": {
+            "enum": [
+              "single_family",
+              "duplex",
+              "triplex",
+              "townhome",
+              "walkup"
+            ],
+            "title": "Product Type",
+            "type": "string"
+          },
+          "units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None = the largest the zoning rules allow",
+            "title": "Units"
+          }
+        },
+        "required": [
+          "product_type"
+        ],
+        "title": "Program",
         "type": "object"
       },
       "ProgramEvaluation": {
@@ -3187,7 +3232,7 @@
     },
     "/api/parcels/{parcel_id}": {
       "get": {
-        "description": "Report header, the engine's analysis, and where its facts came from, by county ID.",
+        "description": "Report header, the engine's analysis, and where its facts came from, by county ID.\n\nWith `product_type` (and optionally `units`), the engine scores that building instead of\nits own pick, from the lot's stored facts. Lots without stored facts keep the stored pick,\nand `program` comes back empty.",
         "operationId": "parcel_report_api_parcels__parcel_id__get",
         "parameters": [
           {
@@ -3197,6 +3242,47 @@
             "schema": {
               "title": "Parcel Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "single_family",
+                    "duplex",
+                    "triplex",
+                    "townhome",
+                    "walkup"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "units",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 50,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Units"
             }
           }
         ],

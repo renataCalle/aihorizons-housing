@@ -148,6 +148,10 @@ export interface paths {
         /**
          * Parcel Report
          * @description Report header, the engine's analysis, and where its facts came from, by county ID.
+         *
+         *     With `product_type` (and optionally `units`), the engine scores that building instead of
+         *     its own pick, from the lot's stored facts. Lots without stored facts keep the stored pick,
+         *     and `program` comes back empty.
          */
         get: operations["parcel_report_api_parcels__parcel_id__get"];
         put?: never;
@@ -705,6 +709,8 @@ export interface components {
             /** @description None when the facts behind the analysis are not stored */
             freshness?: components["schemas"]["Freshness"] | null;
             parcel: components["schemas"]["ParcelSummary"];
+            /** @description The building the analysis scores when one was requested and could be scored; None = the engine's pick */
+            program?: components["schemas"]["Program"] | null;
         };
         /**
          * ParcelSummary
@@ -855,6 +861,22 @@ export interface components {
             /**
              * Units
              * @description At least this many
+             */
+            units?: number | null;
+        };
+        /**
+         * Program
+         * @description A building type to score, e.g. the one a search asked for.
+         */
+        Program: {
+            /**
+             * Product Type
+             * @enum {string}
+             */
+            product_type: "single_family" | "duplex" | "triplex" | "townhome" | "walkup";
+            /**
+             * Units
+             * @description None = the largest the zoning rules allow
              */
             units?: number | null;
         };
@@ -1419,7 +1441,10 @@ export interface operations {
     };
     parcel_report_api_parcels__parcel_id__get: {
         parameters: {
-            query?: never;
+            query?: {
+                product_type?: ("single_family" | "duplex" | "triplex" | "townhome" | "walkup") | null;
+                units?: number | null;
+            };
             header?: never;
             path: {
                 parcel_id: string;
