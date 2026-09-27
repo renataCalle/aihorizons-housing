@@ -150,8 +150,8 @@ def _precedent(option: ProgramOption, context: SiteContext | None) -> Precedent 
     if not relief_types & ZBA_RELIEF:
         return None
     cases = context.zba_cases_nearby if context else None
+    stored = context.provenance.get("zba_cases") if context else None
     if cases is None or option.similar_cases is None:
-        stored = context.provenance.get("zba_cases") if context else None
         return Precedent(status="unavailable", note=stored.note if stored else None)
     similar = set(option.similar_cases)
     chosen = [c for c in cases if c.case_id in similar]
@@ -159,6 +159,9 @@ def _precedent(option: ProgramOption, context: SiteContext | None) -> Precedent 
     months = [c.months_to_decision for c in rows if c.months_to_decision is not None]
     return Precedent(
         status="available",
+        source=stored.name if stored else None,
+        as_of=stored.as_of if stored else None,
+        nearby=len(cases),
         granted=sum(c.outcome == "granted" for c in rows),
         total=len(rows),
         median_months=round(median(months), 1) if months else None,
@@ -171,10 +174,13 @@ def _case(c: ZbaCase) -> Case:
     return Case(
         case_id=c.case_id,
         area=c.district,
-        request=", ".join(c.relief_types) or None,
+        relief_types=c.relief_types,
+        decided=c.decision_date,
         outcome=OUTCOME[c.outcome],
         months_to_decision=round(c.days_to_decision / 30.44, 1)
         if c.days_to_decision is not None
         else None,
-        source_url=c.url,
+        # No link for now: the decisions are public but name applicants (see the hackathon
+        # README's limitations). The case number finds the decision on the city's pages.
+        source_url=None,
     )

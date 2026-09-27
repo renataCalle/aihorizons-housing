@@ -7,7 +7,12 @@ export interface Case {
   id: string
   /** Neighborhood or zoning district */
   area: string | null
+  /** What was asked, in words (mock cases) */
   request: string | null
+  /** Approval types asked for, e.g. variance (real cases) */
+  reliefTypes: string[]
+  /** ISO date of the decision */
+  decided: string | null
   outcome: CaseOutcome
   monthsToDecision: number | null
   sourceUrl: string | null
@@ -21,6 +26,12 @@ export interface Precedent {
   note: string | null
   /** What the engine counts as a similar case, in words */
   rule: string | null
+  /** Where the decisions come from */
+  source: string | null
+  /** ISO date of the latest decision in the data */
+  asOf: string | null
+  /** Decided cases near the lot, similar or not */
+  nearby: number | null
   granted: number | null
   total: number | null
   medianMonths: number | null

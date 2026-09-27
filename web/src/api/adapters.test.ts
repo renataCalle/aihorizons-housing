@@ -237,4 +237,40 @@ describe('toEvidence', () => {
     expect(e.approvalProbability?.p10).toBe(0.66)
     expect(e.precedent).toMatchObject({ status: 'unavailable', cases: [], granted: null })
   })
+
+  it('maps zoning board cases with their dates, approval types and no link', () => {
+    const e = toEvidence({
+      ...approvals,
+      precedent: {
+        status: 'available',
+        note: null,
+        rule: 'Same zoning board approval type',
+        source: 'Zoning Board of Adjustment decisions',
+        as_of: '2026-08-28',
+        nearby: 4,
+        granted: 1,
+        total: 1,
+        median_months: 3.1,
+        cases: [
+          {
+            case_id: '134 of 2025',
+            area: 'R1D-M',
+            request: null,
+            relief_types: ['variance'],
+            decided: '2025-11-03',
+            outcome: 'granted',
+            months_to_decision: 3.1,
+            source_url: null,
+          },
+        ],
+        ai_extracted: false,
+      },
+    })
+    expect(e.precedent).toMatchObject({ status: 'available', nearby: 4, asOf: '2026-08-28' })
+    expect(e.precedent?.cases[0]).toMatchObject({
+      reliefTypes: ['variance'],
+      decided: '2025-11-03',
+      sourceUrl: null,
+    })
+  })
 })

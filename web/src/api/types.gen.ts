@@ -245,6 +245,8 @@ export interface components {
             area?: string | null;
             /** Case Id */
             case_id: string;
+            /** Decided */
+            decided?: string | null;
             /** Months To Decision */
             months_to_decision?: number | null;
             /**
@@ -252,9 +254,20 @@ export interface components {
              * @enum {string}
              */
             outcome: "granted" | "denied" | "withdrawn" | "pending" | "unknown";
-            /** Request */
+            /**
+             * Relief Types
+             * @description Approval types asked for, e.g. variance
+             */
+            relief_types?: string[];
+            /**
+             * Request
+             * @description What was asked, in words (mock cases)
+             */
             request?: string | null;
-            /** Source Url */
+            /**
+             * Source Url
+             * @description Link to the decision. Not served for now: the decisions name applicants
+             */
             source_url?: string | null;
         };
         /**
@@ -933,8 +946,8 @@ export interface components {
         };
         /**
          * Precedent
-         * @description Zoning board decisions near the lot. Real lots have none until decisions are
-         *     available; generated lots carry the mockups' cases, marked illustrative.
+         * @description Zoning board decisions near the lot: the ones the engine judged similar to the
+         *     approvals the option needs. Generated lots carry the mockups' cases, marked illustrative.
          */
         Precedent: {
             /**
@@ -942,12 +955,22 @@ export interface components {
              * @default false
              */
             ai_extracted: boolean;
+            /**
+             * As Of
+             * @description Latest decision in the data
+             */
+            as_of?: string | null;
             /** Cases */
             cases?: components["schemas"]["Case"][];
             /** Granted */
             granted?: number | null;
             /** Median Months */
             median_months?: number | null;
+            /**
+             * Nearby
+             * @description Decided cases near the lot, similar or not
+             */
+            nearby?: number | null;
             /**
              * Note
              * @description Why decisions are unavailable
@@ -958,6 +981,11 @@ export interface components {
              * @description What the engine counts as similar
              */
             rule?: string | null;
+            /**
+             * Source
+             * @description Where the decisions come from
+             */
+            source?: string | null;
             /**
              * Status
              * @enum {string}

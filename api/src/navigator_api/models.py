@@ -359,19 +359,31 @@ Outcome = Literal["granted", "denied", "withdrawn", "pending", "unknown"]
 class Case(Model):
     case_id: str
     area: str | None = Field(default=None, description="Neighborhood or zoning district")
-    request: str | None = None
+    request: str | None = Field(default=None, description="What was asked, in words (mock cases)")
+    relief_types: list[str] = Field(
+        default_factory=list, description="Approval types asked for, e.g. variance"
+    )
+    decided: date | None = None
     outcome: Outcome
     months_to_decision: float | None = None
-    source_url: str | None = None
+    source_url: str | None = Field(
+        default=None,
+        description="Link to the decision. Not served for now: the decisions name applicants",
+    )
 
 
 class Precedent(Model):
-    """Zoning board decisions near the lot. Real lots have none until decisions are
-    available; generated lots carry the mockups' cases, marked illustrative."""
+    """Zoning board decisions near the lot: the ones the engine judged similar to the
+    approvals the option needs. Generated lots carry the mockups' cases, marked illustrative."""
 
     status: Literal["available", "unavailable", "illustrative"]
     note: str | None = Field(default=None, description="Why decisions are unavailable")
     rule: str | None = Field(default=None, description="What the engine counts as similar")
+    source: str | None = Field(default=None, description="Where the decisions come from")
+    as_of: date | None = Field(default=None, description="Latest decision in the data")
+    nearby: int | None = Field(
+        default=None, description="Decided cases near the lot, similar or not"
+    )
     granted: int | None = None
     total: int | None = None
     median_months: float | None = None

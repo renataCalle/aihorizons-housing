@@ -10,6 +10,7 @@ from navigator_contracts.site_context import ZbaCase
 
 STEEP_SLOPE = "0055A00137000000"  # deal risk: 84% of the lot on 25%+ slope
 CONTEXTUAL = "0055A00225000000"  # relies on contextual side setbacks
+SIMILAR_CASE = "0055E00248000000"  # needs a variance, with a similar zoning board case nearby
 
 
 @pytest.fixture(scope="module")
@@ -73,12 +74,26 @@ def test_approvals_option_says_how_to_get_them(client: TestClient) -> None:
     assert cited == ["911.04.A.69A", "911.02", "922.07"]
 
 
-def test_real_lot_has_no_zoning_board_cases(client: TestClient) -> None:
+def test_no_similar_cases_is_an_empty_list_not_unavailable(client: TestClient) -> None:
+    # 137 needs a special exception; the board decided cases nearby, none of them similar.
     precedent = get(client, STEEP_SLOPE, "option.with_relief")["precedent"]
-    assert precedent["status"] == "unavailable"
-    assert "403" in precedent["note"]
-    assert precedent["cases"] == []
-    assert precedent["granted"] is None and precedent["total"] is None
+    assert precedent["status"] == "available"
+    assert precedent["nearby"] > 0
+    assert (precedent["total"], precedent["granted"], precedent["cases"]) == (0, 0, [])
+    assert precedent["as_of"] and precedent["source"] and precedent["rule"]
+
+
+def test_similar_cases_are_listed_without_links(client: TestClient) -> None:
+    body = get(client, SIMILAR_CASE, "option.with_relief")
+    report = client.get(f"/api/parcels/{SIMILAR_CASE}").json()["analysis"]
+    option = next(o for o in report["options"] if o["label"] == "with_relief")
+    precedent = body["precedent"]
+    assert [c["case_id"] for c in precedent["cases"]] == option["similar_cases"]
+    assert precedent["total"] == len(option["similar_cases"])
+    case = precedent["cases"][0]
+    assert case["decided"] and case["relief_types"] and case["outcome"]
+    # Decisions name applicants: no links until that's settled (hackathon README limitations).
+    assert all(c["source_url"] is None for c in precedent["cases"])
 
 
 def test_code_rule_finding_is_dated_by_the_code_text(client: TestClient) -> None:

@@ -297,7 +297,18 @@ function PrecedentSection({ precedent: p }: { precedent: Precedent }) {
           <span className="badge-illustrative">Illustrative cases</span>
         )}
       </div>
-      {p.granted !== null && p.total !== null && (
+      {p.status === 'available' && p.total === 0 && (
+        <div className="evidence-empty">
+          <p>No similar zoning board cases nearby.</p>
+          <p className="evidence-muted">
+            {p.nearby
+              ? `The board decided ${p.nearby} ${p.nearby === 1 ? 'case' : 'cases'} near this lot`
+              : 'The board decided no cases near this lot'}
+            {p.asOf && ` up to ${formatMonthYear(p.asOf)}`}, none of them like this request.
+          </p>
+        </div>
+      )}
+      {p.granted !== null && !!p.total && (
         <p className="precedent-count">
           <b>
             {p.granted} of {p.total}
@@ -312,7 +323,8 @@ function PrecedentSection({ precedent: p }: { precedent: Precedent }) {
             <thead>
               <tr>
                 <th scope="col">Case</th>
-                <th scope="col">Area</th>
+                <th scope="col">Decided</th>
+                <th scope="col">District</th>
                 <th scope="col">Request</th>
                 <th scope="col">Outcome</th>
                 <th scope="col" className="num">
@@ -332,8 +344,9 @@ function PrecedentSection({ precedent: p }: { precedent: Precedent }) {
                       c.id
                     )}
                   </td>
+                  <td className="mono">{c.decided ? formatMonthYear(c.decided) : '—'}</td>
                   <td>{c.area ?? '—'}</td>
-                  <td>{c.request ?? '—'}</td>
+                  <td>{c.request ?? (c.reliefTypes.map(reliefShortLabel).join(', ') || '—')}</td>
                   <td>
                     <span className={`outcome-pill outcome-${c.outcome}`}>
                       {OUTCOME_LABEL[c.outcome]}
@@ -347,6 +360,13 @@ function PrecedentSection({ precedent: p }: { precedent: Precedent }) {
         </div>
       )}
       {p.rule && <p className="evidence-muted">Similar means: {p.rule}.</p>}
+      {p.status === 'available' && p.source && (
+        <p className="evidence-muted">
+          From the {p.source}
+          {p.asOf && `, decisions up to ${formatMonthYear(p.asOf)}`}. Look a case up by its number
+          on the city's zoning board pages.
+        </p>
+      )}
       {p.aiExtracted && (
         <p className="evidence-muted">
           An AI model pulled these cases from zoning board decision PDFs. Each one links to its

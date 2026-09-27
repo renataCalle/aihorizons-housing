@@ -105,6 +105,18 @@
             "title": "Case Id",
             "type": "string"
           },
+          "decided": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided"
+          },
           "months_to_decision": {
             "anyOf": [
               {
@@ -127,6 +139,14 @@
             "title": "Outcome",
             "type": "string"
           },
+          "relief_types": {
+            "description": "Approval types asked for, e.g. variance",
+            "items": {
+              "type": "string"
+            },
+            "title": "Relief Types",
+            "type": "array"
+          },
           "request": {
             "anyOf": [
               {
@@ -136,6 +156,7 @@
                 "type": "null"
               }
             ],
+            "description": "What was asked, in words (mock cases)",
             "title": "Request"
           },
           "source_url": {
@@ -147,6 +168,7 @@
                 "type": "null"
               }
             ],
+            "description": "Link to the decision. Not served for now: the decisions name applicants",
             "title": "Source Url"
           }
         },
@@ -2090,12 +2112,25 @@
       },
       "Precedent": {
         "additionalProperties": false,
-        "description": "Zoning board decisions near the lot. Real lots have none until decisions are\navailable; generated lots carry the mockups' cases, marked illustrative.",
+        "description": "Zoning board decisions near the lot: the ones the engine judged similar to the\napprovals the option needs. Generated lots carry the mockups' cases, marked illustrative.",
         "properties": {
           "ai_extracted": {
             "default": false,
             "title": "Ai Extracted",
             "type": "boolean"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Latest decision in the data",
+            "title": "As Of"
           },
           "cases": {
             "items": {
@@ -2126,6 +2161,18 @@
             ],
             "title": "Median Months"
           },
+          "nearby": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Decided cases near the lot, similar or not",
+            "title": "Nearby"
+          },
           "note": {
             "anyOf": [
               {
@@ -2149,6 +2196,18 @@
             ],
             "description": "What the engine counts as similar",
             "title": "Rule"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Where the decisions come from",
+            "title": "Source"
           },
           "status": {
             "enum": [
