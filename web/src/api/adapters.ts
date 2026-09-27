@@ -260,6 +260,7 @@ export function toParcelLayer(data: unknown): ParcelLayer {
           id: p.parcel_id,
           name: p.display_name,
           band,
+          ownBand: band,
           score: p.score,
           rank: p.rank ?? null,
           assemblyId: p.assembly_id ?? null,

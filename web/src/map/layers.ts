@@ -1,4 +1,4 @@
-import type { LayerSpecification } from 'maplibre-gl'
+import type { ExpressionSpecification, LayerSpecification } from 'maplibre-gl'
 
 export const PARCELS = 'parcels'
 export const FEATURES = 'map-features'
@@ -44,6 +44,13 @@ export function parcelLayers(
   hatch: boolean,
   hoveredId: string | null = null,
 ): Layer[] {
+  // The selected lot shows its own band even when it doesn't match the search.
+  const band: ExpressionSpecification = [
+    'case',
+    ['==', ['get', 'id'], selectedId ?? ''],
+    ['get', 'ownBand'],
+    ['get', 'band'],
+  ]
   const layers: Layer[] = [
     {
       id: 'parcels-fill',
@@ -56,7 +63,7 @@ export function parcelLayers(
           p.assemblyTint,
           [
             'match',
-            ['get', 'band'],
+            band,
             'fast_track',
             p.cobalt,
             'conditions',
@@ -77,14 +84,14 @@ export function parcelLayers(
       paint: {
         'line-color': [
           'match',
-          ['get', 'band'],
+          band,
           'none',
           p.lotLine,
           'unknown',
           p.unknown,
           '#ffffff',
         ],
-        'line-width': ['match', ['get', 'band'], 'none', 0.8, 1],
+        'line-width': ['match', band, 'none', 0.8, 1],
       },
     },
     {
@@ -116,7 +123,7 @@ export function parcelLayers(
       source: PARCELS,
       // Added once the pattern image exists, so pin it under the outlines and selection.
       beforeId: 'parcels-outline',
-      filter: ['==', ['get', 'band'], 'unknown'],
+      filter: ['==', band, 'unknown'],
       paint: { 'fill-pattern': HATCH_IMAGE },
     })
   }
