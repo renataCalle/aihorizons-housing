@@ -293,6 +293,14 @@
   letter-spacing: -0.02em;
 }
 
+.omnibox-row-points small {
+  margin-left: 2px;
+  color: var(--ink-3);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
 .omnibox-row-band {
   font-family: var(--font-mono);
   font-size: 10px;

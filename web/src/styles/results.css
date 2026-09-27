@@ -290,6 +290,14 @@ p.results-panel {
   line-height: 1;
 }
 
+.result-points small {
+  margin-left: 2px;
+  color: var(--ink-3);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
 .result-band {
   font-family: var(--font-mono);
   font-size: 9px;

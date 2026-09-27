@@ -224,7 +224,10 @@ const Row = memo(function Row({
           </span>
         </span>
         <span className={`result-score band-${band}`}>
-          <span className="result-points">{parcel.score ?? '—'}</span>
+          <span className="result-points">
+            {parcel.score ?? '—'}
+            {parcel.score !== null && <small>/100</small>}
+          </span>
           <span className="result-band">{BAND_LABEL[band]}</span>
         </span>
       </button>

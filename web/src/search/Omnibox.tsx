@@ -282,7 +282,10 @@ function ParcelRow({ id, match, query, active, onHover, onChoose }: RowProps) {
       <span className={`omnibox-row-score band-${p.band ?? 'none'}`}>
         {p.band ? (
           <>
-            <span className="omnibox-row-points">{p.score ?? '—'}</span>
+            <span className="omnibox-row-points">
+              {p.score ?? '—'}
+              {p.score !== null && <small>/100</small>}
+            </span>
             <span className="omnibox-row-band">{BAND_LABEL[p.band]}</span>
           </>
         ) : (
