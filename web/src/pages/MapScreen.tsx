@@ -168,6 +168,7 @@ export function MapScreen() {
     searchError: search.status === 'error' ? search.error.message : null,
     parsing: parse.status === 'loading' ? 'loading' : parse.status === 'error' ? 'error' : 'done',
     parseError: parse.status === 'error' ? parse.error.message : null,
+    parser: !fromUrl && parsed ? parsed.parser : null,
     setFilters,
     select,
     selectedId,

@@ -989,3 +989,16 @@ p.results-panel {
 .glance .results-foot .glance-note {
   flex: 1 1 160px;
 }
+
+/* The search text was read by keyword rules because AI search is unavailable (docs/05) */
+.basic-search-tag {
+  align-self: center;
+  padding: 3px 8px;
+  border: 1px dashed var(--unknown);
+  border-radius: var(--radius-pill);
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}

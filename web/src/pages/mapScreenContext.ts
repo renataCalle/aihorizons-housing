@@ -12,6 +12,9 @@ export interface MapScreenContext {
   searchError: string | null
   parsing: 'loading' | 'error' | 'done'
   parseError: string | null
+  /** Who read the search text: the AI parser, or the rule-based fallback; null when the
+   * filters came from the URL (edited by hand) */
+  parser: 'ai' | 'rules' | null
   setFilters: (next: Filters) => void
   select: (id: string | null) => void
   selectedId: string | null

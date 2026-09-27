@@ -30,6 +30,8 @@ interface Props {
   showTransit: boolean
   /** Lots / Area view switch */
   tabs: ReactNode
+  /** The search text was read by the rule-based fallback, not the AI parser */
+  basicSearch: boolean
 }
 
 /** The left panel on the results screen (SearchMap.dc.html). */
@@ -77,6 +79,14 @@ export function ResultsPanel(props: Props) {
       </div>
 
       <div className="chips">
+        {props.basicSearch && (
+          <span
+            className="basic-search-tag"
+            title="AI search is unavailable, so the search was read by keyword rules"
+          >
+            Basic search
+          </span>
+        )}
         {response?.chips.map((chip) => (
           <ChipButton key={chip.key} chip={chip} onRemove={props.onRemoveChip} />
         ))}

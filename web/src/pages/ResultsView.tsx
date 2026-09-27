@@ -64,6 +64,7 @@ export function ResultsView() {
           onRetry={s.retry}
           layers={layers}
           tabs={tabs}
+          basicSearch={s.parser === 'rules'}
           showTransit={s.transit}
         />
       )}
