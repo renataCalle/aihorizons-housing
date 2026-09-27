@@ -1,6 +1,7 @@
 import type { DetectedKind, IdFormat } from '../search/detect'
 import type { Filters } from './filters'
-import type { Parcel } from './report'
+import type { Estimate } from './estimate'
+import type { Band, Parcel } from './report'
 
 export interface LookupMatch {
   matchedOn: 'county_id' | 'block_lot' | 'address'
@@ -27,16 +28,40 @@ export interface ProgramFit {
   reliefTypes: string[]
 }
 
+/**
+ * What a lot is scored on in a search: the searched building type, or the engine's pick.
+ * `basis`: 'pick' = the engine's pick; 'exact' = the unit count searched; 'up_to' = the
+ * largest unit count the zoning rules allow for the searched type.
+ */
+export interface ScoredProgram {
+  /** Null = no building the engine tested fits */
+  productType: string | null
+  units: number | null
+  basis: 'pick' | 'exact' | 'up_to'
+  score: number | null
+  band: Band | null
+  outcome: 'by_right' | 'needs_approval' | 'rejected' | 'not_covered' | null
+  reliefTypes: string[]
+  monthsToPermit: Estimate | null
+  maxLandPrice: Estimate | null
+}
+
 export interface SearchResult {
   rank: number
   parcel: Parcel
   /** The program that matched the product filter; null without one. */
   fit: ProgramFit | null
+  /** What the lot is ranked on */
+  scored: ScoredProgram | null
+  /** The engine's pick, when a building type was searched and the pick is another type */
+  betterFit: ScoredProgram | null
 }
 
 export interface SearchResponse {
   total: number
   filters: Filters
+  /** The building type lots are ranked for; null = best fit (the engine's pick) */
+  rankedFor: { type: string; units: number | null } | null
   chips: FilterChip[]
   results: SearchResult[]
   /** Candidates that fail exactly one filter, and which. */

@@ -52,6 +52,8 @@ export function ResultsView() {
             ref={cardRef}
             parcel={selected}
             fit={result?.fit ?? null}
+            scored={result?.scored ?? null}
+            betterFit={result?.betterFit ?? null}
             rank={result?.rank ?? null}
             total={response?.total ?? 0}
             reportHref={`/parcel/${selected.id}${s.searchQuery ? `?${s.searchQuery}` : ''}`}

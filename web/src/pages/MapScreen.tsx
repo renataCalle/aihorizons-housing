@@ -32,6 +32,8 @@ const REPORT_PADDING: Padding = { top: 180, bottom: 90, left: 40, right: 760 }
 function matchLayer(parcels: ParcelLayer, response: SearchResponse | null): ParcelLayer {
   if (!response) return parcels
   const ranks = new Map(response.results.map((r) => [r.parcel.id, r.rank]))
+  // Colour by what each lot is ranked on: the searched building type, or the engine's pick.
+  const bands = new Map(response.results.map((r) => [r.parcel.id, r.scored?.band]))
   const showAssemblies = response.filters.showAssemblies
   return {
     ...parcels,
@@ -41,7 +43,7 @@ function matchLayer(parcels: ParcelLayer, response: SearchResponse | null): Parc
         ...f,
         properties: {
           ...f.properties,
-          band: rank ? f.properties.band : 'none',
+          band: rank ? (bands.get(f.properties.id) ?? f.properties.band) : 'none',
           rank: rank ?? null,
           assemblyId: showAssemblies ? f.properties.assemblyId : null,
         },

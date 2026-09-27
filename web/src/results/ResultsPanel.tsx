@@ -1,9 +1,16 @@
 import { memo, useEffect, useRef, useState, type ReactNode } from 'react'
-import { BAND_LABEL, SORT_LABEL } from '../lib/labels'
+import {
+  BAND_LABEL,
+  feasibilityLabel,
+  programLabel,
+  rankedForLabel,
+  scoredLabel,
+  SORT_LABEL,
+} from '../lib/labels'
 import { formatSqft } from '../lib/format'
 import type { Filters, SortKey } from '../models/filters'
 import type { Parcel } from '../models/report'
-import type { FilterChip, SearchResponse } from '../models/search'
+import type { FilterChip, ScoredProgram, SearchResponse } from '../models/search'
 import { FilterEditor } from './FilterEditor'
 
 interface Props {
@@ -35,13 +42,20 @@ export function ResultsPanel(props: Props) {
   }, [selectedId])
 
   const total = response?.total ?? 0
-  const heading = SORT_LABEL[filters.sort].heading
+  // Ranked for the searched building type, else by each lot's best fit (the engine's pick).
+  const rankedFor = response?.rankedFor ?? null
+  const target = rankedFor
+    ? `for ${rankedForLabel(rankedFor.type, rankedFor.units)}`
+    : 'by best fit'
+  const order = filters.sort === 'score_desc' ? '' : ` · ${SORT_LABEL[filters.sort].heading}`
 
   return (
     <aside className="results-panel glass" aria-label="Search results">
       <div className="results-head">
         <h2 className="label results-count" aria-live="polite">
-          {loading && !response ? 'Searching…' : `${total} ${total === 1 ? 'site' : 'sites'} · ${heading}`}
+          {loading && !response
+            ? 'Searching…'
+            : `${total} ${total === 1 ? 'lot' : 'lots'} ranked ${target}${order}`}
         </h2>
         <label className="sort-menu">
           <span className="visually-hidden">Sort by</span>
@@ -120,6 +134,7 @@ export function ResultsPanel(props: Props) {
                   ref={r.parcel.id === selectedId ? selectedRow : undefined}
                   rank={r.rank}
                   parcel={r.parcel}
+                  scored={r.scored}
                   selected={r.parcel.id === selectedId}
                   hovered={r.parcel.id === props.hoveredId}
                   onSelect={props.onSelect}
@@ -150,7 +165,11 @@ export function ResultsPanel(props: Props) {
       )}
 
       <div className="results-foot">
-        <Legend showTransit={props.showTransit} showArea={filters.areas.length > 0} />
+        <Legend
+          title={rankedFor ? feasibilityLabel(rankedFor.type) : 'Best fit'}
+          showTransit={props.showTransit}
+          showArea={filters.areas.length > 0}
+        />
         {props.layers}
       </div>
     </aside>
@@ -177,6 +196,8 @@ interface RowProps {
   ref?: React.Ref<HTMLLIElement>
   rank?: number
   parcel: Parcel
+  /** What the lot is ranked on; near misses show the engine's pick */
+  scored?: ScoredProgram | null
   note?: string
   selected: boolean
   hovered: boolean
@@ -192,13 +213,22 @@ const Row = memo(function Row({
   ref,
   rank,
   parcel,
+  scored,
   note,
   selected,
   hovered,
   onSelect,
   onHover,
 }: RowProps) {
-  const band = parcel.band ?? 'unknown'
+  const score = scored ? scored.score : parcel.score
+  const band = (scored ? scored.band : parcel.band) ?? 'unknown'
+  const lead = parcel.leadOption
+  // Every score names the building it is for.
+  const building = scored
+    ? scoredLabel(scored)
+    : lead
+      ? programLabel(lead.productType, lead.units)
+      : null
   const classes = ['result-row', selected && 'is-selected', hovered && 'is-hovered']
   return (
     <li ref={ref}>
@@ -218,15 +248,15 @@ const Row = memo(function Row({
           <span className="result-name">{parcel.name}</span>
           <span className="result-meta">
             {note ??
-              [parcel.zoning.join(', '), formatSqft(parcel.lotAreaSqft).replace('sq ft', 'SF')]
+              [building, formatSqft(parcel.lotAreaSqft).replace('sq ft', 'SF')]
                 .filter(Boolean)
                 .join(' · ')}
           </span>
         </span>
         <span className={`result-score band-${band}`}>
           <span className="result-points">
-            {parcel.score ?? '—'}
-            {parcel.score !== null && <small>/100</small>}
+            {score ?? '—'}
+            {score !== null && <small>/100</small>}
           </span>
           <span className="result-band">{BAND_LABEL[band]}</span>
         </span>
@@ -245,9 +275,11 @@ function Skeleton() {
   )
 }
 
-function Legend({ showTransit, showArea }: { showTransit: boolean; showArea: boolean }) {
+function Legend(props: { title: string; showTransit: boolean; showArea: boolean }) {
+  const { showTransit, showArea } = props
   return (
-    <ul className="legend" aria-label="Legend">
+    <ul className="legend" aria-label={`Legend: ${props.title}`}>
+      <li className="legend-title">{props.title}</li>
       <li>
         <span className="swatch swatch-fast_track" aria-hidden="true" />
         Fast

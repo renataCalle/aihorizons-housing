@@ -24,6 +24,7 @@ import type {
   Neighborhood,
   ParseResult,
   ProgramFit,
+  ScoredProgram,
   SearchResponse,
 } from '../models/search'
 import type { components } from './types.gen'
@@ -451,16 +452,35 @@ function toFit(p: S['ProgramFit']): ProgramFit {
   }
 }
 
+function toScored(p: S['ScoredProgram']): ScoredProgram {
+  return {
+    productType: p.product_type,
+    units: p.units,
+    basis: p.basis,
+    score: p.score,
+    band: p.band ? toBand(p.band) : null,
+    outcome: p.outcome,
+    reliefTypes: p.relief_types,
+    monthsToPermit: p.months_to_permit ? toEstimate(p.months_to_permit) : null,
+    maxLandPrice: p.max_land_price ? toEstimate(p.max_land_price) : null,
+  }
+}
+
 export function toSearchResponse(data: unknown): SearchResponse {
   const r = data as S['SearchResponse']
   return {
     total: r.total,
     filters: toFilters(r.filters),
+    rankedFor: r.ranked_for?.type
+      ? { type: r.ranked_for.type, units: r.ranked_for.units ?? null }
+      : null,
     chips: r.chips.map(toChip),
     results: r.results.map((x) => ({
       rank: x.rank,
       parcel: toParcel(x.parcel),
       fit: x.fit ? toFit(x.fit) : null,
+      scored: x.scored ? toScored(x.scored) : null,
+      betterFit: x.better_fit ? toScored(x.better_fit) : null,
     })),
     nearMisses: (r.near_misses ?? []).map((n) => ({
       parcel: toParcel(n.parcel),

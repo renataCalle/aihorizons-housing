@@ -5,7 +5,7 @@ import { formatMoneyRange, formatNumberRange, formatSqft } from '../lib/format'
 import { BAND_LABEL, programLabel } from '../lib/labels'
 import { useAsync } from '../lib/useAsync'
 import { spanOf } from '../models/estimate'
-import type { Analysis, Flag, Program, Severity, SiteReport } from '../models/report'
+import type { Analysis, Flag, Parcel, Program, Severity, SiteReport } from '../models/report'
 import { BuildOptions } from '../report/BuildOptions'
 import { KeyNumbers } from '../report/KeyNumbers'
 import { AboutReport, ParcelFacts } from '../report/ParcelFacts'
@@ -67,7 +67,7 @@ export function ReportView() {
         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M19 12H5M11 6l-6 6 6 6" />
         </svg>
-        {total !== undefined && s.searchQuery ? `Back to ${total} sites` : 'Back to map'}
+        {total !== undefined && s.searchQuery ? `Back to ${total} lots` : 'Back to map'}
       </Link>
 
       <article
@@ -123,6 +123,7 @@ export function ReportView() {
                   searched={searched}
                   scored={report.data.program}
                   showPick={showPick}
+                  pick={report.data.parcel}
                 />
               )
             }
@@ -159,7 +160,13 @@ function ReportLoading() {
 }
 
 /** Which building the report scores: the one searched for, or the engine's pick. */
-function ProgramNote(props: { searched: Program; scored: Program | null; showPick: boolean }) {
+function ProgramNote(props: {
+  searched: Program
+  scored: Program | null
+  showPick: boolean
+  /** The lot's summary: its engine pick and that pick's score */
+  pick: Parcel
+}) {
   const [params] = useSearchParams()
   const label = programLabel(props.searched.productType, props.searched.units).toLowerCase()
   const toggle = (pick: boolean) => {
@@ -186,11 +193,19 @@ function ProgramNote(props: { searched: Program; scored: Program | null; showPic
       </p>
     )
   }
+  const lead = props.pick.leadOption
+  const better = lead && lead.productType !== props.scored.productType ? lead : null
   return (
     <p className="program-note">
       Scored for {label}, as searched.{' '}
+      {better && (
+        <>
+          Better fit on this lot: {programLabel(better.productType, better.units)}
+          {props.pick.score !== null && ` · ${props.pick.score}`}.{' '}
+        </>
+      )}
       <Link to={toggle(true)} replace>
-        See the engine’s best pick
+        {better ? 'See it' : 'See the engine’s best pick'}
       </Link>
     </p>
   )

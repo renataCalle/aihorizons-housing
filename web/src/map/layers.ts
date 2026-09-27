@@ -44,10 +44,11 @@ export function parcelLayers(
   hatch: boolean,
   hoveredId: string | null = null,
 ): Layer[] {
-  // The selected lot shows its own band even when it doesn't match the search.
+  // The selected lot shows its own band when it doesn't match the search (a match is drawn by
+  // what the search ranks it on).
   const band: ExpressionSpecification = [
     'case',
-    ['==', ['get', 'id'], selectedId ?? ''],
+    ['all', ['==', ['get', 'id'], selectedId ?? ''], ['==', ['get', 'band'], 'none']],
     ['get', 'ownBand'],
     ['get', 'band'],
   ]

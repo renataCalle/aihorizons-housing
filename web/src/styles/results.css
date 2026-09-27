@@ -278,6 +278,7 @@ p.results-panel {
 }
 
 .result-score {
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -299,6 +300,7 @@ p.results-panel {
 }
 
 .result-band {
+  white-space: nowrap;
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.1em;
@@ -349,6 +351,15 @@ p.results-panel {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.legend .legend-title {
+  flex-basis: 100%;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
 }
 
 .layers {
@@ -610,6 +621,16 @@ p.results-panel {
   background: var(--unknown-tint);
   border: 1px dashed var(--unknown);
   color: var(--ink-2);
+}
+
+.inspector-better {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--cobalt-line);
+  border-radius: var(--radius-control);
+  background: var(--cobalt-tint-2);
+  color: var(--cobalt-deep);
+  font-size: 13px;
 }
 
 .inspector-none {
