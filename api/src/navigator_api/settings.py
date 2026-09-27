@@ -11,7 +11,8 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    site_source: Literal["mock", "pipeline"] = "mock"
+    # pipeline: real parcels from results/. mock: generated illustrative lots (fixtures/mock).
+    site_source: Literal["mock", "pipeline"] = "pipeline"
     anthropic_api_key: str | None = None
     ai_search_model: str = "claude-haiku-4-5-20251001"
     # Comma-separated, e.g. "http://localhost:5173,http://127.0.0.1:5173".
