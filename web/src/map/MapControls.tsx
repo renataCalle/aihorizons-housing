@@ -1,8 +1,15 @@
 import { useMap } from '@vis.gl/react-maplibre'
 import { MAP_ID } from './BlueprintMap'
 
-/** 3D toggle (M5) and zoom, bottom right. */
-export function MapControls({ show3d = true }: { show3d?: boolean }) {
+interface Props {
+  show3d?: boolean
+  /** The 3D score view is on */
+  view3d?: boolean
+  onToggle3d?: () => void
+}
+
+/** 3D score view toggle and zoom, bottom right. */
+export function MapControls({ show3d = true, view3d = false, onToggle3d }: Props) {
   const maps = useMap()
   const map = maps[MAP_ID]
 
@@ -13,10 +20,12 @@ export function MapControls({ show3d = true }: { show3d?: boolean }) {
           <button
             type="button"
             className="map-control map-control-3d"
-            aria-label="3D score view (coming soon)"
-            disabled
+            aria-label="3D score view"
+            aria-pressed={view3d}
+            disabled={!onToggle3d}
+            onClick={onToggle3d}
           >
-            3D
+            {view3d ? '2D' : '3D'}
           </button>
           <div className="map-controls-divider" />
         </>

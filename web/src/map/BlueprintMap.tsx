@@ -3,6 +3,7 @@ import {
   Map as MapGL,
   Marker,
   Source,
+  useMap,
   type MapLayerMouseEvent,
 } from '@vis.gl/react-maplibre'
 import type { StyleSpecification } from 'maplibre-gl'
@@ -20,6 +21,7 @@ import {
   PARCELS,
   parcelLayers,
   readPalette,
+  scoreExtrusion,
 } from './layers'
 import { ringCenter } from './readout'
 
@@ -43,6 +45,8 @@ interface Props {
   onHover?: (parcelId: string | null) => void
   /** Show transit stops (the Layers menu). */
   showTransit?: boolean
+  /** 3D score view: lots raised by score, camera tilted */
+  view3d?: boolean
   /** Extra sources, layers and markers drawn over the parcels. */
   children?: ReactNode
 }
@@ -72,6 +76,7 @@ export function BlueprintMap({
   hoveredId = null,
   onHover,
   showTransit = false,
+  view3d = false,
   children,
 }: Props) {
   const style = useBlueprintStyle()
@@ -89,6 +94,7 @@ export function BlueprintMap({
     [palette, selectedId, hatchReady, hoveredId],
   )
   const overlays = useMemo(() => featureLayers(palette), [palette])
+  const extrusion = useMemo(() => scoreExtrusion(palette), [palette])
 
   if (!style) return <div className="map-canvas map-loading" aria-hidden="true" />
 
@@ -101,7 +107,7 @@ export function BlueprintMap({
       maxZoom={20}
       style={{ position: 'absolute', inset: 0 }}
       attributionControl={{ compact: true }}
-      interactiveLayerIds={INTERACTIVE_LAYERS}
+      interactiveLayerIds={view3d ? [extrusion.id, ...INTERACTIVE_LAYERS] : INTERACTIVE_LAYERS}
       cursor={hovering ? 'pointer' : 'grab'}
       onLoad={(e) => {
         const map = e.target
@@ -131,6 +137,7 @@ export function BlueprintMap({
           {layers.map((layer) => (
             <Layer key={layer.id} {...layer} />
           ))}
+          {view3d && <Layer {...extrusion} />}
         </Source>
       )}
       {features && (
@@ -145,6 +152,7 @@ export function BlueprintMap({
         </Source>
       )}
       {children}
+      <TiltCamera view3d={view3d} />
       {selectedCenter && (
         <Marker longitude={selectedCenter[0]} latitude={selectedCenter[1]} anchor="center">
           <Crosshair />
@@ -152,4 +160,19 @@ export function BlueprintMap({
       )}
     </MapGL>
   )
+}
+
+/** Tilt and turn the camera for the 3D score view, and back to flat for the map. */
+function TiltCamera({ view3d }: { view3d: boolean }) {
+  const { current: map } = useMap()
+  useEffect(() => {
+    if (!map) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    map.easeTo({
+      pitch: view3d ? 55 : 0,
+      bearing: view3d ? -30 : 0,
+      duration: reduce ? 0 : 900,
+    })
+  }, [map, view3d])
+  return null
 }

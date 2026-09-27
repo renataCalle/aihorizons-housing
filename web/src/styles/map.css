@@ -107,6 +107,10 @@
   font-weight: 500;
 }
 
+.map-control-3d:hover:not(:disabled) {
+  background: var(--cobalt-deep);
+}
+
 .map-control-3d:disabled {
   opacity: 0.45;
   cursor: not-allowed;

@@ -132,6 +132,42 @@ export function parcelLayers(
   return layers
 }
 
+/** Metres of height per score point in the 3D score view: a score of 100 stands 120 m tall. */
+export const METRES_PER_POINT = 1.2
+
+/**
+ * The 3D score view: each scored lot raised by its score and coloured by its band. Lots
+ * outside the search stay flat; unknown lots get a low block so they are never hidden.
+ */
+export function scoreExtrusion(p: MapPalette): Layer {
+  const band: ExpressionSpecification = ['get', 'band']
+  return {
+    id: 'parcels-3d',
+    type: 'fill-extrusion',
+    source: PARCELS,
+    filter: ['!=', band, 'none'],
+    paint: {
+      'fill-extrusion-color': [
+        'match',
+        band,
+        'fast_track',
+        p.cobalt,
+        'conditions',
+        p.sky,
+        'high_risk',
+        p.orange,
+        p.unknown,
+      ],
+      'fill-extrusion-height': [
+        '*',
+        ['coalesce', ['get', 'score'], 3],
+        METRES_PER_POINT,
+      ],
+      'fill-extrusion-opacity': 0.92,
+    },
+  }
+}
+
 /** Transit stops, on top of the parcels. Parks and schools stay data-only until the Layers
  * toggle (M3); the basemap already draws real parks. */
 export function featureLayers(p: MapPalette): Layer[] {
