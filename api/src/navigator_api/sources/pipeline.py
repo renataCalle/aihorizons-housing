@@ -21,7 +21,8 @@ from navigator_contracts import SiteAnalysis, SiteContext
 
 
 def tidy_name(name: str) -> str:
-    """ "2Nd Ave" -> "2nd Ave": title-casing capitalizes ordinal suffixes."""
+    """ "2Nd Ave" -> "2nd Ave": title-casing capitalizes ordinal suffixes. Fixed in
+    navigator_pipeline.publish; kept for bundles published before that fix."""
     return re.sub(r"\b(\d+)(St|Nd|Rd|Th)\b", lambda m: m.group(1) + m.group(2).lower(), name)
 
 

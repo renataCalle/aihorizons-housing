@@ -15,6 +15,7 @@ names). Layout and columns: results/README.md, written by this command.
 import argparse
 import hashlib
 import json
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -130,13 +131,19 @@ def csv_row(ctx: dict, a: dict, product: str, lead: bool, centroid) -> dict:
     }
 
 
+def display_name(text: str) -> str:
+    """ "4800 2ND AVE" -> "4800 2nd Ave": title case, but ordinals keep lowercase suffixes
+    (str.title() capitalizes after a digit: "2Nd", "44Th")."""
+    return re.sub(r"\b(\d+)(St|Nd|Rd|Th)\b", lambda m: m[1] + m[2].lower(), text.title())
+
+
 def summary(pid: str, facts: pd.Series, zoning: list[str], centroid, a: dict | None) -> dict:
     """ParcelSummary-shaped (navigator_api.models); facts from the store, judgments copied."""
     address = facts["address"] if isinstance(facts["address"], str) else None
     out = {
         "parcel_id": pid,
         "block_lot": facts["block_lot"] or None,
-        "display_name": (address or facts["block_lot"] or pid).title(),
+        "display_name": display_name(address or facts["block_lot"] or pid),
         "address": address,
         "municipality": facts["municipality"]
         if isinstance(facts["municipality"], str)
