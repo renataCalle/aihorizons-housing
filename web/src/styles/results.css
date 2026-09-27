@@ -780,6 +780,24 @@ p.results-panel {
   background: var(--cobalt-deep);
 }
 
+/* Tags that would overlap share one navy pill; each number inside is still its own button. */
+.rank-group {
+  display: inline-flex;
+  gap: 2px;
+  padding: 0;
+  border: 2px solid var(--white);
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  box-shadow: 0 2px 8px rgba(11, 27, 63, 0.3);
+}
+
+.rank-group .rank-tag {
+  height: 24px;
+  min-width: 26px;
+  border: none;
+  box-shadow: none;
+}
+
 .area-label {
   display: inline-block;
   margin-bottom: 6px;

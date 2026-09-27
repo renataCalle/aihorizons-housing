@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type RefObject } from 'react'
 import type { MapFeatures } from '../models/map'
 import type { SearchResult } from '../models/search'
 import { MAP_ID } from './BlueprintMap'
-import { visibleTags } from './rankTags'
+import { groupTags } from './rankTags'
 import { CAMERA_2D, CAMERA_3D } from './layers'
 
 const WORLD: Position[] = [
@@ -71,19 +71,24 @@ export function AreaOverlay({ features, areas }: { features: MapFeatures; areas:
 const MAX_TAGS = 9
 
 /**
- * "01", "02" … on the top results. Clicking one selects its lot, like clicking the lot. Tags
- * that would overlap a better-ranked one stay hidden until the map zooms in (rankTags.ts).
+ * "01", "02" … on the top results. Tags that would overlap merge into one pill that lists all
+ * their numbers (rankTags.ts), so every tag stays visible; the pill splits as the map zooms
+ * in. Each number selects its lot, like clicking the lot, and outlines it on hover or focus.
  */
 export function RankTags({
   results,
   onSelect,
+  onHover,
 }: {
   results: SearchResult[]
   onSelect: (parcelId: string) => void
+  onHover?: (parcelId: string | null) => void
 }) {
   const map = useMap()[MAP_ID]
   const top = useMemo(() => results.slice(0, MAX_TAGS), [results])
-  const [shown, setShown] = useState<string | null>(null)
+  const byId = useMemo(() => new Map(top.map((r) => [r.parcel.id, r])), [top])
+  // The groups as a string, so an unchanged grouping doesn't re-render on every frame.
+  const [grouping, setGrouping] = useState<string | null>(null)
 
   useEffect(() => {
     if (!map) return
@@ -95,8 +100,7 @@ export function RankTags({
           const { x, y } = map.project(r.parcel.centroid)
           return { id: r.parcel.id, x, y }
         })
-        // A string, so an unchanged set doesn't re-render the tags on every frame.
-        setShown([...visibleTags(points)].join('|'))
+        setGrouping(groupTags(points).map((g) => g.ids.join(',')).join('|'))
       })
     }
     update()
@@ -107,18 +111,14 @@ export function RankTags({
     }
   }, [map, top])
 
-  const visible = shown === null ? null : new Set(shown.split('|'))
-  return top
-    .filter((r) => !visible || visible.has(r.parcel.id))
-    .map((r) => (
-    <Marker
-      key={r.parcel.id}
-      longitude={r.parcel.centroid[0]}
-      latitude={r.parcel.centroid[1]}
-      anchor="bottom-left"
-      offset={[6, -6]}
-    >
+  const groups = grouping ? grouping.split('|').map((g) => g.split(',')) : top.map((r) => [r.parcel.id])
+  return groups.map((ids) => {
+    const members = ids.map((id) => byId.get(id)).filter((r): r is SearchResult => !!r)
+    const lead = members[0]
+    if (!lead) return null
+    const tag = (r: SearchResult) => (
       <button
+        key={r.parcel.id}
         type="button"
         className={r.rank === 1 ? 'rank-tag is-first' : 'rank-tag'}
         aria-label={`Rank ${r.rank}: ${r.parcel.name}`}
@@ -129,11 +129,36 @@ export function RankTags({
           e.stopPropagation()
           onSelect(r.parcel.id)
         }}
+        onMouseEnter={() => onHover?.(r.parcel.id)}
+        onMouseLeave={() => onHover?.(null)}
+        onFocus={() => onHover?.(r.parcel.id)}
+        onBlur={() => onHover?.(null)}
       >
         {String(r.rank).padStart(2, '0')}
       </button>
-    </Marker>
-  ))
+    )
+    return (
+      <Marker
+        key={ids.join(',')}
+        longitude={lead.parcel.centroid[0]}
+        latitude={lead.parcel.centroid[1]}
+        anchor="bottom-left"
+        offset={[6, -6]}
+      >
+        {members.length === 1 ? (
+          tag(lead)
+        ) : (
+          <span
+            className="rank-group"
+            role="group"
+            aria-label={`Ranks ${members.map((r) => r.rank).join(', ')}, close together`}
+          >
+            {members.map(tag)}
+          </span>
+        )}
+      </Marker>
+    )
+  })
 }
 
 /** Dashed leader from the selected parcel to the inspector card, in screen space. */

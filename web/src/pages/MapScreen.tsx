@@ -202,7 +202,9 @@ export function MapScreen() {
               )}
             </>
           )}
-          {response && <RankTags results={response.results} onSelect={onMapSelect} />}
+          {response && (
+            <RankTags results={response.results} onSelect={onMapSelect} onHover={setHoveredId} />
+          )}
           <FlyToSelection
             center={selectedCenter}
             padding={reportId ? REPORT_PADDING : RESULTS_PADDING}
