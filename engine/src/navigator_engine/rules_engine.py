@@ -422,7 +422,12 @@ def relief_for(ctx: dict, env: Envelope, product: str, units: int) -> tuple[list
     """Relief items for a program (the failed checks), and the gross floor area it needs."""
     checks, need_gfa = check_program(ctx, env, product, units)
     items = [
-        {"type": c["relief_type"], "section": c["section"], "what": c["note"]}
+        {
+            "type": c["relief_type"],
+            "section": c["section"],
+            "what": c["note"],
+            "check": c["check_id"],
+        }
         for c in checks
         if c["status"] in ("needs_approval", "rejected")
     ]
@@ -516,7 +521,12 @@ def evaluate_programs(ctx: dict, env: Envelope) -> list[dict]:
         for n in t["units"]:
             checks, gfa = check_program(ctx, env, product, n)
             relief = [
-                {"type": c["relief_type"], "section": c["section"], "what": c["note"]}
+                {
+                    "type": c["relief_type"],
+                    "section": c["section"],
+                    "what": c["note"],
+                    "check": c["check_id"],
+                }
                 for c in checks
                 if c["status"] in ("needs_approval", "rejected")
             ]

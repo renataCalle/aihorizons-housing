@@ -511,14 +511,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 27,
+  "score": 35,
   "band": "high_risk",
   "top_flag": "75% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -697825.7049264626,
-   "p50": -570810.9777253753,
-   "p90": -444004.40031616786
+   "p10": -695714.4569186507,
+   "p50": -566273.6180113782,
+   "p90": -440039.180596593
   },
   "lead_option": {
    "label": "with_relief",
@@ -552,14 +552,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 27,
+  "score": 35,
   "band": "high_risk",
   "top_flag": "74% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -694407.0153367878,
-   "p50": -567074.8522301458,
-   "p90": -440812.7445605
+   "p10": -691841.2172481419,
+   "p50": -562360.3134915814,
+   "p90": -437631.5401726433
   },
   "lead_option": {
    "label": "with_relief",
@@ -2967,14 +2967,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "67% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -627721.6344736728,
-   "p50": -492606.7376869081,
-   "p90": -369615.9657713648
+   "p10": -625579.7184816708,
+   "p50": -492800.11272428,
+   "p90": -370162.0702417469
   },
   "lead_option": {
    "label": "with_relief",
@@ -3035,14 +3035,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 43,
+  "score": 49,
   "band": "high_risk",
   "top_flag": "7% of lot on 25%+ slope",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -785263.0897599716,
-   "p50": -597415.3606087649,
-   "p90": -428166.994170609
+   "p10": -780712.023024216,
+   "p50": -598633.9182831529,
+   "p90": -423208.0476759316
   },
   "lead_option": {
    "label": "with_relief",
@@ -3160,14 +3160,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 43,
+  "score": 50,
   "band": "high_risk",
   "top_flag": "2 DEP record(s) within 1,000 ft",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -540344.0905887514,
-   "p50": -417934.75978934305,
-   "p90": -309440.5166129851
+   "p10": -537784.2723531183,
+   "p50": -417948.29518196743,
+   "p90": -305338.5930328491
   },
   "lead_option": {
    "label": "with_relief",
@@ -4332,14 +4332,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 26,
+  "score": 30,
   "band": "high_risk",
   "top_flag": "92% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -355659.2447606431,
-   "p50": -279320.36605741107,
-   "p90": -204528.62165621537
+   "p10": -349514.9978911432,
+   "p50": -274695.62840289867,
+   "p90": -202596.56553194043
   },
   "lead_option": {
    "label": "with_relief",
@@ -4682,14 +4682,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 42,
+  "score": 46,
   "band": "high_risk",
   "top_flag": "6% of lot on 25%+ slope",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -274456.18830745853,
-   "p50": -205102.13160712918,
-   "p90": -142245.8943538541
+   "p10": -271533.03654411354,
+   "p50": -204202.82918163715,
+   "p90": -141909.6757378011
   },
   "lead_option": {
    "label": "with_relief",
@@ -4890,14 +4890,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 37,
+  "score": 41,
   "band": "high_risk",
   "top_flag": "22% of lot on 25%+ slope",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -295290.82246605505,
-   "p50": -225080.93238178644,
-   "p90": -161315.76876910022
+   "p10": -293998.6226411444,
+   "p50": -223706.61494512158,
+   "p90": -161550.14396316945
   },
   "lead_option": {
    "label": "with_relief",
@@ -4930,14 +4930,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 37,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "29% of lot on 25%+ slope",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -295290.82246605505,
-   "p50": -225080.93238178644,
-   "p90": -161315.76876910022
+   "p10": -293998.6226411444,
+   "p50": -223706.61494512158,
+   "p90": -161550.14396316945
   },
   "lead_option": {
    "label": "with_relief",
@@ -6287,14 +6287,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 45,
+  "score": 49,
   "band": "high_risk",
   "top_flag": "Combined sewershed (proxy for stormwater requirements)",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -265006.28149157227,
-   "p50": -195973.78028373112,
-   "p90": -134353.24937852938
+   "p10": -264026.5513691726,
+   "p50": -197200.37267864693,
+   "p90": -132734.93487326434
   },
   "lead_option": {
    "label": "with_relief",
@@ -7083,14 +7083,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 39,
   "band": "high_risk",
   "top_flag": "29% of lot on 25%+ slope",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -318116.67736556527,
-   "p50": -245171.88734667288,
-   "p90": -179828.06596814375
+   "p10": -312763.356959092,
+   "p50": -244095.73874958884,
+   "p90": -179381.54760857453
   },
   "lead_option": {
    "label": "with_relief",
@@ -9288,14 +9288,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 37,
+  "score": 43,
   "band": "high_risk",
   "top_flag": "43% of lot on 25%+ slope",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -305297.4992342918,
-   "p50": -235550.08145634003,
-   "p90": -171092.03943643646
+   "p10": -304771.03600537276,
+   "p50": -233553.67016915328,
+   "p90": -170508.05168941335
   },
   "lead_option": {
    "label": "with_relief",
@@ -12235,14 +12235,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 26,
+  "score": 29,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -349861.17235727946,
-   "p50": -280633.7698151632,
-   "p90": -212452.5372320068
+   "p10": -350501.98134012375,
+   "p50": -279046.43151160993,
+   "p90": -213412.72435480115
   },
   "lead_option": {
    "label": "with_relief",
@@ -12508,14 +12508,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 43,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -571684.1857930133,
-   "p50": -442129.001837969,
-   "p90": -322467.1390798775
+   "p10": -567565.9522800382,
+   "p50": -437667.42152400204,
+   "p90": -319953.6857268047
   },
   "lead_option": {
    "label": "with_relief",
@@ -13953,14 +13953,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 44,
+  "score": 49,
   "band": "high_risk",
   "top_flag": "90% of lot over mapped mine workings (UM-O overlay)",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -280604.01086679316,
-   "p50": -211417.307024741,
-   "p90": -149520.51214894638
+   "p10": -280792.5603326399,
+   "p50": -211608.37548225018,
+   "p90": -147285.39836391777
   },
   "lead_option": {
    "label": "with_relief",
@@ -14086,14 +14086,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 45,
   "band": "high_risk",
   "top_flag": "98% of lot over mapped mine workings (UM-O overlay)",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -512761.1904374452,
-   "p50": -390121.0908504853,
-   "p90": -269378.03063998616
+   "p10": -513186.3584784479,
+   "p50": -384983.2791639167,
+   "p90": -271467.23573629546
   },
   "lead_option": {
    "label": "with_relief",
@@ -14183,14 +14183,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 47,
   "band": "high_risk",
   "top_flag": "29% of lot on 25%+ slope",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -1049668.5901726878,
-   "p50": -782911.3308715527,
-   "p90": -544318.5170932093
+   "p10": -1035764.9516829017,
+   "p50": -780778.0061458673,
+   "p90": -548201.9322794717
   },
   "lead_option": {
    "label": "with_relief",
@@ -15254,14 +15254,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 41,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "95% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1360209.3191891792,
-   "p50": -1042485.649410074,
-   "p90": -745284.8902598593
+   "p10": -1354328.1167568206,
+   "p50": -1031071.0692018266,
+   "p90": -732481.9289817819
   },
   "lead_option": {
    "label": "with_relief",
@@ -15507,14 +15507,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 35,
+  "score": 41,
   "band": "high_risk",
   "top_flag": "100% of lot over mapped mine workings (UM-O overlay)",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -543788.4440302298,
-   "p50": -419907.47336147726,
-   "p90": -301251.59891270107
+   "p10": -546530.1660799073,
+   "p50": -416147.89065830095,
+   "p90": -297982.55465446855
   },
   "lead_option": {
    "label": "with_relief",
@@ -15576,14 +15576,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 24,
+  "score": 32,
   "band": "high_risk",
   "top_flag": "79% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -656955.932128547,
-   "p50": -525314.6624228135,
-   "p90": -397573.7221683552
+   "p10": -655209.4180917728,
+   "p50": -521911.3771250193,
+   "p90": -395493.72583632893
   },
   "lead_option": {
    "label": "with_relief",
@@ -15617,14 +15617,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 24,
+  "score": 32,
   "band": "high_risk",
   "top_flag": "57% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -654450.0631806153,
-   "p50": -521916.49615258246,
-   "p90": -395183.769759293
+   "p10": -651872.6826968382,
+   "p50": -518619.5513990227,
+   "p90": -392596.6761081247
   },
   "lead_option": {
    "label": "with_relief",
@@ -21492,14 +21492,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 25,
+  "score": 30,
   "band": "high_risk",
   "top_flag": "71% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -369442.7459426253,
-   "p50": -290916.00418294134,
-   "p90": -217237.56349587347
+   "p10": -364214.98926366423,
+   "p50": -287031.0121499283,
+   "p90": -213944.82806327165
   },
   "lead_option": {
    "label": "with_relief",
@@ -21806,14 +21806,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 47,
   "band": "high_risk",
   "top_flag": "81% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1514199.64209235,
-   "p50": -1122323.9699578285,
-   "p90": -765623.4506913371
+   "p10": -1500472.053721387,
+   "p50": -1116743.1292617412,
+   "p90": -766810.5196270745
   },
   "lead_option": {
    "label": "with_relief",
@@ -21931,14 +21931,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 29,
+  "score": 37,
   "band": "high_risk",
   "top_flag": "52% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -575478.3001551577,
-   "p50": -442140.9578965581,
-   "p90": -316276.72500085866
+   "p10": -568800.3047659339,
+   "p50": -437850.1708818076,
+   "p90": -314824.17881126405
   },
   "lead_option": {
    "label": "with_relief",
@@ -22052,14 +22052,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "64% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -818853.0054448914,
-   "p50": -620307.9536466314,
-   "p90": -436888.95791494177
+   "p10": -808963.8269261301,
+   "p50": -614725.2113587455,
+   "p90": -436677.9889572979
   },
   "lead_option": {
    "label": "with_relief",
@@ -22132,14 +22132,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 35,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "65% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -592011.232405349,
-   "p50": -457059.22915920604,
-   "p90": -336041.6031602928
+   "p10": -589393.6295255569,
+   "p50": -457878.90421669505,
+   "p90": -335742.87655775447
   },
   "lead_option": {
    "label": "with_relief",
@@ -22172,14 +22172,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 29,
+  "score": 37,
   "band": "high_risk",
   "top_flag": "79% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -594702.1169464475,
-   "p50": -463058.23851168447,
-   "p90": -339367.01405053743
+   "p10": -589941.4267827593,
+   "p50": -460759.16182687844,
+   "p90": -336208.34912240214
   },
   "lead_option": {
    "label": "with_relief",
@@ -22293,14 +22293,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "80% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -822349.5048588399,
-   "p50": -632633.8226633831,
-   "p90": -452180.32002181106
+   "p10": -819746.3557210511,
+   "p50": -628740.3949098466,
+   "p90": -452379.6830399255
   },
   "lead_option": {
    "label": "with_relief",
@@ -22334,14 +22334,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "74% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -820446.9298356519,
-   "p50": -630277.0150855016,
-   "p90": -449963.26654682076
+   "p10": -817447.4995294719,
+   "p50": -626263.6301854737,
+   "p90": -450480.1122566482
   },
   "lead_option": {
    "label": "with_relief",
@@ -22376,14 +22376,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 37,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "75% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1053504.689633423,
-   "p50": -795860.2677037088,
-   "p90": -557198.3053742354
+   "p10": -1045791.4463077739,
+   "p50": -790292.6751830997,
+   "p90": -555481.100605363
   },
   "lead_option": {
    "label": "with_relief",
@@ -25695,14 +25695,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 25,
+  "score": 29,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -383954.2689509426,
-   "p50": -308625.16267235554,
-   "p90": -233588.4667116136
+   "p10": -382388.9058906297,
+   "p50": -305120.87262317975,
+   "p90": -233344.9775136125
   },
   "lead_option": {
    "label": "with_relief",
@@ -25736,14 +25736,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 17,
+  "score": 21,
   "band": "high_risk",
   "top_flag": "55% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -435797.8392988848,
-   "p50": -357973.64153600356,
-   "p90": -274803.0286221712
+   "p10": -438454.0214487995,
+   "p50": -358085.0539006693,
+   "p90": -277276.4327131735
   },
   "lead_option": {
    "label": "with_relief",
@@ -25777,14 +25777,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 16,
+  "score": 20,
   "band": "high_risk",
   "top_flag": "71% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -443759.0831600103,
-   "p50": -365954.54327876127,
-   "p90": -282854.51487739413
+   "p10": -446491.27367537934,
+   "p50": -366116.8254372617,
+   "p90": -285255.4242747024
   },
   "lead_option": {
    "label": "with_relief",
@@ -26827,14 +26827,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 29,
+  "score": 36,
   "band": "high_risk",
   "top_flag": "75% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -649292.000466861,
-   "p50": -511879.88230789045,
-   "p90": -375530.26606194564
+   "p10": -644709.2510095646,
+   "p50": -507618.59878711996,
+   "p90": -382752.3229828852
   },
   "lead_option": {
    "label": "with_relief",
@@ -27324,14 +27324,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "55% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -623211.8370003047,
-   "p50": -491006.25203521,
-   "p90": -364390.8754559956
+   "p10": -616230.8250798915,
+   "p50": -484526.5856834389,
+   "p90": -362767.1325632206
   },
   "lead_option": {
    "label": "with_relief",
@@ -27442,14 +27442,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 37,
   "band": "high_risk",
   "top_flag": "72% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -628732.4282592927,
-   "p50": -496769.2615534699,
-   "p90": -368645.74210309837
+   "p10": -622985.8406362754,
+   "p50": -490034.5747591209,
+   "p90": -367269.6328569633
   },
   "lead_option": {
    "label": "with_relief",
@@ -27633,14 +27633,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 32,
+  "score": 36,
   "band": "high_risk",
   "top_flag": "81% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -667720.3096818744,
-   "p50": -535616.6000849549,
-   "p90": -402486.0592262039
+   "p10": -662965.6328820342,
+   "p50": -528175.7162619578,
+   "p90": -399183.02822349616
   },
   "lead_option": {
    "label": "with_relief",
@@ -27673,14 +27673,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 40,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "63% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1177695.212727207,
-   "p50": -917429.8113857559,
-   "p90": -667015.162072897
+   "p10": -1170065.9013915681,
+   "p50": -906754.0210604165,
+   "p90": -660628.2498917911
   },
   "lead_option": {
    "label": "with_relief",
@@ -27713,14 +27713,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 32,
+  "score": 36,
   "band": "high_risk",
   "top_flag": "62% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -669614.678414996,
-   "p50": -536753.4969259761,
-   "p90": -403415.8363965665
+   "p10": -664263.4239294439,
+   "p50": -529342.5052189424,
+   "p90": -400138.8054586669
   },
   "lead_option": {
    "label": "with_relief",
@@ -27793,14 +27793,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 27,
+  "score": 35,
   "band": "high_risk",
   "top_flag": "61% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -661744.027124856,
-   "p50": -528109.4173269256,
-   "p90": -396842.71238414425
+   "p10": -659454.7736084785,
+   "p50": -525790.2599480607,
+   "p90": -396903.05157317617
   },
   "lead_option": {
    "label": "with_relief",
@@ -28584,14 +28584,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 38,
+  "score": 46,
   "band": "high_risk",
   "top_flag": "95% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1691601.0682891652,
-   "p50": -1295634.1947178824,
-   "p90": -921231.7197381008
+   "p10": -1674467.812455005,
+   "p50": -1286472.2775349256,
+   "p90": -924851.6663605913
   },
   "lead_option": {
    "label": "with_relief",
@@ -28896,14 +28896,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 13,
+  "score": 17,
   "band": "high_risk",
   "top_flag": "70% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -472948.5249049159,
-   "p50": -388491.9878169661,
-   "p90": -306058.68939831905
+   "p10": -470536.35653201136,
+   "p50": -389508.1038122431,
+   "p90": -307982.1332026854
   },
   "lead_option": {
    "label": "with_relief",
@@ -30543,14 +30543,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "63% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -563218.6178081909,
-   "p50": -428383.1813919003,
-   "p90": -303440.13718105
+   "p10": -561188.1479872884,
+   "p50": -427833.5051583198,
+   "p90": -306160.2025399501
   },
   "lead_option": {
    "label": "with_relief",
@@ -30776,14 +30776,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "99% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -549605.6483930018,
-   "p50": -418193.8071248128,
-   "p90": -294654.8980824834
+   "p10": -545492.1832878696,
+   "p50": -414106.3771323116,
+   "p90": -296073.22258176794
   },
   "lead_option": {
    "label": "with_relief",
@@ -31251,14 +31251,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "64% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1103030.94704515,
-   "p50": -851586.3714201718,
-   "p90": -615810.5766145479
+   "p10": -1109019.3282195008,
+   "p50": -846185.1447737474,
+   "p90": -607594.3796842251
   },
   "lead_option": {
    "label": "with_relief",
@@ -31292,14 +31292,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 31,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "64% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -590079.2197947715,
-   "p50": -463593.82671933575,
-   "p90": -343842.1575203533
+   "p10": -592565.2292101262,
+   "p50": -461646.6634366651,
+   "p90": -339960.3105457902
   },
   "lead_option": {
    "label": "with_relief",
@@ -31440,14 +31440,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "70% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1125614.9096091886,
-   "p50": -859995.4161107105,
-   "p90": -617624.6339327159
+   "p10": -1121429.9627945495,
+   "p50": -857503.4109398945,
+   "p90": -617686.1668599539
   },
   "lead_option": {
    "label": "with_relief",
@@ -32678,14 +32678,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 41,
+  "score": 45,
   "band": "high_risk",
   "top_flag": "100% of lot over mapped mine workings (UM-O overlay)",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -273280.8492546372,
-   "p50": -203956.1205657677,
-   "p90": -141087.4901549408
+   "p10": -270724.09879778296,
+   "p50": -202793.7435678307,
+   "p90": -141075.9950094372
   },
   "lead_option": {
    "label": "with_relief",
@@ -32719,14 +32719,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 46,
+  "score": 50,
   "band": "high_risk",
   "top_flag": "100% of lot over mapped mine workings (UM-O overlay)",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1225862.088567431,
-   "p50": -911312.9478682798,
-   "p90": -623159.5541868998
+   "p10": -1231488.116974653,
+   "p50": -911934.085310797,
+   "p90": -631572.9477238541
   },
   "lead_option": {
    "label": "with_relief",
@@ -32787,14 +32787,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 24,
+  "score": 32,
   "band": "high_risk",
   "top_flag": "88% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -647148.9261993862,
-   "p50": -514328.52197592705,
-   "p90": -388274.98141293315
+   "p10": -644185.779963822,
+   "p50": -511332.1470859386,
+   "p90": -385528.1558355915
   },
   "lead_option": {
    "label": "with_relief",
@@ -32936,14 +32936,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 38,
+  "score": 46,
   "band": "high_risk",
   "top_flag": "100% of lot over mapped mine workings (UM-O overlay)",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -759468.4283418496,
-   "p50": -569984.5330636255,
-   "p90": -390866.31357956486
+   "p10": -756937.641139688,
+   "p50": -564603.1798421829,
+   "p90": -394793.59830497816
   },
   "lead_option": {
    "label": "with_relief",
@@ -35431,14 +35431,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "$26,866 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -398208.8446033673,
-   "p50": -317504.0119416124,
-   "p90": -235041.10910737902
+   "p10": -395592.9060282739,
+   "p50": -316069.3092214321,
+   "p90": -234690.65520383755
   },
   "lead_option": {
    "label": "with_relief",
@@ -36055,14 +36055,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 41,
+  "score": 46,
   "band": "high_risk",
   "top_flag": "2 DEP record(s) within 250 ft (nearest 162 ft: storage tank inactive)",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -375551.4673156986,
-   "p50": -290617.0629233449,
-   "p90": -206750.06644738474
+   "p10": -374421.38175745436,
+   "p50": -290663.5910286842,
+   "p90": -207374.20937643055
   },
   "lead_option": {
    "label": "with_relief",
@@ -36094,14 +36094,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 42,
+  "score": 47,
   "band": "high_risk",
   "top_flag": "2 DEP record(s) within 250 ft (nearest 161 ft: storage tank inactive)",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -378004.2703038821,
-   "p50": -295268.90344478015,
-   "p90": -208377.28726743013
+   "p10": -378622.4008374124,
+   "p50": -295634.1540429157,
+   "p90": -210353.24251608428
   },
   "lead_option": {
    "label": "with_relief",
@@ -36655,14 +36655,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 32,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -441780.91236328,
-   "p50": -353602.3886251432,
-   "p90": -270305.65071181534
+   "p10": -437668.2040889046,
+   "p50": -354467.21869582566,
+   "p90": -269875.197657748
   },
   "lead_option": {
    "label": "with_relief",
@@ -38041,14 +38041,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 24,
+  "score": 30,
   "band": "high_risk",
   "top_flag": "55% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -449997.7326693921,
-   "p50": -363922.5811866498,
-   "p90": -282261.6953813439
+   "p10": -448453.28316513496,
+   "p50": -363033.85776786384,
+   "p90": -281438.06342288974
   },
   "lead_option": {
    "label": "with_relief",
@@ -38080,14 +38080,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 32,
+  "score": 39,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -394708.0728031003,
-   "p50": -312327.2010294264,
-   "p90": -235876.84849172528
+   "p10": -391873.56697593525,
+   "p50": -313129.72789640207,
+   "p90": -236327.0719895817
   },
   "lead_option": {
    "label": "with_relief",
@@ -38332,14 +38332,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 32,
+  "score": 39,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -394366.9873986375,
-   "p50": -311988.3419377205,
-   "p90": -235535.7788564224
+   "p10": -391529.62060573685,
+   "p50": -312790.0710344442,
+   "p90": -235991.0627238451
   },
   "lead_option": {
    "label": "with_relief",
@@ -38408,14 +38408,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 24,
+  "score": 30,
   "band": "high_risk",
   "top_flag": "75% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -447898.5803385613,
-   "p50": -360868.07361216354,
-   "p90": -277948.6289814578
+   "p10": -445570.39280113473,
+   "p50": -359181.16942394513,
+   "p90": -276812.11361584207
   },
   "lead_option": {
    "label": "with_relief",
@@ -40158,14 +40158,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 36,
+  "score": 41,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -374900.66935442534,
-   "p50": -294796.0215348387,
-   "p90": -216974.5006503326
+   "p10": -373162.9294983726,
+   "p50": -292731.9043672352,
+   "p90": -216278.6760293131
   },
   "lead_option": {
    "label": "with_relief",
@@ -40197,14 +40197,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 36,
+  "score": 41,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -374386.01260010153,
-   "p50": -294273.8928529074,
-   "p90": -216468.82370422155
+   "p10": -372652.89537402254,
+   "p50": -292218.2116794034,
+   "p90": -215760.48334519623
   },
   "lead_option": {
    "label": "with_relief",
@@ -42006,14 +42006,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 47,
   "band": "high_risk",
   "top_flag": "56% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -2116356.517078518,
-   "p50": -1607841.7801529616,
-   "p90": -1139832.5171000874
+   "p10": -2133142.4140283163,
+   "p50": -1604462.5002056672,
+   "p90": -1117928.1021742611
   },
   "lead_option": {
    "label": "with_relief",
@@ -42514,14 +42514,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 36,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "75% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1149466.989792652,
-   "p50": -883973.5323294997,
-   "p90": -634409.9857895254
+   "p10": -1147778.6283156734,
+   "p50": -882273.153892512,
+   "p90": -638525.3533878411
   },
   "lead_option": {
    "label": "with_relief",
@@ -42663,14 +42663,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 28,
+  "score": 33,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -374797.9347151795,
-   "p50": -296654.667056508,
-   "p90": -220854.26269544513
+   "p10": -371352.48996045976,
+   "p50": -292922.66401086806,
+   "p90": -218287.511616821
   },
   "lead_option": {
    "label": "with_relief",
@@ -42850,14 +42850,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 41,
   "band": "high_risk",
   "top_flag": "56% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -889429.499171987,
-   "p50": -687372.7074012749,
-   "p90": -499519.89864569006
+   "p10": -882722.8016514891,
+   "p50": -683391.8463077461,
+   "p90": -499727.5692858011
   },
   "lead_option": {
    "label": "with_relief",
@@ -43060,14 +43060,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 36,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "77% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1236517.8520799638,
-   "p50": -955746.1844576923,
-   "p90": -679085.6049153914
+   "p10": -1231408.916453733,
+   "p50": -950059.3451208165,
+   "p90": -680181.3791306134
   },
   "lead_option": {
    "label": "with_relief",
@@ -43909,14 +43909,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 32,
+  "score": 39,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -388516.31066555716,
-   "p50": -306090.93485692336,
-   "p90": -229550.81419051415
+   "p10": -385741.3419152298,
+   "p50": -306594.21080752916,
+   "p90": -230204.0231579513
   },
   "lead_option": {
    "label": "with_relief",
@@ -43948,14 +43948,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 32,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -391817.0818251875,
-   "p50": -309366.07789924124,
-   "p90": -232866.1098911162
+   "p10": -389059.34081159695,
+   "p50": -309934.27215320244,
+   "p90": -233481.44808551593
   },
   "lead_option": {
    "label": "with_relief",
@@ -44733,14 +44733,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 42,
+  "score": 45,
   "band": "high_risk",
   "top_flag": "82% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1269929.287181981,
-   "p50": -972061.3775549356,
-   "p90": -689094.2328851956
+   "p10": -1244420.2952929758,
+   "p50": -970343.3716793165,
+   "p90": -694786.2376928146
   },
   "lead_option": {
    "label": "with_relief",
@@ -44773,14 +44773,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "83% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -703540.3090431396,
-   "p50": -554048.0877429913,
-   "p90": -408815.60243526887
+   "p10": -695766.8571521634,
+   "p50": -550023.1369606787,
+   "p90": -405672.1145611681
   },
   "lead_option": {
    "label": "with_relief",
@@ -44813,14 +44813,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "85% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -694564.4146264822,
-   "p50": -551809.650009749,
-   "p90": -405104.10963515
+   "p10": -696329.6505360757,
+   "p50": -548255.2021462845,
+   "p90": -410370.227725624
   },
   "lead_option": {
    "label": "with_relief",
@@ -45196,14 +45196,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 44,
+  "score": 48,
   "band": "high_risk",
   "top_flag": "62% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1790346.8358798088,
-   "p50": -1377461.0707524396,
-   "p90": -971183.7890208804
+   "p10": -1785612.015440423,
+   "p50": -1370178.8168035503,
+   "p90": -988844.9925888487
   },
   "lead_option": {
    "label": "with_relief",
@@ -45514,14 +45514,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 34,
+  "score": 41,
   "band": "high_risk",
   "top_flag": "95% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -970072.6150331933,
-   "p50": -756319.6113130632,
-   "p90": -550743.0726365406
+   "p10": -964034.722229368,
+   "p50": -754217.7517971611,
+   "p90": -554050.6560905473
   },
   "lead_option": {
    "label": "with_relief",
@@ -46043,14 +46043,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 31,
+  "score": 35,
   "band": "high_risk",
   "top_flag": "66% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -763019.7303040539,
-   "p50": -629364.5481911361,
-   "p90": -503269.9777411881
+   "p10": -764118.9117412587,
+   "p50": -629691.8140034324,
+   "p90": -504175.74656454584
   },
   "lead_option": {
    "label": "with_relief",
@@ -46139,14 +46139,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 31,
+  "score": 35,
   "band": "high_risk",
   "top_flag": "57% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -848827.3303113055,
-   "p50": -714671.0151079744,
-   "p90": -585798.0852257746
+   "p10": -848704.967125604,
+   "p50": -714136.8033251648,
+   "p90": -587423.9223464943
   },
   "lead_option": {
    "label": "with_relief",
@@ -46907,14 +46907,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 29,
+  "score": 32,
   "band": "high_risk",
   "top_flag": "No street frontage within 60 ft",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -450485.00147956656,
-   "p50": -376461.69242899446,
-   "p90": -304213.9431520023
+   "p10": -448490.1924357829,
+   "p50": -373165.5907513748,
+   "p90": -301749.80670671246
   },
   "lead_option": {
    "label": "with_relief",
@@ -49218,14 +49218,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "1 DEP record(s) within 1,000 ft",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -388921.83814231295,
-   "p50": -316059.69035927183,
-   "p90": -249136.34544285777
+   "p10": -387799.7337703846,
+   "p50": -316883.039364096,
+   "p90": -249387.22038498387
   },
   "lead_option": {
    "label": "with_relief",
@@ -51115,14 +51115,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 23,
+  "score": 30,
   "band": "high_risk",
   "top_flag": "75% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -525425.9812847142,
-   "p50": -441168.23292117415,
-   "p90": -360191.6261548361
+   "p10": -522734.6494378413,
+   "p50": -438694.00138603104,
+   "p90": -358774.68382988306
   },
   "lead_option": {
    "label": "with_relief",
@@ -51154,14 +51154,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 18,
+  "score": 24,
   "band": "high_risk",
   "top_flag": "69% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -563476.0523185078,
-   "p50": -480603.275575292,
-   "p90": -403351.8390670334
+   "p10": -563742.6147763694,
+   "p50": -481425.2823034806,
+   "p90": -401876.1856402495
   },
   "lead_option": {
    "label": "with_relief",
@@ -51193,14 +51193,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 23,
+  "score": 30,
   "band": "high_risk",
   "top_flag": "68% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -525831.9459779001,
-   "p50": -441571.28875606135,
-   "p90": -360584.24884118175
+   "p10": -523142.4808359381,
+   "p50": -439094.23280981503,
+   "p90": -359169.2680266759
   },
   "lead_option": {
    "label": "with_relief",
@@ -55583,14 +55583,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 36,
+  "score": 40,
   "band": "high_risk",
   "top_flag": "47% of lot landslide-prone",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -423567.0888157517,
-   "p50": -353427.25086290226,
-   "p90": -282623.53472851973
+   "p10": -425658.280887793,
+   "p50": -353144.06392530334,
+   "p90": -284227.6113032893
   },
   "lead_option": {
    "label": "with_relief",
@@ -56044,14 +56044,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 43,
   "band": "high_risk",
   "top_flag": "43% of lot on 25%+ slope",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -772043.3394143415,
-   "p50": -639791.4406705521,
-   "p90": -515597.3048135266
+   "p10": -770881.5297441409,
+   "p50": -639665.6154756355,
+   "p90": -519162.4928905037
   },
   "lead_option": {
    "label": "with_relief",
@@ -56084,14 +56084,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 29,
+  "score": 36,
   "band": "high_risk",
   "top_flag": "63% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -821633.0355371141,
-   "p50": -689779.5440275313,
-   "p90": -557983.2153087137
+   "p10": -817251.0120037473,
+   "p50": -685210.768043228,
+   "p90": -558163.6720448338
   },
   "lead_option": {
    "label": "with_relief",
@@ -57295,14 +57295,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 40,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -776647.2273734676,
-   "p50": -640011.6604252587,
-   "p90": -512064.3859968845
+   "p10": -768952.6608435549,
+   "p50": -637580.4158155629,
+   "p90": -511607.1871515956
   },
   "lead_option": {
    "label": "with_relief",
@@ -57555,14 +57555,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 43,
+  "score": 47,
   "band": "high_risk",
   "top_flag": "91% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -2593835.8740308434,
-   "p50": -2143347.6015845463,
-   "p90": -1704525.3197153134
+   "p10": -2597071.0926905433,
+   "p50": -2132776.7799436534,
+   "p90": -1695595.7887713348
   },
   "lead_option": {
    "label": "with_relief",
@@ -57625,14 +57625,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 46,
   "band": "high_risk",
   "top_flag": "85% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -2869933.9964568326,
-   "p50": -2368710.8437495735,
-   "p90": -1887554.8230812212
+   "p10": -2894194.3197995354,
+   "p50": -2368544.468828734,
+   "p90": -1878538.8042385834
   },
   "lead_option": {
    "label": "with_relief",
@@ -58025,14 +58025,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 33,
+  "score": 38,
   "band": "high_risk",
   "top_flag": "54% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -780677.2381345088,
-   "p50": -638426.0422607837,
-   "p90": -486400.2682664384
+   "p10": -783504.1571470196,
+   "p50": -633840.2481089903,
+   "p90": -491459.8233506752
   },
   "lead_option": {
    "label": "with_relief",
@@ -58793,14 +58793,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 38,
+  "score": 45,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -1108046.1244488892,
-   "p50": -910498.8317748981,
-   "p90": -723905.1368562536
+   "p10": -1104892.285110652,
+   "p50": -906155.4866355599,
+   "p90": -728542.8997310292
   },
   "lead_option": {
    "label": "with_relief",
@@ -58873,14 +58873,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 26,
+  "score": 33,
   "band": "high_risk",
   "top_flag": "63% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -844009.1180238749,
-   "p50": -711883.8778849642,
-   "p90": -580819.0015348691
+   "p10": -842876.205065296,
+   "p50": -707522.6556936144,
+   "p90": -579554.8666534411
   },
   "lead_option": {
    "label": "with_relief",
@@ -58981,14 +58981,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 26,
+  "score": 33,
   "band": "high_risk",
   "top_flag": "50% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -844425.9299125981,
-   "p50": -709094.1349392433,
-   "p90": -579413.7704171594
+   "p10": -844234.0988438063,
+   "p50": -707286.8656467756,
+   "p90": -581344.2710458556
   },
   "lead_option": {
    "label": "with_relief",
@@ -59539,14 +59539,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$115 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -419177.2480275772,
-   "p50": -353215.98724108154,
-   "p90": -294531.8411215362
+   "p10": -422099.43587241694,
+   "p50": -353119.35639696015,
+   "p90": -293662.4954944781
   },
   "lead_option": {
    "label": "with_relief",
@@ -59699,14 +59699,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$898 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -419875.2779252199,
-   "p50": -353898.96656616416,
-   "p90": -295201.1841558733
+   "p10": -422769.06907064107,
+   "p50": -353800.3997275726,
+   "p90": -294337.5788478788
   },
   "lead_option": {
    "label": "with_relief",
@@ -60522,14 +60522,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$911 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -419384.24262373406,
-   "p50": -353473.9064816425,
-   "p90": -294766.4460624934
+   "p10": -422319.5365877369,
+   "p50": -353362.6547247754,
+   "p90": -293893.5818781319
   },
   "lead_option": {
    "label": "with_relief",
@@ -60561,14 +60561,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "1 DEP record(s) within 1,000 ft",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -412119.47448901273,
-   "p50": -345468.52093626803,
-   "p90": -285340.4934897132
+   "p10": -413512.1545625752,
+   "p50": -346477.4911974147,
+   "p90": -287564.87565919233
   },
   "lead_option": {
    "label": "with_relief",
@@ -60600,14 +60600,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$486 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -412088.85875962116,
-   "p50": -345455.51966798725,
-   "p90": -288360.28812522534
+   "p10": -413702.4808293196,
+   "p50": -345876.638723121,
+   "p90": -286914.32700812875
   },
   "lead_option": {
    "label": "with_relief",
@@ -62458,14 +62458,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$241 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -432490.56477878755,
-   "p50": -365907.03048110305,
-   "p90": -306699.0982187443
+   "p10": -434528.9464881862,
+   "p50": -366374.5848583035,
+   "p90": -305276.88619731506
   },
   "lead_option": {
    "label": "with_relief",
@@ -66090,14 +66090,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 38,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "1 DEP record(s) within 250 ft (nearest 159 ft: storage tank inactive)",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -424659.6860884762,
-   "p50": -355336.3261828459,
-   "p90": -293144.3656719254
+   "p10": -420710.4535258838,
+   "p50": -354499.1813376923,
+   "p90": -291383.0288680282
   },
   "lead_option": {
    "label": "with_relief",
@@ -71561,14 +71561,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 35,
+  "score": 45,
   "band": "high_risk",
   "top_flag": "37% of lot landslide-prone",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -775182.6590642506,
-   "p50": -649149.2143283314,
-   "p90": -532004.0544076645
+   "p10": -771036.1195155485,
+   "p50": -646879.0374673713,
+   "p90": -534598.4329635403
   },
   "lead_option": {
    "label": "with_relief",
@@ -71939,14 +71939,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 32,
+  "score": 39,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -481616.98477575183,
-   "p50": -409132.3981530701,
-   "p90": -344177.3399492613
+   "p10": -479281.2809266986,
+   "p50": -409418.6924351973,
+   "p90": -344696.1795974909
   },
   "lead_option": {
    "label": "with_relief",
@@ -72062,14 +72062,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 30,
+  "score": 35,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -479253.52940831624,
-   "p50": -405313.52159880736,
-   "p90": -338882.4805038497
+   "p10": -475076.4934969072,
+   "p50": -404443.9033765077,
+   "p90": -337789.17950753984
   },
   "lead_option": {
    "label": "with_relief",
@@ -75032,14 +75032,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$38 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -426018.59321171534,
-   "p50": -360167.14802385785,
-   "p90": -302779.6669339125
+   "p10": -429154.19299611315,
+   "p50": -360600.3441745053,
+   "p90": -301797.51933404047
   },
   "lead_option": {
    "label": "with_relief",
@@ -75155,14 +75155,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$33 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -426014.2734491439,
-   "p50": -360162.9534718783,
-   "p90": -302775.5436119617
+   "p10": -429149.8959661944,
+   "p50": -360596.12151976465,
+   "p90": -301793.2762417605
   },
   "lead_option": {
    "label": "with_relief",
@@ -76062,14 +76062,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 41,
+  "score": 46,
   "band": "high_risk",
   "top_flag": "1 DEP record(s) within 250 ft (nearest 90 ft: storage tank inactive)",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -455466.0074892987,
-   "p50": -386574.80883061956,
-   "p90": -327375.2918614936
+   "p10": -455787.75349351,
+   "p50": -387913.5628738911,
+   "p90": -327571.0007077835
   },
   "lead_option": {
    "label": "with_relief",
@@ -77361,14 +77361,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$931 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -431649.2707723682,
-   "p50": -364976.6674719257,
-   "p90": -306368.37630155217
+   "p10": -433946.66912335705,
+   "p50": -365640.70256997313,
+   "p90": -305152.89352624683
   },
   "lead_option": {
    "label": "with_relief",
@@ -77456,14 +77456,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$2 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -425292.23726582486,
-   "p50": -359463.9060270479,
-   "p90": -302317.89039123786
+   "p10": -428379.2626660638,
+   "p50": -360154.2255422692,
+   "p90": -301402.03938092076
   },
   "lead_option": {
    "label": "with_relief",
@@ -77551,14 +77551,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$1,056 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -424235.91894626396,
-   "p50": -358749.1390368027,
-   "p90": -301865.0019967859
+   "p10": -427517.6785650455,
+   "p50": -359370.18749104236,
+   "p90": -300916.28754601843
   },
   "lead_option": {
    "label": "with_relief",
@@ -77674,14 +77674,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 42,
+  "score": 47,
   "band": "high_risk",
   "top_flag": "1 DEP record(s) within 250 ft (nearest 208 ft: storage tank inactive)",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -446567.11561296025,
-   "p50": -378245.76456994226,
-   "p90": -319733.7306327277
+   "p10": -446974.72395345586,
+   "p50": -379465.3984866212,
+   "p90": -320290.21471201646
   },
   "lead_option": {
    "label": "with_relief",
@@ -80131,14 +80131,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "2 DEP record(s) within 1,000 ft",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -424477.0986584913,
-   "p50": -358961.4060164584,
-   "p90": -298490.8637018205
+   "p10": -426168.2833438244,
+   "p50": -359366.5992683887,
+   "p90": -301097.8251420284
   },
   "lead_option": {
    "label": "with_relief",
@@ -80440,14 +80440,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 51,
+  "band": "feasible_with_conditions",
   "top_flag": "$3,061 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -421361.4739506927,
-   "p50": -355439.8011730894,
-   "p90": -296057.2921580506
+   "p10": -424380.6918329044,
+   "p50": -354492.7492609764,
+   "p90": -294673.17352964875
   },
   "lead_option": {
    "label": "with_relief",
@@ -81066,14 +81066,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "3 DEP record(s) within 1,000 ft",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -418767.06923490023,
-   "p50": -352743.0659461049,
-   "p90": -292330.74356462894
+   "p10": -420542.6153722882,
+   "p50": -353379.61806744686,
+   "p90": -292848.9427458353
   },
   "lead_option": {
    "label": "with_relief",
@@ -82211,14 +82211,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$1 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -424119.1302761097,
-   "p50": -358433.03921554424,
-   "p90": -301420.91746268433
+   "p10": -427320.03529902326,
+   "p50": -359176.8006804357,
+   "p90": -300519.2776853649
   },
   "lead_option": {
    "label": "with_relief",
@@ -83825,14 +83825,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 40,
+  "score": 45,
   "band": "high_risk",
   "top_flag": "23% of lot on 25%+ slope",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -459083.6496830436,
-   "p50": -391481.2000462473,
-   "p90": -331131.187962306
+   "p10": -460076.5289920215,
+   "p50": -392688.4075579236,
+   "p90": -330915.87499705615
   },
   "lead_option": {
    "label": "with_relief",
@@ -93394,14 +93394,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 40,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "Condemned or dead-end property",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -457214.8475111372,
-   "p50": -390552.50313111057,
-   "p90": -328249.27583772264
+   "p10": -456576.6602918877,
+   "p50": -387637.43427178817,
+   "p90": -328264.95360937703
   },
   "lead_option": {
    "label": "with_relief",
@@ -94620,14 +94620,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 46,
-  "band": "high_risk",
+  "score": 51,
+  "band": "feasible_with_conditions",
   "top_flag": "$3,389 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -425881.0112363211,
-   "p50": -360183.13886086736,
-   "p90": -302768.6329334592
+   "p10": -428972.1418357714,
+   "p50": -360527.71541897475,
+   "p90": -301869.52640804474
   },
   "lead_option": {
    "label": "with_relief",
@@ -97118,14 +97118,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 24,
+  "score": 30,
   "band": "high_risk",
   "top_flag": "100% of lot on 25%+ slope",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -557300.702551203,
-   "p50": -481746.37155937694,
-   "p90": -411512.84676803014
+   "p10": -557108.5784560568,
+   "p50": -478442.14917609736,
+   "p90": -410133.9053898801
   },
   "lead_option": {
    "label": "with_relief",
@@ -98079,14 +98079,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 29,
+  "score": 32,
   "band": "high_risk",
   "top_flag": "100% of lot landslide-prone",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -499413.9327131977,
-   "p50": -428609.7991766561,
-   "p90": -362789.6027358875
+   "p10": -495834.3716419542,
+   "p50": -425090.10070661735,
+   "p90": -364373.90252803883
   },
   "lead_option": {
    "label": "with_relief",
@@ -98966,14 +98966,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "1 DEP record(s) within 1,000 ft",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -421230.28533168096,
-   "p50": -356093.90619525634,
-   "p90": -295600.5073529193
+   "p10": -423030.0622492057,
+   "p50": -356469.5539464015,
+   "p90": -297945.3747400666
   },
   "lead_option": {
    "label": "with_relief",
@@ -99359,14 +99359,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "$32 in tax liens",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -421324.79371746664,
-   "p50": -355803.7759435683,
-   "p90": -297925.3016971982
+   "p10": -424600.22412390704,
+   "p50": -355790.0671315235,
+   "p90": -296952.7725677025
   },
   "lead_option": {
    "label": "with_relief",
@@ -99398,14 +99398,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 47,
-  "band": "high_risk",
+  "score": 52,
+  "band": "feasible_with_conditions",
   "top_flag": "1 DEP record(s) within 1,000 ft",
   "top_flag_severity": "low",
   "max_land_price": {
-   "p10": -421230.28533168096,
-   "p50": -356093.90619525634,
-   "p90": -295600.5073529193
+   "p10": -423030.0622492057,
+   "p50": -356469.5539464015,
+   "p90": -297945.3747400666
   },
   "lead_option": {
    "label": "with_relief",
@@ -102407,14 +102407,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 38,
+  "score": 43,
   "band": "high_risk",
   "top_flag": "26% of lot landslide-prone",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -463294.74366341496,
-   "p50": -394041.8377731603,
-   "p90": -331643.25202287635
+   "p10": -465289.32119598205,
+   "p50": -396161.4817192964,
+   "p90": -331937.3502722883
   },
   "lead_option": {
    "label": "with_relief",
@@ -102446,14 +102446,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 38,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "28% of lot landslide-prone",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -466017.4046654476,
-   "p50": -396750.9107372995,
-   "p90": -334358.8941508569
+   "p10": -467980.6531495085,
+   "p50": -398895.8670747387,
+   "p90": -334648.225041385
   },
   "lead_option": {
    "label": "with_relief",
@@ -102718,14 +102718,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 44,
   "band": "high_risk",
   "top_flag": "32% of lot landslide-prone",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -461084.08504738024,
-   "p50": -391840.23037131125,
-   "p90": -329439.79527549923
+   "p10": -463105.5895874142,
+   "p50": -393947.61747034127,
+   "p90": -329741.3027973257
   },
   "lead_option": {
    "label": "with_relief",
@@ -102813,14 +102813,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 39,
+  "score": 43,
   "band": "high_risk",
   "top_flag": "30% of lot landslide-prone",
   "top_flag_severity": "medium",
   "max_land_price": {
-   "p10": -462285.64975425595,
-   "p50": -393037.7799688507,
-   "p90": -330636.75950369926
+   "p10": -464291.8387037433,
+   "p50": -395150.23527313885,
+   "p90": -330933.3533855152
   },
   "lead_option": {
    "label": "with_relief",
@@ -108460,14 +108460,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 33,
+  "score": 39,
   "band": "high_risk",
   "top_flag": "100% of lot over mapped mine workings (UM-O overlay)",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -675671.0748392908,
-   "p50": -543792.2075260819,
-   "p90": -425301.3081565199
+   "p10": -668890.7322041615,
+   "p50": -541311.5960041746,
+   "p90": -428364.7843577862
   },
   "lead_option": {
    "label": "with_relief",
@@ -108669,14 +108669,14 @@
   "candidate": true,
   "illustrative": false,
   "assembly_id": null,
-  "score": 36,
+  "score": 42,
   "band": "high_risk",
   "top_flag": "100% of lot over mapped mine workings (UM-O overlay)",
   "top_flag_severity": "high",
   "max_land_price": {
-   "p10": -975605.7634940831,
-   "p50": -786501.7544798895,
-   "p90": -606838.0648032604
+   "p10": -972958.7615106587,
+   "p50": -783375.6082850703,
+   "p90": -609648.9936901006
   },
   "lead_option": {
    "label": "with_relief",

@@ -12,7 +12,7 @@ uv run python -m navigator_pipeline.publish
 ```
 
 Candidates are the 1,018 vacant lots (county land use "VACANT LAND", no
-structure) plus the golden parcels. Engine picks: 838 high risk, 179 feasible with conditions, 1 not scored.
+structure) plus the golden parcels. Engine picks: 818 high risk, 199 feasible with conditions, 1 not scored.
 
 ## Files
 
@@ -40,6 +40,8 @@ Load and validate everything in Python with `navigator_pipeline.bundle.load()`.
 | `lead` | True for the building type the engine picks for this lot; that row repeats the numbers in site_analysis |
 | `score_p10/p50/p90` | Score 0-100 (10th, 50th, 90th percentile of the simulation) |
 | `band` | fast_track (75+), feasible_with_conditions (50-74), high_risk (<50), not_scored (zoning not covered) |
+| `approval_prob_p10/p50/p90` | Chance the approvals are granted (1 when by right); variances and special exceptions from the Zoning Board model |
+| `approval_basis` | Where those odds come from: by_right, model (Zoning Board decisions), measured (City Council votes), placeholder (no decision data yet), joined by `+` |
 | `approval_path` | by_right; the approvals needed joined by `+` (e.g. `variance+subdivision`); not_allowed (the zoning rules rule it out); not_covered |
 | `months_p10/p50/p90` | Months to permit-ready |
 | `cost_premium_p10/p50/p90` | Extra site cost from constraints (slope, undermining, flood...), USD |

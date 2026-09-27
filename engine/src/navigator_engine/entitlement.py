@@ -2,11 +2,15 @@
 
 Two rungs are measured from City Council zoning legislation (Legistar, 2000-2026): approvals
 are Beta(1 + passed, 1 + failed) posteriors and durations are the observed intro-to-passage
-days. They are optimistic: cases withdrawn before a vote are not visible. Zoning Board rungs
-are PLACEHOLDER priors (spec v0 fallback) until ZBA decisions can be extracted.
+days. They are optimistic: cases withdrawn before a vote are not visible. Zoning Board
+approvals (variances, special exceptions) use the fitted approval model when its config is
+present (navigator_engine.approval); their RUNGS entries remain the prior and the fallback.
+Administrator exceptions and subdivisions stay PLACEHOLDER priors: no decision data.
 """
 
 import numpy as np
+
+from navigator_engine import approval
 
 DAYS_PER_MONTH = 30.44
 
@@ -34,27 +38,49 @@ RUNGS = {
 PROCEDURAL = {"site_investigation": (1, 2, 3), "prohibited_without_study": (6, 12, 18)}
 
 
-def sample(relief: list[dict], n: int, rng: np.random.Generator) -> dict:
+def sample(relief: list[dict], n: int, rng: np.random.Generator, site: dict | None = None) -> dict:
     """Joint samples of P(approval) and hearing months for a program's relief items.
+    `site` = approval.site_features(context): the parcel-level inputs of the approval model.
 
-    Items are treated as independent (P multiplies). Items before the same body (ZBA) are
-    heard together, so months take the max within a body and add across bodies.
+    Variances and special exceptions go to one Zoning Board hearing: with the fitted approval
+    model they get one probability for the hearing (navigator_engine.approval); without it,
+    one placeholder per item. Other approvals are treated as independent (P multiplies).
+    Items before the same body are heard together, so months take the max within a body and
+    add across bodies.
     """
     p = np.ones(n)
     by_body: dict[str, np.ndarray] = {}
     sources = []
+    hearing = [i for i in relief if i["type"] in approval.ZBA_TYPES]
+    modelled = bool(hearing) and approval.available()
+    if modelled:
+        site = site or {}
+        x = approval.features(
+            [
+                {
+                    "type": i["type"],
+                    "section": i.get("section"),
+                    "rule": approval.CHECK_RULES.get(i.get("check")),
+                }
+                for i in hearing
+            ],
+            site,
+        )
+        p *= approval.sample(x, n, rng)
+        sources.append(f"zoning board hearing: {approval.basis()}")
     for item in relief:
         t = item["type"]
         if t in RUNGS:
             kind, params, months, src = RUNGS[t]
-            if kind == "beta":
-                p *= rng.beta(1 + params[0], 1 + params[1], n)
-            else:
-                p *= rng.triangular(params[0], params[1], params[2], n)
-            body = "zba" if t in ("special_exception", "variance", "use_variance") else t
+            if not (modelled and t in approval.ZBA_TYPES):
+                if kind == "beta":
+                    p *= rng.beta(1 + params[0], 1 + params[1], n)
+                else:
+                    p *= rng.triangular(params[0], params[1], params[2], n)
+                sources.append(f"{t}: {src}")
+            body = "zba" if t in approval.ZBA_TYPES else t
             m = rng.triangular(*months, n)
             by_body[body] = np.maximum(by_body.get(body, 0), m)
-            sources.append(f"{t}: {src}")
         elif t in PROCEDURAL:
             by_body[t] = np.maximum(by_body.get(t, 0), rng.triangular(*PROCEDURAL[t], n))
     months = sum(by_body.values()) if by_body else np.zeros(n)

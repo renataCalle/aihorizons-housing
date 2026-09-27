@@ -189,41 +189,41 @@
         "subdivision (911.02 (own lot per unit))"
       ],
       "margin": {
-        "p10": -0.5121144686054404,
-        "p50": -0.41665125794500946,
-        "p90": -0.3114416026689794
+        "p10": -0.5104229755729629,
+        "p50": -0.4147474584706737,
+        "p90": -0.3082969950734727
       },
       "months": {
-        "p10": 8.035493605342486,
-        "p50": 9.511633124216594,
-        "p90": 11.124973299056736
+        "p10": 7.992803365768487,
+        "p50": 9.495526668002032,
+        "p90": 11.162966208998805
       },
       "approval_prob": {
-        "p10": 0.6562775999887783,
-        "p50": 0.7340475009785946,
-        "p90": 0.8076139169649418
+        "p10": 0.8623902556745925,
+        "p50": 0.9125961537507257,
+        "p90": 0.9488072686741864
       },
       "max_land_price": {
-        "p10": -575600.5936973349,
-        "p50": -442347.82115037856,
-        "p90": -321608.94395142014
+        "p10": -571916.9680359537,
+        "p50": -438474.4696315676,
+        "p90": -320271.7967716132
       },
       "score": {
-        "p10": 33.32948618601308,
-        "p50": 38.41396419104102,
-        "p90": 43.21870544464521
+        "p10": 37.35540165805922,
+        "p50": 42.088924410250385,
+        "p90": 46.62858700594845
       },
       "revenue_basis": "for-sale: 96 resale comps $145-$222/sf + new-build premium",
       "entitlement_basis": [
-        "special_exception: PLACEHOLDER prior (ZBA)",
+        "zoning board hearing: model approval_v1: Bayesian logistic regression on 202 Zoning Board decisions (28 denied), 2025-02-05 to 2026-08-28",
         "subdivision: PLACEHOLDER prior"
       ],
       "gfa_sqft": 2800,
       "unit_sqft": 1400,
       "site_cost_premium": {
-        "p10": 65439.411209482765,
-        "p50": 108561.08514246272,
-        "p90": 152701.04029308178
+        "p10": 64664.102640124365,
+        "p50": 107432.48470805274,
+        "p90": 152017.7410341106
       },
       "resolution": "Needs a special exception from the Zoning Board of Adjustment after a public hearing (922.07); a subdivision creating one lot per townhome, approved through City Planning. Start with a zoning pre-application meeting with City Planning to confirm the path before design money is spent.",
       "resolved_by_step": 1,
@@ -608,14 +608,14 @@
           }
         ],
         "approval_prob": {
-          "p10": 0.6587108869091068,
-          "p50": 0.7332548675335795,
-          "p90": 0.803270473836438
+          "p10": 0.8606491615825724,
+          "p50": 0.9107406044620536,
+          "p90": 0.9486793809119553
         },
         "approval_months": {
-          "p10": 4.872906933725606,
-          "p50": 6.0997605605879315,
-          "p90": 7.472975712428804
+          "p10": 4.838651239695515,
+          "p50": 6.154224788340313,
+          "p90": 7.51007373235824
         },
         "representative": true,
         "chosen_as": "with_relief"

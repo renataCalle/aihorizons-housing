@@ -23,6 +23,7 @@ from navigator_pipeline import live as live_lookups
 from navigator_pipeline.build import VALID_SALE_CODES, owner_type
 from navigator_pipeline.features import COVERAGE_NOTE
 from navigator_pipeline.settings import DATA_DIR as DATA
+from navigator_pipeline.settings import MANUAL
 
 CLEAN = DATA / "clean"
 FEAT = DATA / "features"
@@ -107,6 +108,24 @@ LIVE_RECORDS = {
 }
 PENDING = {"PLB Transfer": "land_bank", "URA Transfer": "ura"}
 
+# Zoning Board cases (navigator_pipeline.zba): decided cases within ZBA_RADIUS_FT of the site.
+ZBA_CASES = "zba_cases.parquet"
+ZBA_MANIFEST = MANUAL / "zba" / "_manifest.jsonl"
+ZBA_PAGES = (
+    "https://www.pittsburghpa.gov/Business-Development/City-Planning/City-Planning-Meetings/"
+    "ZBA-Agendas"
+)
+ZBA_RADIUS_FT = 5_280  # one mile
+ZBA_MAX = 25
+ZBA_OUTCOMES = {  # zba.py outcome -> contract outcome; "partial" is not claimed as approved
+    "granted": "approved",
+    "granted_with_conditions": "approved_with_conditions",
+    "denied": "denied",
+    "withdrawn": "withdrawn",
+    "partial": "unknown",
+}
+ZBA_MISSING = "Not built: run navigator_pipeline.zba_download, then navigator_pipeline.zba."
+
 
 def resolve_ids(ids: list[str], parcels: pd.DataFrame) -> list[str]:
     """Accept county ids or dashed block-lots."""
@@ -177,9 +196,72 @@ def store() -> dict:
                     ],
                 ),
                 manifests={},
+                **_zba_tables(),
             )
             _ = _store["parcels"].sindex  # build the spatial index once
         return _store
+
+
+def _zba_tables() -> dict:
+    """Decided Zoning Board cases with a location, and their provenance (None when not built)."""
+    path = CLEAN / ZBA_CASES
+    if not path.exists():
+        return {"zba": None, "zba_source": None}
+    cases = pd.read_parquet(path)
+    cases = cases[cases["outcome"].isin(ZBA_OUTCOMES) & cases["x"].notna()]
+    urls, fetched = {}, []
+    if ZBA_MANIFEST.exists():
+        for line in ZBA_MANIFEST.read_text().splitlines():
+            entry = json.loads(line)
+            urls[entry["file"]] = entry["url"]
+            fetched.append(entry["fetched_at"])
+    zba = gpd.GeoDataFrame(
+        cases.assign(url=cases["source_file"].map(urls)),
+        geometry=gpd.points_from_xy(cases["x"], cases["y"]),
+        crs="EPSG:2272",
+    ).reset_index(drop=True)
+    decided = pd.to_datetime(zba["decision_date"]).dropna()
+    source = {
+        "name": "Zoning Board of Adjustment decisions (City of Pittsburgh meeting pages)",
+        "url": ZBA_PAGES,
+        "as_of": decided.max().date().isoformat() if len(decided) else None,
+        "note": None,
+        "retrieved": "snapshot",
+        "retrieved_at": max(fetched) if fetched else None,
+    }
+    return {"zba": zba, "zba_source": source}
+
+
+def _as_list(v) -> list:
+    """Parquet list cells come back as arrays, missing ones as None or NaN."""
+    return list(v) if isinstance(v, (list, tuple, np.ndarray)) else []
+
+
+def _zba_nearby(zba: gpd.GeoDataFrame, site) -> list[dict]:
+    near = _within(zba, site, ZBA_RADIUS_FT)
+    near = near.assign(distance_ft=near.geometry.distance(site)).sort_values("distance_ft")
+    out = []
+    for r in near.head(ZBA_MAX).itertuples():
+        reliefs = _as_list(r.reliefs) or _as_list(r.agenda_reliefs)
+        hearing, decided = _clean(r.hearing_date), _clean(r.decision_date)
+        days = (
+            (date.fromisoformat(decided) - date.fromisoformat(hearing)).days
+            if hearing and decided
+            else None
+        )
+        out.append(
+            {
+                "case_id": r.case_id,
+                "decision_date": decided,
+                "relief_types": list(dict.fromkeys(x["type"] for x in reliefs)),
+                "district": _clean(r.district),
+                "outcome": ZBA_OUTCOMES[r.outcome],
+                "days_to_decision": days,
+                "distance_ft": round(float(r.distance_ft), 1),
+                "url": _clean(r.url),
+            }
+        )
+    return out
 
 
 def _within(gdf: gpd.GeoDataFrame, geom, distance: float) -> gpd.GeoDataFrame:
@@ -334,7 +416,7 @@ def build(ids: list[str], live: bool = False) -> dict:
             "name": "Zoning Board of Adjustment decisions",
             "url": None,
             "as_of": None,
-            "note": "Not available: pittsburghpa.gov blocks this client (HTTP 403).",
+            "note": ZBA_MISSING,
         }
         for k, v in PROVENANCE.items()
     }
@@ -358,7 +440,10 @@ def build(ids: list[str], live: bool = False) -> dict:
         for r in permits.head(20).itertuples()
     ]
 
-    zba_note = provenance["zba_cases"]
+    zba_cases = None  # None = not available (reason in provenance["zba_cases"])
+    if st.get("zba") is not None:
+        provenance["zba_cases"] = dict(st["zba_source"])
+        zba_cases = _zba_nearby(st["zba"], site)
     ctx = {
         "schema_version": SCHEMA_VERSION,
         "parcels": parcels,
@@ -402,7 +487,7 @@ def build(ids: list[str], live: bool = False) -> dict:
             "comps_years": COMPS_YEARS,
         },
         # None = not available (reason in provenance["zba_cases"]); [] = none nearby.
-        "zba_cases_nearby": None if zba_note.get("note") else [],
+        "zba_cases_nearby": zba_cases,
         "provenance": provenance,
     }
     if live:

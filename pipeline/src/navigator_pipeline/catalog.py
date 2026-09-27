@@ -290,7 +290,7 @@ SOURCES: list[Source] = [
         4,
         "Council conditional uses and rezonings",
         "legistar",
-        notes="ZBA decisions are on pittsburghpa.gov, which blocks this client (403).",
+        notes="ZBA decisions: navigator_pipeline.zba_download (city meeting pages, 2025 on).",
     ),
     Source(
         "transit_stops",

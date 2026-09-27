@@ -79,6 +79,27 @@ def approval_path(a: dict, opt: dict | None) -> str:
     return "+".join(dict.fromkeys(relief)) or "by_right"
 
 
+def approval_basis(opt: dict | None) -> str | None:
+    """Where the approval odds come from: by_right, model, measured, placeholder (joined by +)."""
+    if not opt:
+        return None
+    if not opt["relief"]:
+        return "by_right"
+    kinds = []
+    for src in opt["entitlement_basis"]:
+        kind = (
+            "model"
+            if "model" in src
+            else "measured"
+            if "measured" in src
+            else "placeholder"
+            if "PLACEHOLDER" in src
+            else "other"
+        )
+        kinds.append(kind)
+    return "+".join(dict.fromkeys(kinds)) or None
+
+
 def csv_row(ctx: dict, a: dict, product: str, lead: bool, centroid) -> dict:
     """One building type on one lot. `a` is the engine's own analysis for the lead row and a
     per-type analysis (analyze(..., program=...)) for the others."""
@@ -113,6 +134,10 @@ def csv_row(ctx: dict, a: dict, product: str, lead: bool, centroid) -> dict:
         "score_p90": rng(score, "p90", 1),
         "band": a["verdict"]["band"],
         "approval_path": approval_path(a, opt),
+        "approval_prob_p10": rng(m.get("approval_prob"), "p10", 3),
+        "approval_prob_p50": rng(m.get("approval_prob"), "p50", 3),
+        "approval_prob_p90": rng(m.get("approval_prob"), "p90", 3),
+        "approval_basis": approval_basis(opt or None),
         "months_p10": rng(months, "p10", 1),
         "months_p50": rng(months, "p50", 1),
         "months_p90": rng(months, "p90", 1),
@@ -377,6 +402,8 @@ Load and validate everything in Python with `navigator_pipeline.bundle.load()`.
 | `lead` | True for the building type the engine picks for this lot; that row repeats the numbers in site_analysis |
 | `score_p10/p50/p90` | Score 0-100 (10th, 50th, 90th percentile of the simulation) |
 | `band` | fast_track (75+), feasible_with_conditions (50-74), high_risk (<50), not_scored (zoning not covered) |
+| `approval_prob_p10/p50/p90` | Chance the approvals are granted (1 when by right); variances and special exceptions from the Zoning Board model |
+| `approval_basis` | Where those odds come from: by_right, model (Zoning Board decisions), measured (City Council votes), placeholder (no decision data yet), joined by `+` |
 | `approval_path` | by_right; the approvals needed joined by `+` (e.g. `variance+subdivision`); not_allowed (the zoning rules rule it out); not_covered |
 | `months_p10/p50/p90` | Months to permit-ready |
 | `cost_premium_p10/p50/p90` | Extra site cost from constraints (slope, undermining, flood...), USD |

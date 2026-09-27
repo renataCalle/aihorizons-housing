@@ -6,6 +6,7 @@
     s.analysis("0055A00225000000")           # SiteAnalysis dict, exactly as the engine returned it
     s.context("0055A00225000000")            # SiteContext dict (re-run the engine with overrides)
     s.programs("0055A00225000000")           # one dict per building type
+    s.approval_odds("55-A-225")              # {building type: approval odds, basis, path}
     s.sql("SELECT band, count(*) FROM parcels GROUP BY 1")   # any SQL over the four tables
 
 The same files work from any DuckDB client, with no Python:
@@ -74,6 +75,23 @@ class Scores:
         pid = self.resolve(parcel)
         q = "SELECT * FROM programs WHERE parcel_id = ? ORDER BY product"
         return self._rows(q, [pid]) if pid else []
+
+    def approval_odds(self, parcel: str) -> dict[str, dict]:
+        """Approval odds for every building type tested on the parcel: the chance its
+        approvals are granted (p10/p50/p90; 1 when by right), where the odds come from, and
+        the approvals needed. None odds = the zoning rules rule the building out."""
+        return {
+            r["product"]: {
+                "units": r["units"],
+                "approval_path": r["approval_path"],
+                "approval_prob": None
+                if r["approval_prob_p50"] is None
+                else {q: r[f"approval_prob_{q}"] for q in ("p10", "p50", "p90")},
+                "approval_basis": r["approval_basis"],
+                "lead": r["lead"],
+            }
+            for r in self.programs(parcel)
+        }
 
     def sql(self, query: str, params: list | None = None) -> list[dict]:
         return self._rows(query, params)
