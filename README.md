@@ -4,6 +4,9 @@ Development Feasibility & Pro Forma Navigator: a parcel ID or map click in, a si
 verdict out. Pittsburgh zoning in v1; physical, environmental, infrastructure, and market
 layers countywide.
 
+> A volunteer civic-hackathon project. Not affiliated with or endorsed by any contributor's
+> employer. See [Disclaimer](#disclaimer).
+
 ## Layout
 
 | Folder | What lives there | Owner |
@@ -90,3 +93,15 @@ cd web && npm run lint && npm test && npm run build
 - Contract changes go through a pull request both owners approve. Additive fields are
   same-day changes; renames, removals, and type changes bump the schema version.
 - Raw data never goes in git (`data/` is ignored).
+
+## Disclaimer
+
+This is a personal, volunteer project built for [Hackathon Name], a non-commercial civic
+hackathon on household affordability. The contributors worked on their own time with their
+own resources. Nothing here is affiliated with, endorsed by, or representative of the views,
+work, or products of any contributor's employer or any organization they belong to. Opinions,
+code, and analysis are the contributors' own.
+
+The feasibility verdicts are illustrative and are not legal, zoning, or investment advice.
+Confirm anything you rely on with the City of Pittsburgh, Allegheny County, and a qualified
+professional.
