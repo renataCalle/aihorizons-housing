@@ -96,12 +96,6 @@ cd web && npm run lint && npm test && npm run build
 
 ## Disclaimer
 
-This is a personal, volunteer project built for [Hackathon Name], a non-commercial civic
-hackathon on household affordability. The contributors worked on their own time with their
-own resources. Nothing here is affiliated with, endorsed by, or representative of the views,
-work, or products of any contributor's employer or any organization they belong to. Opinions,
-code, and analysis are the contributors' own.
+This is a personal, volunteer project built for AI Horizons, a non-commercial civic hackathon on household affordability. The contributors worked on their own time with their own resources. Nothing here is affiliated with, endorsed by, or representative of the views, work, or products of any contributor's employer or any organization they belong to. Opinions, code, and analysis are the contributors' own.
 
-The feasibility verdicts are illustrative and are not legal, zoning, or investment advice.
-Confirm anything you rely on with the City of Pittsburgh, Allegheny County, and a qualified
-professional.
+The feasibility verdicts are illustrative and are not legal, zoning, or investment advice. Confirm anything you rely on with the City of Pittsburgh, Allegheny County, and a qualified professional.
